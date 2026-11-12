@@ -306,7 +306,7 @@ elif page == "Strategy Backtests":
     simulation_engine=st.radio('Simulation engine',['C2 historical portfolio','Technical-only baseline'],horizontal=True,key='simulation_engine')
     is_c2=simulation_engine=='C2 historical portfolio'
     if is_c2 and health.get('signal_specific_evidence_supported'):
-        st.info('Entry policy: strong trend and RSI-reversion signals can proceed with explicitly incomplete coverage after dated research, if no concrete adverse event remains unresolved. Breakouts require dated corroborating evidence. A cited adverse finding requires an EXIT after critic validation; it fills at a later eligible open.')
+        st.info('Entry policy: strong trend and RSI-reversion signals can proceed with explicitly incomplete coverage after dated research, if no concrete adverse event remains unresolved. Breakouts require a recent verbatim source quote supporting actual improvement or a completed commercial event, independently corroborated by the critic. Known recent structural actions quarantine new entries on unadjusted prices. A cited adverse finding requires an EXIT after critic validation; it fills at a later eligible open.')
     st.info('C2 mode researches each prospective entry and periodically reviews holdings. Historical fills follow upfront approved rules; the separate supervised workflow retains per-order human review. Stops and strategy exits remain code-controlled. Open holdings are marked, never forcibly sold at the end.')
     if is_c2:
         inf=health.get('inference',{})
@@ -471,6 +471,13 @@ elif page == "Strategy Backtests":
                     choices={d['date']+' '+d['symbol']+' '+d.get('purpose','')+' '+d['id']:d['id'] for d in records}
                     decision_choice=st.selectbox('C2 portfolio research record',list(choices))
                     selected_record=next(d for d in records if d['id']==choices[decision_choice])
+                    company=selected_record.get('company_assessment') or {}
+                    if company.get('breakout_support'):
+                        st.write('**Breakout explanation:** '+company['breakout_support'])
+                        if company.get('breakout_evidence'):
+                            st.json(company['breakout_evidence'])
+                            st.caption('Load the full research trace to inspect the critic\'s separate source corroboration.')
+                        else:st.caption('This recorded explanation has no structured source quote. Inspect its saved policy version; current breakout entries require quoted corroboration.')
                     if selected_record.get('portfolio_memory'):
                         st.json(selected_record['portfolio_memory'])
                     if selected_record.get('portfolio_memory'):

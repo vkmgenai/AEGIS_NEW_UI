@@ -58,6 +58,7 @@ def field_limits(schema):
         bounds={k:node[k] for k in ('minLength','maxLength','minItems','maxItems') if k in node}
         if bounds:found[path]=bounds
         for name,child in node.get('properties',{}).items():visit(child,path+'.'+name if path else name)
+        for branch in node.get('anyOf',[]):visit(branch,path)
     visit(root,'');return found
 
 
@@ -90,6 +91,17 @@ def validation_diagnostic(exc,role,*,payload=None):
         return {'code':'OUTPUT_JSON_INVALID','category':'SCHEMA','agent':role,'message':'Return one valid JSON object without markdown or commentary.'}
     # Only known application messages are exposed. Arbitrary provider exceptions may contain secrets.
     known={
+        'Recent structural corporate action is unresolved on unadjusted prices; entry is quarantined':('UNADJUSTED_CORPORATE_ACTION','DATA_QUALITY'),
+        'Breakout requires structured source-linked corroboration':('BREAKOUT_SOURCE_QUOTE_REQUIRED','EVIDENCE'),
+        'Breakout corroboration must cite an observed readable company document':('BREAKOUT_SOURCE_CITATION_INVALID','EVIDENCE'),
+        'Breakout corroboration must be available within the last 30 days and before the cutoff':('BREAKOUT_SOURCE_NOT_RECENT','EVIDENCE'),
+        'Breakout quote is not verbatim visible source evidence':('BREAKOUT_QUOTE_UNGROUNDED','EVIDENCE'),
+        'Structural corporate actions cannot corroborate a breakout on this raw-price simulator':('BREAKOUT_CORPORATE_ACTION_UNSUPPORTED','DATA_QUALITY'),
+        'Plans, forecasts or prospective benefits cannot be the sole breakout corroboration':('BREAKOUT_SPECULATIVE_SUPPORT','EVIDENCE'),
+        'Breakout corroboration requires an explicit reported benefit metric':('BREAKOUT_BENEFIT_UNSUPPORTED','EVIDENCE'),
+        'Breakout source does not report the claimed improvement or completed commercial event':('BREAKOUT_CORROBORATION_UNSUPPORTED','EVIDENCE'),
+        'Breakout critic must independently quote and corroborate the supporting source':('BREAKOUT_CRITIC_EVIDENCE_REQUIRED','EVIDENCE'),
+        'Market and critic must corroborate the same breakout source':('BREAKOUT_SOURCE_DISAGREEMENT','EVIDENCE'),
         'Cited adverse news requires EXIT, not HOLD':('ADVERSE_EXIT_REQUIRED','POLICY'),
         'Adverse holding assessment must be REVIEW_REQUIRED for an EXIT':('ADVERSE_EXIT_ASSESSMENT_REQUIRED','EVIDENCE'),
         'Adverse finding requires readable cited event evidence':('ADVERSE_CITATION_REQUIRED','EVIDENCE'),

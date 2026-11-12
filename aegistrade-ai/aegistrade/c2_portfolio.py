@@ -213,16 +213,21 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         return out,cid
 
     def decide(snapshot,key):
-        out,cid=research(snapshot,key);validated=None
+        out,cid=research(snapshot,key);validated=None;validation_failure=None
         if out.get('guard_pass'):
             try:validated=validator(out,purpose=snapshot['research_purpose'])
-            except (ValueError,KeyError,TypeError):pass
+            except (ValueError,KeyError,TypeError) as exc:
+                from .research_diagnostics import validation_diagnostic
+                validation_failure=validation_diagnostic(exc,'code_guard')
         rec={'id':cid,'key':key,'date':snapshot['date'],'symbol':snapshot['symbol'],'purpose':snapshot['research_purpose'],
              'action':validated['portfolio_action'] if validated else 'BLOCKED','guard_pass':bool(validated),
              'dated_web_search':out.get('dated_web_search'),'portfolio_memory':out.get('portfolio_memory'),'explanation':out.get('explanation',''),'company_assessment':out.get('company_assessment'),
              'citations':out.get('citations',[]),'errors':out.get('model_errors',[]),'llm_calls':out.get('llm_calls',0)}
         if out.get('failure'):
             rec['failure']=out['failure'];rec['failure_category']=out['failure']['category']
+        elif validation_failure:
+            rec['failure']=validation_failure;rec['failure_category']=validation_failure['category']
+            rec['errors']=[*rec['errors'],validation_failure['code']+': '+validation_failure['message']]
         elif not cid and not validated:rec['failure_category']='EVIDENCE'
         if not validated and not rec['errors']:rec['errors']=['Completed C2 validation failed']
         return rec

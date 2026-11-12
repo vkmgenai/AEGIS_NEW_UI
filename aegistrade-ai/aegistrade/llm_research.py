@@ -20,11 +20,19 @@ from .knowledge import PolicyRetriever
 REGIMES={'TREND','RANGE','BREAKOUT','HIGH_VOL','UNCERTAIN','WARMUP'}
 STRATS={'EMA_TREND','RSI_REVERSION','BREAKOUT','NONE'}
 
+class BreakoutEvidence(BaseModel):
+    model_config=ConfigDict(extra='forbid',strict=True)
+    document_id:str=Field(min_length=1,max_length=100)
+    kind:Literal['EARNINGS_IMPROVEMENT','OPERATING_IMPROVEMENT','COMPLETED_COMMERCIAL_EVENT']
+    quote:str=Field(min_length=40,max_length=600)
+    relevance:str=Field(min_length=1,max_length=250)
+
 class CompanyAssessment(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     status:Literal['SUFFICIENT','LIMITED','INSUFFICIENT_EVIDENCE','REVIEW_REQUIRED']
     adverse_risk:Literal['NO_MATERIAL_ADVERSE_FOUND','COVERAGE_LIMITED','ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE','UNKNOWN']='UNKNOWN'
     breakout_support:str|None=Field(default=None,min_length=1,max_length=350)
+    breakout_evidence:BreakoutEvidence|None=None
     summary:str=Field(min_length=1,max_length=600)
     citations:list[str]=Field(max_length=6)
     event_risks:list[str]=Field(max_length=4)
@@ -47,6 +55,7 @@ class CriticJudgement(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     accept:bool
     reason:str=Field(max_length=800)
+    breakout_evidence:BreakoutEvidence|None=None
 
 class SingleJudgement(StrategyJudgement):
     company:CompanyAssessment

@@ -57,6 +57,8 @@ def validate_completed_c2(output:dict,*,purpose='ENTRY') -> dict:
     if company['symbol']!=evidence.symbol or company['decision_at'][:10]!=evidence.date:
         raise ValueError('Company research belongs to a different case')
     validate_company_assessment(parsed['market'].company,company,allow_review_required=purpose=='HOLDING_REVIEW' and action=='EXIT',snapshot=snapshot,portfolio_action=action)
+    from .breakout_evidence import validate_breakout_critic
+    validate_breakout_critic(parsed['market'].company,parsed['critic'],company,snapshot)
     if output.get('company_assessment')!=parsed['market'].company.model_dump():raise ValueError('Company hand-off changed')
     seen={t['agent'] for t in output.get('tool_trace',[]) if t.get('tool') in {'company_evidence','search_dated_web'}
           and digest(t.get('observation',{}).get('company_evidence',t.get('observation',{})))==digest(company)}

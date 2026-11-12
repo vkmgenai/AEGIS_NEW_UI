@@ -353,6 +353,11 @@ def read_company_research(symbol,day):
         result['web_scan']={k:web.get(k) for k in ('version','citation_id','decision_at','scope','source_url','status','accepted_document_ids')}
         result['web_scan']['attempted_queries']=len(web.get('queries',[])) if web.get('decision_at')==cutoff.isoformat() else 0
         result['web_scan']['ready']=bool(web.get('ready') and safe)
+    from .breakout_evidence import structural_action_sources
+    full_metadata=[d.model_dump(mode='json',exclude={'text'}) for d in docs]
+    structural=set(structural_action_sources({'decision_at':result['decision_at'],'documents':full_metadata}))
+    result['structural_action_documents']=[{k:d[k] for k in ('id','kind','title','available_at','extraction_status')}
+        for d in full_metadata if d['id'] in structural]
     return result
 
 
@@ -367,6 +372,8 @@ def company_pack_researchable(pack):
 
 def validate_company_assessment(assessment,pack,*,allow_review_required=False,snapshot=None,portfolio_action=None):
     from .signal_evidence import coverage_signal,coverage_reviewed,require_adverse_exit,ADVERSE_FINDINGS
+    from .breakout_evidence import validate_entry_price_comparability,validate_breakout_evidence
+    if snapshot:validate_entry_price_comparability(pack,snapshot)
     reducing=allow_review_required and assessment.status=='REVIEW_REQUIRED'
     limited=assessment.adverse_risk=='COVERAGE_LIMITED'
     if portfolio_action:require_adverse_exit(assessment,snapshot or {},portfolio_action)
@@ -403,6 +410,7 @@ def validate_company_assessment(assessment,pack,*,allow_review_required=False,sn
     if (snapshot or {}).get('regime')=='BREAKOUT' and (snapshot or {}).get('research_purpose','ENTRY')=='ENTRY':
         if not assessment.breakout_support or not any(x in docs for x in assessment.citations):
             raise ValueError('Breakout entry requires readable dated corroboration and breakout_support')
+        validate_breakout_evidence(assessment.breakout_evidence,pack,citations=assessment.citations)
     return True
 
 

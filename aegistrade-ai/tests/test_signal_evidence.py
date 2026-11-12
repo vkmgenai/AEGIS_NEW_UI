@@ -67,6 +67,10 @@ def test_breakout_requires_readable_dated_corroboration_and_support():
     pack=pack_for(BREAKOUT);a=CompanyAssessment(**assessment(pack))
     with pytest.raises(ValueError,match='Breakout'):validate_company_assessment(a,pack,snapshot=BREAKOUT)
     a.breakout_support='The cited synthetic issuer results provide test-only corroborating company context.'
+    with pytest.raises(ValueError,match='structured'):validate_company_assessment(a,pack,snapshot=BREAKOUT)
+    from tests.company_fixtures import BREAKOUT_QUOTE
+    from aegistrade.llm_research import BreakoutEvidence
+    a.breakout_evidence=BreakoutEvidence(document_id=pack['documents'][0]['id'],kind='EARNINGS_IMPROVEMENT',quote=BREAKOUT_QUOTE,relevance='Synthetic reported growth.')
     assert validate_company_assessment(a,pack,snapshot=BREAKOUT)
     empty=missing_pack(BREAKOUT)
     with pytest.raises(ValueError):validate_company_assessment(coverage(empty),empty,snapshot=BREAKOUT)

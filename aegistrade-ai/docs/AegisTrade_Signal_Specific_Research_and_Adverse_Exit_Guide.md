@@ -1,6 +1,6 @@
 # AegisTrade AI — Signal-specific research and adverse-news exits
 
-Version 0.22.0 • 12 November 2026
+Version 0.22.1 • 12 November 2026
 
 ## The requested change
 
@@ -16,7 +16,7 @@ These are experimental rules chosen for this project. They do not establish that
 |---|---|---|
 | EMA trend | Existing code-qualified entry; ADX14 at least 22 and Close above EMA20 above EMA50 | Read dated company evidence and attempt bounded web retrieval if needed. Incomplete coverage alone may permit LIMITED / COVERAGE_LIMITED, with observed check citations and explicit limitations. |
 | RSI reversion | Existing code-qualified entry; RSI14 below 42 and Close above 0.88 × EMA50 | The same coverage-gap permission applies. A low RSI alone does not bypass screening, sizing or risk checks. |
-| Breakout | Existing breakout signal: Close above prior 20-session high and ADX14 at least 18 | Requires readable dated company corroboration, source citations, a nonempty breakout_support explanation and supported adverse clearance. COVERAGE_LIMITED cannot justify entry. |
+| Breakout | Existing breakout signal: Close above prior 20-session high and ADX14 at least 18 | Requires a verbatim structured source quote, available within 30 days before the cutoff, supporting reported improvement or a completed commercial event with a reported benefit metric. Market and critic must separately corroborate the same source. Prose alone, sole forecasts and COVERAGE_LIMITED cannot justify entry. |
 
 The existing liquidity, history, volatility, raw-price discontinuity, ranking, capital, position and daily-loss constraints remain. Eligible candidates still pass market, strategy, independent critic and deterministic checks. Friday/pre-gap refresh and later-open fill rules remain in force. A holding's code stops, trailing stops, take-profit and strategy exits remain active.
 
@@ -64,7 +64,7 @@ Historical fills follow the user's upfront-approved rules. The separate supervis
 
 ## How to test in the UI
 
-1. Refresh the dashboard after restarting the API and UI. The health endpoint should report 0.22.0, signal_specific_evidence_supported and adverse_news_exit_supported.
+1. Refresh the dashboard after restarting the API and UI. The health endpoint should report 0.22.1, signal_specific_evidence_supported and adverse_news_exit_supported.
 2. Confirm the intended active universe in Market. Your frozen 30-stock dataset is retained; the existing top-20 and Nifty 100 alternatives remain available.
 3. Start a **new** C2 historical portfolio simulation. Use the same period, capital, costs, stops, profit target and lesson version as the previous run for a direct process comparison. The old run cannot be resumed under the changed prompt, policy-corpus and simulator fingerprints.
 4. Review the new entry-policy explanation and choose the usual inference allowance and scheduled-review interval. Upfront rule and inference authorization remain required. The source monitor does not initiate a portfolio by itself.
@@ -89,3 +89,9 @@ Historical fills follow the user's upfront-approved rules. The separate supervis
 **Does every daily check call the model?** No. Empty issuer-metadata checks use no generation. New candidates can trigger research before the next scheduled holding review, with the same bounded C2 call ceiling.
 
 **What was verified?** Synthetic-price and mocked-generation tests cover qualified coverage-only entries, breakout support requirements, source identity/critic gates, adverse EXIT correction, announcement extraction, routine notices, after-close news timing, causal later-open exits and zero extra generation on empty checks. Cached NTPC source extraction was inspected locally without fetching or generating new company conclusions. No profitability improvement or full live-model portfolio success is claimed.
+
+## Breakout correction and raw-price comparability — v0.22.1
+
+The stronger breakout_evidence contract requires document_id, kind, an exact visible source quote and relevance in both the market assessment and an accepting independent critic. Code checks source recency, grounding and reported improvement/completed-event criteria. An auditor review, ordinary filing, provider selection or prospective target alone is insufficient. For example, a possible production increase over a multi-year plan is not already achieved output. Valid corroboration remains compatible with a later trading loss.
+
+A known recent explicit structural-action disclosure quarantines new entries across all routes on the unadjusted simulator. This data-quality rule is separate from missing fundamental coverage and from adverse news. It neither forces a holding sale nor reconstructs distributed-share entitlements. See AegisTrade_Breakout_Entry_Audit_20261112.docx for the supplied ITC/ONGC ledger audit, source references and limitations. Existing technical entry/exit thresholds, stops, costs and position sizing are unchanged. Start a new run after updating.

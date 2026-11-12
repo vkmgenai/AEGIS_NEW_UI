@@ -142,7 +142,7 @@ def test_codex_selected_c2_keeps_three_specialists_and_scoped_tools(monkeypatch)
 
 def test_typed_specialist_output_avoids_nested_json_string(monkeypatch):
     from jsonschema import Draft202012Validator
-    payload={'accept':True,'reason':'Observed source and route agree.'}
+    payload={'accept':True,'reason':'Observed source and route agree.','breakout_evidence':None}
     seen=fake_cli(monkeypatch,{'kind':'final','content':payload,'tool_calls':[]})
     original=b._execute;captured={}
     def execute(*args,**kwargs):

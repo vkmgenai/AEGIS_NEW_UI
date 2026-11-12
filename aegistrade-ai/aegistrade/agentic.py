@@ -7,6 +7,7 @@ from .company_research import company_pack_researchable
 from .evidence_context import CompanyEvidenceConversation,compact_json
 from .dated_web import eligible as web_eligible,needed as web_needed
 from .signal_evidence import require_adverse_exit,ADVERSE_FINDINGS
+from .breakout_evidence import validate_breakout_critic
 import asyncio,json,os,time
 from pathlib import Path
 from typing import TypedDict
@@ -210,6 +211,9 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                             if not policy_ids.intersection(decision.citations):raise ValueError('A project-policy citation is required for a route decision')
                             company_payload=decision.company if role=='single' else MarketJudgement.model_validate(handoffs['market']['payload']).company
                             require_adverse_exit(company_payload,snapshot,decision.portfolio_action)
+                        if role=='critic':
+                            validate_breakout_critic(MarketJudgement.model_validate(handoffs['market']['payload']).company,
+                                decision,observations.get('company_evidence',{}),snapshot)
                         handoffs[role]={'agent':role,'schema':SCHEMAS[role].__name__,'evidence_tools':sorted(own_seen),
                                         'payload':decision.model_dump()}
                         emit('typed_handoff',**handoffs[role])

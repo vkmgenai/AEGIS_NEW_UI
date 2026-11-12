@@ -76,7 +76,7 @@ def model_observation(name,observation):
         return {'ok':True,'company_evidence':model_observation('company_evidence',observation.get('company_evidence',{})),
             'search_status':observation.get('search_audit',{}).get('status'),'cached':observation.get('cached',False)}
     if name!='company_evidence' or not observation.get('ok'):return observation
-    fields=('ok','symbol','decision_at','status','pack_sha256','evidence_view_version','reasons','limitations','web_scan')
+    fields=('ok','symbol','decision_at','status','pack_sha256','evidence_view_version','reasons','limitations','web_scan','structural_action_documents')
     result={k:observation[k] for k in fields if k in observation}
     result['coverage']={k:v for k,v in observation.get('coverage',{}).items()
                         if k in {'exchange_scan_complete','invalid_timestamp_rows','selected_documents_only'}}

@@ -6,11 +6,16 @@ def completed_c2():
     def make(snapshot):
         from tests.company_fixtures import pack_for,assessment
         pack=pack_for(snapshot);company=assessment(pack)
-        if snapshot['regime']=='BREAKOUT':company['breakout_support']='Contract-test-only cited financial results provide corroborating issuer context; no genuine trading edge is asserted.'
+        if snapshot['regime']=='BREAKOUT':
+            from tests.company_fixtures import BREAKOUT_QUOTE
+            company['breakout_support']='Synthetic reported earnings growth corroborates this contract-test breakout; no genuine trading edge is asserted.'
+            company['breakout_evidence']={'document_id':pack['documents'][0]['id'],'kind':'EARNINGS_IMPROVEMENT',
+                'quote':BREAKOUT_QUOTE,'relevance':'Synthetic recent reported growth, used only to validate the evidence contract.'}
         market={'regime':snapshot['regime'],'explanation':'Test-only market evidence interpretation.','company':company}
         strategy={'strategy':snapshot['approved_candidate'],'citations':['POL-06'],
                   'explanation':'Contract-test research explanation; no provider request.'}
         critic={'accept':True,'reason':'Test-only accepted research review.'}
+        if snapshot['regime']=='BREAKOUT':critic['breakout_evidence']=company['breakout_evidence'].copy()
         from aegistrade.corpus import corpus_info
         return {'corpus_sha256':corpus_info()['sha256'],'config':'C2','snapshot':snapshot,'selected_strategy':strategy['strategy'],'market_regime':market['regime'],
             'guard_pass':True,'critic_accept':True,'model_errors':[],'citations':strategy['citations'],

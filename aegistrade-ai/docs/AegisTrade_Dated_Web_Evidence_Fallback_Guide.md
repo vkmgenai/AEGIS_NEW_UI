@@ -1,6 +1,6 @@
 # AegisTrade AI — Dated web evidence fallback
 
-Version 0.22.0 • 12 November 2026
+Version 0.22.1 • 12 November 2026
 
 ## What changed
 
@@ -48,7 +48,7 @@ Each exact symbol/date has one saved web attempt, including failed attempts. Rep
 
 ## UI demonstration
 
-1. Let active jobs finish or pause them using the normal UI before restarting. From the project directory run `bash scripts/start_unix.sh`. Confirm the API health endpoint reports version 0.22.0 and `dated_web_search_supported: true`.
+1. Let active jobs finish or pause them using the normal UI before restarting. From the project directory run `bash scripts/start_unix.sh`. Confirm the API health endpoint reports version 0.22.1 and `dated_web_search_supported: true`.
 2. Open the Streamlit dashboard at `http://127.0.0.1:8501`. Keep the currently prepared universe or select another prepared dataset through the existing universe selector. Switching the universe does not create a complete news archive.
 3. Start a **new C2 historical portfolio simulation** with your chosen historical dates, capital and existing stop/profit/risk assumptions. Explicitly authorize the displayed inference allowance and replay rules. Start with a short period and modest allowance to inspect behavior before a long run. This feature does not establish an optimal capital, date range or guaranteed profitable demonstration.
 4. Watch the live progress panel or use Refresh. In **C2 entry / holding-review decisions and traces**, inspect the `web_search` column. Open a decision's research trace to inspect `search_dated_web`, its initiator and returned sources. `SUPPORTED_BOUNDED_SCAN` means the bounded source checks passed; `SEARCHED_BUT_INSUFFICIENT` means they did not. Neither status alone is a BUY decision.
@@ -90,3 +90,7 @@ Refresh the UI after the services restart and start a **new C2 portfolio simulat
 ## Signal-specific update — v0.22.0
 
 The current entry and adverse-news exit policy is detailed in AegisTrade_Signal_Specific_Research_and_Adverse_Exit_Guide.docx. It adds the explicit COVERAGE_LIMITED pathway for qualified trend/reversion signals, requires breakout_support and dated sources for breakout, and requires EXIT on supported adverse news after critic validation. Bounded daily official disclosure checks can trigger holding research between scheduled reviews. Routine trading-window notices and stationery fragments are distinguished from substantive adverse events. The same stop/profit/risk rules and next-eligible-open execution remain. A new simulation is required; saved results are retained.
+
+## Breakout-source correction — v0.22.1
+
+Readable dated context and breakout_support prose alone no longer establish breakout corroboration. The market and critic each supply structured breakout_evidence: source ID, category, exact visible quote and relevance. Code requires an unaltered recent passage supporting an actual reported improvement or completed commercial event with a benefit metric; stale sources, vague goals, selection alone and sole forecasts do not qualify. A recent explicit structural-action disclosure quarantines entries on the raw-price simulator instead of acting as a positive catalyst. The supplied ITC/ONGC records and missing demerger-entitlement accounting are explained in AegisTrade_Breakout_Entry_Audit_20261112.docx. No retrospective price or P&L change is made.
