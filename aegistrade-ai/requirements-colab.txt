@@ -1,0 +1,10 @@
+# Colab has pandas, numpy and matplotlib preinstalled, but package versions may change.
+langgraph>=1.0,<2
+langgraph-checkpoint-sqlite>=3,<4
+fastmcp>=2.0,<4
+rank-bm25>=0.2.2,<1
+yfinance>=0.2.60,<2
+pydantic>=2,<3
+requests>=2,<3
+scikit-learn>=1.2,<2
+pytest>=8,<10

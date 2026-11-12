@@ -1,0 +1,47 @@
+"""Daily-bar execution rules; no future-bar decisions or model arithmetic."""
+from datetime import date
+
+
+def defer_entry_review(day,next_day):
+    """Friday candidates wait even for a special Saturday trading session."""
+    a=date.fromisoformat(str(day)[:10]);b=date.fromisoformat(str(next_day)[:10])
+    return a.weekday()==4 or (b-a).days>1
+
+
+def take_profit_reference(position,policy):
+    if policy.take_profit_percent<=0:return None
+    cost=position['quantity']*position['entry_price']+position['entry_fee']
+    return cost*(1+policy.take_profit_percent/100)/(position['quantity']*(1-policy.fee_bps/10000)*(1-policy.slippage_bps/10000))
+
+
+def protective_exit(position,bar,policy):
+    """Opening events precede intraday events; ambiguous bars use stop first."""
+    from .trailing_stop import stop_exit_reason
+    opening=float(bar.Open);stop=position['stop'];target=take_profit_reference(position,policy)
+    if opening<=stop:return stop_exit_reason(position),opening
+    if target is not None and opening>=target:return 'SELL_TAKE_PROFIT',opening
+    if float(bar.Low)<=stop:return stop_exit_reason(position),stop
+    if target is not None and float(bar.High)>=target:return 'SELL_TAKE_PROFIT',target
+    return None
+
+
+def initial_stop_price(close,atr,policy):
+    """Freeze a price from the completed signal, never a future fill or bar."""
+    import math
+    close=float(close);atr=float(atr)
+    if not math.isfinite(close) or close<=0:raise ValueError('Initial stop needs a positive finite signal close')
+    if policy.stop_loss_mode=='PERCENT':
+        percent=float(policy.stop_loss_percent)
+        if not math.isfinite(percent) or not .1<=percent<=50:raise ValueError('Stop loss percentage must be 0.1–50')
+        return close*(1-percent/100)
+    if policy.stop_loss_mode!='ATR':raise ValueError('Initial stop method must be ATR or PERCENT')
+    multiple=float(policy.atr_stop_multiple)
+    if not math.isfinite(atr) or atr<=0 or not math.isfinite(multiple) or not .5<=multiple<=10:
+        raise ValueError('Initial ATR stop requires positive ATR and a multiple of 0.5–10')
+    return close-multiple*atr
+
+
+def initial_stop_settings(policy):
+    return {'mode':policy.stop_loss_mode,'atr_multiple':policy.atr_stop_multiple,
+        'percent':policy.stop_loss_percent,'basis':'Completed signal close; fixed before later-open fill. Percentage is before fees, slippage and gaps.',
+        'trailing_relationship':'Trailing stop can tighten the initial stop from subsequent eligible sessions; it never lowers it.'}

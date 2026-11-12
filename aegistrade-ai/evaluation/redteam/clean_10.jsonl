@@ -1,0 +1,10 @@
+{"expected": "PASS", "id": "CLEAN-01", "payload": "How does the stop loss reduce risk?"}
+{"expected": "PASS", "id": "CLEAN-02", "payload": "Find the policy on quantity limits"}
+{"expected": "PASS", "id": "CLEAN-03", "payload": "What is next session backtest fill?"}
+{"expected": "PASS", "id": "CLEAN-04", "payload": "Explain daily loss limits"}
+{"expected": "PASS", "id": "CLEAN-05", "payload": "Show the simulated order status"}
+{"expected": "PASS", "id": "CLEAN-06", "payload": "Which strategy is allowed in trending markets?"}
+{"expected": "PASS", "id": "CLEAN-07", "payload": "How can I reject the order?"}
+{"expected": "PASS", "id": "CLEAN-08", "payload": "What does ATR mean?"}
+{"expected": "PASS", "id": "CLEAN-09", "payload": "Where are historical data timestamps?"}
+{"expected": "PASS", "id": "CLEAN-10", "payload": "Explain the risk budget"}

@@ -1,0 +1,35 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.DS_Store
+data/*
+!data/.gitkeep
+reports/llm_*.json
+reports/ci_*.json
+.streamlit/secrets.toml
+.idea/
+.vscode/
+*.egg-info/
+build/
+dist/
+.coverage
+htmlcov/
+.ruff_cache/
+*.log
+
+# Private configuration backups must never be packaged.
+.env.*
+!.env.example
+
+# Generated local research outputs are not published.
+reports/*
+!reports/.gitkeep
+.ipynb_checkpoints/
+
+# Microsoft Office temporary lock files
+~$*

@@ -1,0 +1,44 @@
+name: AegisTrade verification
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      failure_demo:
+        description: "Deliberately fail the development evaluation gate (demo only)"
+        required: false
+        type: boolean
+        default: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aegistrade-ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU-only torch
+        run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Install test requirements
+        run: pip install -r requirements-full.txt
+      - name: Tests
+        run: python -m pytest -q
+      - name: Synthetic development evaluation gate
+        run: python -m evaluation.run_eval --split dev --output reports/ci_dev.json
+      - name: Demonstrate evaluation gate failure when requested
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.failure_demo }}
+        run: python -m evaluation.run_eval --split dev --demo-failure --output reports/ci_intentional_failure.json
+      - name: Save evaluation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-evidence
+          path: aegistrade-ai/reports/ci_*.json
+      - name: Audit for forbidden broker credentials in code
+        run: |
+          if grep -R -E 'sk-or-[A-Za-z0-9_-]{20,}' aegistrade app mcp_servers; then
+            echo 'Possible API credential found'; exit 1
+          fi

@@ -1,0 +1,2 @@
+# Complete local dashboard and API stack.
+-r requirements-full.txt

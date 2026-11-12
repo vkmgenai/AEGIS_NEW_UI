@@ -1,0 +1,92 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    environment:
+      AEGIS_DATA_DIR: /app/data
+      AEGIS_MARKET_MCP_URL: http://market-mcp:9002/mcp
+      AEGIS_STRATEGY_MCP_URL: http://strategy-mcp:9003/mcp
+      AEGIS_KNOWLEDGE_MCP_URL: http://knowledge-mcp:9001/mcp
+    volumes:
+      - aegis_data:/app/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  dashboard:
+    build: .
+    command: streamlit run app/ui.py --server.address 0.0.0.0 --server.port 8501 --server.headless true
+    environment:
+      AEGIS_API_URL: http://api:8000
+    ports:
+      - "127.0.0.1:8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+  knowledge-mcp:
+    build: .
+    command: python -m mcp_servers.knowledge_server
+    environment:
+      AEGIS_MCP_PORT: "9001"
+      AEGIS_RETRIEVAL_MODE: ${AEGIS_RETRIEVAL_MODE:-offline}
+      AEGIS_DATA_DIR: /app/data
+    volumes: ["aegis_data:/app/data"]
+    expose: ["9001"]
+  market-mcp:
+    build: .
+    command: python -m mcp_servers.market_server
+    volumes: ["aegis_data:/app/data"]
+    environment:
+      AEGIS_DATA_DIR: /app/data
+      AEGIS_MCP_PORT: "9002"
+    expose: ["9002"]
+  strategy-mcp:
+    build: .
+    command: python -m mcp_servers.strategy_server
+    environment:
+      AEGIS_MCP_PORT: "9003"
+    expose: ["9003"]
+  risk-mcp:
+    build: .
+    command: python -m mcp_servers.risk_server
+    environment:
+      AEGIS_MCP_PORT: "9004"
+    expose: ["9004"]
+  records-mcp:
+    build: .
+    command: python -m mcp_servers.records_server
+    environment:
+      AEGIS_MCP_PORT: "9005"
+      AEGIS_DATA_DIR: /app/data
+    volumes: ["aegis_data:/app/data"]
+    expose: ["9005"]
+  # The write MCP is intentionally omitted. It has no public network endpoint;
+  # simulated writes happen only via the authenticated API approval graph.
+  qdrant:
+    image: qdrant/qdrant:v1.12.4
+    volumes: ["aegis_vectors:/qdrant/storage"]
+    expose: ["6333"]
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports: ["127.0.0.1:9090:9090"]
+    depends_on: [api]
+  grafana:
+    image: grafana/grafana:11.3.1
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${AEGIS_GRAFANA_PASSWORD:?Run python scripts/bootstrap.py first}
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [prometheus]
+volumes:
+  aegis_data:
+  aegis_vectors:

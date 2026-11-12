@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aegistrade-ai"
+version = "0.21.0"
+description = "Human-governed, simulated multi-agent algorithmic trading capstone research platform"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "AegisTrade Capstone Team"}]
+license = {text = "Proprietary educational prototype; verify redistribution rights"}
+classifiers = ["Programming Language :: Python :: 3", "Intended Audience :: Education"]
+
+[tool.setuptools.packages.find]
+include = ["aegistrade*", "app*", "mcp_servers*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
