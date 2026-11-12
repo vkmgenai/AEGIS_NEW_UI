@@ -110,9 +110,24 @@ def responder(self,messages,**kw):
         tools={'market':['market_snapshot','company_evidence'],'strategy':['check_strategy','search_policy'],'critic':['company_evidence','check_strategy','search_policy']}[role]
         return {'tool_calls':[call(t,{'query':'human approval'} if t=='search_policy' else {}) for t in tools]}
     if role=='market':
-        source=next(m for m in reversed(messages) if (m['role']=='user' and 'The application requested additional dated evidence' in m.get('content','')) or (m['role']=='tool' and 'pack_sha256' in m.get('content','')))
-        content=source['content'];parsed=json.loads(content[content.index('{"ok"'):] if source['role']=='user' else content)
-        pack=parsed.get('company_evidence',parsed);scan=effective_scan(pack)
+        from aegistrade.evidence_context import apply_projection_patch
+        from aegistrade.company_research import digest
+        resolved={};pack=None
+        for message in messages:
+            content=message.get('content') or ''
+            if message['role']=='tool':parsed=json.loads(content)
+            elif message['role']=='user' and 'The application requested additional dated evidence' in content:
+                parsed=json.loads(content[content.index('{'):])
+            else:continue
+            candidate=parsed.get('company_evidence',parsed)
+            if 'company_evidence_update' in candidate:
+                update=candidate['company_evidence_update'];base=resolved[update['base_tool_call_id']]
+                assert digest(base)==update['base_projection_sha256']
+                candidate=apply_projection_patch(base,update['patch'])
+                assert digest(candidate)==update['projection_sha256']
+            if 'pack_sha256' in candidate:
+                pack=candidate;resolved[message.get('tool_call_id') or parsed.get('observation_id')]=pack
+        scan=effective_scan(pack)
         value={'regime':'TREND','explanation':'Code indicators qualify the signal.','company':{'status':'LIMITED','adverse_risk':'NO_MATERIAL_ADVERSE_FOUND','summary':'Dated issuer financial results found through bounded retrieval.','citations':[pack['documents'][0]['id'],scan['citation_id']],'event_risks':[],'limitations':['Bounded financial/adverse web search; not exhaustive press coverage.']}}
     elif role=='strategy':value={'strategy':'EMA_TREND','portfolio_action':'ENTER','citations':['POL-06'],'explanation':'Permitted route under code and research checks.'}
     else:value={'accept':True,'reason':'The dated issuer source and limited scan scope support the constrained action.'}

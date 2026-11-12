@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.21.0',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.21.1',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -230,6 +230,7 @@ def api_home():
 def health():
     requests_total.labels('health').inc()
     return {'ok':True,'version':app.version,'ui_api_contract':UI_API_CONTRACT,'mode':'SIMULATION_ONLY','data_source':market_source(),
+            'company_context_packing':'lossless-json-pointer-v1','max_context_chars':36000,
             'dated_web_search_supported':True,'dated_web_search_enabled':os.getenv('AEGIS_DATED_WEB_SEARCH','true').lower()=='true',
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],

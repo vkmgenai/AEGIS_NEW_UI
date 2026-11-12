@@ -1,6 +1,6 @@
 # AegisTrade AI — Dated web evidence fallback
 
-Version 0.21.0 • 12 November 2026
+Version 0.21.1 • 12 November 2026
 
 ## What changed
 
@@ -48,7 +48,7 @@ Each exact symbol/date has one saved web attempt, including failed attempts. Rep
 
 ## UI demonstration
 
-1. Let active jobs finish or pause them using the normal UI before restarting. From the project directory run `bash scripts/start_unix.sh`. Confirm the API health endpoint reports version 0.21.0 and `dated_web_search_supported: true`.
+1. Let active jobs finish or pause them using the normal UI before restarting. From the project directory run `bash scripts/start_unix.sh`. Confirm the API health endpoint reports version 0.21.1 and `dated_web_search_supported: true`.
 2. Open the Streamlit dashboard at `http://127.0.0.1:8501`. Keep the currently prepared universe or select another prepared dataset through the existing universe selector. Switching the universe does not create a complete news archive.
 3. Start a **new C2 historical portfolio simulation** with your chosen historical dates, capital and existing stop/profit/risk assumptions. Explicitly authorize the displayed inference allowance and replay rules. Start with a short period and modest allowance to inspect behavior before a long run. This feature does not establish an optimal capital, date range or guaranteed profitable demonstration.
 4. Watch the live progress panel or use Refresh. In **C2 entry / holding-review decisions and traces**, inspect the `web_search` column. Open a decision's research trace to inspect `search_dated_web`, its initiator and returned sources. `SUPPORTED_BOUNDED_SCAN` means the bounded source checks passed; `SEARCHED_BUT_INSUFFICIENT` means they did not. Neither status alone is a BUY decision.
@@ -56,6 +56,16 @@ Each exact symbol/date has one saved web attempt, including failed attempts. Rep
 6. Explain the result: ENTER requires the strategy, market assessment, independent critic and code gates; BLOCK may remain correct if sources cannot be verified or risk remains unresolved. Provider errors pause the job under the existing handling. Retain source limitations in the demo discussion.
 
 Previously saved results remain available. Research prompt and policy-corpus fingerprints changed, so old interrupted/paused jobs require a new run to use this flow; do not mix the old and new research configurations in one replay. The policy RAG index was rebuilt locally for the revised evidence policy, with no generation calls.
+
+## Context-budget troubleshooting — v0.21.1
+
+`CONTEXT_BUDGET_EXCEEDED` is the application's research-input guard. It is separate from the account quota, number of inference calls and output-token allowance. One recorded TATASTEEL case on 5 January 2026 accumulated 44,092 characters against the older 26,000-character limit because the company tool and web tool supplied the same 13-document projection twice. Other cases exceeded the limit on a later market turn or the independent critic's first complete evidence read.
+
+The corrected flow sends each specialist a complete first company projection. Later identical observations use an explicit reference. Changed observations use exact JSON Pointer operations against an identified earlier projection when that is smaller than sending the new projection in full. Source IDs, financial text, changed amounts, unknown values, adverse risks and new documents remain recoverable exactly. The application reconstructs each update and verifies equality before sending it. Full tool observations remain in the audit. The critic receives its own complete first projection; it never depends on a market-only message.
+
+The per-request conversation guard is now 36,000 characters to accommodate a complete independent critic read plus policies and handoffs. This is a character bound, not exact provider token accounting. Oversized requests still stop before the next inference call; the failure records actual size and limit. No material risk is removed to force a fit. The generation-call ceiling and output-token budget are unchanged. A larger input guard permits larger requests and can increase API input-token cost when used; eliminating duplicate evidence reduces unnecessary input.
+
+Refresh the UI after the services restart and start a **new C2 portfolio simulation** using the same universe and parameters for comparison. Resuming an old run would not re-evaluate its already blocked historical candidates, and the changed prompt fingerprint deliberately prevents mixing configurations. Adding inference allowance or refreshing progress alone does not resolve an input-size failure. Old results and the selected frozen 30-stock dataset remain available; this fix does not certify the research conclusions or profitability of the blocked candidates.
 
 ## Viva questions and answers
 

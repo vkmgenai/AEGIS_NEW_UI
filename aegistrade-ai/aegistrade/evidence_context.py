@@ -7,6 +7,70 @@ def compact_json(value):
     return json.dumps(value,ensure_ascii=False,separators=(',',':'),default=str)
 
 
+def projection_patch(before,after,path=''):
+    """Lossless JSON Pointer operations; never shorten or summarize source text."""
+    if before==after:return []
+    if isinstance(before,dict) and isinstance(after,dict):
+        result=[]
+        def child(key):return path+'/'+str(key).replace('~','~0').replace('/','~1')
+        for key in sorted(before.keys()-after.keys()):result.append({'op':'remove','path':child(key)})
+        for key,value in after.items():
+            if key not in before:result.append({'op':'add','path':child(key),'value':value})
+            else:result.extend(projection_patch(before[key],value,child(key)))
+        return result
+    if isinstance(before,list) and isinstance(after,list):
+        result=[]
+        for i in range(min(len(before),len(after))):result.extend(projection_patch(before[i],after[i],path+'/'+str(i)))
+        for i in reversed(range(len(after),len(before))):result.append({'op':'remove','path':path+'/'+str(i)})
+        for i in range(len(before),len(after)):result.append({'op':'add','path':path+'/'+str(i),'value':after[i]})
+        return result
+    return [{'op':'replace','path':path,'value':after}]
+
+
+def apply_projection_patch(before,operations):
+    """Reference decoder used to verify exact reconstruction before inference."""
+    from copy import deepcopy
+    result=deepcopy(before)
+    for operation in operations:
+        parts=[p.replace('~1','/').replace('~0','~') for p in operation['path'].split('/')[1:]]
+        if not parts:
+            result=deepcopy(operation['value']);continue
+        parent=result
+        for part in parts[:-1]:parent=parent[int(part)] if isinstance(parent,list) else parent[part]
+        key=int(parts[-1]) if isinstance(parent,list) else parts[-1]
+        if operation['op']=='remove':del parent[key]
+        elif operation['op']=='add' and isinstance(parent,list):parent.insert(key,deepcopy(operation['value']))
+        else:parent[key]=deepcopy(operation['value'])
+    return result
+
+
+class CompanyEvidenceConversation:
+    """A specialist sees one full pack, then exact changes with explicit references.
+
+    Full tool observations remain in the audit. No references cross specialists.
+    """
+    def __init__(self):self.previous=None;self.previous_id=None
+
+    def render(self,name,observation,observation_id):
+        view=model_observation(name,observation)
+        if name not in {'company_evidence','search_dated_web'} or not observation.get('ok'):return view
+        company=view.get('company_evidence',{}) if name=='search_dated_web' else view
+        if not company.get('pack_sha256'):return view
+        selected=company
+        if self.previous is not None:
+            operations=projection_patch(self.previous,company)
+            if apply_projection_patch(self.previous,operations)!=company:raise ValueError('Company projection could not be reconstructed exactly')
+            update={'ok':True,'company_evidence_update':{
+                'base_tool_call_id':self.previous_id,'base_projection_sha256':digest(self.previous),
+                'projection_sha256':digest(company),'patch':operations,
+                'instructions':'Resolve the previous company projection in this conversation, then apply these JSON Pointer operations in order. An empty patch means exactly identical evidence, not missing evidence. Preserve all source text, citations and unresolved risks. Full observations remain in the audit.'}}
+            if len(compact_json(update))<len(compact_json(company)):selected=update
+        from copy import deepcopy
+        self.previous=deepcopy(company);self.previous_id=observation_id
+        if name=='search_dated_web':return {**view,'company_evidence':selected}
+        return selected
+
+
 def model_observation(name,observation):
     if name=='search_dated_web' and observation.get('ok'):
         return {'ok':True,'company_evidence':model_observation('company_evidence',observation.get('company_evidence',{})),

@@ -454,6 +454,8 @@ elif page == "Strategy Backtests":
             with st.expander('C2 entry / holding-review decisions and traces'):
                 decisions=result.get('decisions',[])
                 st.caption('HOLD keeps the existing shares after a scheduled review; it creates no new trade. Code stops and strategy exits remain active.')
+                if any('CONTEXT_BUDGET_EXCEEDED' in ' '.join(d.get('errors',[])) for d in decisions):
+                    st.info('A context-budget failure concerns research input size, separately from your inference-call allowance. Refreshing or adding calls does not fix it. Inspect the research trace; after updating an affected backend, start a new run to re-evaluate previously blocked candidates.')
                 render_table([{**{k:d.get(k) for k in ['date','symbol','purpose','action','llm_calls','failure_category']},
                                'web_search':(d.get('dated_web_search') or {}).get('status',''),'reason':'; '.join(d.get('errors',[])) or d.get('explanation','')} for d in decisions],height=300)
                 records=[d for d in decisions if d.get('id')]
