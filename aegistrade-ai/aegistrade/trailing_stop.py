@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 
 
-def advance_trailing_stop(position,close,when,multiple=2.0):
+def advance_trailing_stop(position,close,when,multiple=2.0,*,activation_r=0.0):
     """Ratchet at a completed close; caller activates the result next session.
 
     ATR is frozen from the entry signal so widening volatility cannot lower the
@@ -17,6 +17,15 @@ def advance_trailing_stop(position,close,when,multiple=2.0):
     previous_peak=position.get('highest_close')
     peak=close if previous_peak is None else max(float(previous_peak),close)
     initial=float(position.get('initial_stop',old))
+    activation_r=float(activation_r)
+    if not math.isfinite(activation_r) or not 0<=activation_r<=5:raise ValueError('Trailing activation must be 0–5 R')
+    if activation_r>0:
+        entry=float(position['entry_price']);risk=entry-initial
+        if not math.isfinite(entry) or risk<=0:raise ValueError('Trailing activation requires positive original entry risk')
+        activated=bool(position.get('trailing_activated')) or peak>=entry+activation_r*risk
+        position.update(highest_close=peak,trailing_last_close=when,trailing_activation_r=activation_r,
+            trailing_activated=activated)
+        if not activated:return None
     new=max(old,peak-multiple*atr)
     position.update(initial_stop=initial,highest_close=peak,stop=new,
         trailing_distance=multiple*atr,trailing_last_close=when)

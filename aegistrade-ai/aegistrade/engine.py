@@ -5,8 +5,9 @@ import math
 import numpy as np
 import pandas as pd
 from .strategies import entry_signal, exit_signal, chosen_strategy
-from .execution_policy import protective_exit,defer_entry_review,take_profit_reference,initial_stop_price
+from .execution_policy import protective_exit,defer_entry_review,take_profit_reference,initial_stop_price,policy_for_strategy,position_policy_record
 from .trailing_stop import advance_trailing_stop,stop_exit_reason
+from .breakout_reentry import register_breakout_stop,reentry_candidates
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,14 @@ class TradePolicy:
     review_after_gap: bool = False
     trailing_stop_enabled: bool = False
     trailing_atr_multiple: float = 2.0
+    trailing_activation_r: float = 0.0
+    breakout_risk_per_trade: float = 0.005
+    breakout_stop_loss_mode: str = 'ATR'
+    breakout_stop_loss_percent: float = 5.0
+    breakout_atr_stop_multiple: float = 2.5
+    breakout_trailing_atr_multiple: float = 2.5
+    breakout_trailing_activation_r: float = 1.0
+    breakout_reentry_enabled:bool=True
 
 
 def allowable_shares(entry: float, stop: float, cash: float, equity: float, p: TradePolicy) -> int:
@@ -49,6 +58,7 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
     rows, trade_events = [], []
     selection_audit=[]
     stop_updates=[]
+    reentry_watches={}
     last_marks = {}
     previous_equity = cash
     byday = frame.sort_values(["Date","Symbol"]).groupby("Date", sort=True)
@@ -75,6 +85,7 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
                 fee = notional * p.fee_bps/10_000
                 cash += notional - fee
                 reason=stop_exit_reason(pos) if float(bar.Open)<=pos['stop'] else ('SELL_TAKE_PROFIT' if take_profit_reference(pos,p) is not None and float(bar.Open)>=take_profit_reference(pos,p) else 'SELL_SIGNAL')
+                if reason in {'SELL_STOP','SELL_TRAILING_STOP'}:register_breakout_stop(reentry_watches,{**pos,'symbol':sym},str(date.date()),day_index,p.breakout_reentry_enabled)
                 trade_events.append(dict(Date=date,Symbol=sym,Event=reason,Quantity=pos["quantity"],Price=sell,Fee=fee,Strategy=pos["strategy"],PnL=(sell-pos["entry_price"])*pos["quantity"]-fee-pos["entry_fee"]))
             elif order["side"] == "BUY" and sym not in positions and len(positions) < p.max_positions:
                 buy = float(bar.Open) * (1 + p.slippage_bps/10_000)
@@ -83,14 +94,20 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
                 equity_at_open = marked(at_open=True)
                 if equity_at_open <= previous_equity*(1-p.max_daily_loss_pct/100):
                     continue
-                quantity = allowable_shares(buy,stop,cash,equity_at_open,p)
+                active_policy=policy_for_strategy(p,order['strategy'])
+                quantity = allowable_shares(buy,stop,cash,equity_at_open,active_policy)
                 if quantity > 0:
                     value = buy*quantity
                     fee = value*p.fee_bps/10_000
                     cash -= value + fee
                     positions[sym] = dict(quantity=quantity,entry_price=buy,stop=stop,initial_stop=stop,
                         entry_signal_atr=order['signal_atr'],highest_close=None,entry_fee=fee,strategy=order["strategy"],entry_date=date)
-                    trade_events.append(dict(Date=date,Symbol=sym,Event="BUY",Quantity=quantity,Price=buy,Fee=fee,Strategy=order["strategy"],PnL=np.nan))
+                    positions[sym]['execution_policy']=position_policy_record(active_policy)
+                    positions[sym]['symbol']=sym
+                    positions[sym]['breakout_reentry_count']=int(order.get('breakout_reentry',False))
+                    if order.get('breakout_reentry'):reentry_watches.pop(sym,None)
+                    trade_events.append(dict(Date=date,Symbol=sym,Event="BUY",Quantity=quantity,Price=buy,Fee=fee,Strategy=order["strategy"],PnL=np.nan,
+                        RiskPercent=active_policy.risk_per_trade*100,InitialStop=stop,TrailingActivationR=active_policy.trailing_activation_r,EntrySetup="BREAKOUT_BOUNCE" if order.get("breakout_reentry") else "REGULAR"))
         queued = pending
         # Apply protective stop if intraday low penetrates; opening gap below stop fills at open, not stop.
         for sym,pos in list(positions.items()):
@@ -100,6 +117,8 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
             trigger=protective_exit(pos,bar,p)
             if trigger:
                 reason,ref=trigger
+                if reason in {'SELL_STOP','SELL_TRAILING_STOP'}:
+                    register_breakout_stop(reentry_watches,{**pos,'symbol':sym},str(date.date()),day_index,p.breakout_reentry_enabled)
                 sell = ref*(1-p.slippage_bps/10_000)
                 value = sell*pos["quantity"]
                 fee = value*p.fee_bps/10_000
@@ -110,11 +129,14 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
         if p.trailing_stop_enabled:
             for sym,pos in positions.items():
                 if sym not in snap:continue
-                update=advance_trailing_stop(pos,float(snap[sym].Close),str(date.date()),p.trailing_atr_multiple)
+                active_policy=policy_for_strategy(p,pos['strategy'])
+                update=advance_trailing_stop(pos,float(snap[sym].Close),str(date.date()),active_policy.trailing_atr_multiple,activation_r=active_policy.trailing_activation_r)
                 if update:stop_updates.append({'symbol':sym,**update})
         marked_equity = marked()
         daily_loss_block = marked_equity <= previous_equity*(1-p.max_daily_loss_pct/100)
         # At T close rank only T-available candidates. Fills and actual sizing still use a later open.
+        daily=reentry_candidates(daily,reentry_watches,day_index) if p.breakout_reentry_enabled else daily
+        entry_snap={str(r.Symbol):r for r in daily.itertuples(index=False)}
         eligible_symbols=None
         if automatic_selection:
             from .selection import rank_candidates
@@ -133,19 +155,21 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
         if p.review_after_gap and day_index+1<len(trading_dates) and defer_entry_review(date,trading_dates[day_index+1]):
             ordered=[]  # Fresh next-session close must qualify before any later-open entry.
         for sym in ordered:
-            bar=snap[sym]
+            bar=entry_snap[sym]
             if sym in positions or daily_loss_block:continue
+            if sym in reentry_watches and bar.Regime!='BREAKOUT_BOUNCE':continue
             strategy=chosen_strategy(bar,mode)
             if entry_signal(bar,strategy) and strategy!='NONE' and np.isfinite(bar.ATR14) and bar.ATR14>0:
-                stop=initial_stop_price(bar.Close,bar.ATR14,p)
-                if stop>0:queued.append(dict(side='BUY',symbol=sym,strategy=strategy,stop=stop,signal_atr=float(bar.ATR14),signal_date=str(date.date())))
+                stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,strategy))
+                if stop>0:queued.append(dict(side='BUY',symbol=sym,strategy=strategy,stop=stop,signal_atr=float(bar.ATR14),signal_date=str(date.date()),breakout_reentry=bar.Regime=='BREAKOUT_BOUNCE'))
         last_marks.update({s:float(bar.Close) for s,bar in snap.items()})
         previous_equity = marked_equity
         rows.append(dict(Date=date,Equity=marked_equity,Cash=cash,Positions=len(positions),QueuedOrders=len(queued),DailyLossBlocked=daily_loss_block))
     equity = pd.DataFrame(rows)
     equity.attrs['selection_audit']=selection_audit
     equity.attrs['stop_updates']=stop_updates
-    events = pd.DataFrame(trade_events,columns=["Date","Symbol","Event","Quantity","Price","Fee","Strategy","PnL"])
+    equity.attrs['breakout_reentry_watches']=reentry_watches
+    events = pd.DataFrame(trade_events,columns=["Date","Symbol","Event","Quantity","Price","Fee","Strategy","PnL","RiskPercent","InitialStop","TrailingActivationR","EntrySetup"])
     return equity,events,performance(equity, events, p.initial_cash)
 
 

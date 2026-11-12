@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-STRATEGIES = ("EMA_TREND", "RSI_REVERSION", "BREAKOUT")
+STRATEGIES = ("EMA_TREND", "EMA_PULLBACK", "RSI_REVERSION", "BREAKOUT")
 
 
 def enrich_one_symbol(x: pd.DataFrame) -> pd.DataFrame:
@@ -27,6 +27,10 @@ def enrich_one_symbol(x: pd.DataFrame) -> pd.DataFrame:
     dx = 100 * (plus_di-minus_di).abs() / (plus_di+minus_di).replace(0, np.nan)
     x["ADX14"] = dx.ewm(alpha=1/14, adjust=False, min_periods=14).mean()
     x["Prior20High"] = h.shift(1).rolling(20, min_periods=20).max()
+    x['PriorHigh']=h.shift(1)
+    # Only preceding completed bars qualify; the rebound cannot supply its own pullback.
+    touch=(l<=x.EMA20)&(c>=x.EMA50)&(x.EMA20>x.EMA50)&(c.shift(1)>x.EMA20.shift(1))
+    x['PullbackRecent']=touch.shift(1).rolling(3,min_periods=1).max().fillna(0).astype(bool)
     x["RealizedVol20"] = c.pct_change().rolling(20, min_periods=20).std() * np.sqrt(252)
     x["Ready"] = x[["EMA20", "EMA50", "ATR14", "ADX14", "Prior20High", "RealizedVol20"]].notna().all(axis=1)
     def regime(row):
@@ -34,6 +38,7 @@ def enrich_one_symbol(x: pd.DataFrame) -> pd.DataFrame:
             return "WARMUP"
         if row.RealizedVol20 > 0.48 or row.ATR14/row.Close > 0.065:
             return "HIGH_VOL"
+        if pullback_entry(row):return 'PULLBACK'
         if row.Close > row.Prior20High and row.ADX14 >= 18:
             return "BREAKOUT"
         if row.ADX14 >= 22 and row.EMA20 > row.EMA50:
@@ -42,7 +47,7 @@ def enrich_one_symbol(x: pd.DataFrame) -> pd.DataFrame:
             return "RANGE"
         return "UNCERTAIN"
     x["Regime"] = x.apply(regime, axis=1)
-    x["RoutedStrategy"] = x.Regime.map({"TREND": "EMA_TREND", "RANGE": "RSI_REVERSION", "BREAKOUT": "BREAKOUT"}).fillna("NONE")
+    x["RoutedStrategy"] = x.Regime.map({"TREND": "EMA_TREND", "PULLBACK":"EMA_PULLBACK", "RANGE": "RSI_REVERSION", "BREAKOUT": "BREAKOUT"}).fillna("NONE")
     return x
 
 
@@ -56,9 +61,12 @@ def entry_signal(row, strategy: str) -> bool:
         return False
     if strategy == "EMA_TREND":
         return bool(row.EMA20 > row.EMA50 and row.Close > row.EMA20)
+    if strategy=='EMA_PULLBACK':return pullback_entry(row)
     if strategy == "RSI_REVERSION":
         return bool(row.RSI14 < 42 and row.Close > row.EMA50 * 0.88)
     if strategy == "BREAKOUT":
+        if getattr(row,'Regime','')=='BREAKOUT_BOUNCE':
+            return bool(row.Close>row.EMA20 and row.Close>getattr(row,'PriorHigh',float('inf')) and row.ADX14>=18)
         return bool(row.Close > row.Prior20High and row.ADX14 >= 18)
     return False
 
@@ -66,7 +74,7 @@ def entry_signal(row, strategy: str) -> bool:
 def exit_signal(row, strategy: str) -> bool:
     if not bool(row.Ready):
         return False
-    if strategy == "EMA_TREND":
+    if strategy in {"EMA_TREND","EMA_PULLBACK"}:
         return bool(row.EMA20 < row.EMA50)
     if strategy == "RSI_REVERSION":
         return bool(row.RSI14 > 58)
@@ -77,3 +85,9 @@ def exit_signal(row, strategy: str) -> bool:
 
 def chosen_strategy(row, mode: str = "ROUTER") -> str:
     return str(row.RoutedStrategy) if mode == "ROUTER" else mode
+
+
+def pullback_entry(row):
+    return bool(getattr(row,'PullbackRecent',False) and row.ADX14>=22 and
+        row.EMA20>row.EMA50 and row.Close>row.EMA20 and
+        row.Close>getattr(row,'PriorHigh',float('inf')))

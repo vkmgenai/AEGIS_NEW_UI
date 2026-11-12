@@ -94,3 +94,8 @@ The current entry and adverse-news exit policy is detailed in AegisTrade_Signal_
 ## Breakout-source correction — v0.22.1
 
 Readable dated context and breakout_support prose alone no longer establish breakout corroboration. The market and critic each supply structured breakout_evidence: source ID, category, exact visible quote and relevance. Code requires an unaltered recent passage supporting an actual reported improvement or completed commercial event with a benefit metric; stale sources, vague goals, selection alone and sole forecasts do not qualify. A recent explicit structural-action disclosure quarantines entries on the raw-price simulator instead of acting as a positive catalyst. The supplied ITC/ONGC records and missing demerger-entitlement accounting are explained in AegisTrade_Breakout_Entry_Audit_20261112.docx. No retrospective price or P&L change is made.
+
+
+## Version 0.23.0 update: breakout recovery and pullback
+
+EMA_PULLBACK is now available for confirmed trend pullbacks. BREAKOUT retains its strict evidence/critic gate, including the new BREAKOUT_BOUNCE stop-recovery entry. Breakout has separate 0.5% risk, 2.5 ATR initial/trailing stops and 1R trailing activation defaults. A stop closes the position first; at most one re-entry follows a later confirmed close within ten sessions, fresh C2 and a later-open fill. See AegisTrade_Breakout_Reentry_and_Pullback_Guide for exact rules and UI steps. Existing saved runs are retained; start a new run for this version.

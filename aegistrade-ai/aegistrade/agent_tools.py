@@ -9,21 +9,30 @@ class HoldingContext(BaseModel):
     quantity:int=Field(gt=0)
     entry_price:float=Field(gt=0)
     stop_price:float=Field(gt=0)
-    strategy:Literal['EMA_TREND','RSI_REVERSION','BREAKOUT']
+    strategy:Literal['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT']
     holding_sessions:int=Field(ge=0)
     review_trigger:str=Field(max_length=120)
+
+class ReentryContext(BaseModel):
+    model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
+    stop_date:str
+    stop_level:float=Field(gt=0)
+    original_entry_date:str
 
 class CaseEvidence(BaseModel):
     model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
     symbol:str=Field(pattern=r'^[A-Z0-9][A-Z0-9_&-]{1,29}$')
     date:str
-    regime:Literal['TREND','RANGE','BREAKOUT','HIGH_VOL','UNCERTAIN','WARMUP']
+    regime:Literal['TREND','PULLBACK','RANGE','BREAKOUT','BREAKOUT_BOUNCE','HIGH_VOL','UNCERTAIN','WARMUP']
     Close:float=Field(gt=0)
     RSI14:float=Field(ge=0,le=100)
     ADX14:float=Field(ge=0,le=100)
     EMA20:float=Field(gt=0)
     EMA50:float=Field(gt=0)
     ATR14:float=Field(ge=0)
+    PriorHigh:float|None=Field(default=None,gt=0)
+    PullbackRecent:bool=False
+    breakout_reentry:ReentryContext|None=None
     research_purpose:Literal['ENTRY','HOLDING_REVIEW']='ENTRY'
     holding_context:HoldingContext|None=None
 
@@ -37,6 +46,12 @@ class CaseEvidence(BaseModel):
         date.fromisoformat(self.date)
         if self.research_purpose=='HOLDING_REVIEW' and self.holding_context is None:
             raise ValueError('Holding review needs current position context')
+        if self.regime=='PULLBACK' and not (self.PullbackRecent and self.PriorHigh and self.ADX14>=22 and self.Close>self.PriorHigh and self.Close>self.EMA20>self.EMA50):
+            raise ValueError('Pullback requires prior pullback and completed-close rebound confirmation')
+        if self.regime=='BREAKOUT_BOUNCE':
+            if not self.breakout_reentry or not self.PriorHigh:raise ValueError('Breakout bounce needs its portfolio stop context')
+            if not (date.fromisoformat(self.breakout_reentry.stop_date)<date.fromisoformat(self.date) and self.Close>self.breakout_reentry.stop_level and self.Close>self.EMA20 and self.Close>self.PriorHigh and self.ADX14>=18):
+                raise ValueError('Breakout bounce is not confirmed after the prior stop')
         return self
 
     @classmethod
@@ -56,7 +71,7 @@ class ToolResult(BaseModel):
 
 
 def approved_route(regime):
-    return {'TREND':'EMA_TREND','RANGE':'RSI_REVERSION','BREAKOUT':'BREAKOUT'}.get(regime,'NONE')
+    return {'TREND':'EMA_TREND','PULLBACK':'EMA_PULLBACK','RANGE':'RSI_REVERSION','BREAKOUT':'BREAKOUT','BREAKOUT_BOUNCE':'BREAKOUT'}.get(regime,'NONE')
 
 
 def market_observation(evidence:CaseEvidence):

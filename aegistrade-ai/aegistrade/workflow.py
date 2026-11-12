@@ -61,7 +61,7 @@ def build_trade_graph(frame:pd.DataFrame, broker:AuditBroker, risk_inputs:RiskIn
         snapshot=research_context.get('snapshot',{})
         if (snapshot.get('regime')!=str(row.Regime) or any(
             k not in snapshot or not math.isfinite(float(row[k])) or abs(float(row[k])-float(snapshot[k]))>1e-8
-            for k in ('Close','RSI14','ADX14','EMA20','EMA50','ATR14'))):
+            for k in (('Close','RSI14','ADX14','EMA20','EMA50','ATR14','PriorHigh','PullbackRecent') if snapshot.get('regime')=='PULLBACK' else ('Close','RSI14','ADX14','EMA20','EMA50','ATR14')))):
             return {'status':'BLOCKED','trace':s['trace']+['C2_MARKET_EVIDENCE_CHANGED']}
         if not row.Ready:
             return {"status":"BLOCKED", "trace":s["trace"]+["INSUFFICIENT_HISTORY"]}

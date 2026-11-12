@@ -407,7 +407,7 @@ def validate_company_assessment(assessment,pack,*,allow_review_required=False,sn
     elif not any(docs[x]['kind'] in {'financial_results','annual_report'} and docs[x].get('financial_content_detected') for x in assessment.citations if x in docs):
         raise ValueError('A financial filing with financial content is required')
     if reducing and not any(x in docs for x in assessment.citations):raise ValueError('Risk-reducing exit requires readable cited evidence')
-    if (snapshot or {}).get('regime')=='BREAKOUT' and (snapshot or {}).get('research_purpose','ENTRY')=='ENTRY':
+    if (snapshot or {}).get('regime') in {'BREAKOUT','BREAKOUT_BOUNCE'} and (snapshot or {}).get('research_purpose','ENTRY')=='ENTRY':
         if not assessment.breakout_support or not any(x in docs for x in assessment.citations):
             raise ValueError('Breakout entry requires readable dated corroboration and breakout_support')
         validate_breakout_evidence(assessment.breakout_evidence,pack,citations=assessment.citations)

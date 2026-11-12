@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from .strategies import chosen_strategy,entry_signal
 from .engine import TradePolicy,allowable_shares
-from .execution_policy import initial_stop_price
+from .execution_policy import initial_stop_price,policy_for_strategy
 
 @dataclass(frozen=True)
 class SelectionPolicy:
@@ -13,7 +13,7 @@ class SelectionPolicy:
     min_average_turnover_inr:float=10_000_000  # research setting: Rs 1 crore/day
     max_atr_fraction:float=.065
     max_relative_gap:float=.30
-    version:str='nifty20-selection-v1'
+    version:str='selection-v2-pullback-breakout-risk'
 
 
 def prepare_selection_features(frame):
@@ -45,10 +45,11 @@ def rank_candidates(daily,mode='ROUTER',*,equity,cash,trade_policy=None,selectio
         if bool(bar.RecentDiscontinuity):reasons.append('UNREVIEWED_PRICE_DISCONTINUITY')
         if strategy=='NONE' or not entry_signal(bar,strategy):reasons.append('NO_ENTRY_SIGNAL')
         if not reasons:
-            quantity=allowable_shares(float(bar.Close),initial_stop_price(bar.Close,bar.ATR14,p),cash,equity,p)
+            active_policy=policy_for_strategy(p,strategy)
+            quantity=allowable_shares(float(bar.Close),initial_stop_price(bar.Close,bar.ATR14,active_policy),cash,equity,active_policy)
             if quantity<1:reasons.append('CAPITAL_OR_RISK_LIMIT')
             if slots<=0:reasons.append('POSITION_LIMIT')
-            if strategy=='EMA_TREND':
+            if strategy in {'EMA_TREND','EMA_PULLBACK'}:
                 strength=.6*min(bar.ADX14/40,1)+.4*min(max(bar.Momentum20,0)/.10,1)
             elif strategy=='RSI_REVERSION':strength=min(max((42-bar.RSI14)/22,0),1)
             else:strength=.6*min(max(bar.Close/bar.Prior20High-1,0)/.03,1)+.4*min(bar.RelativeVolume20/2,1)

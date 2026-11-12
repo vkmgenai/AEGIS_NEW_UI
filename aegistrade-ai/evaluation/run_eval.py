@@ -23,7 +23,7 @@ def run_cases(cases):
         kind=case['kind'];inp=case['input'];expected=case['expected']
         got=None
         if kind=='route':
-            got={'TREND':'EMA_TREND','RANGE':'RSI_REVERSION','BREAKOUT':'BREAKOUT'}.get(inp['regime'],'NONE')
+            got={'PULLBACK':'EMA_PULLBACK','BREAKOUT_BOUNCE':'BREAKOUT','TREND':'EMA_TREND','RANGE':'RSI_REVERSION','BREAKOUT':'BREAKOUT'}.get(inp['regime'],'NONE')
         elif kind=='risk':
             now=utc_now()
             order=make_demo_order('RELIANCE',100,2,'EMA_TREND','2024-01-05',

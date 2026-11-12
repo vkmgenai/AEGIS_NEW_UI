@@ -12,7 +12,7 @@ import hashlib,json,math,os,threading,uuid
 import pandas as pd
 from pydantic import Field,model_validator
 from prometheus_client import Counter
-from .simulation_service import SimulationSettings,normalize,execute_simulation
+from .simulation_service import SimulationSettings,normalize,execute_simulation,policy_from_settings
 from .selection import prepare_selection_features,rank_candidates
 from .strategies import chosen_strategy,exit_signal
 from .engine import TradePolicy,allowable_shares,performance
@@ -22,12 +22,13 @@ from .llm_backend import identity,model_name
 from .research_gate import validate_completed_c2
 from .corpus import corpus_info
 from .research_diagnostics import saved_failure,inference_diagnostic
-from .execution_policy import protective_exit,take_profit_reference,defer_entry_review,initial_stop_price,initial_stop_settings
+from .execution_policy import protective_exit,take_profit_reference,defer_entry_review,initial_stop_price,initial_stop_settings,policy_for_strategy,position_policy_record,strategy_policy_records
 from .trailing_stop import advance_trailing_stop,stop_exit_reason
 from . import portfolio_memory
 from .dated_web import eligible as web_eligible
+from .breakout_reentry import register_breakout_stop,reentry_candidates,reentry_context
 
-VERSION='c2-portfolio-v5-signal-evidence-news'
+VERSION='c2-portfolio-v6-pullback-breakout-risk-reentry'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
@@ -84,15 +85,12 @@ def create_run(frame,settings,*,source='synthetic',provenance=None,model=None):
         'deferred_entries':[],'positions':{},'last_marks':{},'queued':[],'curves':[],'ledger':[],'selection_audit':[],'stop_updates':[],
         'decisions':[],'processed_close_keys':[],'model_calls':0,'budget_charged':0,'uncertain_model_calls':0,
         'call_limit':settings.max_model_calls,'inflight':None,'usage':[],'last_error':None,
-        'research_attempts':{},
+        'research_attempts':{},'breakout_reentry_watches':{},
         'consents':[{'at':now(),'call_limit':settings.max_model_calls,'historical_rules':True}],
         'execution_policy':'Automatic historical fills under upfront approved rules; no live writes or per-fill human pause.'}
     # The reference uses identical data, capital, costs and risk; it has no C2 filters/reviews.
-    policy=TradePolicy(initial_cash=settings.initial_capital,risk_per_trade=settings.risk_percent/100,
-        stop_loss_mode=settings.stop_loss_mode,stop_loss_percent=settings.stop_loss_percent,atr_stop_multiple=settings.initial_stop_atr_multiple,
-                       fee_bps=settings.fee_bps,slippage_bps=settings.slippage_bps,
-                       take_profit_percent=settings.take_profit_percent,review_after_gap=settings.review_after_gap,
-                       trailing_stop_enabled=settings.trailing_stop_enabled,trailing_atr_multiple=settings.trailing_atr_multiple)
+    policy=policy_from_settings(settings)
+    state['strategy_policies']=strategy_policy_records(policy)
     from .engine import backtest,buy_and_hold
     eq,events,metrics=backtest(f,p=policy,automatic_selection=True)
     bench,bm=buy_and_hold(f,policy)
@@ -108,6 +106,7 @@ def case_snapshot(bar,*,purpose='ENTRY',position=None,index=0,rank=None):
     s={'symbol':str(bar.Symbol),'date':str(bar.Date.date()),'regime':str(bar.Regime),
        'approved_candidate':str(bar.RoutedStrategy),'research_purpose':purpose,
        **{k:float(getattr(bar,k)) for k in ('Close','RSI14','ADX14','EMA20','EMA50','ATR14')}}
+    s.update(PullbackRecent=bool(getattr(bar,'PullbackRecent',False)),PriorHigh=float(getattr(bar,'PriorHigh',bar.High)))
     if position:s['holding_context']={'quantity':position['quantity'],'entry_price':position['entry_price'],
         'stop_price':position['stop'],'strategy':position['strategy'],'holding_sessions':index-position['entry_index'],
         'review_trigger':'Scheduled holding review; close-updated stop applies next session' if position.get('trailing_last_close') else 'Scheduled holding review'}
@@ -145,10 +144,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     if news_monitor is None and state['data_source']=='nsepython' and preparer is prepare_company_research:
         from .company_research import adverse_news_watch
         news_monitor=adverse_news_watch
-    p=TradePolicy(initial_cash=settings.initial_capital,risk_per_trade=settings.risk_percent/100,
-        stop_loss_mode=settings.stop_loss_mode,stop_loss_percent=settings.stop_loss_percent,atr_stop_multiple=settings.initial_stop_atr_multiple,fee_bps=settings.fee_bps,slippage_bps=settings.slippage_bps,
-        take_profit_percent=settings.take_profit_percent,review_after_gap=settings.review_after_gap,
-                       trailing_stop_enabled=settings.trailing_stop_enabled,trailing_atr_multiple=settings.trailing_atr_multiple)
+    p=policy_from_settings(settings)
     path=state_path(run_id);folder=path.parent;groups={str(d.date()):g for d,g in f.groupby('Date',sort=True)}
     def checkpoint():state['updated_utc']=now();save(path,state)
     def cancelled():
@@ -219,7 +215,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             except (ValueError,KeyError,TypeError) as exc:
                 from .research_diagnostics import validation_diagnostic
                 validation_failure=validation_diagnostic(exc,'code_guard')
-        rec={'id':cid,'key':key,'date':snapshot['date'],'symbol':snapshot['symbol'],'purpose':snapshot['research_purpose'],
+        rec={'id':cid,'key':key,'date':snapshot['date'],'symbol':snapshot['symbol'],'purpose':snapshot['research_purpose'],'entry_setup':snapshot['regime'],'breakout_reentry':snapshot.get('breakout_reentry'),
              'action':validated['portfolio_action'] if validated else 'BLOCKED','guard_pass':bool(validated),
              'dated_web_search':out.get('dated_web_search'),'portfolio_memory':out.get('portfolio_memory'),'explanation':out.get('explanation',''),'company_assessment':out.get('company_assessment'),
              'citations':out.get('citations',[]),'errors':out.get('model_errors',[]),'llm_calls':out.get('llm_calls',0)}
@@ -234,6 +230,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
 
     def sell(sym,bar,when,reason,reference,research_id=None):
         pos=state['positions'].pop(sym);price=reference*(1-p.slippage_bps/10000)
+        if reason in {'SELL_STOP','SELL_TRAILING_STOP'}:
+            register_breakout_stop(state.setdefault('breakout_reentry_watches',{}),{**pos,'symbol':sym},when,state['day_index'],p.breakout_reentry_enabled)
         fee=price*pos['quantity']*p.fee_bps/10000;net=price*pos['quantity']-fee
         state['cash']+=net
         state['ledger'].append({'date':when,'symbol':sym,'event':reason,'quantity':pos['quantity'],'price':price,'fee':fee,
@@ -280,7 +278,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             validator(out,purpose='ENTRY')
                         except (ValueError,KeyError,TypeError,OSError):
                             state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Entry research changed before next eligible open']});continue
-                        qty=allowable_shares(buy,order['stop'],state['cash'],eq,p)
+                        active_policy=policy_for_strategy(p,order['strategy'])
+                        qty=allowable_shares(buy,order['stop'],state['cash'],eq,active_policy)
                         if eq<=state['previous_equity']*(1-p.max_daily_loss_pct/100):qty=0
                         if qty>0:
                             fee=qty*buy*p.fee_bps/10000;state['cash']-=qty*buy+fee
@@ -289,8 +288,13 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                                 'strategy':order['strategy'],'entry_date':when,'entry_index':index,'last_review_index':index,
                                 'last_news_date':order['signal_date'],
                                 'entry_research_id':order['research_id']}
+                            state['positions'][sym]['execution_policy']=position_policy_record(active_policy)
+                            state['positions'][sym]['breakout_reentry_count']=int(order.get('breakout_reentry',False))
+                            if order.get('breakout_reentry'):state['breakout_reentry_watches'].pop(sym,None)
                             state['ledger'].append({'date':when,'symbol':sym,'event':'BUY','quantity':qty,'price':buy,'fee':fee,
-                                'initial_stop':order['stop'],'strategy':order['strategy'],'realized_pnl':None,'research_id':order['research_id'],'signal_date':order['signal_date'],'original_signal_date':order.get('original_signal_date',order['signal_date'])})
+                                'initial_stop':order['stop'],'strategy':order['strategy'],'realized_pnl':None,'research_id':order['research_id'],'signal_date':order['signal_date'],'original_signal_date':order.get('original_signal_date',order['signal_date']),
+                                'risk_percent_used':active_policy.risk_per_trade*100,'trailing_activation_r':active_policy.trailing_activation_r})
+                            state['ledger'][-1]['entry_setup']='BREAKOUT_BOUNCE' if order.get('breakout_reentry') else 'REGULAR'
                         else:state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Next-open gap, risk, cash or daily-loss check failed']})
                 state['queued']=pending
                 for sym,pos in list(state['positions'].items()):
@@ -306,7 +310,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             if p.trailing_stop_enabled:
                 for sym,pos in state['positions'].items():
                     if sym not in snap:continue
-                    update=advance_trailing_stop(pos,float(snap[sym].Close),when,p.trailing_atr_multiple)
+                    active_policy=policy_for_strategy(p,pos['strategy'])
+                    update=advance_trailing_stop(pos,float(snap[sym].Close),when,active_policy.trailing_atr_multiple,activation_r=active_policy.trailing_activation_r)
                     if update:state['stop_updates'].append({'symbol':sym,**update})
                 checkpoint()
             pending_symbols={o['symbol'] for o in state['queued']}
@@ -343,7 +348,9 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             # Screen on every close; reserve slots for existing pending BUYs, not future sale proceeds.
             if index<len(state['dates'])-1:
                 pending_buys={o['symbol'] for o in state['queued'] if o['side']=='BUY'}
-                audit=rank_candidates(daily,'ROUTER',equity=close_equity,cash=state['cash'],trade_policy=p,
+                entry_daily=reentry_candidates(daily,state.setdefault('breakout_reentry_watches',{}),index) if p.breakout_reentry_enabled else daily
+                entry_snap={str(r.Symbol):r for r in entry_daily.itertuples()}
+                audit=rank_candidates(entry_daily,'ROUTER',equity=close_equity,cash=state['cash'],trade_policy=p,
                     held_symbols=set(state['positions'])|pending_buys,available_slots=max(0,p.max_positions-len(state['positions'])-len(pending_buys)))
                 if daily_block:
                     for r in audit:r['selected']=False;r['reasons'].append('DAILY_LOSS_LIMIT')
@@ -369,13 +376,17 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                         continue
                     sym=rank['symbol'];key=f'{when}:{sym}:ENTRY'
                     if key in state['processed_close_keys']:continue
-                    bar=snap[sym];snapshot=case_snapshot(bar,rank=rank)
+                    bar=entry_snap[sym];snapshot=case_snapshot(bar,rank=rank)
+                    if bar.Regime=='BREAKOUT_BOUNCE':snapshot['breakout_reentry']=reentry_context(state['breakout_reentry_watches'][sym])
                     if sym in origins:snapshot['original_signal_date']=origins[sym]
                     rec=decide(snapshot,key)
                     if rec['action']=='ENTER':
-                        stop=initial_stop_price(bar.Close,bar.ATR14,p)
+                        stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,chosen_strategy(bar)))
                         if stop>0:state['queued'].append({'side':'BUY','symbol':sym,'strategy':chosen_strategy(bar),
-                            'stop':stop,'signal_date':when,'original_signal_date':origins.get(sym,when),'research_id':rec['id']})
+                            'stop':stop,'signal_date':when,'original_signal_date':origins.get(sym,when),'research_id':rec['id'],
+                            'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE'})
+                    elif bar.Regime=='BREAKOUT_BOUNCE' and (rec.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'}:
+                        state['breakout_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
                     state['decisions'].append(rec);state['processed_close_keys'].append(key)
                     checkpoint()
             state['deferred_entries']=[d for d in state['deferred_entries'] if d['date']==when]
@@ -440,6 +451,8 @@ def result_for(state):
         'research_prompt_version':state['prompt_version'],'current_research_prompt_version':CONFIG['version'],
         'research_configuration_changed':state['prompt_version']!=CONFIG['version'] or state['version']!=VERSION or state['corpus_sha256']!=corpus_info()['sha256'],
         'portfolio_memory':state.get('memory_manifest'),'settings':state['settings'],'data_source':state['data_source'],'data_provenance':state['data_provenance'],
+        'strategy_policies':state.get('strategy_policies',{}),'legacy_shared_execution_policy':'strategy_policies' not in state,
+        'breakout_reentry_watches':list(state.get('breakout_reentry_watches',{}).values()),
         'period':{'start':state['dates'][0],'end':state['dates'][-1]},'sessions':len(state['dates']),
         'progress':{'completed_sessions':state['day_index'],'total_sessions':len(state['dates']),'phase':state['phase'],
                     'current_date':state['dates'][min(state['day_index'],len(state['dates'])-1)]},
@@ -452,7 +465,9 @@ def result_for(state):
             'review_after_gap':state['settings'].get('review_after_gap',False),'trailing_stop_enabled':state['settings'].get('trailing_stop_enabled',False),
             'trailing_atr_multiple':state['settings'].get('trailing_atr_multiple',2.0),
             'basis':'highest completed close since entry','atr_source':'entry signal; distance fixed for the holding',
-            'activation':'raised at completed close, effective from next session'},
+            'activation':'raised at completed close, effective from next session',
+            'breakout_settings':{k:v for k,v in state['settings'].items() if k.startswith('breakout_')},
+            'breakout_reentry_window_sessions':10 if state.get('strategy_policies') else None},
         'stock_selection':{'enabled':True,'audits':{'C2':state['selection_audit']},'note':'Code shortlist is not an executed C2 entry; inspect research decisions and ledger.'},
         'inference':state.get('inference',identity(backend='openrouter',model=state['model'])),
         'model_usage':{'budget_unit':state.get('inference',{}).get('budget_unit','model_requests'),

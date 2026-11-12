@@ -327,21 +327,23 @@ elif page == "Strategy Backtests":
     if not health.get('configurable_stop_loss_supported',False):
         st.info('The initial stop-loss controls below need the updated API. Existing jobs can continue; finish or pause them, then restart the API and dashboard together before submitting a new simulation.')
     stop_method=st.selectbox('Initial stop-loss method',['ATR distance','Percentage below signal close'],key='initial_stop_method')
+    breakout_method=st.selectbox('Breakout initial stop method',['ATR distance','Percentage below signal close'],key='breakout_stop_method')
     with st.form("capital_simulation_form"):
         st.markdown("#### Simulation settings")
         c1,c2,c3=st.columns(3)
         with c1:
             capital=st.number_input("Initial capital (₹)",min_value=1000.0,max_value=100000000.0,value=200000.0,step=10000.0)
-            risk_pct=st.number_input("Maximum risk per trade (%)",min_value=0.25,max_value=3.0,value=1.0,step=0.25)
+            risk_pct=st.number_input("Other strategies: maximum risk per trade (%)",min_value=0.25,max_value=3.0,value=1.0,step=0.25)
         with c2:
             start_date=st.date_input("Simulation start",value=first,min_value=first,max_value=last)
             end_date=st.date_input("Simulation end",value=last,min_value=first,max_value=last)
         with c3:
             automatic_selection=st.checkbox("Automatically screen and rank stocks",value=True,disabled=is_c2)
-            sim_mode=st.selectbox("Strategies to run",["ROUTER"] if is_c2 else ["ALL","ROUTER","EMA_TREND","RSI_REVERSION","BREAKOUT"],
-                                  help="ALL compares four rule-based strategy configurations using identical starting capital and dates.")
+            sim_mode=st.selectbox("Strategies to run",["ROUTER"] if is_c2 else ["ALL","ROUTER","EMA_TREND","EMA_PULLBACK","RSI_REVERSION","BREAKOUT"],
+                                  help="ALL compares five rule-based strategy configurations using identical starting capital and dates.")
             fee_bps=st.number_input("Fees (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
             slippage_bps=st.number_input("Slippage (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
+        st.caption('The following common initial-stop and trailing controls apply to EMA trend, EMA pullback and RSI reversion. Separate breakout controls appear below.')
         initial_atr=st.number_input('Initial stop distance (× ATR14 at signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=stop_method!='ATR distance')
         initial_percent=st.number_input('Initial stop loss (% below signal close)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=stop_method=='ATR distance')
         st.caption('The initial stop is fixed from the completed signal close before a later-open fill. A 5% stop means 5% below that close; fees, slippage and opening gaps can change the actual loss. This is separate from the portfolio risk-per-trade percentage.')
@@ -350,6 +352,14 @@ elif page == "Strategy Backtests":
         trailing_enabled=st.checkbox('Enable trailing stop',value=True,key='simulation_trailing_stop')
         trailing_multiple=st.number_input('Trailing distance (× ATR14 at entry signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=not trailing_enabled)
         st.caption('A trailing stop follows the highest completed close since entry and never falls. Its ATR distance is fixed from the entry signal. Each increase applies from the next session; existing strategy and C2 exits still apply. Trailing can tighten your chosen initial stop; disable trailing if you want the initial stop price to stay fixed.')
+        st.markdown('#### Breakout risk and stopped-setup re-entry')
+        breakout_risk=st.number_input('Breakout risk per trade (%)',min_value=0.1,max_value=3.0,value=0.5,step=0.1)
+        breakout_atr=st.number_input('Breakout initial stop (× ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=breakout_method!='ATR distance')
+        breakout_percent=st.number_input('Breakout initial stop (%)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=breakout_method=='ATR distance')
+        breakout_trail=st.number_input('Breakout trailing distance (× entry ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=not trailing_enabled)
+        breakout_activation=st.number_input('Breakout trailing activation (× original risk R)',min_value=0.0,max_value=5.0,value=1.0,step=0.5,disabled=not trailing_enabled)
+        breakout_reentry=st.checkbox('Allow one confirmed breakout re-entry after a stop',value=True)
+        st.caption('Sell at the stop first. Within ten later trading sessions, require a completed close above the stopped level, EMA20 and previous high, with ADX≥18. C2 must research again and pass the strict breakout evidence/critic checks before a later-open buy. No same-candle re-entry. A second stop exhausts this setup. Wider stops reduce quantity under the selected risk budget; gaps can exceed planned risk.')
         if is_c2:
             development_memory=st.checkbox('Mark as development replay if lesson training overlaps these dates',value=False,disabled=selected_book is None)
             if selected_book:st.caption('Pinned version: '+selected_book['sha256']+' · Lessons are conditional reminders; they cannot alter risk limits or force trades. Later-period evaluation must start after '+selected_book['trained_through']+'.')
@@ -362,6 +372,7 @@ elif page == "Strategy Backtests":
         run_sim=st.form_submit_button("Run historical portfolio simulation",type="primary",use_container_width=True)
     if run_sim:
         if not approve_rules:st.error("Approve the displayed replay assumptions before running the historical simulation.")
+        elif not health.get('breakout_reentry_supported',False):st.error('Restart the API and dashboard to load breakout risk and re-entry support before starting a new run.')
         elif not health.get('configurable_stop_loss_supported',False):st.error('The backend has not loaded configurable initial stops yet. Finish or pause active work, then restart the API and dashboard together before starting a new run.')
         elif not health.get('fresh_adverse_profit_policy_supported',False):st.error('Restart the API and dashboard together to load fresh entry review, adverse-event research and take-profit rules before starting this new run.')
         elif trailing_enabled and not health.get('trailing_stop_supported',False):st.error('The running backend does not yet support trailing stops. Restart the API and dashboard together before starting this run.')
@@ -370,7 +381,7 @@ elif page == "Strategy Backtests":
             st.error("The simulation start date must be before the end date.")
         else:
             payload={"initial_capital":float(capital),"start_date":start_date.isoformat(),"end_date":end_date.isoformat(),
-                     "risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
+                     "breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
                      "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
             try:
                 if is_c2:
@@ -430,6 +441,10 @@ elif page == "Strategy Backtests":
         st.divider()
         if result.get('data_provenance',{}).get('universe_id'):
             st.caption('Result universe: '+str(result['data_provenance'].get('universe_name') or result['data_provenance']['universe_id']))
+        if result.get('strategy_policies'):
+            with st.expander('Strategy risk settings and breakout re-entry watch'):
+                st.json(result['strategy_policies'])
+                st.json(result.get('breakout_reentry_watches',[]))
         if result.get('initial_stop_loss'):
             with st.expander('Initial stop-loss settings'):st.json(result['initial_stop_loss'])
         c2_result='model_usage' in result

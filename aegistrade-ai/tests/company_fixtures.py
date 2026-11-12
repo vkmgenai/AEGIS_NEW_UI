@@ -18,7 +18,7 @@ class BreakoutArchive(FakeArchive):
         return ('CONTRACT TEST ONLY. These are synthetic issuer results, not actual company facts. '+BREAKOUT_QUOTE+
                 ' Total income INR 140.00 crore and cash flow INR 30.00 crore. ')*4,'test-pdf-hash'
 
-def pack_for(snapshot):return prepare_company_research(snapshot['symbol'],snapshot['date'],provider=BreakoutArchive() if snapshot.get('regime')=='BREAKOUT' else FakeArchive())
+def pack_for(snapshot):return prepare_company_research(snapshot['symbol'],snapshot['date'],provider=BreakoutArchive() if snapshot.get('regime') in {'BREAKOUT','BREAKOUT_BOUNCE'} else FakeArchive())
 
 def assessment(pack):
     return {'status':'SUFFICIENT','adverse_risk':'NO_MATERIAL_ADVERSE_FOUND','breakout_support':None,'breakout_evidence':None,'summary':'Synthetic test evidence interpretation only.',

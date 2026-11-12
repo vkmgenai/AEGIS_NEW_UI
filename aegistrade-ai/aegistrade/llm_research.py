@@ -17,8 +17,8 @@ import requests
 from .budget import RunBudget
 from .knowledge import PolicyRetriever
 
-REGIMES={'TREND','RANGE','BREAKOUT','HIGH_VOL','UNCERTAIN','WARMUP'}
-STRATS={'EMA_TREND','RSI_REVERSION','BREAKOUT','NONE'}
+REGIMES={'TREND','PULLBACK','BREAKOUT_BOUNCE','RANGE','BREAKOUT','HIGH_VOL','UNCERTAIN','WARMUP'}
+STRATS={'EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT','NONE'}
 
 class BreakoutEvidence(BaseModel):
     model_config=ConfigDict(extra='forbid',strict=True)
@@ -40,13 +40,13 @@ class CompanyAssessment(BaseModel):
 
 class MarketJudgement(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
-    regime:Literal['TREND','RANGE','BREAKOUT','HIGH_VOL','UNCERTAIN','WARMUP']
+    regime:Literal['TREND','PULLBACK','BREAKOUT_BOUNCE','RANGE','BREAKOUT','HIGH_VOL','UNCERTAIN','WARMUP']
     explanation:str=Field(max_length=800)
     company:CompanyAssessment
 
 class StrategyJudgement(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
-    strategy:Literal['EMA_TREND','RSI_REVERSION','BREAKOUT','NONE']
+    strategy:Literal['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT','NONE']
     citations:list[str]=Field(min_length=1,max_length=16)
     explanation:str=Field(max_length=800)
     portfolio_action:Literal['ENTER','HOLD','EXIT']='ENTER'

@@ -20,7 +20,7 @@ def test_simulation_configurable_capital_and_period(prepared,tmp_path):
     args=SimulationSettings(initial_capital=200000,start_date='2022-04-01',end_date='2022-10-31',mode='ALL')
     report=execute_simulation(prepared,args,save_dir=tmp_path)
     assert report['settings']['initial_capital']==200000
-    assert len(report['metrics'])==4
+    assert len(report['metrics'])==5
     assert all(m['initial_capital']==200000 for m in report['metrics'])
     assert len(report['curves']['ROUTER'])==report['sessions']
     assert len(list(tmp_path.glob('*.json')))==1
@@ -85,7 +85,7 @@ def test_api_backtest_and_c0_and_paid_guard(monkeypatch,tmp_path):
                'start_date':'2022-06-01','end_date':'2023-01-31'})
     assert response.status_code==200,response.text
     data=response.json()
-    assert len(data['metrics'])==4 and data['settings']['initial_capital']==200000
+    assert len(data['metrics'])==5 and data['settings']['initial_capital']==200000
     assert client.get('/simulation/result/'+data['run_id']).status_code==200
     assert client.get('/simulation/recent').json()['runs']
     assert client.post('/simulation/run',json={'start_date':'2022-03-01','end_date':'2022-01-01'}).status_code==422

@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.22.1',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.23.0',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -186,7 +186,7 @@ def _validated_research(run_id,case_id,expected_digest=None):
     if len(rows)!=1:raise HTTPException(422,'Research snapshot is absent from current market data')
     bar=rows.iloc[0];strategy=chosen_strategy(bar,'ROUTER')
     if (str(bar.Regime)!=snapshot['regime'] or any(not math.isfinite(float(bar[k])) or abs(float(bar[k])-snapshot[k])>1e-8
-        for k in ('Close','RSI14','ADX14','EMA20','EMA50','ATR14'))):
+        for k in (('Close','RSI14','ADX14','EMA20','EMA50','ATR14','PriorHigh','PullbackRecent') if snapshot.get('regime')=='PULLBACK' else ('Close','RSI14','ADX14','EMA20','EMA50','ATR14')))):
         raise HTTPException(409,'Market evidence changed; rerun C2 research and obtain fresh approval')
     if context['strategy']!=strategy or strategy=='NONE' or not entry_signal(bar,strategy):
         raise HTTPException(422,'C2 case has no eligible BUY signal. Abstention is a valid research outcome.')
@@ -234,7 +234,7 @@ def health():
             'dated_web_search_supported':True,'dated_web_search_enabled':os.getenv('AEGIS_DATED_WEB_SEARCH','true').lower()=='true',
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],
-            'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
+            'breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
             'portfolio_memory_supported':True,'max_portfolio_lessons_per_case':3,'company_evidence_view':'company-view-v5-substantive-body','breakout_source_quote_required':True,'structural_action_quarantine_supported':True,'signal_specific_evidence_supported':True,'adverse_news_exit_supported':True,
             'fresh_adverse_profit_policy_supported':True,'take_profit_default_percent':8.0,'friday_entry_review':'Next trading close; fill no earlier than the following eligible open',
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,
@@ -295,7 +295,7 @@ def compare():
 
 @app.get('/backtest/curve')
 def backtest_curve(mode:str='ROUTER'):
-    if mode not in {'ROUTER','EMA_TREND','RSI_REVERSION','BREAKOUT'}:raise HTTPException(422,'Invalid mode')
+    if mode not in {'ROUTER','EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT'}:raise HTTPException(422,'Invalid mode')
     equity,events,metrics=backtest(frame(),mode)
     return {'mode':mode,'metrics':metrics,'equity':[{'date':str(r.Date.date()),'equity':round(float(r.Equity),2)} for r in equity.itertuples()],
             'events':[{'date':str(r.Date.date()),'symbol':r.Symbol,'event':r.Event,'qty':int(r.Quantity),'price':float(r.Price)} for r in events.tail(50).itertuples()]}

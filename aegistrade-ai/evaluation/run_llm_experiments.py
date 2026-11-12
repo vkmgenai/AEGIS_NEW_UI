@@ -36,7 +36,7 @@ def main():
         snap={'symbol':row.Symbol,'date':str(row.Date.date()),'regime':row.Regime,
               'approved_candidate':row.RoutedStrategy,'Close':float(row.Close),
               'RSI14':float(row.RSI14),'ADX14':float(row.ADX14),'EMA20':float(row.EMA20),
-              'EMA50':float(row.EMA50),'ATR14':float(row.ATR14)}
+              'EMA50':float(row.EMA50),'ATR14':float(row.ATR14),'PriorHigh':float(row.PriorHigh),'PullbackRecent':bool(row.PullbackRecent)}
         configs=['C0','C1','C2'] if a.config=='all' else [a.config]
         for config in configs:
             result=run_research_case(snap,config,a.model,a.max_calls,a.max_output_tokens)

@@ -24,9 +24,9 @@ def eligible(snapshot):
     except ValueError:return False
     if e.research_purpose=='HOLDING_REVIEW':return True
     if e.ATR14<=0:return False
-    if e.regime=='TREND':return e.ADX14>=22 and e.Close>e.EMA20>e.EMA50
+    if e.regime in {'TREND','PULLBACK'}:return e.ADX14>=22 and e.Close>e.EMA20>e.EMA50
     if e.regime=='RANGE':return e.RSI14<42 and e.Close>.88*e.EMA50
-    return e.regime=='BREAKOUT' and e.ADX14>=18
+    return e.regime in {'BREAKOUT','BREAKOUT_BOUNCE'} and e.ADX14>=18
 
 
 def needed(pack,assessment=None):

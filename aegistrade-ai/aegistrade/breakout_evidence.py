@@ -67,7 +67,7 @@ def validate_breakout_evidence(evidence,pack,*,citations=None):
 
 
 def validate_breakout_critic(company,critic,pack,snapshot):
-    if snapshot.get('regime')!='BREAKOUT' or snapshot.get('research_purpose','ENTRY')!='ENTRY':return
+    if snapshot.get('regime') not in {'BREAKOUT','BREAKOUT_BOUNCE'} or snapshot.get('research_purpose','ENTRY')!='ENTRY':return
     if not critic.accept:return
     if critic.breakout_evidence is None:raise ValueError('Breakout critic must independently quote and corroborate the supporting source')
     validate_breakout_evidence(critic.breakout_evidence,pack)

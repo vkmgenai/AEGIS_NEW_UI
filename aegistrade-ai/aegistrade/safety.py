@@ -23,7 +23,7 @@ class OrderProposal(BaseModel):
     order_type: Literal["MARKET"] = "MARKET"  # deliberate MVP simplification
     reference_price: float = Field(gt=0)
     stop_loss_price: float = Field(gt=0)
-    strategy: Literal["EMA_TREND", "RSI_REVERSION", "BREAKOUT"]
+    strategy: Literal["EMA_TREND", "EMA_PULLBACK", "RSI_REVERSION", "BREAKOUT"]
     account: Literal["DEMO_ONLY"] = "DEMO_ONLY"
     signal_date: str
     expires_at_utc: str
@@ -54,6 +54,8 @@ class RiskInputs(BaseModel):
 class RiskParameters(BaseModel):
     model_config = ConfigDict(extra="forbid",allow_inf_nan=False)
     max_trade_risk_fraction: float = Field(default=0.01, gt=0, le=0.05)
+    breakout_risk_fraction: float = Field(default=0.005, gt=0, le=0.03)
+    breakout_atr_stop_multiple: float = Field(default=2.5, ge=0.5, le=10)
     max_position_fraction: float = Field(default=0.20, gt=0, le=0.50)
     max_positions: int = Field(default=4, ge=1)
     max_daily_loss_pct: float = Field(default=3.0, gt=0)
@@ -89,7 +91,7 @@ def validate_risk(order: OrderProposal, inputs: RiskInputs, p: RiskParameters) -
         problems.append("Daily portfolio loss limit reached")
     value = order.quantity * order.reference_price
     planned_risk = order.quantity * max(0,order.reference_price - order.stop_loss_price)
-    max_risk = inputs.equity*p.max_trade_risk_fraction
+    max_risk = inputs.equity*(p.breakout_risk_fraction if order.strategy=="BREAKOUT" else p.max_trade_risk_fraction)
     if planned_risk > max_risk + 1e-8:
         problems.append("Exceeds maximum planned risk")
     if value > inputs.equity*p.max_position_fraction + 1e-8:
@@ -106,11 +108,11 @@ def make_demo_order(symbol: str, entry: float, atr: float, strategy: str, signal
     if not all(math.isfinite(x) for x in (entry,atr)) or entry<=0 or atr<=0:
         raise ValueError("Entry and ATR must be finite and positive")
     entry=round(entry,4)
-    stop = round(max(0.01, entry-2*atr),4)
+    stop = round(max(0.01, entry-(p.breakout_atr_stop_multiple if strategy=="BREAKOUT" else 2)*atr),4)
     risk_per_share = entry-stop
     if risk_per_share <= 0:
         raise ValueError("Invalid stop/risk per share")
-    qty = max(0,min(math.floor(inputs.equity*p.max_trade_risk_fraction/risk_per_share),
+    qty = max(0,min(math.floor(inputs.equity*(p.breakout_risk_fraction if strategy=="BREAKOUT" else p.max_trade_risk_fraction)/risk_per_share),
                     math.floor(inputs.equity*p.max_position_fraction/entry),
                     math.floor(inputs.available_cash/(entry*(1+p.fee_bps/10_000)))))
     if qty < 1:

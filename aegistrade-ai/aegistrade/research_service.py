@@ -115,7 +115,7 @@ def select_cases(frame: pd.DataFrame, s: ResearchSettings, *, allowed_symbols=No
              "regime": str(r.Regime), "approved_candidate": str(r.RoutedStrategy),
              **({"selection_score":selection_lookup[r.Symbol]['score'],"selection_rank":selection_lookup[r.Symbol]['rank'],
                  "average_turnover_20_inr":selection_lookup[r.Symbol]['average_turnover_20_inr']} if r.Symbol in selection_lookup else {}),
-             **{k: float(getattr(r, k)) for k in ("Close", "RSI14", "ADX14", "EMA20", "EMA50", "ATR14")}}
+             **{k: float(getattr(r, k)) for k in ("Close", "RSI14", "ADX14", "EMA20", "EMA50", "ATR14", "PriorHigh", "PullbackRecent")}}
             for r in chosen.itertuples()]
 
 

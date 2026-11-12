@@ -6,7 +6,7 @@ def completed_c2():
     def make(snapshot):
         from tests.company_fixtures import pack_for,assessment
         pack=pack_for(snapshot);company=assessment(pack)
-        if snapshot['regime']=='BREAKOUT':
+        if snapshot['regime'] in {'BREAKOUT','BREAKOUT_BOUNCE'}:
             from tests.company_fixtures import BREAKOUT_QUOTE
             company['breakout_support']='Synthetic reported earnings growth corroborates this contract-test breakout; no genuine trading edge is asserted.'
             company['breakout_evidence']={'document_id':pack['documents'][0]['id'],'kind':'EARNINGS_IMPROVEMENT',
@@ -15,7 +15,7 @@ def completed_c2():
         strategy={'strategy':snapshot['approved_candidate'],'citations':['POL-06'],
                   'explanation':'Contract-test research explanation; no provider request.'}
         critic={'accept':True,'reason':'Test-only accepted research review.'}
-        if snapshot['regime']=='BREAKOUT':critic['breakout_evidence']=company['breakout_evidence'].copy()
+        if snapshot['regime'] in {'BREAKOUT','BREAKOUT_BOUNCE'}:critic['breakout_evidence']=company['breakout_evidence'].copy()
         from aegistrade.corpus import corpus_info
         return {'corpus_sha256':corpus_info()['sha256'],'config':'C2','snapshot':snapshot,'selected_strategy':strategy['strategy'],'market_regime':market['regime'],
             'guard_pass':True,'critic_accept':True,'model_errors':[],'citations':strategy['citations'],
@@ -32,7 +32,7 @@ def researched_context(completed_c2):
     def make(row):
         from aegistrade.research_gate import validate_completed_c2
         snapshot={'symbol':row.Symbol,'date':str(row.Date.date()),'regime':row.Regime,'approved_candidate':row.RoutedStrategy,
-                  **{k:float(getattr(row,k)) for k in ('Close','RSI14','ADX14','EMA20','EMA50','ATR14')}}
+                  **{k:float(getattr(row,k)) for k in ('Close','RSI14','ADX14','EMA20','EMA50','ATR14', 'PriorHigh', 'PullbackRecent')}}
         return validate_completed_c2(completed_c2(snapshot))
     return make
 

@@ -272,3 +272,7 @@ Start a new run after updating: research, corpus and engine fingerprints changed
 ### Quoted breakout corroboration and structural-action quarantine (0.22.1)
 
 Breakout approval now requires a recent exact visible source quote supporting a reported earnings/operating improvement or completed commercial event with a reported benefit metric. The accepting independent critic must separately corroborate the same source. A readable filing and prose alone, provider selection or a sole forecast are insufficient. Known recent structural-action disclosures quarantine new entries on the unadjusted simulator; this does not repair entitlement accounting or establish that a demerger is adverse news. Underlying EMA/RSI/breakout technical thresholds are unchanged. Start a new run after updating. See the [ITC/ONGC audit and correction guide](docs/AegisTrade_Breakout_Entry_Audit_20261112.docx). Verification uses synthetic/mocked generation and stored-source checks, not a claim of improved profitability.
+
+### Breakout recovery and trend pullbacks (0.23.0)
+
+Four strategies are available, including EMA_PULLBACK; BREAKOUT is retained with separate risk/stop controls. A stopped breakout can make one confirmed recovery entry after fresh C2 research. See [rules and UI demo guide](docs/AegisTrade_Breakout_Reentry_and_Pullback_Guide.md). Start a fresh run; historical results are preserved.

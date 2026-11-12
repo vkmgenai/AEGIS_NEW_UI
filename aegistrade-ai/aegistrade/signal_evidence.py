@@ -6,9 +6,9 @@ def coverage_signal(snapshot):
     from .agent_tools import CaseEvidence
     try:e=CaseEvidence.from_snapshot(snapshot)
     except (ValueError,KeyError,TypeError):return False
-    if e.research_purpose=='HOLDING_REVIEW':return e.holding_context.strategy in {'EMA_TREND','RSI_REVERSION'}
+    if e.research_purpose=='HOLDING_REVIEW':return e.holding_context.strategy in {'EMA_TREND','EMA_PULLBACK','RSI_REVERSION'}
     if e.ATR14<=0:return False
-    return ((e.regime=='TREND' and e.ADX14>=22 and e.Close>e.EMA20>e.EMA50) or
+    return ((e.regime in {'TREND','PULLBACK'} and e.ADX14>=22 and e.Close>e.EMA20>e.EMA50) or
             (e.regime=='RANGE' and e.RSI14<42 and e.Close>.88*e.EMA50))
 
 

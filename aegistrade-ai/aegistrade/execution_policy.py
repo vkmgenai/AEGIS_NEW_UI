@@ -1,5 +1,26 @@
 """Daily-bar execution rules; no future-bar decisions or model arithmetic."""
 from datetime import date
+from dataclasses import replace
+
+
+def policy_for_strategy(policy,strategy):
+    if strategy!='BREAKOUT':return policy
+    return replace(policy,risk_per_trade=policy.breakout_risk_per_trade,
+        stop_loss_mode=policy.breakout_stop_loss_mode,stop_loss_percent=policy.breakout_stop_loss_percent,
+        atr_stop_multiple=policy.breakout_atr_stop_multiple,
+        trailing_atr_multiple=policy.breakout_trailing_atr_multiple,
+        trailing_activation_r=policy.breakout_trailing_activation_r)
+
+
+def position_policy_record(policy):
+    return {'risk_percent':policy.risk_per_trade*100,'stop_loss_mode':policy.stop_loss_mode,
+        'stop_loss_percent':policy.stop_loss_percent,'initial_stop_atr_multiple':policy.atr_stop_multiple,
+        'trailing_atr_multiple':policy.trailing_atr_multiple,'trailing_activation_r':policy.trailing_activation_r}
+
+
+def strategy_policy_records(policy):
+    from .strategies import STRATEGIES
+    return {s:position_policy_record(policy_for_strategy(policy,s)) for s in STRATEGIES}
 
 
 def defer_entry_review(day,next_day):
