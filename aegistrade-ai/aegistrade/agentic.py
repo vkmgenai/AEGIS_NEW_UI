@@ -6,6 +6,7 @@ from __future__ import annotations
 from .company_research import company_pack_researchable
 from .evidence_context import CompanyEvidenceConversation,compact_json
 from .dated_web import eligible as web_eligible,needed as web_needed
+from .signal_evidence import require_adverse_exit,ADVERSE_FINDINGS
 import asyncio,json,os,time
 from pathlib import Path
 from typing import TypedDict
@@ -118,8 +119,8 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                         if name=='company_evidence':
                             if observation.get('symbol')!=evidence.symbol or observation.get('decision_at')!=cutoff_for(evidence.symbol,evidence.date).isoformat():
                                 raise ValueError('Company evidence does not match locked case')
-                            if company_pack_researchable(observation):
-                                current=validate_current_company_pack(observation)
+                            if observation.get('pack_sha256'):
+                                current=validate_current_company_pack(observation,allow_partial=True)
                                 if digest(current)!=digest(observation):raise ValueError('Company observation differs from stored source snapshot')
                                 company_hashes.add(observation['pack_sha256'])
                                 if len(company_hashes)>1:raise ValueError('Company evidence changed during research')
@@ -196,13 +197,19 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                         if role in {'market','single'}:
                             pack=observations.get('company_evidence',{})
                             # An abstaining assessment is valid research, but never order eligibility.
-                            if decision.company.status in {'SUFFICIENT','LIMITED'} and decision.company.adverse_risk=='NO_MATERIAL_ADVERSE_FOUND':validate_company_assessment(decision.company,pack)
+                            if decision.company.status in {'SUFFICIENT','LIMITED'} and decision.company.adverse_risk in {'NO_MATERIAL_ADVERSE_FOUND','COVERAGE_LIMITED'}:
+                                validate_company_assessment(decision.company,pack,snapshot=snapshot)
+                            if decision.company.adverse_risk in ADVERSE_FINDINGS and evidence.research_purpose=='HOLDING_REVIEW':
+                                if decision.company.status!='REVIEW_REQUIRED':raise ValueError('Adverse holding assessment must be REVIEW_REQUIRED for an EXIT')
+                                validate_company_assessment(decision.company,pack,allow_review_required=True,snapshot=snapshot)
                         if role in {'strategy','single'}:
                             allowed_actions={'HOLD','EXIT'} if evidence.research_purpose=='HOLDING_REVIEW' else {'ENTER'}
                             if decision.portfolio_action not in allowed_actions:raise ValueError('Action conflicts with research purpose')
                             if decision.strategy!=approved_route(evidence.regime):raise ValueError('Strategy conflicts with code')
                             if not decision.citations or not set(decision.citations).issubset(cited):raise ValueError('Unsupported citation')
                             if not policy_ids.intersection(decision.citations):raise ValueError('A project-policy citation is required for a route decision')
+                            company_payload=decision.company if role=='single' else MarketJudgement.model_validate(handoffs['market']['payload']).company
+                            require_adverse_exit(company_payload,snapshot,decision.portfolio_action)
                         handoffs[role]={'agent':role,'schema':SCHEMAS[role].__name__,'evidence_tools':sorted(own_seen),
                                         'payload':decision.model_dump()}
                         emit('typed_handoff',**handoffs[role])
@@ -237,7 +244,7 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                     status=value['company']['status']
                     if status=='INSUFFICIENT_EVIDENCE' or (evidence.research_purpose=='ENTRY' and status=='REVIEW_REQUIRED'):
                         raise ResearchStop('COMPANY_ASSESSMENT_BLOCKED',f'Market company assessment is {status}; {evidence.research_purpose} is not eligible. No further specialists were called.')
-                    if value['company']['adverse_risk']!='NO_MATERIAL_ADVERSE_FOUND' and not (evidence.research_purpose=='HOLDING_REVIEW' and status=='REVIEW_REQUIRED'):
+                    if value['company']['adverse_risk'] not in {'NO_MATERIAL_ADVERSE_FOUND','COVERAGE_LIMITED'} and not (evidence.research_purpose=='HOLDING_REVIEW' and status=='REVIEW_REQUIRED'):
                         raise ResearchStop('ADVERSE_RISK_BLOCKED','Material adverse event identified or adverse-risk coverage remains unknown; no entry or HOLD is eligible.')
                     return {'market':value}
                 async def strategy_node(s):return {'strategy':await specialist('strategy',{'market':s['market'],'lessons':lessons})}
@@ -255,14 +262,14 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
             action=strategy.get('portfolio_action','ENTER')
             reducing=evidence.research_purpose=='HOLDING_REVIEW' and action=='EXIT'
             validate_company_assessment(MarketJudgement.model_validate(handoffs['market']['payload']).company if config=='C2' else SingleJudgement.model_validate(strategy).company,
-                                        observations.get('company_evidence',{}),allow_review_required=reducing)
+                                        observations.get('company_evidence',{}),allow_review_required=reducing,snapshot=snapshot,portfolio_action=action)
             result.update(selected_strategy=strategy['strategy'],citations=strategy['citations'],
                           portfolio_action=action,
                           explanation=strategy['explanation'],critic_accept=critic['accept'],critic_reason=critic['reason'])
             result['guard_pass']=(strategy['strategy']==snapshot['approved_candidate'] and
                 bool(strategy['citations']) and set(strategy['citations']).issubset(cited) and critic['accept'] and len(corpus_hashes)<=1
                 and (company_assessment['status'] in {'SUFFICIENT','LIMITED'} or (reducing and company_assessment['status']=='REVIEW_REQUIRED'))
-                and company_pack_researchable(observations.get('company_evidence',{})))
+                and bool(observations.get('company_evidence',{}).get('pack_sha256')))
             if not result['guard_pass']:
                 failure=({'code':'CRITIC_REJECTED','category':'POLICY','agent':'critic','message':critic['reason']} if not critic['accept'] else
                     {'code':'FINAL_GUARD_REJECTED','category':'POLICY','agent':'supervisor','message':'Final research guard rejected the case.'})

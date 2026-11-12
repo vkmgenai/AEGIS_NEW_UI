@@ -1,12 +1,12 @@
 # AegisTrade AI — Dated web evidence fallback
 
-Version 0.21.1 • 12 November 2026
+Version 0.22.0 • 12 November 2026
 
 ## What changed
 
 C2 can research a code-qualified stock even when its local historical company evidence is incomplete. Before an evidence-based abstention, it can call the new MCP tool `search_dated_web`. The tool searches the public web for historically dated financial and adverse-event information, fetches selected source pages, validates them and enriches the dated company pack. The market specialist reassesses that evidence. The independent critic and code checks still decide whether the proposed action is permitted.
 
-A strong technical signal earns additional research. It does not establish that a stock is safe or profitable. Missing financial statements need not automatically block a candidate when a LIMITED assessment has a validated bounded adverse-evidence scan, supported citations and disclosed gaps. Unresolved material downside risk or UNKNOWN risk still prevents entry or HOLD.
+A strong technical signal earns additional research. It does not establish that a stock is safe or profitable. For strong trend and RSI-reversion signals, missing financial/news coverage alone need not block entry after attempted dated research: LIMITED / COVERAGE_LIMITED records that residual risk explicitly. A concrete unresolved adverse event remains UNKNOWN and blocks entry. Breakouts require readable dated corroboration and breakout_support. Supported adverse news blocks entry and requires a critic-validated EXIT for an existing holding.
 
 ## Orchestration
 
@@ -48,7 +48,7 @@ Each exact symbol/date has one saved web attempt, including failed attempts. Rep
 
 ## UI demonstration
 
-1. Let active jobs finish or pause them using the normal UI before restarting. From the project directory run `bash scripts/start_unix.sh`. Confirm the API health endpoint reports version 0.21.1 and `dated_web_search_supported: true`.
+1. Let active jobs finish or pause them using the normal UI before restarting. From the project directory run `bash scripts/start_unix.sh`. Confirm the API health endpoint reports version 0.22.0 and `dated_web_search_supported: true`.
 2. Open the Streamlit dashboard at `http://127.0.0.1:8501`. Keep the currently prepared universe or select another prepared dataset through the existing universe selector. Switching the universe does not create a complete news archive.
 3. Start a **new C2 historical portfolio simulation** with your chosen historical dates, capital and existing stop/profit/risk assumptions. Explicitly authorize the displayed inference allowance and replay rules. Start with a short period and modest allowance to inspect behavior before a long run. This feature does not establish an optimal capital, date range or guaranteed profitable demonstration.
 4. Watch the live progress panel or use Refresh. In **C2 entry / holding-review decisions and traces**, inspect the `web_search` column. Open a decision's research trace to inspect `search_dated_web`, its initiator and returned sources. `SUPPORTED_BOUNDED_SCAN` means the bounded source checks passed; `SEARCHED_BUT_INSUFFICIENT` means they did not. Neither status alone is a BUY decision.
@@ -77,7 +77,7 @@ Refresh the UI after the services restart and start a **new C2 portfolio simulat
 
 **Does a negative news keyword block an order?** No. Materiality must be supported by source context, severity, impact and resolution. The market and critic assess it; missing essential impact on a serious unresolved event remains UNKNOWN.
 
-**Can LIMITED evidence support an entry?** Yes, when the permitted bounded scan is ready, no material adverse event is found in that observed scope, citations support the assessment and missing coverage is disclosed. It is not an assertion that no adverse information exists anywhere.
+**Can LIMITED evidence support an entry?** Yes. Strong trend/reversion signals can use COVERAGE_LIMITED after observed attempted research if no concrete adverse event remains unresolved. A ready supported adverse scan can also support LIMITED financial coverage. Breakouts require readable dated corroboration. None of these labels establish that no adverse information exists anywhere.
 
 **How is look-ahead controlled?** Source availability is compared to the simulated cutoff. Known later updates, future documents and unsupported dates are rejected. Live retrieval metadata cannot prove a historically unchanged page, so that residual limitation is disclosed.
 
@@ -86,3 +86,7 @@ Refresh the UI after the services restart and start a **new C2 portfolio simulat
 **Does it improve profit?** It can reduce avoidable evidence-only abstentions. Profit improvement must be tested on untouched periods with identical capital, costs, exits and universe assumptions. Valid research and profitable prediction are separate measurements.
 
 **What was verified?** Controlled tests cover source date/identity checks, future updates, missing metadata, injection rejection, unavailable search, cache reuse, optional model calls, controller fallback, critic source identity and a portfolio entry following valid enrichment. Public-network testing verifies query access and honest abstention when fetched sources are unusable; it does not establish live inference success.
+
+## Signal-specific update — v0.22.0
+
+The current entry and adverse-news exit policy is detailed in AegisTrade_Signal_Specific_Research_and_Adverse_Exit_Guide.docx. It adds the explicit COVERAGE_LIMITED pathway for qualified trend/reversion signals, requires breakout_support and dated sources for breakout, and requires EXIT on supported adverse news after critic validation. Bounded daily official disclosure checks can trigger holding research between scheduled reviews. Routine trading-window notices and stationery fragments are distinguished from substantive adverse events. The same stop/profit/risk rules and next-eligible-open execution remain. A new simulation is required; saved results are retained.

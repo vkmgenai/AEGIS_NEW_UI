@@ -1,16 +1,16 @@
 """Versioned extractive company evidence. No generated facts or financial normalization."""
 import re
 
-VERSION='company-view-v4-materiality'
+VERSION='company-view-v5-substantive-body'
 
 
 def materiality_fields(text):
     """Verbatim source windows, not inferred severity or monetary calculations."""
-    text=_lines(text)
+    text=_body(_lines(text))
     patterns={
         'issuer_reported_impact':(r'impact\s+on\s+(?:financial|operations?|business)',440),
         'action_context':(r'nature\s+and\s+details|(?:penalty|fine)\s+(?:of|is|has)|imposed|restrictions?',280),
-        'amount_context':(r'(?:INR|Rs\.?|₹)\s*[\d,]+',190),
+        'amount_context':(r'(?<![A-Za-z])(?:INR\b|Rs\.?(?![A-Za-z])|₹)\s*\d[\d,]*(?:\.\d+)?',190),
         'status_context':(r'resolved|settled|pending|withdrawn|appeal|stayed|resign|cessation|successor|no other material',250),
         'event_context':(r'fraud|default|insolven|bankrupt|downgrade|litigation|suspend|restriction|disruption|penalt|resign',300)}
     result={};ranges=[]
@@ -25,6 +25,7 @@ def materiality_fields(text):
         else:merged.append([start,end,[key]])
     # Actual overlapping offsets from one source are merged without inferred transitions.
     result['source_windows']=[{'fields':keys,'text':text[start:end]} for start,end,keys in merged]
+    result['disclosure_context']=_bounded(text,650)
     return result
 
 
@@ -46,6 +47,8 @@ def _body(text):
     for candidate in candidates:
         tail=text[candidate.end():].strip()
         if len(tail)>100:return tail
+    subject=re.search(r'(?im)^(?:sub(?:ject)?\s*[.:]|dear\s+(?:sir|madam)|pursuant\s+to\b)',text)
+    if subject and subject.start()<12000:return text[subject.start():]
     return text
 
 

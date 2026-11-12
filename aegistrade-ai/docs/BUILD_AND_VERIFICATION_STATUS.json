@@ -1,5 +1,5 @@
 {
-  "version": "0.21.1",
+  "version": "0.22.0",
   "review_date": "2026-11-12",
   "team": {
     "members": [
@@ -10,10 +10,10 @@
     "three_member_approval": "Confirmed by user; professor-approved"
   },
   "local_tests": {
-    "passed": 243,
+    "passed": 256,
     "failed": 0,
     "model_responses": "mocked in contract tests",
-    "scope": "Full suite plus selectable-backend contracts, CLI isolation, quota/timeout handling, child termination, no fallback, Codex C2 specialist integration and portfolio identity binding; exact summary-length repair, persistent schema failure classification, evidence short-circuit, risk-reducing EXIT and read-only legacy diagnostics; causal trailing-stop, fixed entry ATR, gap/missing-bar handling, no terminal sale, engine-version binding and idempotent close-phase resume; fresh post-gap signal review, weekend adverse releases, LIMITED financial coverage in C1/C2, independent critic and adverse-risk gates, fee-aware profit targets and intraday ordering; extractive source materiality/overlap/duplicate packing, source-based pending portfolio lessons, authenticated review/freeze, immutable temporal memory binding, no extra generation, original snapshot date filtering and complete UI draft/review/freeze/select workflow; bounded dated web fallback, model/controller initiation, source date/identity/modified-page checks, failed-search abstention, portfolio entry and critic source binding; lossless per-specialist company context references and JSON Pointer reconstruction, exact changed facts/risks, independent critic context and fail-closed input-size diagnostics"
+    "scope": "Full suite plus selectable-backend contracts, CLI isolation, quota/timeout handling, child termination, no fallback, Codex C2 specialist integration and portfolio identity binding; exact summary-length repair, persistent schema failure classification, evidence short-circuit, risk-reducing EXIT and read-only legacy diagnostics; causal trailing-stop, fixed entry ATR, gap/missing-bar handling, no terminal sale, engine-version binding and idempotent close-phase resume; fresh post-gap signal review, weekend adverse releases, LIMITED financial coverage in C1/C2, independent critic and adverse-risk gates, fee-aware profit targets and intraday ordering; extractive source materiality/overlap/duplicate packing, source-based pending portfolio lessons, authenticated review/freeze, immutable temporal memory binding, no extra generation, original snapshot date filtering and complete UI draft/review/freeze/select workflow; bounded dated web fallback, model/controller initiation, source date/identity/modified-page checks, failed-search abstention, portfolio entry and critic source binding; lossless per-specialist company context references and JSON Pointer reconstruction, exact changed facts/risks, independent critic context and fail-closed input-size diagnostics; strategy-specific coverage exception, positive breakout corroboration, independent critic provenance, adverse HOLD-to-EXIT correction, daily dated disclosure watch, after-close visibility and zero extra generation on empty checks"
   },
   "mcp": {
     "servers_defined": 6,
@@ -748,5 +748,48 @@
       "largest_estimated_repacked_characters": 27648,
       "qualification": "Estimated from original recorded conversation size minus exact projection savings; current prompt/wrapper overhead can differ. This is not a live inference replay or evidence that the trades should pass."
     }
+  },
+  "signal_specific_evidence_policy": {
+    "version": "0.22.0",
+    "date": "2026-11-12",
+    "tests": {
+      "passed": 256,
+      "failed": 0,
+      "generation": "mocked"
+    },
+    "verification_model_calls_started": 0,
+    "corpus": {
+      "passages": 81,
+      "sha256": "1c75312e42031b33406102a9d00ed057e02bfbe9ed6b1a32308116ede61e660f",
+      "project_policy_passages": 72,
+      "external_reference_passages": 9,
+      "source_count": 45,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "entry_policy": {
+      "trend_reversion": "Qualified technical signal may use LIMITED/COVERAGE_LIMITED after observed research; concrete unresolved adverse event remains blocking.",
+      "breakout": "Readable dated corroboration, source citations, breakout_support and supported adverse clearance required."
+    },
+    "exit_policy": "Cited ADVERSE_EVENT_FOUND or MATERIAL_ADVERSE holding assessment requires EXIT after independent critic and code checks; next eligible open, no forced terminal sale.",
+    "holding_watch": "Bounded official issuer metadata daily for NSE portfolios; empty checks use zero generation; new candidates trigger C2 between scheduled reviews.",
+    "evidence_fixes": [
+      "Currency marker boundaries and mandatory digit",
+      "Substantive subject/body context retained alongside risk windows",
+      "Routine trading-window notices excluded unless independently adverse"
+    ],
+    "cached_source_inspection": {
+      "case": "NTPC 2026-02-02",
+      "original_matched_documents": 5,
+      "routine_window_notices_excluded": 4,
+      "observed_result": "Substantive board and trading-window disclosure bodies visible; address fragments no longer selected as amounts. No new financial/adverse model conclusion generated."
+    },
+    "limitations": [
+      "No live inference replay or improved profitability claim",
+      "Coverage exception accepts residual evidence risk",
+      "Selling on small adverse events can increase fees/churn",
+      "Official daily metadata check is not comprehensive independent news",
+      "Old research fingerprints cannot resume under changed policy"
+    ]
   }
 }

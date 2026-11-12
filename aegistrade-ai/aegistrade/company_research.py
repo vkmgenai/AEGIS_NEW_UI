@@ -16,8 +16,16 @@ from pydantic import BaseModel,ConfigDict,Field,field_validator,model_validator
 IST=ZoneInfo('Asia/Kolkata')
 VERSION='company-research-v1'
 from .company_excerpts import VERSION as EVIDENCE_VIEW_VERSION,excerpt as context_excerpt,compact_documents
-RISK_SCAN_VERSION='adverse-scan-v1'
+RISK_SCAN_VERSION='adverse-scan-v2-routine-notices'
 ADVERSE_TERMS=re.compile(r'\b(default|fraud|insolvency|bankrupt|downgrade|penalt|litigation|resign|fire|accident|cyber|seizure|recall|closure|disruption|regulatory action|material event)',re.I)
+
+
+def potential_adverse(title,*,recent=False):
+    # A trading window closes for insiders before routine results; it is not an operating closure.
+    routine=bool(re.search(r'trading\s+window|window\s+.*(?:insider|trading)',title,re.I))
+    explicit=re.search(r'fraud|default|insolven|penalt|litigation|investigat|plant\s+closure|operat.*restriction|cyber|fire\b|accident',title,re.I)
+    if routine and not explicit:return False
+    return bool(ADVERSE_TERMS.search(title) or (recent and re.search(r'regulation.?30|reg.?30|material|disclosure|credit.rating',title,re.I)))
 MAX_PDF_BYTES=32_000_000
 NSE_PAGE='https://www.nseindia.com/companies-listing/corporate-filings-announcements'
 NSE_API='https://www.nseindia.com/api/corporate-announcements'
@@ -207,7 +215,7 @@ def prepare_company_research(symbol,day,*,provider=None,refresh=False,progress=N
     selected=[]
     for kind,limit in [('financial_results',2),('annual_report',1),('company_news',2),('announcement',1)]:
         selected.extend([d for d in ordered if d['kind']==kind][:limit])
-    risk_items=[d for d in ordered if ADVERSE_TERMS.search(d['title']) or ((cutoff-datetime.fromisoformat(d['available_at'])).days<=7 and re.search(r'regulation.?30|reg.?30|material|disclosure|credit.rating',d['title'],re.I))]
+    risk_items=[d for d in ordered if potential_adverse(d['title'],recent=(cutoff-datetime.fromisoformat(d['available_at'])).days<=7)]
     seen={d['source_url'] for d in selected}
     selected.extend(d for d in risk_items[:8] if d['source_url'] not in seen)
     docs=[];errors=[];now=datetime.now(timezone.utc).isoformat()
@@ -235,6 +243,31 @@ def prepare_company_research(symbol,day,*,provider=None,refresh=False,progress=N
             'Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.']}
     _persist_pack(path,pack)
     return read_company_research(symbol,day)
+
+
+def adverse_news_watch(symbol,day,previous_day,*,provider=None):
+    """Cheap dated issuer-metadata watch, not an LLM conclusion or complete news feed."""
+    cutoff=cutoff_for(symbol,day);start=date.fromisoformat(previous_day)
+    if start>cutoff.date():raise ValueError('News watch cannot look backwards')
+    # Include the prior checked day: post-close releases must be seen next session.
+    path=store_root()/'news_watch'/f'{symbol}_{previous_day}_{day}.json'
+    if path.exists():return json.loads(path.read_text())
+    result={'symbol':symbol,'date':day,'decision_at':cutoff.isoformat(),'from_date':previous_day,
+        'status':'UNAVAILABLE','candidates':[],'scope':'Bounded official issuer metadata; candidates require C2 source/critic validation. Not comprehensive independent news.'}
+    try:
+        provider=provider or NSEArchive();rows=provider.announcements(symbol,start,cutoff.date())
+        candidates=[];invalid=0
+        for row in rows:
+            try:item=normalize_announcement(row,symbol,cutoff)
+            except (ValueError,KeyError,TypeError):invalid+=1;continue
+            if item and cutoff_for(symbol,previous_day)<datetime.fromisoformat(item['available_at'])<=cutoff and potential_adverse(item['title'],recent=True):candidates.append(item)
+        result.update(status='CHECKED' if not invalid else 'PARTIAL',candidates=candidates[:20],
+            invalid_rows=invalid,truncated=len(candidates)>20)
+    except Exception as exc:result['error']=type(exc).__name__
+    result['checked_at']=datetime.now(timezone.utc).isoformat()
+    path.parent.mkdir(parents=True,exist_ok=True)
+    tmp=path.with_suffix('.'+uuid.uuid4().hex+'.tmp');tmp.write_text(json.dumps(result));tmp.replace(path)
+    return result
 
 
 def _has_financial_content(text):
@@ -281,7 +314,7 @@ def read_company_research(symbol,day):
     reasons=[]
     if not raw['coverage'].get('exchange_scan_complete'):reasons.append('Exchange announcement scan incomplete/unverified timestamps')
     if not financial:reasons.append('No readable financial results/annual filing within 180 days')
-    modern=raw.get('evidence_view_version') in {'company-view-v2','company-view-v3',EVIDENCE_VIEW_VERSION}
+    modern=raw.get('evidence_view_version') in {'company-view-v2','company-view-v3','company-view-v4-materiality',EVIDENCE_VIEW_VERSION}
     result={'ok':True,'status':'SUFFICIENT' if not reasons else 'INSUFFICIENT_EVIDENCE','symbol':symbol,
         'decision_at':cutoff.isoformat(),'pack_sha256':digest(raw),'coverage':raw['coverage'],'reasons':reasons,
         'limitations':raw['limitations'],'documents':[{**d.model_dump(mode='json',exclude={'text'}),
@@ -318,6 +351,7 @@ def read_company_research(symbol,day):
         safe=web.get('decision_at')==cutoff.isoformat() and len(web.get('queries',[]))==2 and all(q.get('status')=='searched' for q in web['queries'])
         safe=safe and bool(accepted) and accepted.issubset({d.id for d in docs if d.extraction_status=='readable'})
         result['web_scan']={k:web.get(k) for k in ('version','citation_id','decision_at','scope','source_url','status','accepted_document_ids')}
+        result['web_scan']['attempted_queries']=len(web.get('queries',[])) if web.get('decision_at')==cutoff.isoformat() else 0
         result['web_scan']['ready']=bool(web.get('ready') and safe)
     return result
 
@@ -331,15 +365,32 @@ def company_pack_researchable(pack):
     return bool(pack.get('pack_sha256') and (pack.get('status')=='SUFFICIENT' or effective_scan(pack).get('ready')))
 
 
-def validate_company_assessment(assessment,pack,*,allow_review_required=False):
-    if not company_pack_researchable(pack):raise ValueError('Insufficient company evidence')
+def validate_company_assessment(assessment,pack,*,allow_review_required=False,snapshot=None,portfolio_action=None):
+    from .signal_evidence import coverage_signal,coverage_reviewed,require_adverse_exit,ADVERSE_FINDINGS
     reducing=allow_review_required and assessment.status=='REVIEW_REQUIRED'
+    limited=assessment.adverse_risk=='COVERAGE_LIMITED'
+    if portfolio_action:require_adverse_exit(assessment,snapshot or {},portfolio_action)
+    if limited:
+        if (assessment.status!='LIMITED' or not coverage_signal(snapshot or {}) or
+            not coverage_reviewed(pack) or assessment.event_risks):
+            raise ValueError('Coverage-only entry requires a strong trend/reversion, attempted dated research and no unresolved event risk')
+    if not company_pack_researchable(pack) and not ((limited or reducing) and pack.get('pack_sha256')):raise ValueError('Insufficient company evidence')
     if assessment.status not in {'SUFFICIENT','LIMITED'} and not reducing:
         raise ValueError('Company research requires review or has insufficient evidence')
     docs={d['id']:d for d in pack.get('documents',[]) if d.get('extraction_status')=='readable'}
     scan=effective_scan(pack);scan_id=scan.get('citation_id')
+    web=pack.get('web_scan',{})
     permitted=set(docs)|({scan_id} if scan.get('ready') else set())
+    if limited and web.get('attempted_queries')==2:permitted.add(web.get('citation_id'))
+    if reducing:
+        permitted.update(x for x in (pack.get('adverse_scan',{}).get('citation_id'),web.get('citation_id')) if x)
     if not assessment.citations or not set(assessment.citations).issubset(permitted):raise ValueError('Company citation not observed/readable')
+    if assessment.adverse_risk in ADVERSE_FINDINGS and (not assessment.event_risks or not any(x in docs for x in assessment.citations)):
+        raise ValueError('Adverse finding requires readable cited event evidence')
+    if limited:return True
+    if reducing:
+        if not any(x in docs for x in assessment.citations):raise ValueError('Risk-reducing exit requires readable cited evidence')
+        return True
     if not reducing and not scan.get('ready'):raise ValueError('Adverse disclosure coverage is incomplete')
     if not reducing and assessment.adverse_risk!='NO_MATERIAL_ADVERSE_FOUND':
         raise ValueError('Adverse event risk is material or remains unknown')
@@ -349,12 +400,15 @@ def validate_company_assessment(assessment,pack,*,allow_review_required=False):
     elif not any(docs[x]['kind'] in {'financial_results','annual_report'} and docs[x].get('financial_content_detected') for x in assessment.citations if x in docs):
         raise ValueError('A financial filing with financial content is required')
     if reducing and not any(x in docs for x in assessment.citations):raise ValueError('Risk-reducing exit requires readable cited evidence')
+    if (snapshot or {}).get('regime')=='BREAKOUT' and (snapshot or {}).get('research_purpose','ENTRY')=='ENTRY':
+        if not assessment.breakout_support or not any(x in docs for x in assessment.citations):
+            raise ValueError('Breakout entry requires readable dated corroboration and breakout_support')
     return True
 
 
-def validate_current_company_pack(pack):
+def validate_current_company_pack(pack,*,allow_partial=False):
     current=read_company_research(pack['symbol'],date.fromisoformat(pack['decision_at'][:10]).isoformat())
-    if current['pack_sha256']!=pack.get('pack_sha256') or not company_pack_researchable(current):raise ValueError('Company evidence changed; rerun C2 and approval')
+    if not current.get('pack_sha256') or current['pack_sha256']!=pack.get('pack_sha256') or (not allow_partial and not company_pack_researchable(current)):raise ValueError('Company evidence changed; rerun C2 and approval')
     return current
 
 

@@ -90,6 +90,11 @@ def validation_diagnostic(exc,role,*,payload=None):
         return {'code':'OUTPUT_JSON_INVALID','category':'SCHEMA','agent':role,'message':'Return one valid JSON object without markdown or commentary.'}
     # Only known application messages are exposed. Arbitrary provider exceptions may contain secrets.
     known={
+        'Cited adverse news requires EXIT, not HOLD':('ADVERSE_EXIT_REQUIRED','POLICY'),
+        'Adverse holding assessment must be REVIEW_REQUIRED for an EXIT':('ADVERSE_EXIT_ASSESSMENT_REQUIRED','EVIDENCE'),
+        'Adverse finding requires readable cited event evidence':('ADVERSE_CITATION_REQUIRED','EVIDENCE'),
+        'Breakout entry requires readable dated corroboration and breakout_support':('BREAKOUT_EVIDENCE_REQUIRED','EVIDENCE'),
+        'Coverage-only entry requires a strong trend/reversion, attempted dated research and no unresolved event risk':('COVERAGE_SIGNAL_INELIGIBLE','EVIDENCE'),
         'Adverse event risk is material or remains unknown':('ADVERSE_RISK_BLOCKED','EVIDENCE'),
         'Adverse disclosure coverage is incomplete':('ADVERSE_SCAN_INCOMPLETE','EVIDENCE'),
         'A completed cited adverse-disclosure scan is required':('ADVERSE_SCAN_CITATION_REQUIRED','EVIDENCE'),

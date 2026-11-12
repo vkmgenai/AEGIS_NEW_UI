@@ -23,7 +23,8 @@ STRATS={'EMA_TREND','RSI_REVERSION','BREAKOUT','NONE'}
 class CompanyAssessment(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     status:Literal['SUFFICIENT','LIMITED','INSUFFICIENT_EVIDENCE','REVIEW_REQUIRED']
-    adverse_risk:Literal['NO_MATERIAL_ADVERSE_FOUND','MATERIAL_ADVERSE','UNKNOWN']='UNKNOWN'
+    adverse_risk:Literal['NO_MATERIAL_ADVERSE_FOUND','COVERAGE_LIMITED','ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE','UNKNOWN']='UNKNOWN'
+    breakout_support:str|None=Field(default=None,min_length=1,max_length=350)
     summary:str=Field(min_length=1,max_length=600)
     citations:list[str]=Field(max_length=6)
     event_risks:list[str]=Field(max_length=4)

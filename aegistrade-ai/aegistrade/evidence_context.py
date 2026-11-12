@@ -90,6 +90,7 @@ def model_observation(name,observation):
             fields=d['materiality']
             item['materiality']={'source_windows':fields.get('source_windows',[]),
                 'missing_fields':[k for k,v in fields.items() if v is None]}
+            if fields.get('disclosure_context'):item['materiality']['disclosure_context']=fields['disclosure_context']
             if not fields.get('source_windows'):item['materiality']=fields
             else:
                 windows=[]

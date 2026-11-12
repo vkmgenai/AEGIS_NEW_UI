@@ -53,19 +53,20 @@ def validate_completed_c2(output:dict,*,purpose='ENTRY') -> dict:
     policy_ids={d['id'] for d in load_corpus() if d['authority']=='project_policy'}
     if not policy_ids.intersection(strategy.citations):raise ValueError('A project-policy citation is required; public background alone cannot support route approval')
     from .company_research import validate_current_company_pack,validate_company_assessment,digest
-    company=validate_current_company_pack(output.get('company_research',{}))
+    company=validate_current_company_pack(output.get('company_research',{}),allow_partial=True)
     if company['symbol']!=evidence.symbol or company['decision_at'][:10]!=evidence.date:
         raise ValueError('Company research belongs to a different case')
-    validate_company_assessment(parsed['market'].company,company,allow_review_required=purpose=='HOLDING_REVIEW' and action=='EXIT')
+    validate_company_assessment(parsed['market'].company,company,allow_review_required=purpose=='HOLDING_REVIEW' and action=='EXIT',snapshot=snapshot,portfolio_action=action)
     if output.get('company_assessment')!=parsed['market'].company.model_dump():raise ValueError('Company hand-off changed')
     seen={t['agent'] for t in output.get('tool_trace',[]) if t.get('tool') in {'company_evidence','search_dated_web'}
           and digest(t.get('observation',{}).get('company_evidence',t.get('observation',{})))==digest(company)}
     if not {'market','critic'}.issubset(seen):raise ValueError('Company evidence was not observed by market and critic')
     sources=[{k:d[k] for k in ('id','title','source_url','available_at')} for d in company['documents'] if d['id'] in parsed['market'].company.citations]
     from .company_research import effective_scan
-    scan=effective_scan(company)
-    if scan.get('citation_id') in parsed['market'].company.citations:
-        sources.append({'id':scan['citation_id'],'title':'Bounded dated evidence scan; inspect its source/scope, not proof of safety','source_url':scan['source_url'],'available_at':scan['decision_at']})
+    for scan in [company.get('adverse_scan',{}),company.get('web_scan',{})]:
+        if scan.get('citation_id') in parsed['market'].company.citations:
+            sources.append({'id':scan['citation_id'],'title':'Bounded research check; inspect readiness and scope, not proof of safety',
+                'source_url':scan['source_url'],'available_at':scan['decision_at']})
     return {'validated_c2':True,'corpus_sha256':output['corpus_sha256'],'result_digest':evidence_digest(output),
             'snapshot':snapshot,'explanation':strategy.explanation,'citations':strategy.citations,
             'strategy':strategy.strategy,'symbol':evidence.symbol,'date':evidence.date,

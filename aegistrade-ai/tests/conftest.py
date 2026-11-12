@@ -6,6 +6,7 @@ def completed_c2():
     def make(snapshot):
         from tests.company_fixtures import pack_for,assessment
         pack=pack_for(snapshot);company=assessment(pack)
+        if snapshot['regime']=='BREAKOUT':company['breakout_support']='Contract-test-only cited financial results provide corroborating issuer context; no genuine trading edge is asserted.'
         market={'regime':snapshot['regime'],'explanation':'Test-only market evidence interpretation.','company':company}
         strategy={'strategy':snapshot['approved_candidate'],'citations':['POL-06'],
                   'explanation':'Contract-test research explanation; no provider request.'}

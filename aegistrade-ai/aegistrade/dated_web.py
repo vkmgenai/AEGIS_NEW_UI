@@ -31,7 +31,7 @@ def eligible(snapshot):
 
 def needed(pack,assessment=None):
     if assessment:
-        return assessment.get('adverse_risk')=='UNKNOWN' or assessment.get('status')=='INSUFFICIENT_EVIDENCE'
+        return assessment.get('adverse_risk') in {'UNKNOWN','COVERAGE_LIMITED'} or assessment.get('status')=='INSUFFICIENT_EVIDENCE'
     from .company_research import effective_scan,company_pack_researchable
     return not company_pack_researchable(pack) or not effective_scan(pack).get('ready')
 

@@ -27,7 +27,7 @@ from .trailing_stop import advance_trailing_stop,stop_exit_reason
 from . import portfolio_memory
 from .dated_web import eligible as web_eligible
 
-VERSION='c2-portfolio-v4-reviewed-memory'
+VERSION='c2-portfolio-v5-signal-evidence-news'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
@@ -131,7 +131,7 @@ class Cancelled(Exception):pass
 class PauseProvider(Exception):pass
 
 
-def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None):
+def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None,news_monitor=None):
     """Resume exact day/phase. Dependency injection is for explicit contract tests only."""
     state=load(run_id);settings=C2PortfolioSettings.model_validate(state['settings'])
     if state['status'].startswith('COMPLETED'):return result_for(state)
@@ -142,6 +142,9 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     frozen=state.get('inference',{'backend':'openrouter','model':state['model'],'budget_unit':'model_requests','adapter_version':'openrouter-v1'})
     if identity()!=frozen:raise ValueError('Inference backend/model/adapter changed; restore the original configuration or start a new run')
     researcher=researcher or run_agentic_case;preparer=preparer or prepare_company_research;validator=validator or validate_completed_c2
+    if news_monitor is None and state['data_source']=='nsepython' and preparer is prepare_company_research:
+        from .company_research import adverse_news_watch
+        news_monitor=adverse_news_watch
     p=TradePolicy(initial_cash=settings.initial_capital,risk_per_trade=settings.risk_percent/100,
         stop_loss_mode=settings.stop_loss_mode,stop_loss_percent=settings.stop_loss_percent,atr_stop_multiple=settings.initial_stop_atr_multiple,fee_bps=settings.fee_bps,slippage_bps=settings.slippage_bps,
         take_profit_percent=settings.take_profit_percent,review_after_gap=settings.review_after_gap,
@@ -279,6 +282,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             state['positions'][sym]={'quantity':qty,'entry_price':buy,'entry_fee':fee,'stop':order['stop'],
                                 'initial_stop':order['stop'],'entry_signal_atr':float(out['snapshot']['ATR14']),'highest_close':None,
                                 'strategy':order['strategy'],'entry_date':when,'entry_index':index,'last_review_index':index,
+                                'last_news_date':order['signal_date'],
                                 'entry_research_id':order['research_id']}
                             state['ledger'].append({'date':when,'symbol':sym,'event':'BUY','quantity':qty,'price':buy,'fee':fee,
                                 'initial_stop':order['stop'],'strategy':order['strategy'],'realized_pnl':None,'research_id':order['research_id'],'signal_date':order['signal_date'],'original_signal_date':order.get('original_signal_date',order['signal_date'])})
@@ -310,11 +314,23 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                         state['queued'].append({'side':'SELL','symbol':sym,'reason':'SELL_SIGNAL','signal_date':when})
                         state['processed_close_keys'].append(key);checkpoint()
                     continue
+                # New dated disclosure candidates trigger research between scheduled reviews.
+                news_trigger=False
+                if news_monitor and index<len(state['dates'])-1:
+                    checks=state.setdefault('news_checks',{});check_key=f'{when}:{sym}'
+                    if check_key not in checks:
+                        try:checks[check_key]=news_monitor(sym,when,pos.get('last_news_date',pos['entry_date']))
+                        except Exception as exc:checks[check_key]={'status':'UNAVAILABLE','candidates':[],'error':type(exc).__name__}
+                        if checks[check_key].get('status')=='CHECKED':pos['last_news_date']=when
+                        checkpoint()
+                    news_trigger=bool(checks[check_key].get('candidates'))
                 # No paid last-day review: it cannot execute inside the requested period.
-                if index==len(state['dates'])-1 or index-pos['last_review_index']<settings.holding_review_sessions or not bar.Ready:continue
+                if index==len(state['dates'])-1 or (not news_trigger and index-pos['last_review_index']<settings.holding_review_sessions) or not bar.Ready:continue
                 key=f'{when}:{sym}:HOLDING_REVIEW'
                 if key in state['processed_close_keys']:continue
-                rec=decide(case_snapshot(bar,purpose='HOLDING_REVIEW',position=pos,index=index),key)
+                snapshot=case_snapshot(bar,purpose='HOLDING_REVIEW',position=pos,index=index)
+                if news_trigger:snapshot['holding_context']['review_trigger']='New dated issuer disclosure candidate; assess actual adverse content'
+                rec=decide(snapshot,key)
                 pos['last_review_index']=index
                 if rec['action']=='EXIT':state['queued'].append({'side':'SELL','symbol':sym,'reason':'SELL_C2','signal_date':when,'research_id':rec['id']})
                 state['decisions'].append(rec);state['processed_close_keys'].append(key)
@@ -424,6 +440,7 @@ def result_for(state):
                     'current_date':state['dates'][min(state['day_index'],len(state['dates'])-1)]},
         'metrics':[metrics]+([{'mode':'ROUTER','initial_capital':initial,**state['reference']['metrics']}] if terminal else []),
         'curves':{'C2':rows,'ROUTER':reference_curve},'ledgers':{'C2':state['ledger'],'ROUTER':state['reference'].get('ledger',[]) if terminal else []},
+        'news_checks':list(state.get('news_checks',{}).values()),
         'benchmark':benchmark,'open_holdings':holdings,'pending_orders':state['queued'],'decisions':decisions,
         'initial_stop_loss':initial_stop_settings(exit_settings),'stop_updates':state.get('stop_updates',[]),'deferred_entries':state.get('deferred_entries',[]),
         'exit_policy':{'take_profit_percent':state['settings'].get('take_profit_percent',0),'take_profit_basis':'Net of modeled entry/exit fees; execution includes slippage; ambiguous daily bars use stop first',

@@ -14,5 +14,5 @@ class FakeArchive:
 def pack_for(snapshot):return prepare_company_research(snapshot['symbol'],snapshot['date'],provider=FakeArchive())
 
 def assessment(pack):
-    return {'status':'SUFFICIENT','adverse_risk':'NO_MATERIAL_ADVERSE_FOUND','summary':'Synthetic test evidence interpretation only.',
+    return {'status':'SUFFICIENT','adverse_risk':'NO_MATERIAL_ADVERSE_FOUND','breakout_support':None,'summary':'Synthetic test evidence interpretation only.',
             'citations':[pack['documents'][0]['id']],'event_risks':[],'limitations':['Synthetic contract evidence, not a real provider run.']}

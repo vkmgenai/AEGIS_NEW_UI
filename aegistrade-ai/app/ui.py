@@ -305,6 +305,8 @@ elif page == "Strategy Backtests":
     heading("Portfolio simulation", "Choose your capital, historical date range and risk. This is a reproducible DAILY-BAR backtest, not real-time paper trading.")
     simulation_engine=st.radio('Simulation engine',['C2 historical portfolio','Technical-only baseline'],horizontal=True,key='simulation_engine')
     is_c2=simulation_engine=='C2 historical portfolio'
+    if is_c2 and health.get('signal_specific_evidence_supported'):
+        st.info('Entry policy: strong trend and RSI-reversion signals can proceed with explicitly incomplete coverage after dated research, if no concrete adverse event remains unresolved. Breakouts require dated corroborating evidence. A cited adverse finding requires an EXIT after critic validation; it fills at a later eligible open.')
     st.info('C2 mode researches each prospective entry and periodically reviews holdings. Historical fills follow upfront approved rules; the separate supervised workflow retains per-order human review. Stops and strategy exits remain code-controlled. Open holdings are marked, never forcibly sold at the end.')
     if is_c2:
         inf=health.get('inference',{})
@@ -353,6 +355,7 @@ elif page == "Strategy Backtests":
             if selected_book:st.caption('Pinned version: '+selected_book['sha256']+' · Lessons are conditional reminders; they cannot alter risk limits or force trades. Later-period evaluation must start after '+selected_book['trained_through']+'.')
             max_calls=st.number_input('Total inference allowance (requests or CLI invocations)',min_value=8,max_value=2400,value=48,step=8)
             review_every=st.number_input('Review each holding every N market sessions',min_value=1,max_value=60,value=5,step=1)
+            if health.get('adverse_news_exit_supported'):st.caption('For NSE portfolios, dated issuer disclosures are also checked between scheduled reviews. A new candidate triggers C2 review; an empty check makes no generation call. This is a bounded source check, not a complete news feed.')
             c2_consent=st.checkbox('I authorize external inference for this historical portfolio, up to the displayed allowance',value=False)
         approve_rules=st.checkbox("I approve these stock-selection, risk and cost assumptions for automatic historical replay",value=False)
         if is_c2:st.caption('This approval includes fresh post-gap entry review, automatic historical entries, code stop/profit/strategy exits and accepted C2 EXIT decisions. No per-fill human pause; no live broker action; no forced end sale.')
@@ -457,8 +460,13 @@ elif page == "Strategy Backtests":
                 if any('CONTEXT_BUDGET_EXCEEDED' in ' '.join(d.get('errors',[])) for d in decisions):
                     st.info('A context-budget failure concerns research input size, separately from your inference-call allowance. Refreshing or adding calls does not fix it. Inspect the research trace; after updating an affected backend, start a new run to re-evaluate previously blocked candidates.')
                 render_table([{**{k:d.get(k) for k in ['date','symbol','purpose','action','llm_calls','failure_category']},
+                               'evidence_policy':(d.get('company_assessment') or {}).get('adverse_risk',''),
                                'web_search':(d.get('dated_web_search') or {}).get('status',''),'reason':'; '.join(d.get('errors',[])) or d.get('explanation','')} for d in decisions],height=300)
                 records=[d for d in decisions if d.get('id')]
+                if result.get('news_checks'):
+                    with st.expander('Dated issuer-disclosure checks between holding reviews'):
+                        render_table([{'date':x.get('date'),'symbol':x.get('symbol'),'status':x.get('status'),
+                            'candidates':len(x.get('candidates',[])),'error':x.get('error','')} for x in result['news_checks']])
                 if records:
                     choices={d['date']+' '+d['symbol']+' '+d.get('purpose','')+' '+d['id']:d['id'] for d in records}
                     decision_choice=st.selectbox('C2 portfolio research record',list(choices))
@@ -556,11 +564,11 @@ elif page == "AI Agent Experiments":
             st.caption("To activate C1/C2: select AEGIS_LLM_BACKEND, complete its key or Codex login setup, set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
     from datetime import date
     selection_settings=st.session_state.get('selection_research_settings',{})
-    st.info("C2 now requires dated company financial filings and issuer news as well as technical/policy evidence. The cutoff is 15:30 IST on the selected case date. Incomplete financial coverage can support a LIMITED technical entry only after a completed cited adverse-disclosure review finds no material adverse event. Unknown or material downside risk still blocks entries; independent press/newsletter coverage is not assumed.")
+    st.info("C2 checks dated company evidence with a 15:30 IST cutoff. Strong trend and RSI-reversion entries may follow the technical signal with explicitly incomplete coverage after attempted research, provided no concrete adverse event remains unresolved. Breakouts require dated corroboration. A supported adverse finding blocks entry and requires an EXIT for a holding after critic validation. Independent press coverage is not assumed.")
     with st.expander('Historical company research — prepare before paid calls'):
         company_symbol=st.selectbox('Company evidence symbol',universe['symbols'],key='company_symbol')
         company_day=st.date_input('Company evidence decision date',value=date.fromisoformat(selection_settings.get('end') or universe['last_date']),key='company_day')
-        st.caption('Downloads up to six official archive PDFs after a 180-day announcement scan. No generation calls. Extraction is bounded and may be incomplete. Choose a valid market session.')
+        st.caption('Prepares bounded official filings and issuer releases from a 180-day window, reusing cached attachments. Financial/news selections plus risk-matched sources can total up to 14 PDFs. No generation calls; extraction and coverage can remain incomplete. Choose a valid market session.')
         refresh_company=st.checkbox('Refresh existing company archive pack',value=False)
         b1,b2=st.columns(2)
         if b1.button('Prepare historical company evidence',disabled=not bool(reviewer_token)):
