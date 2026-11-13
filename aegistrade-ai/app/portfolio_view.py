@@ -12,7 +12,7 @@ def remember_result(session,result):
     return result
 
 
-def restore_flow(session,flow,fetch):
+def restore_flow(session,flow,fetch,*,auto_restore_saved=True):
     legacy=session.get('simulation_result')
     if legacy:remember_result(session,legacy)
     result=session.get('portfolio_results',{}).get(flow)
@@ -20,7 +20,7 @@ def restore_flow(session,flow,fetch):
         candidate=fetch('/simulation/'+flow.lower()+'/status/'+result['run_id'])
         if flow_of(candidate)!=flow or candidate.get('run_id')!=result['run_id']:raise ValueError('Status belongs to another flow/run')
         result=remember_result(session,candidate)
-    if result is None and flow in {'C1','C2'}:
+    if result is None and flow in {'C1','C2'} and auto_restore_saved:
         runs=fetch('/simulation/'+flow.lower()+'/recent').get('runs',[])
         matching=[r for r in runs if r.get('settings',{}).get('research_flow','C2')==flow]
         if matching:

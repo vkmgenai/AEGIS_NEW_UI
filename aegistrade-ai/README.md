@@ -292,3 +292,7 @@ C1 can now sell at its protective/trailing stop and make one evidence-first reco
 ### Historical issuer evidence library (0.25.1)
 
 All configured universes share a dated 103-stock source library. View **Policy Knowledge → Historical company evidence library** for coverage and remaining gaps. See [backfill report](docs/AegisTrade_RAG_Evidence_Backfill_Report.md) for the repeatable download/OCR/audit commands. Company facts remain date-filtered and separate from policy RAG. Downloaded sources stay local and are excluded from Git. Start fresh research after source/corpus updates.
+
+### Capstone comparison UI (0.26.0)
+
+Strategy Backtests can explicitly clear the displayed saved run and begin a new C1/C2 session. Protective stop loss is optional for new simulations; disabling it also disables trailing and stop-recovery behavior. AI Agent Experiments adds a coordinated single-stock C0/C1/C2 P&L comparison with aligned curves and ledgers, plus a capstone minimum-bar evidence matrix. Use the same-case case experiment for the fair multi-agent ablation. See [evaluation and UI guide](docs/AegisTrade_v0_26_Capstone_Evaluation_and_UI_Guide.md).

@@ -8,7 +8,7 @@ from aegistrade.knowledge import PolicyRetriever
 
 def test_corpus_is_scoped_versioned_and_sources_traceable():
     docs=load_corpus();info=corpus_info()
-    assert len(docs)==85 and info['project_policy_passages']==76 and info['external_reference_passages']==9
+    assert len(docs)==86 and info['project_policy_passages']==77 and info['external_reference_passages']==9
     assert len({d['id'] for d in docs})==len(docs)
     refs=[d for d in docs if d['authority']=='external_reference']
     assert all(d['source_url'].startswith('https://') and d['date_kind']=='retrieved' for d in refs)

@@ -34,3 +34,9 @@ def test_mismatched_status_flow_is_rejected():
     def fetch(path):
         return {'runs':[{'run_id':'one','settings':{'research_flow':'C1'}}]} if path.endswith('/recent') else job('C2','one')
     with pytest.raises(ValueError):restore_flow({},'C1',fetch)
+
+
+def test_new_session_can_suppress_automatic_saved_run_restore():
+    reads=[]
+    result=restore_flow({},'C2',lambda path:reads.append(path) or {'runs':[]},auto_restore_saved=False)
+    assert result is None and reads==[]

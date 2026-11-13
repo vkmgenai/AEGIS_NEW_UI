@@ -172,13 +172,20 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
         tokens = sum(int(u.get("total_tokens") or 0) for u in usages)
         calls = sum(int(x.get("llm_calls") or 0) for x in rows)
         reported_cost = [float(u["cost"]) for u in usages if isinstance(u.get("cost"), (int,float))]
-        summary.append({"config": config, "cases": len(rows),
+        latencies=sorted(float(x.get('latency_s') or 0) for x in rows)
+        p95=latencies[min(len(latencies)-1,max(0,int(.95*len(latencies)+.999999)-1))]
+        errors=sum(bool(x.get('model_errors')) for x in rows)
+        passes=sum(bool(x.get('guard_pass')) and not x.get('model_errors') for x in rows)
+        summary.append({"config": config, "cases": len(rows),"task_success_count":passes,
+                        "task_success_pct":round(100*passes/len(rows),2),
                         "guard_pass_count": sum(bool(x.get("guard_pass")) for x in rows),
-                        "model_error_count": sum(bool(x.get("model_errors")) for x in rows),
+                        "policy_violation_count":sum(not x.get('guard_pass') and not x.get('model_errors') for x in rows),
+                        "model_error_count": errors,
                         "model_calls": calls, "budget_unit":identity(model=model)["budget_unit"] if config!="C0" else "none", "total_tokens_reported": tokens,
                         "reported_cost_usd": round(sum(reported_cost), 8) if usages and len(reported_cost)==len(usages) else None,
                         "cost_reporting_complete":bool(usages) and len(reported_cost)==len(usages),
-                        "mean_latency_s": round(sum(float(x.get("latency_s") or 0) for x in rows) / len(rows), 3)})
+                        "mean_latency_s": round(sum(latencies)/len(rows),3),"median_latency_s":round(latencies[len(latencies)//2],3),
+                        "p95_latency_s":round(p95,3)})
     result = normalize({"run_id": uuid.uuid4().hex,
                         "created_utc": datetime.now(timezone.utc).isoformat(),
                         "model": model if needs_llm(s) else "not_used",

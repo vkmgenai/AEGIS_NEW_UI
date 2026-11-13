@@ -14,7 +14,7 @@ def policy_for_strategy(policy,strategy):
 
 
 def position_policy_record(policy):
-    return {'risk_percent':policy.risk_per_trade*100,'stop_loss_mode':policy.stop_loss_mode,
+    return {'risk_percent':policy.risk_per_trade*100,'stop_loss_enabled':policy.stop_loss_enabled,'stop_loss_mode':policy.stop_loss_mode,
         'stop_loss_percent':policy.stop_loss_percent,'initial_stop_atr_multiple':policy.atr_stop_multiple,
         'trailing_atr_multiple':policy.trailing_atr_multiple,'trailing_activation_r':policy.trailing_activation_r}
 
@@ -40,9 +40,9 @@ def protective_exit(position,bar,policy):
     """Opening events precede intraday events; ambiguous bars use stop first."""
     from .trailing_stop import stop_exit_reason
     opening=float(bar.Open);stop=position['stop'];target=take_profit_reference(position,policy)
-    if opening<=stop:return stop_exit_reason(position),opening
+    if policy.stop_loss_enabled and opening<=stop:return stop_exit_reason(position),opening
     if target is not None and opening>=target:return 'SELL_TAKE_PROFIT',opening
-    if float(bar.Low)<=stop:return stop_exit_reason(position),stop
+    if policy.stop_loss_enabled and float(bar.Low)<=stop:return stop_exit_reason(position),stop
     if target is not None and float(bar.High)>=target:return 'SELL_TAKE_PROFIT',target
     return None
 
@@ -52,6 +52,7 @@ def initial_stop_price(close,atr,policy):
     import math
     close=float(close);atr=float(atr)
     if not math.isfinite(close) or close<=0:raise ValueError('Initial stop needs a positive finite signal close')
+    if not policy.stop_loss_enabled:return 0.0
     if policy.stop_loss_mode=='PERCENT':
         percent=float(policy.stop_loss_percent)
         if not math.isfinite(percent) or not .1<=percent<=50:raise ValueError('Stop loss percentage must be 0.1–50')
@@ -64,7 +65,7 @@ def initial_stop_price(close,atr,policy):
 
 
 def initial_stop_settings(policy):
-    return {'mode':policy.stop_loss_mode,'atr_multiple':policy.atr_stop_multiple,
+    return {'enabled':policy.stop_loss_enabled,'mode':policy.stop_loss_mode,'atr_multiple':policy.atr_stop_multiple,
         'percent':policy.stop_loss_percent,'basis':'Completed signal close; fixed before later-open fill. Percentage is before fees, slippage and gaps.',
         'trailing_relationship':'Trailing stop can tighten the initial stop from subsequent eligible sessions; it never lowers it.'}
 

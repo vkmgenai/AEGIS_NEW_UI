@@ -28,6 +28,7 @@ class SimulationSettings(BaseModel):
     fee_model: Literal[FEE_MODEL] = FEE_MODEL
     automatic_stock_selection: bool = True
     slippage_bps: float = Field(default=10.0, ge=0, le=100)
+    stop_loss_enabled: bool = True
     take_profit_percent: float = Field(default=8.0,ge=0,le=100,allow_inf_nan=False)
     review_after_gap: bool = True
     stop_loss_mode: Literal["ATR","PERCENT"] = "ATR"
@@ -51,11 +52,14 @@ class SimulationSettings(BaseModel):
             raise ValueError(f"mode must be ALL or one of {MODES}")
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValueError("start_date must be on or before end_date")
+        if not self.stop_loss_enabled and (self.trailing_stop_enabled or self.breakout_reentry_enabled or self.smc_reentry_enabled):
+            raise ValueError('Trailing-stop and stopped-position recovery features require protective stop loss')
         return self
 
 
 def policy_from_settings(settings):
     return TradePolicy(initial_cash=settings.initial_capital,risk_per_trade=settings.risk_percent/100,
+        stop_loss_enabled=settings.stop_loss_enabled,
         stop_loss_mode=settings.stop_loss_mode,stop_loss_percent=settings.stop_loss_percent,
         atr_stop_multiple=settings.initial_stop_atr_multiple,slippage_bps=settings.slippage_bps,
         take_profit_percent=settings.take_profit_percent,review_after_gap=settings.review_after_gap,

@@ -45,6 +45,7 @@ class C2PortfolioSettings(SimulationSettings):
     approve_historical_rules:bool=False
     max_model_calls:int=Field(default=48,ge=8,le=2400)
     holding_review_sessions:int=Field(default=5,ge=1,le=60)
+    target_symbol:str|None=Field(default=None,pattern=r'^[A-Z0-9][A-Z0-9_&-]{1,29}$')
 
     @model_validator(mode='after')
     def c2_rules(self):
@@ -93,6 +94,9 @@ def frame_for(frame,settings,provenance):
     if settings.research_flow=='C1':
         from .smc import prepare_smc
         frame=prepare_smc(frame)
+    if settings.target_symbol:
+        frame=frame[frame.Symbol.astype(str).str.upper()==settings.target_symbol.upper()].copy()
+        if frame.empty:raise ValueError('Selected comparison stock is absent from the active universe')
     f=prepare_selection_features(frame)
     f=f[(f.Date.dt.date>=settings.start_date)&(f.Date.dt.date<=settings.end_date)].copy()
     if f.Date.nunique()<2:raise ValueError('C2 replay needs at least two market sessions')
@@ -462,7 +466,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             if watched:rec['smc_reentry']=smc_reentry.context(watch)
                     if rec['action']=='ENTER':
                         stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,'SMC' if flow=='C1' else chosen_strategy(bar)))
-                        if stop>0:state['queued'].append({'side':'BUY','symbol':sym,'strategy':'SMC' if flow=='C1' else chosen_strategy(bar),
+                        if stop>0 or not p.stop_loss_enabled:state['queued'].append({'side':'BUY','symbol':sym,'strategy':'SMC' if flow=='C1' else chosen_strategy(bar),
                             'stop':stop,'signal_date':when,'original_signal_date':origins.get(sym,when),'research_id':rec['id'],
                             'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE',**({'smc_context':rec['smc_context'],'smc_reentry':rec.get('smc_reentry')} if flow=='C1' else {})})
                     elif bar.Regime=='BREAKOUT_BOUNCE' and (rec.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'}:
@@ -505,7 +509,7 @@ def result_for(state):
             decision.setdefault('failure_category','EVIDENCE')
         decisions.append(decision)
     rows=list(state['curves']);initial=state['settings']['initial_capital'];holdings=[]
-    exit_settings=TradePolicy(stop_loss_mode=state['settings'].get('stop_loss_mode','ATR'),
+    exit_settings=TradePolicy(stop_loss_enabled=state['settings'].get('stop_loss_enabled',True),stop_loss_mode=state['settings'].get('stop_loss_mode','ATR'),
         stop_loss_percent=state['settings'].get('stop_loss_percent',5.0),atr_stop_multiple=state['settings'].get('initial_stop_atr_multiple',2.0),take_profit_percent=state['settings'].get('take_profit_percent',0),slippage_bps=state['settings']['slippage_bps'])
     for sym,pos in state['positions'].items():
         mark=state['last_marks'].get(sym,{'price':pos['entry_price'],'date':pos['entry_date']})

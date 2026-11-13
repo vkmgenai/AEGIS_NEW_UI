@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.25.2',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.26.0',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -235,6 +235,7 @@ def health():
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],
             'smc_reentry_supported':True,'c1_smc_portfolio_supported':True,'portfolio_flows':['C2','C1','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
+            'optional_stop_loss_supported':True,'single_stock_c0_c1_c2_comparison_supported':True,
             'portfolio_memory_supported':True,'max_portfolio_lessons_per_case':3,'company_evidence_view':'company-view-v5-substantive-body','breakout_source_quote_required':True,'structural_action_quarantine_supported':True,'signal_specific_evidence_supported':True,'adverse_news_exit_supported':True,
             'fresh_adverse_profit_policy_supported':True,'take_profit_default_percent':8.0,'friday_entry_review':'Next trading close; fill no earlier than the following eligible open',
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,
@@ -834,6 +835,31 @@ app.add_api_route('/simulation/c1/status/{run_id}',c2_portfolio_status,methods=[
 app.add_api_route('/simulation/c1/resume/{run_id}',c2_portfolio_resume,methods=['POST'])
 app.add_api_route('/simulation/c1/pause/{run_id}',c2_portfolio_pause,methods=['POST'])
 app.add_api_route('/simulation/c1/research/{run_id}/{decision_id}',c2_portfolio_research,methods=['GET'])
+
+# C0 completes synchronously. C1 and C2 use their existing durable workers.
+from aegistrade.portfolio_comparison import ComparisonSettings
+
+@app.post('/research/portfolio-comparison/run')
+def portfolio_comparison_run(body:ComparisonSettings,x_reviewer_token:str|None=Header(default=None)):
+    _paid_c2_portfolio_auth(x_reviewer_token,body.consent_to_paid_calls)
+    try:
+        from aegistrade.portfolio_comparison import create
+        run_frame,source,provenance=market_snapshot_context()
+        return create(run_frame,body,source=source,provenance=provenance)
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+@app.get('/research/portfolio-comparison/status/{run_id}')
+def portfolio_comparison_status(run_id:str):
+    try:
+        from aegistrade.portfolio_comparison import status
+        return status(run_id)
+    except FileNotFoundError:raise HTTPException(404,'Comparison run not found') from None
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+@app.get('/research/portfolio-comparison/recent')
+def portfolio_comparison_recent():
+    from aegistrade.portfolio_comparison import recent
+    return recent()
 
 class ReviewedNewsletterImport(BaseModel):
     symbol:str=Field(pattern=r'^[A-Z0-9][A-Z0-9_&-]{1,29}$')

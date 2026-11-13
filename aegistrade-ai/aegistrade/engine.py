@@ -19,6 +19,7 @@ class TradePolicy:
     max_position_fraction: float = 0.20
     max_positions: int = 4
     fee_bps: float = field(default=BUY_FEE_BPS, init=False)
+    stop_loss_enabled: bool = True
     slippage_bps: float = 10.0
     atr_stop_multiple: float = 2.0
     stop_loss_mode: str = "ATR"
@@ -41,12 +42,14 @@ class TradePolicy:
 
 
 def allowable_shares(entry: float, stop: float, cash: float, equity: float, p: TradePolicy) -> int:
-    if not all(np.isfinite([entry, stop, cash, equity])) or not (0 < stop < entry and cash > 0 and equity > 0):
+    if not all(np.isfinite([entry, stop, cash, equity])) or not (entry > 0 and cash > 0 and equity > 0):
         return 0
-    risk_cap = math.floor(equity * p.risk_per_trade / (entry - stop))
+    if p.stop_loss_enabled and not (0 < stop < entry):
+        return 0
+    risk_cap = math.floor(equity * p.risk_per_trade / (entry - stop)) if p.stop_loss_enabled else math.inf
     exposure_cap = math.floor(equity * p.max_position_fraction / entry)
     available_cap = math.floor(cash / (entry * (1 + p.fee_bps / 10_000)))
-    return max(0, min(risk_cap, exposure_cap, available_cap))
+    return max(0, int(min(risk_cap, exposure_cap, available_cap)))
 
 
 def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = None, *, automatic_selection:bool=False, screening_limit:int=3) -> tuple[pd.DataFrame,pd.DataFrame,dict]:
@@ -184,8 +187,9 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
             watched=watch is not None and watch['status']!='EXPIRED'
             signal=smc_reentry.recovery(bar,watch,day_index)[0] if watched else entry_signal(bar,strategy)
             if signal and strategy!='NONE' and np.isfinite(bar.ATR14) and bar.ATR14>0:
-                stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,strategy))
-                if stop>0:queued.append(dict(side='BUY',symbol=sym,strategy=strategy,stop=stop,signal_atr=float(bar.ATR14),signal_date=str(date.date()),breakout_reentry=bar.Regime=='BREAKOUT_BOUNCE',smc_context=watch['smc_context'] if watched else getattr(bar,'SMCContext',None),smc_reentry=smc_reentry.context(watch) if watched else None))
+                active_policy=policy_for_strategy(p,strategy)
+                stop=initial_stop_price(bar.Close,bar.ATR14,active_policy)
+                if stop>0 or not active_policy.stop_loss_enabled:queued.append(dict(side='BUY',symbol=sym,strategy=strategy,stop=stop,signal_atr=float(bar.ATR14),signal_date=str(date.date()),breakout_reentry=bar.Regime=='BREAKOUT_BOUNCE',smc_context=watch['smc_context'] if watched else getattr(bar,'SMCContext',None),smc_reentry=smc_reentry.context(watch) if watched else None))
         last_marks.update({s:float(bar.Close) for s,bar in snap.items()})
         previous_equity = marked_equity
         rows.append(dict(Date=date,Equity=marked_equity,Cash=cash,Positions=len(positions),QueuedOrders=len(queued),DailyLossBlocked=daily_loss_block))

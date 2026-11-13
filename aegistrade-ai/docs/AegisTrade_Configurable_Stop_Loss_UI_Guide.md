@@ -27,6 +27,8 @@ Disable Enable trailing stop if you want the initial stop price to remain fixed.
 
 ## Run and inspect
 
+Version 0.26 adds **Enable protective stop loss**. Clearing it disables the initial and trailing stop for the new run and disables stop-based SMC/breakout recovery. Quantity then uses cash and maximum-position exposure because there is no stop distance from which to calculate planned loss. Take-profit, strategy and validated adverse-evidence exits remain active. This can materially increase drawdown and holding time; evaluate it as a frozen development/held-out ablation rather than choosing it from the best historical result.
+
 1. Choose the simulation engine and initial stop method.
 2. Enter its distance/percentage, then review risk, trailing and profit settings.
 3. Approve the replay rules and, for C2, authorize inference with the reviewer token.
@@ -46,7 +48,7 @@ cd /Users/karthikakrishnakumar/aegistrade-ai
 .venv/bin/python scripts/launch_local.py
 ```
 
-Expect /health version 0.19.2 and configurable_stop_loss_supported:true. Do not start duplicate listeners on occupied ports. At implementation time there was an active portfolio and a queued job, so those processes were deliberately left running. An idle-only deployment watcher was queued to reload the verified launcher once there are no active or queued workers. It starts/resumes no portfolio and stops if the updated API is already available. If it has not activated within its approximately 12-hour window, use the manual idle restart above. This update started no inference and changed no saved job settings.
+Expect `/health` version 0.26.0 with `configurable_stop_loss_supported:true` and `optional_stop_loss_supported:true`. Do not start duplicate listeners on occupied ports. Existing saved runs retain their frozen settings and must not be resumed under a changed simulator version.
 
 ## Verification
 

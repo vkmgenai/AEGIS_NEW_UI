@@ -315,7 +315,15 @@ elif page == "Strategy Backtests":
     is_ai=is_c1 or is_c2
     flow_label='C1' if is_c1 else 'C2'
     view_flow=flow_label if is_ai else 'TECHNICAL'
-    try:current=restore_flow(st.session_state,view_flow,get)
+    new_session_key='portfolio_new_session_'+view_flow
+    if is_ai and st.button('Start a new '+flow_label+' session',help='Clears the displayed selection only. Saved runs remain available below and no model call is made.'):
+        results=dict(st.session_state.get('portfolio_results',{}));results.pop(view_flow,None)
+        st.session_state['portfolio_results']=results
+        if flow_of(st.session_state.get('simulation_result'))==view_flow:st.session_state.pop('simulation_result',None)
+        st.session_state.pop('portfolio_job_'+flow_label,None)
+        st.session_state[new_session_key]=True
+        st.rerun()
+    try:current=restore_flow(st.session_state,view_flow,get,auto_restore_saved=not st.session_state.get(new_session_key,False))
     except Exception as exc:
         current=st.session_state.get('portfolio_results',{}).get(view_flow)
         fail('Could not restore the selected flow. Use its saved-run controls below.',exc)
@@ -418,16 +426,17 @@ elif page == "Strategy Backtests":
                                   help="ALL compares five rule-based strategy configurations using identical starting capital and dates.")
             st.caption("Fixed NSE delivery fees: buy 11.87406 bps; sell 10.37406 bps. Zero brokerage; STT, buy stamp duty, NSE/SEBI charges and GST included. Slippage is separate. DP charges excluded (not specified in supplied schedule).")
             slippage_bps=st.number_input("Slippage (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
+        stop_enabled=st.checkbox('Enable protective stop loss',value=True,help='When disabled, position sizing uses only exposure and cash limits. Strategy, adverse-news and take-profit exits still apply.')
         st.caption('The following common initial-stop and trailing controls apply to EMA trend, EMA pullback, RSI reversion and C1 SMC. Separate breakout controls appear below.')
-        initial_atr=st.number_input('Initial stop distance (× ATR14 at signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=stop_method!='ATR distance')
-        initial_percent=st.number_input('Initial stop loss (% below signal close)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=stop_method=='ATR distance')
+        initial_atr=st.number_input('Initial stop distance (× ATR14 at signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=not stop_enabled or stop_method!='ATR distance')
+        initial_percent=st.number_input('Initial stop loss (% below signal close)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=not stop_enabled or stop_method=='ATR distance')
         st.caption('The initial stop is fixed from the completed signal close before a later-open fill. A 5% stop means 5% below that close; fees, slippage and opening gaps can change the actual loss. This is separate from the portfolio risk-per-trade percentage.')
         take_profit=st.number_input('Take-profit target (% net return; required for C1)' if is_c1 else 'Take-profit target (% net return; 0 disables)',min_value=0.1 if is_c1 else 0.0,max_value=100.0,value=4.0 if is_c1 else 8.0,step=1.0,key="c1_profit_target" if is_c1 else "profit_target")
         st.caption('Friday or pre-gap entry candidates are reviewed again at the next trading close before a later-open fill. Profit targets are net of modeled trading fees; slippage is included in execution. If a daily bar touches both stop and target after opening, the stop takes priority.')
-        trailing_enabled=st.checkbox('Enable trailing stop',value=not is_c1,key='c1_trailing_stop' if is_c1 else 'simulation_trailing_stop')
-        trailing_multiple=st.number_input('Trailing distance (× ATR14 at entry signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=not trailing_enabled)
+        trailing_enabled=st.checkbox('Enable trailing stop',value=not is_c1,key='c1_trailing_stop' if is_c1 else 'simulation_trailing_stop',disabled=not stop_enabled)
+        trailing_multiple=st.number_input('Trailing distance (× ATR14 at entry signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=not stop_enabled or not trailing_enabled)
         st.caption('A trailing stop follows the highest completed close since entry and never falls. Its ATR distance is fixed from the entry signal. Each increase applies from the next session; existing strategy and C2 exits still apply. Trailing can tighten your chosen initial stop; disable trailing if you want the initial stop price to stay fixed.')
-        smc_reentry_enabled=st.checkbox('Allow one SMC recovery entry after a stop',value=True,key='smc_reentry_enabled')
+        smc_reentry_enabled=st.checkbox('Allow one SMC recovery entry after a stop',value=True,key='smc_reentry_enabled',disabled=not stop_enabled)
         smc_reentry_window=st.number_input('SMC recovery watch (trading sessions)',min_value=1,max_value=30,value=10,step=1,disabled=not smc_reentry_enabled)
         st.caption('Applies to SMC only. After a stop sale, wait for a later bullish close above the prior high, stopped level and original order-block upper level. C1 checks fresh dated evidence first. One retry per stopped setup, later-open fill, new sizing and the same profit/stop rules; a second stop exhausts that setup. Breakout has its own separate recovery policy.')
         if is_c1:
@@ -435,11 +444,11 @@ elif page == "Strategy Backtests":
         else:
             st.markdown('#### Breakout risk and stopped-setup re-entry')
             breakout_risk=st.number_input('Breakout risk per trade (%)',min_value=0.1,max_value=3.0,value=0.5,step=0.1)
-            breakout_atr=st.number_input('Breakout initial stop (× ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=breakout_method!='ATR distance')
-            breakout_percent=st.number_input('Breakout initial stop (%)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=breakout_method=='ATR distance')
-            breakout_trail=st.number_input('Breakout trailing distance (× entry ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=not trailing_enabled)
-            breakout_activation=st.number_input('Breakout trailing activation (× original risk R)',min_value=0.0,max_value=5.0,value=1.0,step=0.5,disabled=not trailing_enabled)
-            breakout_reentry=st.checkbox('Allow one confirmed breakout re-entry after a stop',value=True)
+            breakout_atr=st.number_input('Breakout initial stop (× ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=not stop_enabled or breakout_method!='ATR distance')
+            breakout_percent=st.number_input('Breakout initial stop (%)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=not stop_enabled or breakout_method=='ATR distance')
+            breakout_trail=st.number_input('Breakout trailing distance (× entry ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=not stop_enabled or not trailing_enabled)
+            breakout_activation=st.number_input('Breakout trailing activation (× original risk R)',min_value=0.0,max_value=5.0,value=1.0,step=0.5,disabled=not stop_enabled or not trailing_enabled)
+            breakout_reentry=st.checkbox('Allow one confirmed breakout re-entry after a stop',value=True,disabled=not stop_enabled)
             st.caption('Sell at the stop first. Within ten later trading sessions, require a completed close above the stopped level, EMA20 and previous high, with ADX≥18. C2 must research again and pass the strict breakout evidence/critic checks before a later-open buy. No same-candle re-entry. A second stop exhausts this setup. Wider stops reduce quantity under the selected risk budget; gaps can exceed planned risk.')
         if is_ai:
             development_memory=st.checkbox('Mark as development replay if lesson training overlaps these dates',value=False,disabled=selected_book is None)
@@ -465,8 +474,8 @@ elif page == "Strategy Backtests":
             st.error("The simulation start date must be before the end date.")
         else:
             payload={"initial_capital":float(capital),"start_date":start_date.isoformat(),"end_date":end_date.isoformat(),
-                     "smc_reentry_enabled":bool(smc_reentry_enabled),"smc_reentry_window_sessions":int(smc_reentry_window),"breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"slippage_bps":float(slippage_bps),
-                     "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
+                     "stop_loss_enabled":bool(stop_enabled),"smc_reentry_enabled":bool(stop_enabled and smc_reentry_enabled),"smc_reentry_window_sessions":int(smc_reentry_window),"breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(stop_enabled and breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"slippage_bps":float(slippage_bps),
+                     "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(stop_enabled and trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
             try:
                 if is_ai:
                     payload.update(consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=int(max_calls),holding_review_sessions=int(review_every),portfolio_playbook_id=selected_book['id'] if selected_book else None,memory_allow_development_replay=bool(development_memory))
@@ -474,6 +483,7 @@ elif page == "Strategy Backtests":
                     with st.spinner('Creating checkpointed '+flow_label+' portfolio job...'):
                         st.session_state['simulation_result']=post('/simulation/'+flow_label.lower()+'/run',payload,reviewer_token,timeout=120)
                     remember_result(st.session_state,st.session_state['simulation_result'])
+                    st.session_state.pop(new_session_key,None)
                     st.session_state['portfolio_job_'+flow_label+'_next']=st.session_state['simulation_result']['run_id']
                     st.rerun()
                 else:
@@ -640,7 +650,7 @@ elif page == "Strategy Backtests":
 
 elif page == "AI Agent Experiments":
     heading("GenAI and agentic AI experiments", "Compare strategy-routing research on the SAME scenarios. C0 uses no LLM; C1 is one tool-using agent; C2 coordinates market, strategy and critic specialists. Both share an eight-call ceiling per case. NO TRADES ARE PLACED.")
-    st.info("This experiment evaluates AI decision support, not portfolio returns. Portfolio returns are evaluated in Strategy Backtests → C2 historical portfolio. Choose C2 to demonstrate model-selected tools and observation-driven decisions.")
+    st.info("Use the case experiment for the fair C0/C1/C2 agent ablation. The optional single-stock portfolio comparison below adds P&L evidence, but C1 uses SMC while C0/C2 use ROUTER, so its three-way returns are not a pure architecture comparison.")
     with st.container(border=True):
         a,b=st.columns(2)
         inference=health.get("inference",{})
@@ -652,6 +662,102 @@ elif page == "AI Agent Experiments":
         if not health.get("llm_experiments_enabled"):
             st.caption("To activate C1/C2: select AEGIS_LLM_BACKEND, complete its key or Codex login setup, set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
     from datetime import date
+    with st.expander('Capstone minimum-bar evidence and remaining proof',expanded=False):
+        st.caption('The guideline specifies four members; your professor-approved three-person exception is the governing team decision. Keep that approval with the contribution log.')
+        rubric_rows=[
+            {'Area':'Retrieval','Status':'Implemented; final independent review pending','UI/demo evidence':'Policy Knowledge: hybrid retrieval, RRF, reranker, query rewrite, passage IDs','Still required':'Retain independently reviewed 30+ query Recall@5 before/after evidence'},
+            {'Area':'Tools and MCP','Status':'Implemented','UI/demo evidence':'MCP tool inventory plus typed market, strategy, policy, company and record tools','Still required':'Show schemas and one passing contract test per tool'},
+            {'Area':'Orchestration','Status':'Implemented; retain live trace','UI/demo evidence':'C2 supervisor, typed hand-offs, correction/replan trajectory, durable portfolio resume','Still required':'Record one stopped-and-resumed run and one contradiction replan'},
+            {'Area':'Memory','Status':'Implemented; evaluation pending','UI/demo evidence':'Learning & Lessons: reviewed/frozen playbook and checkpoint state','Still required':'Memory-off/on held-out comparison and deletion/correction demonstration'},
+            {'Area':'Planning','Status':'Implemented; evidence run needed','UI/demo evidence':'Plan and permissions plus bounded specialist ReAct traces','Still required':'Retain a real trace where a tool contradiction changes the plan'},
+            {'Area':'Multi-agent','Status':'Implemented; E1 pending','UI/demo evidence':'Case experiment: C0 vs single-agent C1 vs specialist-team C2','Still required':'Same-case/model/tools/budget held-out runs, three repeats, quality/cost/latency/error report'},
+            {'Area':'Improvement','Status':'Workflow implemented; benefit unproven','UI/demo evidence':'Development reflection, human accept/reject, frozen lessons','Still required':'Held-out before/after results and one rejected lesson with reason'},
+            {'Area':'Evaluation and monitoring','Status':'Partial','UI/demo evidence':'Saved traces, Prometheus/Grafana definitions and development reports','Still required':'60+ independently reviewed cases, 40+ protected held-out, calibrated different-family judge and real dashboard evidence'},
+            {'Area':'Human control and hooks','Status':'Implemented','UI/demo evidence':'Supervised Trading exact-payload approve/edit/reject and audit','Still required':'Live edit-invalidates-approval demonstration'},
+            {'Area':'Security','Status':'Implemented locally; final run pending','UI/demo evidence':'Threat model, injection scanner and 30+ attack suite','Still required':'Model-level defences off/on attacks and clean-case false-block rate'},
+            {'Area':'Deployment','Status':'Partial','UI/demo evidence':'FastAPI, Streamlit, Docker Compose, CI, Prometheus/Grafana and alert definitions','Still required':'Clean-machine install, firing alert and retained failed hosted-CI evidence'}]
+        render_table(rubric_rows,'Passing software tests supports implementation quality; it does not replace independent held-out evaluation.',height=420)
+        st.info('For the viva, lead with E1 case quality, grounding, policy violations, cost, latency and failures. Treat portfolio return as a secondary domain outcome, not the proof that multiple agents are better.')
+    with st.container(border=True):
+        st.markdown('### Single-stock C0 / C1 / C2 portfolio comparison')
+        st.caption('Runs one stock over one historical window. C0 is deterministic ROUTER; C1 is the evidence-first SMC agent; C2 is the market/strategy/critic team using ROUTER. All share capital, costs, target and stop setting.')
+        comparison=st.session_state.get('portfolio_comparison_result')
+        top1,top2=st.columns(2)
+        if top1.button('Start a new comparison session'):
+            st.session_state.pop('portfolio_comparison_result',None);st.session_state.pop('portfolio_comparison_id',None);st.rerun()
+        if top2.button('Refresh comparison progress',disabled=not bool(comparison)):
+            try:
+                run_id=comparison['run_id'];st.session_state['portfolio_comparison_result']=get('/research/portfolio-comparison/status/'+run_id,timeout=90);st.rerun()
+            except Exception as exc:fail('Could not refresh the C0/C1/C2 comparison.',exc)
+        comp_first=date.fromisoformat(universe.get('provenance',{}).get('requested_start') or universe['first_date'])
+        comp_last=date.fromisoformat(universe['last_date'])
+        with st.form('single_stock_comparison_form'):
+            a,b,c=st.columns(3)
+            with a:
+                comparison_symbol=st.selectbox('Stock to compare',universe['symbols'],key='comparison_symbol')
+                comparison_capital=st.number_input('Comparison capital (₹)',min_value=1000.,max_value=100000000.,value=200000.,step=10000.)
+            with b:
+                comparison_start=st.date_input('Comparison start',value=comp_first,min_value=comp_first,max_value=comp_last)
+                comparison_end=st.date_input('Comparison end',value=comp_last,min_value=comp_first,max_value=comp_last)
+            with c:
+                comparison_risk=st.number_input('Maximum risk per trade (%)',min_value=.25,max_value=3.,value=1.,step=.25)
+                comparison_calls=st.number_input('Inference allowance per AI flow',min_value=8,max_value=2400,value=240,step=8)
+            comparison_stop=st.checkbox('Enable comparison stop loss',value=True)
+            comparison_stop_pct=st.number_input('Comparison stop loss (%)',min_value=.1,max_value=50.,value=5.,step=.5,disabled=not comparison_stop)
+            comparison_profit=st.number_input('Comparison take-profit target (% net)',min_value=.1,max_value=100.,value=8.,step=1.)
+            comparison_slippage=st.number_input('Comparison slippage (basis points per transaction)',min_value=0.,max_value=100.,value=10.,step=5.)
+            comparison_review=st.number_input('AI holding review interval (sessions)',min_value=1,max_value=60,value=5,step=1)
+            comparison_approve=st.checkbox('I approve automatic historical fills under these shared rules')
+            comparison_consent=st.checkbox('I authorize C1 and C2 inference up to the displayed allowance')
+            run_comparison=st.form_submit_button('Run single-stock C0 / C1 / C2 comparison',type='primary',use_container_width=True)
+        if run_comparison:
+            if comparison_start>comparison_end:st.error('Comparison start must be on or before its end.')
+            elif not comparison_approve:st.error('Approve the shared historical rules before starting.')
+            elif not comparison_consent or not reviewer_token:st.error('Reviewer token and explicit C1/C2 inference consent are required.')
+            elif not health.get('llm_experiments_enabled'):st.error('The selected inference backend is not enabled and ready.')
+            else:
+                payload={'symbol':comparison_symbol,'start_date':comparison_start.isoformat(),'end_date':comparison_end.isoformat(),
+                    'initial_capital':float(comparison_capital),'risk_percent':float(comparison_risk),'stop_loss_enabled':bool(comparison_stop),
+                    'stop_loss_percent':float(comparison_stop_pct),'take_profit_percent':float(comparison_profit),'slippage_bps':float(comparison_slippage),
+                    'holding_review_sessions':int(comparison_review),'max_model_calls_per_flow':int(comparison_calls),
+                    'consent_to_paid_calls':True,'approve_historical_rules':True}
+                try:
+                    with st.spinner('Creating C0 and checkpointed C1/C2 runs...'):
+                        comparison=post('/research/portfolio-comparison/run',payload,reviewer_token,timeout=240)
+                    st.session_state['portfolio_comparison_result']=comparison;st.session_state['portfolio_comparison_id']=comparison['run_id'];st.rerun()
+                except Exception as exc:fail('Could not start the single-stock comparison.',exc)
+        with st.expander('Open a saved single-stock comparison'):
+            try:
+                saved_comparisons=get('/research/portfolio-comparison/recent').get('runs',[])
+                if saved_comparisons:
+                    labels={f"{x['created_utc'][:19]} | {x['settings']['symbol']} | {x['settings']['start_date']}–{x['settings']['end_date']} | {x['run_id'][:8]}":x['run_id'] for x in saved_comparisons}
+                    selected_comparison=st.selectbox('Saved C0/C1/C2 comparison',list(labels),key='saved_portfolio_comparison')
+                    if st.button('Open saved comparison'):
+                        st.session_state['portfolio_comparison_result']=get('/research/portfolio-comparison/status/'+labels[selected_comparison],timeout=90);st.rerun()
+                else:st.caption('No saved single-stock comparisons yet.')
+            except Exception as exc:fail('Could not list saved comparisons.',exc)
+        comparison=st.session_state.get('portfolio_comparison_result')
+        if comparison:
+            st.write('**Comparison status:** '+comparison['status']+' | Run '+comparison['run_id'][:12])
+            progress_rows=[]
+            for name,flow in comparison['flows'].items():
+                metric=flow.get('metrics',{});progress=flow.get('progress',{})
+                progress_rows.append({'Flow':name,'Status':flow['status'],'Sessions':f"{progress.get('completed_sessions','all')}/{progress.get('total_sessions','all')}",
+                    'Ending equity':metric.get('ending_equity'),'Total return %':metric.get('total_return_pct'),'Max drawdown %':metric.get('max_drawdown_pct'),
+                    'Completed trades':metric.get('completed_trades'),'Inference units':flow.get('model_usage',{}).get('attempted_calls',0)})
+            render_table(progress_rows,'Partial C1/C2 figures cover processed sessions only. Compare final returns after both AI flows complete.',height=210)
+            curve_rows=[];ledger_rows=[]
+            for name,flow in comparison['flows'].items():
+                curve_rows.extend({'Date':r['date'],'Flow':name,'Equity':r['equity']} for r in flow.get('curve',[]))
+                ledger_rows.extend({'Flow':name,**r} for r in flow.get('ledger',[]))
+            if curve_rows:
+                chart=pd.DataFrame(curve_rows);chart['Date']=pd.to_datetime(chart['Date'])
+                st.line_chart(chart.pivot_table(index='Date',columns='Flow',values='Equity',aggfunc='last'),use_container_width=True)
+            with st.expander('Combined C0 / C1 / C2 trade ledger',expanded=True):
+                render_table(ledger_rows,'Open holdings are marked to the latest processed close; there is no forced terminal sale.',height=340)
+                if ledger_rows:st.download_button('Download comparison ledger CSV',pd.DataFrame(ledger_rows).to_csv(index=False),file_name='aegistrade_c0_c1_c2_'+comparison['run_id'][:8]+'.csv',mime='text/csv')
+            st.download_button('Download complete comparison JSON',json.dumps(comparison,indent=2),file_name='aegistrade_c0_c1_c2_'+comparison['run_id'][:8]+'.json',mime='application/json')
+            st.caption(comparison['comparison_design']['interpretation']+' Use the case experiment below for the fair same-case, same-budget multi-agent evaluation.')
     selection_settings=st.session_state.get('selection_research_settings',{})
     st.info("C2 checks dated company evidence with a 15:30 IST cutoff. Strong trend and RSI-reversion entries may follow the technical signal with explicitly incomplete coverage after attempted research, provided no concrete adverse event remains unresolved. Breakouts require dated corroboration. A supported adverse finding blocks entry and requires an EXIT for a holding after critic validation. Independent press coverage is not assumed.")
     with st.expander('Historical company research — prepare before paid calls'):
@@ -763,6 +869,13 @@ elif page == "AI Agent Experiments":
         st.caption(f"Run {experiment['run_id']} | Model: {experiment['model']} | Call budget: {experiment['max_possible_paid_calls']}")
         summary=pd.DataFrame(experiment.get("summary",[]))
         render_table(summary,"Guard pass means agreement with the deterministic routing reference and acceptable citations; not profitable performance.",height=210)
+        if not summary.empty and {'config','task_success_pct','policy_violation_count','model_error_count'}.issubset(summary.columns):
+            st.write('**Quality and reliability by architecture**')
+            st.bar_chart(summary.set_index('config')[['task_success_pct','policy_violation_count','model_error_count']],use_container_width=True)
+        if not summary.empty and {'config','model_calls','median_latency_s','p95_latency_s'}.issubset(summary.columns):
+            st.write('**Cost and latency by architecture**')
+            st.bar_chart(summary.set_index('config')[['model_calls','median_latency_s','p95_latency_s']],use_container_width=True)
+            st.caption('These quantities use different units; inspect the table for exact values. Provider cost remains unknown unless every call reports it.')
         outputs=experiment.get("outputs",[])
         render_table([{k:v for k,v in item.items() if k in ("case_id","config","market_regime","expected_strategy","selected_strategy","guard_pass","critic_accept","llm_calls","latency_s")} for item in outputs],height=250)
         provider_failures=[u for output in outputs for u in output.get('usage',[]) if u.get('error') or (u.get('http_status') or 0)>=400]
