@@ -288,3 +288,7 @@ C1/C2 progress is shown above the run form, with separate per-flow saved results
 ### SMC stopped-position recovery (0.25.0)
 
 C1 can now sell at its protective/trailing stop and make one evidence-first recovery entry after a later bullish close reclaims the stopped price, previous high and original order-block upper level. Default watch: ten sessions; configurable in Strategy Backtests. A second stop exhausts the retry; source/adverse, sizing and profit/stop gates remain. Start a fresh run; earlier runs are preserved under their original execution rules. See the [C1 guide](docs/AegisTrade_C1_SMC_Three_Flow_Guide.md).
+
+### Historical issuer evidence library (0.25.1)
+
+All configured universes share a dated 103-stock source library. View **Policy Knowledge → Historical company evidence library** for coverage and remaining gaps. See [backfill report](docs/AegisTrade_RAG_Evidence_Backfill_Report.md) for the repeatable download/OCR/audit commands. Company facts remain date-filtered and separate from policy RAG. Downloaded sources stay local and are excluded from Git. Start fresh research after source/corpus updates.

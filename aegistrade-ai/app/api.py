@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.25.0',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.25.1',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -854,3 +854,9 @@ def import_reviewed_news(body:ReviewedNewsletterImport,x_reviewer_token:str|None
             path=Path(tmp)/'news.jsonl';path.write_text(body.jsonl)
             return import_archived_news(body.symbol,body.signal_date.isoformat(),path,reviewer=body.reviewer)
     except (ValueError,KeyError,TypeError) as exc:raise HTTPException(422,str(exc)) from None
+
+
+@app.get('/company/evidence-library/status')
+def company_evidence_library_status():
+    from aegistrade.evidence_library import library_status
+    return library_status()

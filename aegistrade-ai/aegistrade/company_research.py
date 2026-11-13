@@ -101,6 +101,7 @@ def _persist_pack(path,pack):
 
 def classify(title):
     s=title.lower()
+    if re.search(r'transcript|audio recording|recording of.*(?:call|analyst|investor)|earnings call|conference call',s):return 'company_news'
     if ('financial result' in s or 'audited result' in s or 'unaudited result' in s) and not any(x in s for x in ('intimation','prior intimation','meeting scheduled')):
         return 'financial_results'
     if 'annual report' in s:return 'annual_report'
@@ -131,13 +132,23 @@ class NSEArchive:
         self.refresh=False
         self.session=requests.Session()
         self.session.headers.update({'User-Agent':'Mozilla/5.0','Accept':'application/json', 'Referer':NSE_PAGE})
-        # Normal public session; no credentials, proxy bypass or anti-bot evasion.
-        # The public landing page can be denied while the archive API is available.
-        # Its cookies are optional; API/PDF responses still must pass status checks.
+        self._session_initialized=False
+
+    def _bootstrap(self):
+        # Lazy public session: fully cached historical evidence also works offline.
+        if getattr(self,'_session_initialized',False):return
+        self._session_initialized=True
         try:self.session.get('https://www.nseindia.com',timeout=15)
         except requests.RequestException:pass
 
     def announcements(self,symbol,start,end):
+        from .evidence_library import cached_announcements
+        cached=cached_announcements(symbol,start,end)
+        if cached is not None:return cached
+        return self._network_announcements(symbol,start,end)
+
+    def _network_announcements(self,symbol,start,end):
+        self._bootstrap()
         from .security_identity import segments
         result=[]
         for requested,left,right in segments(symbol,start,end,clip_listing=False):
@@ -145,11 +156,17 @@ class NSEArchive:
                         'from_date':left.strftime('%d-%m-%Y'),'to_date':right.strftime('%d-%m-%Y')},timeout=20)
             r.raise_for_status();rows=r.json()
             if not isinstance(rows,list) or len(rows)>=500:raise ValueError('Unverified/truncated NSE announcement response')
+            indexed_under_current=False
+            if not rows and requested!=symbol:
+                # NSE can migrate old disclosures to its verified continuing symbol index.
+                fallback=self.session.get(NSE_API,params={'index':'equities','symbol':symbol,'from_date':left.strftime('%d-%m-%Y'),'to_date':right.strftime('%d-%m-%Y')},timeout=20)
+                fallback.raise_for_status();rows=fallback.json();indexed_under_current=True
+                if not isinstance(rows,list) or len(rows)>=500:raise ValueError('Unverified/truncated NSE announcement response')
             for row in rows:
                 if str(row.get('symbol','')).upper() not in {requested,symbol}:raise ValueError('Announcement response belongs to another security')
                 normalized=dict(row)
                 if requested!=symbol:
-                    normalized['identifier_normalization']=requested+' → '+symbol+' via frozen official NSE symbol-change history'
+                    normalized['identifier_normalization']=requested+' → '+symbol+' via frozen official NSE symbol-change history'+('; NSE current-symbol historical archive index' if indexed_under_current else '')
                     normalized['symbol']=symbol
                 result.append(normalized)
         return result
@@ -159,14 +176,17 @@ class NSEArchive:
         u=urlparse(url)
         if u.scheme!='https' or u.hostname not in ARCHIVE_HOSTS or u.username or u.password or u.port not in (None,443):raise ValueError('Archive URL outside allowlist')
         cache=store_root()/'attachments'/(hashlib.sha256(url.encode()).hexdigest()+'.json')
-        if cache.exists() and not self.refresh:
+        verified=None
+        if cache.exists():
             try:
                 saved=json.loads(cache.read_text())
-                if (saved['source_url']==url and saved['extraction_version']=='pypdf-first35-v1'
+                if (saved['source_url']==url and saved['extraction_version'] in {'pypdf-first35-v1','pypdf+apple-vision-first8-v1','pypdf+apple-vision-financial-v2'}
                     and len(saved['text'])<=100000 and saved['content_sha256']==hashlib.sha256(saved['text'].encode()).hexdigest()
                     and re.fullmatch(r'[0-9a-f]{64}',saved['archive_sha256'])):
-                    self.last_pdf_retrieved_at=saved['retrieved_at']
-                    return saved['text'],saved['archive_sha256']
+                    verified=saved
+                    if not self.refresh:
+                        self.last_pdf_retrieved_at=saved['retrieved_at']
+                        return saved['text'],saved['archive_sha256']
             except (ValueError,KeyError,TypeError):pass
         with self.session.get(url,timeout=25,stream=True,allow_redirects=False) as r:
             r.raise_for_status()
@@ -178,10 +198,17 @@ class NSEArchive:
                 chunks.append(part)
         raw=b''.join(chunks)
         if not raw.startswith(b'%PDF'):raise ValueError('Archive did not return PDF')
+        if verified and hashlib.sha256(raw).hexdigest()==verified['archive_sha256']:
+            self.last_pdf_retrieved_at=datetime.now(timezone.utc).isoformat()
+            return verified['text'],verified['archive_sha256']
         from pypdf import PdfReader
         reader=PdfReader(BytesIO(raw))
         if len(reader.pages)>250:raise ValueError('PDF page bound exceeded')
         text='\n'.join((p.extract_text() or '') for p in reader.pages[:35])[:100000]
+        cache.parent.mkdir(parents=True,exist_ok=True)
+        original=cache.with_suffix('.pdf');original_temp=original.with_name(original.name+'.'+uuid.uuid4().hex+'.tmp')
+        try:original_temp.write_bytes(raw);original_temp.replace(original)
+        finally:original_temp.unlink(missing_ok=True)
         archive_sha=hashlib.sha256(raw).hexdigest();self.last_pdf_retrieved_at=datetime.now(timezone.utc).isoformat()
         saved={'source_url':url,'extraction_version':'pypdf-first35-v1','text':text,'archive_sha256':archive_sha,
             'content_sha256':hashlib.sha256(text.encode()).hexdigest(),'retrieved_at':self.last_pdf_retrieved_at}
@@ -214,7 +241,9 @@ def prepare_company_research(symbol,day,*,provider=None,refresh=False,progress=N
     # Reserve room for results and issuer news; do not download every routine notice.
     selected=[]
     for kind,limit in [('financial_results',2),('annual_report',1),('company_news',2),('announcement',1)]:
-        selected.extend([d for d in ordered if d['kind']==kind][:limit])
+        candidates_for_kind=[d for d in ordered if d['kind']==kind]
+        if kind=='financial_results':candidates_for_kind.sort(key=lambda d:0 if re.match(r'financial result',d['title'],re.I) else 1)
+        selected.extend(candidates_for_kind[:limit])
     risk_items=[d for d in ordered if potential_adverse(d['title'],recent=(cutoff-datetime.fromisoformat(d['available_at'])).days<=7)]
     seen={d['source_url'] for d in selected}
     selected.extend(d for d in risk_items[:8] if d['source_url'] not in seen)
@@ -233,6 +262,7 @@ def prepare_company_research(symbol,day,*,provider=None,refresh=False,progress=N
             'content_sha256':hashlib.sha256(text.encode()).hexdigest(),'archive_sha256':raw_sha,'extraction_status':status}
         CompanyDocument.model_validate(doc)
         docs.append(doc)
+    ocr_used=any(d['text'].startswith('MACHINE OCR SUPPLEMENT:') for d in docs)
     pack={'version':VERSION,'risk_scan_version':RISK_SCAN_VERSION,
         'risk_scan':{'candidate_count':len(risk_items),'selected_urls':[d['source_url'] for d in risk_items[:8]],'metadata_sha256':digest(ordered),'bounded_limit':8},'evidence_view_version':EVIDENCE_VIEW_VERSION,'symbol':symbol,'decision_at':cutoff.isoformat(),'window_start':start.isoformat(),
         'prepared_at':now,'coverage':{'exchange_scan_complete':invalid==0,'invalid_timestamp_rows':invalid,
@@ -241,6 +271,7 @@ def prepare_company_research(symbol,day,*,provider=None,refresh=False,progress=N
         'limitations':['Selected official filings and issuer news, not comprehensive independent press coverage.',
         'PDF extraction limited to first 35 pages; financial figures are not independently normalized.',
             'Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.']}
+    if ocr_used:pack['limitations'].append('Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.')
     _persist_pack(path,pack)
     return read_company_research(symbol,day)
 

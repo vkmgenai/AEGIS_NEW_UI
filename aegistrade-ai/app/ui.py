@@ -916,7 +916,20 @@ elif page == "Policy Knowledge":
         st.success('Neural retrieval and persistent index verified for this corpus. Answer generation happens in C2 after retrieval.')
     elif status['mode']=='neural':st.info('Neural mode is configured; build/verify the current index before claiming measured quality.')
     else:st.info('Offline retrieval is active. It uses TF-IDF rather than neural embeddings; this status is shown explicitly.')
-    st.caption('This is a policy/specification knowledge base. It is not a company-news or financial-statement research service. Searches use local retrieval models, with no paid OpenRouter generation on this screen.')
+    st.caption('The policy search below retrieves project rules and background. Dated company filings are a separate evidence layer, shown in the library panel. This screen makes no paid generation calls.')
+    with st.expander('Historical company evidence library',expanded=True):
+        try:
+            library=get('/company/evidence-library/status')
+            if library.get('report'):
+                report=library['report'];totals=report['totals']
+                st.write(str(report['unique_stocks'])+' distinct stocks across the configured universes')
+                st.write(str(totals['metadata_rows'])+' dated announcement records · '+str(totals['readable_documents'])+' readable selected documents · '+str(totals['financial_documents'])+' financial sources')
+                st.caption('Company filings are retrieved separately for the selected decision date through company_evidence. They are not mixed into the timeless policy search below. Readable/OCR text is not independently verified financial accuracy or proof of no adverse news.')
+                render_table([{k:r.get(k) for k in ['symbol','selected_documents','financial_documents','unavailable_documents','financial_coverage_pct','existing_packs','packs_financial_ready','packs_adverse_ready']} for r in report['stocks']],height=260)
+                st.download_button('Download evidence coverage report',json.dumps(report,indent=2),file_name='aegistrade_evidence_coverage.json',mime='application/json')
+            elif library.get('progress'):st.json(library['progress'])
+            else:st.caption('No audited company library is prepared yet. Company research can still prepare bounded evidence on demand.')
+        except Exception as exc:fail('Company evidence library status is unavailable.',exc)
     query = st.text_input("Search policy documents", value="What happens if an approved order is edited?", key="policy_query")
     historical_sources=st.checkbox('Limit external reference availability to a historical date',value=False)
     if historical_sources:
