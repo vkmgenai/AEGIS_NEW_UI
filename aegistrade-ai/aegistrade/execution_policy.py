@@ -66,3 +66,8 @@ def initial_stop_settings(policy):
     return {'mode':policy.stop_loss_mode,'atr_multiple':policy.atr_stop_multiple,
         'percent':policy.stop_loss_percent,'basis':'Completed signal close; fixed before later-open fill. Percentage is before fees, slippage and gaps.',
         'trailing_relationship':'Trailing stop can tighten the initial stop from subsequent eligible sessions; it never lowers it.'}
+
+
+def smc_policy_record(policy):
+    return {**position_policy_record(policy),'reentry_enabled':policy.smc_reentry_enabled,
+            'reentry_window_sessions':policy.smc_reentry_window_sessions,'max_recovery_fills_per_setup':1}

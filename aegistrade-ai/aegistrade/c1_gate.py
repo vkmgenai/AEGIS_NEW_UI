@@ -33,7 +33,7 @@ def validate_completed_c1(output,*,purpose='COMPANY_SCREEN'):
             'company_assessment':decision.company.model_dump(),'independent_critic':False}
 
 
-def validate_smc_order(order,output,frame,policy):
+def validate_smc_order(order,output,frame,policy,*,state=None):
     from .execution_policy import initial_stop_price
     from .agent_tools import SMCContext
     screen=validate_completed_c1(output,purpose='COMPANY_SCREEN')
@@ -41,7 +41,17 @@ def validate_smc_order(order,output,frame,policy):
     rows=frame[(frame.Symbol==order['symbol'])&(frame.Date.dt.strftime('%Y-%m-%d')==order['signal_date'])]
     if len(rows)!=1 or snapshot['date']!=order['signal_date'] or snapshot['symbol']!=order['symbol'] or order['strategy']!='SMC':raise ValueError('SMC order and dated screen differ')
     row=rows.iloc[0]
-    if not bool(row.SMCSignal) or order.get('smc_context')!=row.SMCContext:raise ValueError('SMC setup proof changed')
+    from . import smc_reentry
+    watch=(state or {}).get('smc_reentry_watches',{}).get(order['symbol'])
+    if order.get('smc_reentry'):
+        if not policy.smc_reentry_enabled or not state or not watch:raise ValueError('SMC recovery policy/watch is missing')
+        smc_reentry.validate_stop_proof(watch,state,policy)
+        if smc_reentry.context(watch)!=order['smc_reentry'] or order.get('smc_context')!=watch['smc_context']:raise ValueError('SMC recovery proof changed')
+        index=state['dates'].index(order['signal_date'])
+        if not smc_reentry.recovery(row,watch,index)[0]:raise ValueError('SMC recovery close is not confirmed')
+    else:
+        if watch and watch['status']!='EXPIRED':raise ValueError('A watched SMC stop cannot bypass its recovery limits')
+        if not bool(row.SMCSignal) or order.get('smc_context')!=row.SMCContext:raise ValueError('SMC setup proof changed')
     SMCContext.model_validate(order['smc_context'])
     if abs(order['stop']-initial_stop_price(row.Close,row.ATR14,policy))>1e-8:raise ValueError('SMC stop changed')
     return screen

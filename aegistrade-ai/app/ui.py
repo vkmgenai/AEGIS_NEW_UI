@@ -427,6 +427,9 @@ elif page == "Strategy Backtests":
         trailing_enabled=st.checkbox('Enable trailing stop',value=not is_c1,key='c1_trailing_stop' if is_c1 else 'simulation_trailing_stop')
         trailing_multiple=st.number_input('Trailing distance (× ATR14 at entry signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=not trailing_enabled)
         st.caption('A trailing stop follows the highest completed close since entry and never falls. Its ATR distance is fixed from the entry signal. Each increase applies from the next session; existing strategy and C2 exits still apply. Trailing can tighten your chosen initial stop; disable trailing if you want the initial stop price to stay fixed.')
+        smc_reentry_enabled=st.checkbox('Allow one SMC recovery entry after a stop',value=True,key='smc_reentry_enabled')
+        smc_reentry_window=st.number_input('SMC recovery watch (trading sessions)',min_value=1,max_value=30,value=10,step=1,disabled=not smc_reentry_enabled)
+        st.caption('Applies to SMC only. After a stop sale, wait for a later bullish close above the prior high, stopped level and original order-block upper level. C1 checks fresh dated evidence first. One retry per stopped setup, later-open fill, new sizing and the same profit/stop rules; a second stop exhausts that setup. Breakout has its own separate recovery policy.')
         if is_c1:
             breakout_risk=.5;breakout_atr=2.5;breakout_percent=5.;breakout_trail=2.5;breakout_activation=1.;breakout_reentry=False
         else:
@@ -452,6 +455,7 @@ elif page == "Strategy Backtests":
     if run_sim:
         if not approve_rules:st.error("Approve the displayed replay assumptions before running the historical simulation.")
         elif is_c1 and not health.get('c1_smc_portfolio_supported',False):st.error('Restart API and dashboard to load C1 SMC support.')
+        elif smc_reentry_enabled and not health.get('smc_reentry_supported',False):st.error('Restart API/dashboard to load SMC recovery support before starting this run.')
         elif not health.get('breakout_reentry_supported',False):st.error('Restart the API and dashboard to load breakout risk and re-entry support before starting a new run.')
         elif not health.get('configurable_stop_loss_supported',False):st.error('The backend has not loaded configurable initial stops yet. Finish or pause active work, then restart the API and dashboard together before starting a new run.')
         elif not health.get('fresh_adverse_profit_policy_supported',False):st.error('Restart the API and dashboard together to load fresh entry review, adverse-event research and take-profit rules before starting this new run.')
@@ -461,7 +465,7 @@ elif page == "Strategy Backtests":
             st.error("The simulation start date must be before the end date.")
         else:
             payload={"initial_capital":float(capital),"start_date":start_date.isoformat(),"end_date":end_date.isoformat(),
-                     "breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
+                     "smc_reentry_enabled":bool(smc_reentry_enabled),"smc_reentry_window_sessions":int(smc_reentry_window),"breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
                      "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
             try:
                 if is_ai:
@@ -499,6 +503,9 @@ elif page == "Strategy Backtests":
             with st.expander('Strategy risk settings and breakout re-entry watch'):
                 st.json(result['strategy_policies'])
                 st.json(result.get('breakout_reentry_watches',[]))
+        if result.get('smc_reentry_watches'):
+            with st.expander('SMC stopped-position recovery watches',expanded=True):
+                st.json(result['smc_reentry_watches'])
         if result.get('initial_stop_loss'):
             with st.expander('Initial stop-loss settings'):st.json(result['initial_stop_loss'])
         c2_result='model_usage' in result

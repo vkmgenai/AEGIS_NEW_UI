@@ -23,13 +23,14 @@ from .llm_backend import identity,model_name
 from .research_gate import validate_completed_c2
 from .corpus import corpus_info
 from .research_diagnostics import saved_failure,inference_diagnostic
-from .execution_policy import protective_exit,take_profit_reference,defer_entry_review,initial_stop_price,initial_stop_settings,policy_for_strategy,position_policy_record,strategy_policy_records
+from .execution_policy import protective_exit,take_profit_reference,defer_entry_review,initial_stop_price,initial_stop_settings,policy_for_strategy,position_policy_record,strategy_policy_records,smc_policy_record
 from .trailing_stop import advance_trailing_stop,stop_exit_reason
 from . import portfolio_memory
 from .dated_web import eligible as web_eligible
 from .breakout_reentry import register_breakout_stop,reentry_candidates,reentry_context
+from . import smc_reentry
 
-VERSION='portfolio-v7-c1-smc-evidence-first'
+VERSION='portfolio-v8-smc-stop-recovery'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
@@ -55,6 +56,7 @@ class C2PortfolioSettings(SimulationSettings):
 class C1PortfolioSettings(C2PortfolioSettings):
     research_flow:Literal['C1']='C1'
     mode:str='SMC'
+    smc_reentry_enabled:bool=True
     take_profit_percent:float=Field(default=4.,gt=0,le=100,allow_inf_nan=False)
     trailing_stop_enabled:bool=False
     breakout_reentry_enabled:bool=False
@@ -109,19 +111,19 @@ def create_run(frame,settings,*,source='synthetic',provenance=None,model=None):
         'deferred_entries':[],'positions':{},'last_marks':{},'queued':[],'curves':[],'ledger':[],'selection_audit':[],'stop_updates':[],
         'decisions':[],'processed_close_keys':[],'model_calls':0,'budget_charged':0,'uncertain_model_calls':0,
         'call_limit':settings.max_model_calls,'inflight':None,'usage':[],'last_error':None,
-        'research_attempts':{},'breakout_reentry_watches':{},
+        'research_attempts':{},'breakout_reentry_watches':{},'smc_reentry_watches':{},
         'consents':[{'at':now(),'call_limit':settings.max_model_calls,'historical_rules':True}],
         'execution_policy':'Automatic historical fills under upfront approved rules; no live writes or per-fill human pause.'}
     # The reference uses identical data, capital, costs and risk; it has no C2 filters/reviews.
     policy=policy_from_settings(settings)
     state['strategy_policies']=strategy_policy_records(policy)
-    if settings.research_flow=='C1':state['strategy_policies']={'SMC':position_policy_record(policy)}
+    if settings.research_flow=='C1':state['strategy_policies']={'SMC':smc_policy_record(policy)}
     from .engine import backtest,buy_and_hold
     eq,events,metrics=backtest(f,mode=settings.mode,p=policy,automatic_selection=True,screening_limit=settings.screening_candidates_per_session if settings.research_flow=='C1' else 3)
     bench,bm=buy_and_hold(f,policy)
     state['reference']={'metrics':normalize(metrics),'curve':[{'date':str(r.Date.date()),'equity':r.Equity} for r in eq.itertuples()]}
     state['reference']['ledger']=[{'date':str(r.Date.date()),'symbol':r.Symbol,'event':r.Event,'quantity':r.Quantity,
-        'price':r.Price,'fee':r.Fee,'strategy':r.Strategy,'realized_pnl':normalize(r.PnL)} for r in events.itertuples()]
+        'price':r.Price,'fee':r.Fee,'strategy':r.Strategy,'realized_pnl':normalize(r.PnL),'entry_setup':r.EntrySetup if r.Event=='BUY' else None} for r in events.itertuples()]
     state['benchmark']={'name':'EQUAL_WEIGHT_BUY_AND_HOLD','metrics':normalize(bm),
                         'curve':[{'date':str(r.Date.date()),'equity':r.Equity} for r in bench.itertuples()]}
     save(state_path(run_id),state);return run_id
@@ -270,15 +272,19 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         return rec
 
     def sell(sym,bar,when,reason,reference,research_id=None):
-        pos=state['positions'].pop(sym);price=reference*(1-p.slippage_bps/10000)
+        pos=state['positions'].pop(sym);price=reference*(1-p.slippage_bps/10000);smc_watch_id=None
         if reason in {'SELL_STOP','SELL_TRAILING_STOP'}:
             register_breakout_stop(state.setdefault('breakout_reentry_watches',{}),{**pos,'symbol':sym},when,state['day_index'],p.breakout_reentry_enabled)
+            smc_watch_id=smc_reentry.register_stop(state.setdefault('smc_reentry_watches',{}),{**pos,'symbol':sym},when,state['day_index'],enabled=p.smc_reentry_enabled,window=p.smc_reentry_window_sessions)
+            if smc_watch_id and research_id and any(d.get('id')==research_id and (d.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'} for d in state['decisions']):
+                state['smc_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
         fee=price*pos['quantity']*p.fee_bps/10000;net=price*pos['quantity']-fee
         state['cash']+=net
         state['ledger'].append({'date':when,'symbol':sym,'event':reason,'quantity':pos['quantity'],'price':price,'fee':fee,
             'strategy':pos['strategy'],'realized_pnl':net-pos['quantity']*pos['entry_price']-pos['entry_fee'],
             'initial_stop':pos.get('initial_stop',pos['stop']),'stop_price':pos['stop'],'take_profit_reference':take_profit_reference(pos,p),
-            'entry_research_id':pos['entry_research_id'],'research_id':research_id,'entry_date':pos['entry_date']})
+            'entry_research_id':pos['entry_research_id'],'research_id':research_id,'entry_date':pos['entry_date'],
+            'stop_watch_id':smc_watch_id,'smc_context':pos.get('smc_context'),'smc_reentry_count':pos.get('smc_reentry_count',0)})
 
     try:
         for index in range(state['day_index'],len(state['dates'])):
@@ -317,7 +323,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                         # Durable research is revalidated before a simulated fill; a changed pack blocks it.
                         try:
                             out=json.loads((folder/'research'/f"{order['research_id']}.json").read_text())
-                            if flow=='C1':validate_smc_order(order,out,f,p)
+                            if flow=='C1':validate_smc_order(order,out,f,p,state=state)
                             else:validator(out,purpose='ENTRY')
                         except (ValueError,KeyError,TypeError,OSError):
                             state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Entry research changed before next eligible open']});continue
@@ -331,14 +337,17 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                                 'strategy':order['strategy'],'entry_date':when,'entry_index':index,'last_review_index':index,
                                 'last_news_date':order['signal_date'],
                                 'entry_research_id':order['research_id']}
+                            state['positions'][sym]['smc_context']=order.get('smc_context')
+                            state['positions'][sym]['smc_reentry_count']=int(bool(order.get('smc_reentry')))
+                            if order.get('smc_reentry'):state['smc_reentry_watches'].pop(sym,None)
                             state['positions'][sym]['execution_policy']=position_policy_record(active_policy)
                             state['positions'][sym]['breakout_reentry_count']=int(order.get('breakout_reentry',False))
                             if order.get('breakout_reentry'):state['breakout_reentry_watches'].pop(sym,None)
                             state['ledger'].append({'date':when,'symbol':sym,'event':'BUY','quantity':qty,'price':buy,'fee':fee,
                                 'initial_stop':order['stop'],'strategy':order['strategy'],'realized_pnl':None,'research_id':order['research_id'],'signal_date':order['signal_date'],'original_signal_date':order.get('original_signal_date',order['signal_date']),
                                 'risk_percent_used':active_policy.risk_per_trade*100,'trailing_activation_r':active_policy.trailing_activation_r})
-                            state['ledger'][-1]['entry_setup']='SMC_EVIDENCE_FIRST' if flow=='C1' else 'BREAKOUT_BOUNCE' if order.get('breakout_reentry') else 'REGULAR'
-                            if flow=='C1':state['ledger'][-1]['smc_context']=order['smc_context']
+                            state['ledger'][-1]['entry_setup']='SMC_RECOVERY' if order.get('smc_reentry') else 'SMC_EVIDENCE_FIRST' if flow=='C1' else 'BREAKOUT_BOUNCE' if order.get('breakout_reentry') else 'REGULAR'
+                            if flow=='C1':state['ledger'][-1].update(smc_context=order['smc_context'],smc_reentry=order.get('smc_reentry'))
                         else:state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Next-open gap, risk, cash or daily-loss check failed']})
                 state['queued']=pending
                 for sym,pos in list(state['positions'].items()):
@@ -397,7 +406,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                 entry_snap={str(r.Symbol):r for r in entry_daily.itertuples()}
                 if flow=='C1':
                     from .smc import screening_candidates
-                    audit=screening_candidates(entry_daily,set(state['positions'])|pending_buys,index,settings.screening_candidates_per_session)
+                    smc_reentry.expire(state.setdefault('smc_reentry_watches',{}),index)
+                    audit=screening_candidates(entry_daily,set(state['positions'])|pending_buys,index,settings.screening_candidates_per_session,priority_symbols=smc_reentry.priority_symbols(state['smc_reentry_watches']))
                     if len(state['positions'])+len(pending_buys)>=p.max_positions:
                         for r in audit:r['selected']=False;r['reasons'].append('POSITION_LIMIT')
                 else:
@@ -438,20 +448,26 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                     if flow=='C1' and rec['action']=='SCREEN':
                         activity('CHECKING_SMC_SIGNAL',snapshot)
                         from .smc import SMC_REASONS
-                        stage=getattr(bar,'SMCStage','ENTRY_CONFIRMED' if bar.SMCSignal else 'WAITING_SWEEP')
+                        watch=state.get('smc_reentry_watches',{}).get(sym) if p.smc_reentry_enabled else None
+                        watched=watch is not None and watch['status']!='EXPIRED'
+                        signal,stage=smc_reentry.recovery(bar,watch,index) if watched else (bool(bar.SMCSignal),getattr(bar,'SMCStage','ENTRY_CONFIRMED' if bar.SMCSignal else 'WAITING_SWEEP'))
                         rec.update(smc_stage=stage,research_explanation=rec['explanation'],
                                    explanation=SMC_REASONS[stage]+' Dated company screening passed.')
                         rec.update(research_order='EVIDENCE_BEFORE_SIGNAL',evidence_passed=True,
-                                   smc_signal=bool(bar.SMCSignal),entry_setup='SMC_EVIDENCE_FIRST')
-                        rec['action']='ENTER' if bool(bar.SMCSignal) else 'NO_SMC_SIGNAL'
-                        if bool(bar.SMCSignal):rec['smc_context']=bar.SMCContext
+                                   smc_signal=signal,entry_setup='SMC_RECOVERY' if watched else 'SMC_EVIDENCE_FIRST')
+                        rec['action']='ENTER' if signal else 'NO_SMC_SIGNAL'
+                        if signal:
+                            rec['smc_context']=watch['smc_context'] if watched else bar.SMCContext
+                            if watched:rec['smc_reentry']=smc_reentry.context(watch)
                     if rec['action']=='ENTER':
-                        stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,chosen_strategy(bar)))
-                        if stop>0:state['queued'].append({'side':'BUY','symbol':sym,'strategy':chosen_strategy(bar),
+                        stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,'SMC' if flow=='C1' else chosen_strategy(bar)))
+                        if stop>0:state['queued'].append({'side':'BUY','symbol':sym,'strategy':'SMC' if flow=='C1' else chosen_strategy(bar),
                             'stop':stop,'signal_date':when,'original_signal_date':origins.get(sym,when),'research_id':rec['id'],
-                            'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE',**({'smc_context':bar.SMCContext} if flow=='C1' else {})})
+                            'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE',**({'smc_context':rec['smc_context'],'smc_reentry':rec.get('smc_reentry')} if flow=='C1' else {})})
                     elif bar.Regime=='BREAKOUT_BOUNCE' and (rec.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'}:
                         state['breakout_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
+                    if flow=='C1' and sym in state.get('smc_reentry_watches',{}) and (rec.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'}:
+                        state['smc_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
                     if flow=='C1' and not rec.get('evidence_passed'):
                         rec['smc_stage']='NOT_CHECKED_EVIDENCE_BLOCKED'
                     state['decisions'].append(rec);state['processed_close_keys'].append(key)
@@ -543,6 +559,7 @@ def result_for(state):
         'portfolio_memory':state.get('memory_manifest'),'settings':state['settings'],'data_source':state['data_source'],'data_provenance':state['data_provenance'],
         'strategy_policies':state.get('strategy_policies',{}),'legacy_shared_execution_policy':'strategy_policies' not in state,
         'breakout_reentry_watches':list(state.get('breakout_reentry_watches',{}).values()),
+        'smc_reentry_watches':list(state.get('smc_reentry_watches',{}).values()),
         'period':{'start':state['dates'][0],'end':state['dates'][-1]},'sessions':len(state['dates']),
         'progress':{'completed_sessions':state['day_index'],'total_sessions':len(state['dates']),'phase':state['phase'],
                     'current_date':state['dates'][min(state['day_index'],len(state['dates'])-1)]},
@@ -558,6 +575,7 @@ def result_for(state):
             'activation':'raised at completed close, effective from next session',
             'breakout_settings':{k:v for k,v in state['settings'].items() if k.startswith('breakout_')},
             'breakout_reentry_window_sessions':10 if state.get('strategy_policies') and flow=='C2' else None,
+            'smc_reentry_enabled':state['settings'].get('smc_reentry_enabled',False),'smc_reentry_window_sessions':state['settings'].get('smc_reentry_window_sessions',10),
             'smc_signal_exit':'none; target/protective stop/adverse research exit' if flow=='C1' else None},
         'stock_selection':{'enabled':True,'audits':{flow:state['selection_audit']},'note':'C1 liquidity screens precede SMC eligibility; C2 shortlists precede specialist research. Neither shortlist is an executed entry.'},
         'inference':state.get('inference',identity(backend='openrouter',model=state['model'])),

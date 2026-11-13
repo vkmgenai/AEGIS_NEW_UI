@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Literal
-from .execution_policy import initial_stop_settings,strategy_policy_records
+from .execution_policy import initial_stop_settings,strategy_policy_records,smc_policy_record
 import json
 import math
 import uuid
@@ -39,6 +39,8 @@ class SimulationSettings(BaseModel):
     breakout_trailing_atr_multiple:float=Field(default=2.5,ge=.5,le=10,allow_inf_nan=False)
     breakout_trailing_activation_r:float=Field(default=1.,ge=0,le=5,allow_inf_nan=False)
     breakout_reentry_enabled:bool=True
+    smc_reentry_enabled:bool=False
+    smc_reentry_window_sessions:int=Field(default=10,ge=1,le=30)
 
     @model_validator(mode="after")
     def validate_dates_and_mode(self):
@@ -58,7 +60,7 @@ def policy_from_settings(settings):
         breakout_risk_per_trade=settings.breakout_risk_percent/100,breakout_stop_loss_mode=settings.breakout_stop_loss_mode,
         breakout_stop_loss_percent=settings.breakout_stop_loss_percent,breakout_atr_stop_multiple=settings.breakout_initial_stop_atr_multiple,
         breakout_trailing_atr_multiple=settings.breakout_trailing_atr_multiple,breakout_trailing_activation_r=settings.breakout_trailing_activation_r,
-        breakout_reentry_enabled=settings.breakout_reentry_enabled)
+        breakout_reentry_enabled=settings.breakout_reentry_enabled,smc_reentry_enabled=settings.smc_reentry_enabled,smc_reentry_window_sessions=settings.smc_reentry_window_sessions)
 
 
 def normalize(value):
@@ -108,7 +110,7 @@ def execute_simulation(market_frame: pd.DataFrame, settings: SimulationSettings,
     policy = policy_from_settings(settings)
     chosen_modes = MODES if settings.mode == "ALL" else (settings.mode,)
     metrics, curves, ledgers = [], {}, {}
-    selection_audits={};stop_updates={};reentry_watches={}
+    selection_audits={};stop_updates={};reentry_watches={};smc_watches={}
     from dataclasses import asdict
     from .selection import SelectionPolicy
     for mode in chosen_modes:
@@ -116,6 +118,7 @@ def execute_simulation(market_frame: pd.DataFrame, settings: SimulationSettings,
         selection_audits[mode]=eq.attrs.get("selection_audit",[])
         stop_updates[mode]=eq.attrs.get('stop_updates',[])
         reentry_watches[mode]=list(eq.attrs.get('breakout_reentry_watches',{}).values())
+        smc_watches[mode]=list(eq.attrs.get('smc_reentry_watches',{}).values())
         metrics.append(normalize({"mode": mode, "initial_capital": settings.initial_capital,
                                   "ending_cash": float(eq.Cash.iloc[-1]), **result}))
         curves[mode] = [{"date": r.Date.date().isoformat(), "equity": round(float(r.Equity), 2),
@@ -141,7 +144,7 @@ def execute_simulation(market_frame: pd.DataFrame, settings: SimulationSettings,
         "sessions": int(days),
         "period": {"start": f.Date.min().date().isoformat(), "end": f.Date.max().date().isoformat()},
         "settings": settings.model_dump(mode="json"),
-        "breakout_reentry_watches":reentry_watches,"stop_updates":stop_updates,"initial_stop_loss":initial_stop_settings(policy),'strategy_policies':strategy_policy_records(policy),
+        "smc_reentry_watches":smc_watches,"breakout_reentry_watches":reentry_watches,"stop_updates":stop_updates,"initial_stop_loss":initial_stop_settings(policy),'strategy_policies':{'SMC':smc_policy_record(policy)} if settings.mode=='SMC' else strategy_policy_records(policy),
         "metrics": metrics,
         "curves": curves,
         "ledgers": ledgers,

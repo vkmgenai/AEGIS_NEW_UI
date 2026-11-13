@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.24.1',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.25.0',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -234,7 +234,7 @@ def health():
             'dated_web_search_supported':True,'dated_web_search_enabled':os.getenv('AEGIS_DATED_WEB_SEARCH','true').lower()=='true',
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],
-            'c1_smc_portfolio_supported':True,'portfolio_flows':['C2','C1','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
+            'smc_reentry_supported':True,'c1_smc_portfolio_supported':True,'portfolio_flows':['C2','C1','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
             'portfolio_memory_supported':True,'max_portfolio_lessons_per_case':3,'company_evidence_view':'company-view-v5-substantive-body','breakout_source_quote_required':True,'structural_action_quarantine_supported':True,'signal_specific_evidence_supported':True,'adverse_news_exit_supported':True,
             'fresh_adverse_profit_policy_supported':True,'take_profit_default_percent':8.0,'friday_entry_review':'Next trading close; fill no earlier than the following eligible open',
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,

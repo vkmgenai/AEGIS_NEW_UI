@@ -12,6 +12,7 @@ def prepare_smc(frame):
     parts=[]
     for _,part in frame.groupby('Symbol',sort=False):
         f=part.sort_values('Date').copy();sweep=None;zone=None;records=[]
+        if 'PriorHigh' not in f:f['PriorHigh']=f.High.shift(1)
         rows=list(f.itertuples())
         for i,b in enumerate(rows):
             record={'SMCSignal':False,'SMCContext':None,'SMCStage':'WAITING_SWEEP'};close=float(b.Close)
@@ -52,7 +53,7 @@ def prepare_smc(frame):
     return pd.concat(parts,ignore_index=True).sort_values(['Date','Symbol']).reset_index(drop=True)
 
 
-def screening_candidates(daily,held,index,limit=3):
+def screening_candidates(daily,held,index,limit=3,*,priority_symbols=()):
     """Liquidity/history screen only: do not inspect SMC signals or future returns."""
     eligible=[];audit=[]
     for b in daily.itertuples():
@@ -70,12 +71,22 @@ def screening_candidates(daily,held,index,limit=3):
         if not reasons:eligible.append(r)
     eligible.sort(key=lambda r:(-r['average_turnover_20_inr'],r['symbol']))
     if eligible:
-        offset=(index*limit)%len(eligible);rotated=eligible[offset:]+eligible[:offset]
-        for rank,r in enumerate(rotated[:limit],1):r.update(selected=True,rank=rank)
+        priority=set(priority_symbols)
+        watched=[r for r in eligible if r['symbol'] in priority]
+        if watched:
+            offset=index%len(watched);watched=watched[offset:]+watched[:offset]
+        others=[r for r in eligible if r['symbol'] not in priority]
+        if others:
+            offset=(index*limit)%len(others);others=others[offset:]+others[:offset]
+        for rank,r in enumerate((watched+others)[:limit],1):r.update(selected=True,rank=rank)
     return audit
 
 
 SMC_REASONS={
+    'SMC_RECOVERY_CONFIRMED':'After the recorded stop, a later bullish close reclaimed the stop and original order-block upper level above the prior session high.',
+    'WAITING_SMC_RECOVERY':'Stopped SMC position: waiting for a later bullish recovery above the stop, original zone and previous high.',
+    'SMC_REENTRY_SAME_SESSION':'A stop sale occurred this session; same-session SMC re-entry is not permitted.',
+    'SMC_REENTRY_UNAVAILABLE':'The SMC recovery attempt is exhausted, expired or cancelled by adverse evidence.',
     'WAITING_SWEEP':'No qualifying liquidity sweep yet.',
     'LIQUIDITY_SWEEP_FOUND':'Liquidity sweep found; a later bullish structure break is still required.',
     'WAITING_STRUCTURE_BREAK':'Prior sweep found; waiting for the bullish displacement close above structure.',

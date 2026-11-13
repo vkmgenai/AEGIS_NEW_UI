@@ -1,13 +1,13 @@
 # AegisTrade AI: C1 SMC and the three portfolio flows
 
-Version 0.24.1 · 13 November 2026
+Version 0.25.0 · 13 November 2026
 
 ## Choose the workflow
 
 | Strategy Backtests option | Research order | Agent design | Entry | Exit |
 | --- | --- | --- | --- | --- |
 | C2 historical portfolio | Technical shortlist → dated research | Market, strategy and independent critic specialists | Existing approved router: trend, confirmed pullback, RSI reversion or breakout, including bounded stopped-breakout rebound | Existing code stop/trail/target/strategy exits and supported C2 EXIT |
-| C1 SMC portfolio | Liquidity/history screen → dated company research → SMC eligibility | One tool-using agent plus deterministic validation; no independent LLM critic | Explicit daily-bar SMC pattern after passing the company screen | Configured profit percentage, protective stop, optional trailing and supported adverse C1 EXIT |
+| C1 SMC portfolio | Liquidity/history screen → dated company research → SMC eligibility | One tool-using agent plus deterministic validation; no independent LLM critic | Regular daily-bar SMC pattern or confirmed stopped-position recovery, after a fresh company screen | Configured profit percentage, protective stop, optional trailing and supported adverse C1 EXIT |
 | Technical-only baseline | Code screening → signal | No generation calls | Existing technical modes; explicit SMC mode also available | Code exits and costs; no company/news model assessment |
 
 C1 is the requested evidence-before-signal case. It is an additional workflow; it does not replace C2 or remove breakout. Existing data, lessons and saved runs remain. New engine/prompt/corpus fingerprints require a fresh run for this version; old results remain readable.
@@ -62,7 +62,7 @@ A newsletter cannot fabricate an official financial filing, replace a failed off
 
 ## UI demo run
 
-1. Start services together with `bash scripts/start_unix.sh`. Open http://127.0.0.1:8501. Health should report 0.24.1 and c1_smc_portfolio_supported=true. Confirm the intended existing universe and downloaded period in Market Data. Nothing switches your universe automatically.
+1. Start services together with `bash scripts/start_unix.sh`. Open http://127.0.0.1:8501. Health should report 0.25.0 and c1_smc_portfolio_supported=true. Confirm the intended existing universe and downloaded period in Market Data. Nothing switches your universe automatically.
 2. Enter your private reviewer token. Keep the configured OpenRouter or signed-in Codex backend. C1 uses the same configured inference backend; it does not require a second API account or key.
 3. In Strategy Backtests choose **C1 SMC portfolio**. Start with a short available window (for example two trading weeks) and ₹200,000, risk 1%, ATR stop 2, target 4%, trailing off, three company screens/session, five-session holding review, and normal modeled fees/slippage. A short window tests the workflow; it need not contain an SMC trade. Choose dates supported by your downloaded data, not a guaranteed winning period.
 4. Begin with 48 inference units to inspect a few cases. A simple C1 case often uses two invocations (tool selection and typed response), but web retrieval/corrections can require more. The engine conservatively reserves eight per case before starting. Evidence-first research can consume allowance even when no trade signal exists. Increase allowance only with consent after inspecting the run; the total allowance does not increase the per-case cap.
@@ -113,3 +113,30 @@ C1 live counters distinguish company screens, evidence-passed cases, actual SMC 
 A passed case now records its exact SMC stage: waiting for sweep, sweep found, waiting for structure break, structure break confirmed, waiting for retest, expired/invalidated setup, or confirmed entry. Its explanatory text states why no entry exists. The SMC thresholds, profit/stop rules, evidence policy, existing model allowance and historical trades are unchanged by this correction. Earlier decisions without detailed stage telemetry retain their original data; they are not retroactively relabelled as fresh research.
 
 Use **Refresh AI progress** to reload all detailed tables. Expand **C1 saved runs, refresh, pause and resume** for C1 controls (or the corresponding C2 controls). A progress bar remains visible for queued, paused, completed and interrupted runs. A zero-entry result does not prove the process is idle: inspect evidence blockers, SMC stages and batch coverage. Existing 0.24.0 jobs remain compatible with this display/telemetry patch; no new simulation or additional allowance is required merely to see the corrected progress.
+
+
+## SMC re-entry after a stop (0.25.0)
+
+The C1 UI now offers **Allow one SMC recovery entry after a stop**, enabled by default for new runs, and **SMC recovery watch (trading sessions)**, default ten (range one to thirty). The same switch applies to an explicit technical-only SMC simulation; other technical/C2 strategies retain their own rules. The C1 technical reference uses identical SMC recovery settings.
+
+1. Execute the protective or trailing stop sale first, including gap handling, fees and slippage. Persist the real stop-ledger ID, symbol, date/index, stop level, original entry date, original order-block context and recovery count. Profit-target, strategy or adverse-research exits do not open a recovery watch.
+2. Within the watch window, prioritise stopped positions within the existing bounded research batch based only on the known stop history. Selection does not use the current recovery signal. High-volatility, history, liquidity, discontinuity, position/cash and daily-loss limits remain. With multiple watches and a small batch, not every stock is necessarily screened every session.
+3. C1 performs a fresh dated COMPANY_SCREEN using RAG/filings/news and bounded web fallback under the existing evidence policy. The model still returns NONE/SCREEN before code sees recovery eligibility. A prior favourable company screen is not reused as approval. Missing/unknown evidence blocks; a cited adverse finding cancels the watch.
+4. Only after the screen passes, require a **later** bullish candle (close above open) whose completed close exceeds the previous-session high, the stopped price and the original order-block upper level. The stop session is ineligible even if it rebounds strongly. This is SMC_RECOVERY_CONFIRMED, a recovery variant of the stopped setup; another full sweep/BOS sequence is not required.
+5. Queue a later-open BUY with entry_setup SMC_RECOVERY. Freeze a new stop from the recovery signal and recalculate quantity from current equity/cash and normal SMC risk/exposure limits. Do not increase risk to recover the prior loss. The existing profit target, protective stop and optional trailing apply. Friday/pre-gap freshness rules still apply.
+6. Before filling, validate fresh research plus the original recorded stop, immutable zone, watch ID/window/count, actual recovery candle and calculated stop. A forged/missing proof or an ordinary-SMC order attempting to bypass an active watch is blocked. Unfilled orders do not consume the retry. The window governs confirmation; later execution still follows existing later-open/missing-bar rules.
+7. One recovery fill consumes the retry. If it stops again, mark the setup EXHAUSTED; no third buy is allowed for that watched setup. An adverse cancellation also prevents a recovery. Once the window expires, a future independent full SMC setup can qualify under fresh evidence; the stock is not permanently excluded.
+
+Inspect **SMC stopped-position recovery watches** in results for WATCHING, EXHAUSTED, CANCELLED_ADVERSE or EXPIRED. Live decisions distinguish WAITING_SMC_RECOVERY, SMC_REENTRY_SAME_SESSION, SMC_RECOVERY_CONFIRMED and SMC_REENTRY_UNAVAILABLE. BUY/SELL records retain their stop/zone/research provenance. A recovery is a new risk decision and can lose again; no improved profit is established by these mechanical tests.
+
+This release changes execution policy and the policy corpus. **Start a fresh simulation to use SMC re-entry.** Earlier runs remain saved under their original rules; an active earlier run is checkpoint-paused before loading this version. Do not mix the new recovery policy into an already partially evaluated historical portfolio.
+
+### Additional viva questions
+
+**Why exit and re-enter instead of holding through the stop?** The stop ends the original risk contract. The recovery is a separate, later decision with fresh evidence, stop, size, costs and audit IDs.
+
+**Does the LLM decide that the candle has turned bullish?** No. The single agent screens dated company evidence first. Code checks explicit recovery conditions afterwards.
+
+**How do you prevent repeated recovery losses?** One recovery fill per stopped chain; the next stop exhausts it until expiry. The system never increases risk to make back a loss.
+
+**Can a saved order invent a favourable old stop level?** Pre-fill code binds it to the actual stop ledger, original order-block context, dates, count and frozen window. Matching a forged queue and watch is insufficient if the stop ledger differs.

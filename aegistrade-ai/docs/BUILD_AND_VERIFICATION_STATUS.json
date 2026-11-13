@@ -1,5 +1,5 @@
 {
-  "version": "0.24.1",
+  "version": "0.25.0",
   "review_date": "2026-11-13",
   "team": {
     "members": [
@@ -10,10 +10,10 @@
     "three_member_approval": "Confirmed by user; professor-approved"
   },
   "local_tests": {
-    "passed": 310,
+    "passed": 321,
     "failed": 0,
     "model_responses": "mocked in contract tests",
-    "scope": "Full suite plus selectable-backend contracts, CLI isolation, quota/timeout handling, child termination, no fallback, Codex C2 specialist integration and portfolio identity binding; exact summary-length repair, persistent schema failure classification, evidence short-circuit, risk-reducing EXIT and read-only legacy diagnostics; causal trailing-stop, fixed entry ATR, gap/missing-bar handling, no terminal sale, engine-version binding and idempotent close-phase resume; fresh post-gap signal review, weekend adverse releases, LIMITED financial coverage in C1/C2, independent critic and adverse-risk gates, fee-aware profit targets and intraday ordering; extractive source materiality/overlap/duplicate packing, source-based pending portfolio lessons, authenticated review/freeze, immutable temporal memory binding, no extra generation, original snapshot date filtering and complete UI draft/review/freeze/select workflow; bounded dated web fallback, model/controller initiation, source date/identity/modified-page checks, failed-search abstention, portfolio entry and critic source binding; lossless per-specialist company context references and JSON Pointer reconstruction, exact changed facts/risks, independent critic context and fail-closed input-size diagnostics; strategy-specific coverage exception, positive breakout corroboration, independent critic provenance, adverse HOLD-to-EXIT correction, daily dated disclosure watch, after-close visibility and zero extra generation on empty checks; exact quoted breakout source and date/benefit checks, independent critic corroboration, speculative/selection/auditor exclusions, structural-action raw-price quarantine including full titles, false researcher pass rejected before BUY and no hindsight return filtering; EMA pullback causality, separate breakout sizing/stops, delayed 1R trailing activation, stop-first confirmed rebound, fresh strict breakout C2, one retry exhaustion, budget pause/resume without duplicate research and Streamlit UI controls; C1 evidence-before-SMC company screen, single-agent tool provenance, causal sweep/BOS/order-block retest, profit exits net of fees/slippage, mandatory evidence, archived newsletter as-of import, distinct adverse exits, stop and unsold terminal mark, pre-fill SMC/stop revalidation, C1 budget checkpoint/resume, zero-generation explicit technical SMC, three-flow Streamlit consent/payload and API authentication/flow binding; per-flow UI result isolation and automatic read-only restore, top-of-page progress for C1/C2, live within-session source/model/tool telemetry, safe progress callbacks, stage-specific SMC no-entry diagnostics after evidence, no invented session progress, complete saved C1 rendering, and legacy trading-frame fingerprint compatibility"
+    "scope": "Full suite plus selectable-backend contracts, CLI isolation, quota/timeout handling, child termination, no fallback, Codex C2 specialist integration and portfolio identity binding; exact summary-length repair, persistent schema failure classification, evidence short-circuit, risk-reducing EXIT and read-only legacy diagnostics; causal trailing-stop, fixed entry ATR, gap/missing-bar handling, no terminal sale, engine-version binding and idempotent close-phase resume; fresh post-gap signal review, weekend adverse releases, LIMITED financial coverage in C1/C2, independent critic and adverse-risk gates, fee-aware profit targets and intraday ordering; extractive source materiality/overlap/duplicate packing, source-based pending portfolio lessons, authenticated review/freeze, immutable temporal memory binding, no extra generation, original snapshot date filtering and complete UI draft/review/freeze/select workflow; bounded dated web fallback, model/controller initiation, source date/identity/modified-page checks, failed-search abstention, portfolio entry and critic source binding; lossless per-specialist company context references and JSON Pointer reconstruction, exact changed facts/risks, independent critic context and fail-closed input-size diagnostics; strategy-specific coverage exception, positive breakout corroboration, independent critic provenance, adverse HOLD-to-EXIT correction, daily dated disclosure watch, after-close visibility and zero extra generation on empty checks; exact quoted breakout source and date/benefit checks, independent critic corroboration, speculative/selection/auditor exclusions, structural-action raw-price quarantine including full titles, false researcher pass rejected before BUY and no hindsight return filtering; EMA pullback causality, separate breakout sizing/stops, delayed 1R trailing activation, stop-first confirmed rebound, fresh strict breakout C2, one retry exhaustion, budget pause/resume without duplicate research and Streamlit UI controls; C1 evidence-before-SMC company screen, single-agent tool provenance, causal sweep/BOS/order-block retest, profit exits net of fees/slippage, mandatory evidence, archived newsletter as-of import, distinct adverse exits, stop and unsold terminal mark, pre-fill SMC/stop revalidation, C1 budget checkpoint/resume, zero-generation explicit technical SMC, three-flow Streamlit consent/payload and API authentication/flow binding; per-flow UI result isolation and automatic read-only restore, top-of-page progress for C1/C2, live within-session source/model/tool telemetry, safe progress callbacks, stage-specific SMC no-entry diagnostics after evidence, no invented session progress, complete saved C1 rendering, and legacy trading-frame fingerprint compatibility; SMC stop-first later bullish recovery, fresh evidence before recovery checks, actual stop-ledger proof and original-zone binding, separate recovery BUY sizing, shared technical-reference recovery, one retry/exhaustion, watch expiry, bounded stop-history batch priority, adverse cancellation including adverse exits with opening stop gaps, disabled recovery, profit exits without watches, persisted budget resume and forged watch/order rejection"
   },
   "mcp": {
     "servers_defined": 6,
@@ -865,6 +865,32 @@
     "legacy_0240_checkpoint_compatible": true,
     "tests_mocked": true,
     "new_test_generation_calls": 0,
-    "original_active_user_job_resumed_with_additional_allowance": 0
+    "original_active_user_job_resumed_with_additional_allowance": 0,
+    "compatibility_scope": "0.24.1 telemetry-only patch; 0.25.0 changes trading policy and requires fresh simulations"
+  },
+  "smc_stop_recovery": {
+    "enabled_default_c1": true,
+    "max_recovery_fills_per_chain": 1,
+    "default_watch_sessions": 10,
+    "window_range": [
+      1,
+      30
+    ],
+    "fresh_company_screen_required": true,
+    "same_session_reentry": false,
+    "execution": "later eligible open; ordinary SMC risk and profit/stop policy",
+    "policy_passage": "POL-75",
+    "knowledge": {
+      "passages": 84,
+      "sha256": "54b3186cb21007e8eabd9f11377a4aa7b11e178c7bdb398b945441cc7e44d082",
+      "project_policy_passages": 75,
+      "external_reference_passages": 9,
+      "source_count": 49,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "new_test_llm_calls": 0,
+    "older_runs": "preserved; fresh simulation required for changed trading/corpus policy",
+    "profitability_validated": false
   }
 }

@@ -42,6 +42,7 @@ def test_three_flow_ui_posts_c1_with_consent_and_default_profit(monkeypatch,tmp_
     body=next(b for path,b in sent if path=='/simulation/c1/run')
     assert body['mode']=='SMC' and body['consent_to_paid_calls'] and body['take_profit_percent']==4
     assert body['screening_candidates_per_session']==3 and not body['breakout_reentry_enabled']
+    assert body['smc_reentry_enabled'] and body['smc_reentry_window_sessions']==10
     assert at.session_state['simulation_result']['research_flow']=='C1'
     assert at.get('progress')
     assert any(h.value=='C1 live run progress' for h in at.subheader)
