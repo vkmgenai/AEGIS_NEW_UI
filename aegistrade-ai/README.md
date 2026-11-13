@@ -280,3 +280,7 @@ Four strategies are available, including EMA_PULLBACK; BREAKOUT is retained with
 ### Three portfolio flows (0.24.0)
 
 Strategy Backtests now offers C2 specialist research, C1 evidence-first SMC and technical-only simulation. C1 checks dated company RAG/filings/news/newsletters before evaluating the SMC pattern, uses one tool-using LLM agent without an independent critic, and defaults to a configurable 4% net trading profit target with protective stops. Existing C2 strategies and universes remain. See [C1 design, UI demo and viva guide](docs/AegisTrade_C1_SMC_Three_Flow_Guide.md). Start a fresh run for the new engine/policy version.
+
+### Live flow progress correction (0.24.1)
+
+C1/C2 progress is shown above the run form, with separate per-flow saved results, live source/model activity and research-versus-signal-versus-fill counts. SMC stage diagnostics explain a missing entry without changing trading rules or retrospectively inventing signals. Existing 0.24.0 runs can resume with their original fingerprints and allowance.

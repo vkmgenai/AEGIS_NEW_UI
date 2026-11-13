@@ -34,6 +34,7 @@ st.markdown(
 
 from app.client_errors import APIError
 from app.live_progress import render_c2_progress
+from app.portfolio_view import restore_flow,remember_result,flow_of
 from app.backend_compat import compatible_backend,UI_API_CONTRACT
 
 API = os.getenv("AEGIS_API_URL", "http://127.0.0.1:8000").rstrip("/")
@@ -313,6 +314,51 @@ elif page == "Strategy Backtests":
     is_c2=simulation_engine=='C2 historical portfolio'
     is_ai=is_c1 or is_c2
     flow_label='C1' if is_c1 else 'C2'
+    view_flow=flow_label if is_ai else 'TECHNICAL'
+    try:current=restore_flow(st.session_state,view_flow,get)
+    except Exception as exc:
+        current=st.session_state.get('portfolio_results',{}).get(view_flow)
+        fail('Could not restore the selected flow. Use its saved-run controls below.',exc)
+    if is_ai:
+        prefix='/simulation/'+flow_label.lower()
+        def load_ai_job(value):
+            loaded=get(prefix+'/status/'+value)
+            if flow_of(loaded)!=flow_label:raise ValueError('This run belongs to a different flow. Select that flow to open it.')
+            return remember_result(st.session_state,loaded)
+        st.caption('Company screen → dated RAG/news → SMC check → code sizing → later-open fill → target/stop/adverse exit' if is_c1 else 'Technical shortlist → market specialist → strategy specialist → independent critic → code checks → later-open fill')
+        with st.container(border=True):
+            st.subheader(flow_label+' live run progress')
+            if current:render_c2_progress(current,get)
+            else:
+                st.progress(0,text='No '+flow_label+' run selected')
+                st.info('Start one below or open a saved '+flow_label+' run. No inference is started automatically.')
+            with st.expander(flow_label+' saved runs, refresh, pause and resume',expanded=current is None):
+                job_key='portfolio_job_'+flow_label;next_key=job_key+'_next'
+                if st.session_state.get(next_key):st.session_state[job_key]=st.session_state.pop(next_key)
+                st.session_state.setdefault(job_key,current['run_id'] if current else '')
+                job_id=st.text_input(flow_label+' portfolio run ID',key=job_key)
+                try:
+                    jobs=[x for x in get(prefix+'/recent').get('runs',[]) if x.get('settings',{}).get('research_flow','C2')==flow_label]
+                    if jobs:
+                        labels={x['created_utc'][:19]+' | '+x['status']+' | '+x['run_id']:x['run_id'] for x in jobs}
+                        choice=st.selectbox('Saved '+flow_label+' portfolio',list(labels),key='saved_job_'+flow_label)
+                        if st.button('Open saved '+flow_label+' portfolio'):
+                            load_ai_job(labels[choice]);st.session_state[next_key]=labels[choice];st.rerun()
+                except Exception as exc:fail('Could not list saved '+flow_label+' runs.',exc)
+                if st.button('Refresh AI progress',disabled=not bool(job_id)):
+                    try:load_ai_job(job_id);st.rerun()
+                    except Exception as exc:fail('Unable to load '+flow_label+' progress.',exc)
+                more=st.number_input('Additional inference units on resume',min_value=0,max_value=2400,value=48,step=8,key='resume_units_'+flow_label)
+                resume_consent=st.checkbox('I authorize resuming this historical job with the additional allowance',value=False,key='resume_consent_'+flow_label)
+                c_resume,c_pause=st.columns(2)
+                if c_resume.button('Resume '+flow_label+' portfolio',disabled=not bool(job_id and reviewer_token and resume_consent)):
+                    try:
+                        load_ai_job(job_id)
+                        remember_result(st.session_state,post(prefix+'/resume/'+job_id,{'additional_model_calls':int(more),'consent_to_paid_calls':True},reviewer_token));st.rerun()
+                    except Exception as exc:fail('Resume rejected; inspect run status, configuration and consent.',exc)
+                if c_pause.button('Pause '+flow_label+' portfolio',disabled=not bool(job_id and reviewer_token)):
+                    try:load_ai_job(job_id);post(prefix+'/pause/'+job_id,{},reviewer_token);st.info('Pause requested at the next safe boundary.')
+                    except Exception as exc:fail('Pause request failed.',exc)
     if is_c1:st.info('C1 evidence-first: one LLM agent checks dated filings, reviewed newsletters and available news via RAG/tools before code evaluates the SMC signal. SMC = liquidity sweep → bullish structure break → later order-block retest. Default profit target 4% net of modeled trading costs; protective stops and cited adverse exits remain active. C1 has no independent LLM critic.')
     if is_c2 and health.get('signal_specific_evidence_supported'):
         st.info('Entry policy: strong trend and RSI-reversion signals can proceed with explicitly incomplete coverage after dated research, if no concrete adverse event remains unresolved. Breakouts require a recent verbatim source quote supporting actual improvement or a completed commercial event, independently corroborated by the critic. Known recent structural actions quarantine new entries on unadjusted prices. A cited adverse finding requires an EXIT after critic validation; it fills at a later eligible open.')
@@ -423,45 +469,17 @@ elif page == "Strategy Backtests":
                     if is_c1:payload['screening_candidates_per_session']=int(screen_count)
                     with st.spinner('Creating checkpointed '+flow_label+' portfolio job...'):
                         st.session_state['simulation_result']=post('/simulation/'+flow_label.lower()+'/run',payload,reviewer_token,timeout=120)
-                    st.session_state['c2_portfolio_id']=st.session_state['simulation_result']['run_id']
-                    st.session_state['c2_job_input']=st.session_state['c2_portfolio_id']
-                    st.success(flow_label+' job started. Progress updates automatically every 5 seconds; the manual refresh button remains available.')
+                    remember_result(st.session_state,st.session_state['simulation_result'])
+                    st.session_state['portfolio_job_'+flow_label+'_next']=st.session_state['simulation_result']['run_id']
+                    st.rerun()
                 else:
                     with st.spinner("Replaying the selected daily OHLCV period..."):
                         st.session_state["simulation_result"]=post("/simulation/run",payload,timeout=240)
+                    remember_result(st.session_state,st.session_state["simulation_result"])
                     st.success("Technical-only simulation completed and saved.")
             except Exception as exc:
                 fail("Portfolio simulation failed. Try a longer date interval (at least 45 sessions).",exc)
-    with st.expander('C1 / C2 portfolio progress, resume and saved jobs',expanded=is_ai):
-        if st.session_state.get('c2_job_next'):st.session_state['c2_job_input']=st.session_state.pop('c2_job_next')
-        st.session_state.setdefault('c2_job_input',st.session_state.get('c2_portfolio_id',''))
-        st.caption('These shared saved-job controls also operate C1 runs; the saved flow cannot be switched on resume.')
-        job_id=st.text_input('AI portfolio run ID',key='c2_job_input')
-        try:
-            jobs=get('/simulation/c2/recent').get('runs',[])
-            if jobs:
-                labels={x['settings'].get('research_flow','C2')+' | '+x['created_utc'][:19]+' | '+x['status']+' | '+x['run_id']:x['run_id'] for x in jobs}
-                choice=st.selectbox('Saved AI portfolio',list(labels))
-                if st.button('Open saved AI portfolio'):
-                    st.session_state['c2_portfolio_id']=labels[choice]
-                    st.session_state['c2_job_next']=labels[choice]
-                    st.session_state['simulation_result']=get('/simulation/c2/status/'+labels[choice]);st.rerun()
-        except Exception as exc:fail('Could not list AI jobs.',exc)
-        if st.button('Refresh AI progress',disabled=not bool(job_id)):
-            try:
-                st.session_state['simulation_result']=get('/simulation/c2/status/'+job_id)
-                st.session_state['c2_portfolio_id']=job_id
-            except Exception as exc:fail('Unable to load AI job.',exc)
-        more=st.number_input('Additional inference units on resume',min_value=0,max_value=2400,value=48,step=8)
-        resume_consent=st.checkbox('I authorize resuming this historical job with the additional allowance',value=False)
-        a,b=st.columns(2)
-        if a.button('Resume AI portfolio',disabled=not bool(job_id and reviewer_token and resume_consent)):
-            try:st.session_state['simulation_result']=post('/simulation/c2/resume/'+job_id,{'additional_model_calls':int(more),'consent_to_paid_calls':True},reviewer_token)
-            except Exception as exc:fail('Resume rejected; inspect configuration, run status and consent.',exc)
-        if b.button('Pause AI portfolio',disabled=not bool(job_id and reviewer_token)):
-            try:post('/simulation/c2/pause/'+job_id,{},reviewer_token);st.info('Pause requested at the next safe boundary.')
-            except Exception as exc:fail('Pause request failed.',exc)
-    result=st.session_state.get("simulation_result")
+    result=st.session_state.get("portfolio_results",{}).get(view_flow)
     with st.expander("Open a previously saved simulation"):
         try:
             previous=get("/simulation/recent").get("runs",[])
@@ -469,7 +487,7 @@ elif page == "Strategy Backtests":
                 choices={f"{x['created_utc'][:19]} | ₹{x['settings']['initial_capital']:,.0f} | {x['period']['start']}–{x['period']['end']} | {x['run_id'][:8]}":x['run_id'] for x in previous}
                 picked=st.selectbox("Saved simulation",list(choices),key="simulation_saved_run")
                 if st.button("Load saved simulation"):
-                    st.session_state["simulation_result"]=get("/simulation/result/"+choices[picked],timeout=60)
+                    remember_result(st.session_state,get("/simulation/result/"+choices[picked],timeout=60))
                     st.rerun()
             else: st.caption("No saved simulation runs yet.")
         except Exception as exc: fail("Unable to load saved run list.",exc)
@@ -490,8 +508,9 @@ elif page == "Strategy Backtests":
         if c2_result:
             if result.get('portfolio_memory'):
                 with st.expander('Pinned portfolio lesson memory'):st.json(result['portfolio_memory'])
-            render_c2_progress(result,get)
-            if result_flow=='C1':st.json(result.get('research_summary',{}))
+            if result_flow=='C1':
+                st.write('**C1 evidence-first signal checks**')
+                render_table(result.get('signal_checks',[]),'Only cases that passed dated evidence are checked for SMC. An evidence block is not a negative price signal.',height=240)
             if result.get('research_configuration_changed'):
                 st.info('This saved job uses an earlier research prompt version or simulation/exit-policy version. Its original results and usage are preserved. Start a new run to use the current rules; the earlier job cannot resume under changed rules.')
             if result['status']=='PAUSED_PROVIDER':
@@ -513,7 +532,7 @@ elif page == "Strategy Backtests":
                 st.caption('HOLD keeps the existing shares after a scheduled review; it creates no new trade. Code stops and strategy exits remain active.')
                 if any('CONTEXT_BUDGET_EXCEEDED' in ' '.join(d.get('errors',[])) for d in decisions):
                     st.info('A context-budget failure concerns research input size, separately from your inference-call allowance. Refreshing or adding calls does not fix it. Inspect the research trace; after updating an affected backend, start a new run to re-evaluate previously blocked candidates.')
-                render_table([{**{k:d.get(k) for k in ['date','symbol','purpose','action','llm_calls','failure_category','research_order','smc_signal']},
+                render_table([{**{k:d.get(k) for k in ['date','symbol','purpose','action','llm_calls','failure_category','research_order','smc_signal','smc_stage']},
                                'evidence_policy':(d.get('company_assessment') or {}).get('adverse_risk',''),
                                'web_search':(d.get('dated_web_search') or {}).get('status',''),'reason':'; '.join(d.get('errors',[])) or d.get('explanation','')} for d in decisions],height=300)
                 records=[d for d in decisions if d.get('id')]

@@ -1,6 +1,6 @@
 # AegisTrade AI: C1 SMC and the three portfolio flows
 
-Version 0.24.0 · 13 November 2026
+Version 0.24.1 · 13 November 2026
 
 ## Choose the workflow
 
@@ -62,7 +62,7 @@ A newsletter cannot fabricate an official financial filing, replace a failed off
 
 ## UI demo run
 
-1. Start services together with `bash scripts/start_unix.sh`. Open http://127.0.0.1:8501. Health should report 0.24.0 and c1_smc_portfolio_supported=true. Confirm the intended existing universe and downloaded period in Market Data. Nothing switches your universe automatically.
+1. Start services together with `bash scripts/start_unix.sh`. Open http://127.0.0.1:8501. Health should report 0.24.1 and c1_smc_portfolio_supported=true. Confirm the intended existing universe and downloaded period in Market Data. Nothing switches your universe automatically.
 2. Enter your private reviewer token. Keep the configured OpenRouter or signed-in Codex backend. C1 uses the same configured inference backend; it does not require a second API account or key.
 3. In Strategy Backtests choose **C1 SMC portfolio**. Start with a short available window (for example two trading weeks) and ₹200,000, risk 1%, ATR stop 2, target 4%, trailing off, three company screens/session, five-session holding review, and normal modeled fees/slippage. A short window tests the workflow; it need not contain an SMC trade. Choose dates supported by your downloaded data, not a guaranteed winning period.
 4. Begin with 48 inference units to inspect a few cases. A simple C1 case often uses two invocations (tool selection and typed response), but web retrieval/corrections can require more. The engine conservatively reserves eight per case before starting. Evidence-first research can consume allowance even when no trade signal exists. Increase allowance only with consent after inspecting the run; the total allowance does not increase the per-case cap.
@@ -100,3 +100,16 @@ This is a contract-test illustration, not an NSE trade recommendation or stored 
 **Does this prove that institutions entered?** No. SMC is a named, reproducible price-pattern approximation. It does not identify traders or infer institutional intent from daily OHLCV.
 
 **Can saved C1 research be used to approve a supervised C2 order?** No. The supervised C2 gate requires C2 provenance and critic hand-offs; C1 results cannot satisfy it.
+
+
+## Progress and signal diagnostics (0.24.1 correction)
+
+The C1/C2 live progress panel now appears directly below the simulation-engine selector, above configuration controls. Selecting C1 automatically opens the latest saved C1 run if no C1 run is already selected. C1, C2 and Technical-only retain separate displayed results and run IDs. Switching tabs/flows or opening a run only performs read-only status requests; it never starts research or adds allowance. A saved paused job is refreshed from the backend on page rerun, so a resume from another browser is visible.
+
+The market-session bar shows completed sessions out of the selected period. Within a session, live activity shows source preparation, company archive retrieval, the current LLM specialist/turn/tool, research validation and SMC checking. This activity is persisted separately from the financial checkpoint and contains no prompts, source text or credentials. No artificial percentage increase occurs while a single source download or model call is pending.
+
+C1 live counters distinguish company screens, evidence-passed cases, actual SMC checks, confirmed SMC signals, queued buys and BUY fills. Latest decisions update in the five-second live panel. Research-blocked cases do not count as negative SMC signals: price eligibility has not been checked. A bounded rotating batch can miss stocks on their signal dates; the panel reports shortlisted versus eligible company-sessions.
+
+A passed case now records its exact SMC stage: waiting for sweep, sweep found, waiting for structure break, structure break confirmed, waiting for retest, expired/invalidated setup, or confirmed entry. Its explanatory text states why no entry exists. The SMC thresholds, profit/stop rules, evidence policy, existing model allowance and historical trades are unchanged by this correction. Earlier decisions without detailed stage telemetry retain their original data; they are not retroactively relabelled as fresh research.
+
+Use **Refresh AI progress** to reload all detailed tables. Expand **C1 saved runs, refresh, pause and resume** for C1 controls (or the corresponding C2 controls). A progress bar remains visible for queued, paused, completed and interrupted runs. A zero-entry result does not prove the process is idle: inspect evidence blockers, SMC stages and batch coverage. Existing 0.24.0 jobs remain compatible with this display/telemetry patch; no new simulation or additional allowance is required merely to see the corrected progress.

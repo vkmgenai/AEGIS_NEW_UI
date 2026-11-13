@@ -147,3 +147,14 @@ def test_three_specialists_can_make_typed_holding_exit(monkeypatch):
     from aegistrade.research_gate import validate_completed_c2
     out['snapshot']=snap
     assert validate_completed_c2(out,purpose='HOLDING_REVIEW')['portfolio_action']=='EXIT'
+
+
+def test_progress_callback_reports_safe_events_and_never_changes_research(monkeypatch):
+    monkeypatch.setattr(RouterClient,'chat',fake_team);events=[]
+    out=run_agentic_case(SNAPSHOT,'C1',tools_factory=LocalTools,progress=events.append)
+    assert out['guard_pass'] and out['llm_calls']==2
+    assert {'llm_request','llm_response','pre_tool','typed_handoff'}.issubset({e['event'] for e in events})
+    assert all(set(e).issubset({'event','agent','tool','turn'}) for e in events)
+    def broken(event):raise RuntimeError('Synthetic telemetry failure')
+    again=run_agentic_case(SNAPSHOT,'C1',tools_factory=LocalTools,progress=broken)
+    assert again['guard_pass'] and again['llm_calls']==2

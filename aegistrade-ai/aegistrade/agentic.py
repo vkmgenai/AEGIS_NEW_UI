@@ -57,7 +57,7 @@ def scrub(value):
     return visit(cleaned)
 
 
-async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_factory,defences,backend):
+async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_factory,defences,backend,progress=None):
     started=time.perf_counter()
     evidence=CaseEvidence.from_snapshot(snapshot)
     from .corpus import load_corpus
@@ -74,7 +74,12 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
         'budget':{'model_calls':client.max_calls,'output_tokens':max_output_tokens,
                   'tool_calls':CONFIG['max_tool_calls_per_case'],'context_characters':CONFIG['max_context_chars']},
         'note':'LLM research only; deterministic risk and human approval govern simulated orders.'}
-    def emit(event,**kw):events.append({'event':event,**scrub(kw)})
+    def emit(event,**kw):
+        events.append({'event':event,**scrub(kw)})
+        if progress and event in {'llm_request','llm_response','pre_tool','post_tool','typed_handoff','blocked'}:
+            try:progress({'event':event,**{k:kw[k] for k in ('agent','tool','turn') if k in kw}})
+            except Exception:pass  # Telemetry must never change a research decision or retry it.
+
     active_role='supervisor';last_failure=None
     try:
         async with tools_factory(snapshot) as runtime:
@@ -301,7 +306,7 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
 
 
 def run_agentic_case(snapshot,config='C2',model=None,max_calls=8,max_output_tokens=4800,
-                     lessons=None,*,tools_factory=ResearchTools,defences=True,backend=None):
+                     lessons=None,*,tools_factory=ResearchTools,defences=True,backend=None,progress=None):
     if config not in {'C1','C2'}:raise ValueError('Agent mode must be C1 or C2')
     return asyncio.run(_run(snapshot,config,model_name(model,backend=backend),max_calls,max_output_tokens,
-                            lessons or [],tools_factory,defences,backend))
+                            lessons or [],tools_factory,defences,backend,progress))

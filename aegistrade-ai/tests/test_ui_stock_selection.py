@@ -114,7 +114,7 @@ def test_ui_c2_portfolio_requires_and_sends_paid_rule_consent(monkeypatch,tmp_pa
     assert body['take_profit_percent']==8.0 and body['review_after_gap'] is True
     assert body['stop_loss_mode']=='PERCENT' and body['stop_loss_percent']==3.0
     assert at.session_state['simulation_result']['initial_stop_loss']['mode']=='PERCENT'
-    assert at.text_input(key='c2_job_input').value==at.session_state['simulation_result']['run_id']
+    assert at.text_input(key='portfolio_job_C2').value==at.session_state['simulation_result']['run_id']
 
     assert status_reads  # fragment performs a read-only poll immediately
     before=len(status_reads)

@@ -14,17 +14,21 @@ def prepare_smc(frame):
         f=part.sort_values('Date').copy();sweep=None;zone=None;records=[]
         rows=list(f.itertuples())
         for i,b in enumerate(rows):
-            record={'SMCSignal':False,'SMCContext':None};close=float(b.Close)
+            record={'SMCSignal':False,'SMCContext':None,'SMCStage':'WAITING_SWEEP'};close=float(b.Close)
             if not b.Ready or b.Regime=='HIGH_VOL':
-                sweep=zone=None;records.append(record);continue
+                sweep=zone=None;record['SMCStage']='HIGH_VOL' if b.Regime=='HIGH_VOL' else 'WARMUP';records.append(record);continue
             # A zone is available only after its completed structure-break candle.
             if zone:
-                if i-zone['bos_index']>10 or close<zone['zone_low']:zone=None
+                record['SMCStage']='WAITING_RETEST'
+                if i-zone['bos_index']>10 or close<zone['zone_low']:
+                    record['SMCStage']='SETUP_EXPIRED' if i-zone['bos_index']>10 else 'ZONE_INVALIDATED';zone=None
                 elif i>zone['bos_index'] and b.Low<=zone['zone_high'] and b.High>=zone['zone_low'] and close>zone['zone_high'] and close>b.Open:
-                    record={'SMCSignal':True,'SMCContext':{k:v for k,v in zone.items() if k!='bos_index'}}
+                    record={'SMCSignal':True,'SMCContext':{k:v for k,v in zone.items() if k!='bos_index'},'SMCStage':'ENTRY_CONFIRMED'}
                     zone=None;sweep=None
             if sweep and not zone and not record['SMCSignal']:
-                if i-sweep['index']>10 or close<sweep['low']:sweep=None
+                record['SMCStage']='WAITING_STRUCTURE_BREAK'
+                if i-sweep['index']>10 or close<sweep['low']:
+                    record['SMCStage']='SWEEP_EXPIRED' if i-sweep['index']>10 else 'SWEEP_INVALIDATED';sweep=None
                 elif i>sweep['index'] and close>sweep['structure_level'] and close>b.Open and close-b.Open>=.5*b.ATR14:
                     bearish=[r for r in rows[max(0,sweep['index']-3):i] if r.Close<r.Open]
                     if bearish:
@@ -32,13 +36,15 @@ def prepare_smc(frame):
                         zone={'sweep_date':sweep['date'],'structure_date':str(b.Date.date()),
                             'sweep_level':sweep['level'],'structure_level':sweep['structure_level'],
                             'zone_low':float(ob.Low),'zone_high':float(ob.Open),'bos_index':i}
-                        sweep=None
+                        sweep=None;record['SMCStage']='STRUCTURE_BREAK_CONFIRMED'
             if i>=20 and not zone and not record['SMCSignal']:
                 level=min(float(r.Low) for r in rows[i-20:i])
                 if b.Low<level and close>level:
+                    record['SMCStage']='LIQUIDITY_SWEEP_FOUND'
                     sweep={'index':i,'date':str(b.Date.date()),'low':float(b.Low),'level':level,
                            'structure_level':max(float(r.High) for r in rows[i-5:i])}
             records.append(record)
+        f['SMCStage']=[r['SMCStage'] for r in records]
         f['SMCSignal']=[r['SMCSignal'] for r in records];f['SMCContext']=[r['SMCContext'] for r in records]
         f['Regime']=['SMC' if r['SMCSignal'] else ('HIGH_VOL' if b.Regime=='HIGH_VOL' else 'UNCERTAIN' if b.Ready else 'WARMUP') for b,r in zip(rows,records)]
         f['RoutedStrategy']=f.SMCSignal.map({True:'SMC',False:'NONE'})
@@ -67,3 +73,18 @@ def screening_candidates(daily,held,index,limit=3):
         offset=(index*limit)%len(eligible);rotated=eligible[offset:]+eligible[:offset]
         for rank,r in enumerate(rotated[:limit],1):r.update(selected=True,rank=rank)
     return audit
+
+
+SMC_REASONS={
+    'WAITING_SWEEP':'No qualifying liquidity sweep yet.',
+    'LIQUIDITY_SWEEP_FOUND':'Liquidity sweep found; a later bullish structure break is still required.',
+    'WAITING_STRUCTURE_BREAK':'Prior sweep found; waiting for the bullish displacement close above structure.',
+    'STRUCTURE_BREAK_CONFIRMED':'Structure break confirmed; waiting for a later order-block retest.',
+    'WAITING_RETEST':'Order-block zone is active; no qualifying bullish retest close yet.',
+    'ENTRY_CONFIRMED':'Sweep, later structure break and subsequent bullish zone retest confirmed.',
+    'SWEEP_EXPIRED':'The prior sweep expired without a later qualifying structure break.',
+    'SWEEP_INVALIDATED':'Price closed below the sweep low before a qualifying structure break.',
+    'SETUP_EXPIRED':'The previous order-block setup expired before a qualifying retest.',
+    'ZONE_INVALIDATED':'A close below the order-block zone invalidated that setup.',
+    'HIGH_VOL':'High-volatility exclusion; no entry eligibility.',
+    'WARMUP':'Insufficient completed indicator history.'}

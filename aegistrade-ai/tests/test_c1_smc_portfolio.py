@@ -223,3 +223,34 @@ def test_c1_queued_buy_revalidates_smc_and_stop_before_fill(completed_c2,tamper)
     r=execute_run(rid,f,researcher=researcher(completed_c2),preparer=prepare)
     assert not any(x['event']=='BUY' for x in r['ledgers']['C1'])
     assert any(d['action']=='FILL_BLOCKED' for d in r['decisions'])
+
+
+def test_signal_diagnostics_follow_evidence_and_preserve_old_fingerprint(completed_c2):
+    import hashlib
+    from aegistrade.c2_portfolio import fingerprint
+    f=smc_history();p=frame_for(f,cfg(f),{})
+    old=p.drop(columns=['SMCStage'])
+    assert fingerprint(p)==hashlib.sha256(old.to_json(orient='split',date_format='iso',double_precision=15).encode()).hexdigest()
+    rid=create_run(f,cfg(f));r=execute_run(rid,f,researcher=researcher(completed_c2),preparer=prepare)
+    assert r['research_summary']['signals_found']==1
+    assert r['research_summary']['buy_fills']==1
+    assert any(d['smc_stage']=='ENTRY_CONFIRMED' and d['action']=='ENTER' for d in r['signal_checks'])
+    assert any(d['smc_stage']=='WAITING_SWEEP' for d in r['signal_checks'])
+    assert all('Dated company screening passed.' in d['explanation'] for d in r['signal_checks'])
+
+
+def test_research_activity_sidecar_updates_without_changing_allowance(completed_c2,monkeypatch):
+    import aegistrade.c2_portfolio as portfolio
+    f=smc_history();rid=create_run(f,cfg(f));observed=[]
+    def mock(snapshot,config,progress=None,**kw):
+        assert progress is not None
+        progress({'event':'llm_request','agent':'single','turn':1,'ignored':'Do not persist evidence text'})
+        current=json.loads((state_path(rid).parent/'activity.json').read_text())
+        assert current['stage']=='LLM_REQUEST' and current['symbol']==snapshot['symbol']
+        assert 'ignored' not in current
+        observed.append(current)
+        return single_result(completed_c2,snapshot)
+    monkeypatch.setattr(portfolio,'run_agentic_case',mock)
+    r=execute_run(rid,f,preparer=prepare)
+    assert observed and r['activity']['stage']==r['status']
+    assert r['model_usage']['call_limit']==160

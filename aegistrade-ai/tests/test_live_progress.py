@@ -11,12 +11,13 @@ class AppRerun(Exception):pass
 
 class FakeStreamlit:
     def __init__(self):
-        self.session_state={};self.interval=None;self.callback=None;self.bars=[];self.warnings=[];self.captions=[]
+        self.session_state={};self.interval=None;self.callback=None;self.bars=[];self.warnings=[];self.captions=[];self.tables=[];self.messages=[]
     def fragment(self,run_every):
         self.interval=run_every
         def decorate(fn):self.callback=fn;return fn
         return decorate
-    def write(self,*a):pass
+    def write(self,*a):self.messages.append(a)
+    def dataframe(self,rows,**kw):self.tables.append(rows)
     def json(self,*a):pass
     def progress(self,fraction,**kw):self.bars.append(fraction)
     def caption(self,text):self.captions.append(text)
@@ -60,3 +61,20 @@ def test_wrong_run_response_is_not_displayed_or_stored(monkeypatch):
     other={**result('COMPLETED',done=10),'run_id':'b'*32}
     live.render_c2_progress(initial,lambda *a,**kw:other)
     assert st.warnings and st.bars==[.2] and st.session_state['simulation_result']==initial
+
+
+def test_c1_live_progress_updates_activity_and_outcomes_within_same_session(monkeypatch):
+    st=FakeStreamlit();monkeypatch.setattr(live,'st',st);reads=[]
+    base={**result(),'research_flow':'C1','research_summary':{'company_screens':3,'evidence_passed':1,'signals_found':0,'buy_fills':0},
+          'activity':{'stage':'LLM_REQUEST','symbol':'DEMO','agent':'single','turn':2,'updated_utc':'2026-11-13T01:00:00+00:00'},
+          'decisions':[{'date':'2024-03-04','symbol':'DEMO','action':'NO_SMC_SIGNAL','smc_stage':'WAITING_RETEST'}]}
+    second=deepcopy(base);second['research_summary']['signals_found']=1;second['activity']['stage']='CHECKING_SMC_SIGNAL';second['decisions'][0]['action']='ENTER'
+    replies=iter([base,second])
+    def fetch(path,**kw):reads.append(path);return next(replies)
+    live.render_c2_progress(base,fetch);st.callback()
+    assert st.bars==[.2,.2] # No invented session completion during research.
+    assert reads==['/simulation/c1/status/'+'a'*32]*2
+    assert st.tables[-1][0]['action']=='ENTER'
+    assert any('06:30:00 IST' in c for c in st.captions)
+    assert any('Signals: 1' in str(x) for x in st.messages)
+    assert st.session_state['portfolio_results']['C1']['activity']['stage']=='CHECKING_SMC_SIGNAL'

@@ -43,6 +43,9 @@ def test_three_flow_ui_posts_c1_with_consent_and_default_profit(monkeypatch,tmp_
     assert body['mode']=='SMC' and body['consent_to_paid_calls'] and body['take_profit_percent']==4
     assert body['screening_candidates_per_session']==3 and not body['breakout_reentry_enabled']
     assert at.session_state['simulation_result']['research_flow']=='C1'
+    assert at.get('progress')
+    assert any(h.value=='C1 live run progress' for h in at.subheader)
+    assert at.text_input(key='portfolio_job_C1').value==at.session_state['simulation_result']['run_id']
     if completed:
         tables=[x.value for x in at.dataframe if 'Stage' in x.value.columns]
         assert tables and not tables[0].empty
@@ -81,3 +84,36 @@ def test_reviewed_news_endpoint_rejects_future_or_unverified(monkeypatch):
     r=client.post('/company-research/import-news',json=body,headers=headers)
     assert r.status_code==200,r.text
     assert any(d['kind']=='newsletter' for d in r.json()['documents'])
+
+
+def test_opening_c1_auto_restores_saved_run_and_switching_flows_keeps_progress_separate(monkeypatch,tmp_path,completed_c2):
+    from streamlit.testing.v1 import AppTest
+    import app.api as api
+    import aegistrade.c2_portfolio as portfolio
+    from tests.test_c1_smc_portfolio import researcher,prepare
+    from tests.test_c2_portfolio import settings
+    from aegistrade.simulation_service import SimulationSettings,execute_simulation
+    import requests
+    f=smc_history();monkeypatch.setattr(api,'DATA',tmp_path);monkeypatch.setattr(api,'_frame',f)
+    c1=portfolio.create_run(f,cfg(f));portfolio.execute_run(c1,f,researcher=researcher(completed_c2),preparer=prepare)
+    c2=portfolio.create_run(f,settings(f));client=TestClient(api.app);posts=[]
+    technical=execute_simulation(f,SimulationSettings(start_date=f.Date.iloc[20].date(),end_date=f.Date.iloc[-1].date()))
+    def adapt(r):return SimpleNamespace(ok=r.status_code<400,status_code=r.status_code,text=r.text,json=r.json)
+    def get(url,**kw):
+        u=urlsplit(url);return adapt(client.get(u.path+('?' +u.query if u.query else '')))
+    def post(url,**kw):posts.append(url);raise AssertionError('Opening/restoring a flow must not submit work')
+    monkeypatch.setattr(requests,'get',get);monkeypatch.setattr(requests,'post',post)
+    at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30)
+    at.session_state['simulation_result']=technical;at.run()
+    at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
+    assert not at.exception and at.session_state['simulation_result']['run_id']==c2
+    at.radio(key='simulation_engine').set_value('C1 SMC portfolio').run()
+    assert not at.exception and at.session_state['simulation_result']['run_id']==c1
+    assert at.get('progress') and at.text_input(key='portfolio_job_C1').value==c1
+    at.radio(key='simulation_engine').set_value('Technical-only baseline').run()
+    assert not at.exception and at.session_state['simulation_result']['run_id']==technical['run_id']
+    at.radio(key='simulation_engine').set_value('C2 historical portfolio').run()
+    assert not at.exception and at.session_state['simulation_result']['run_id']==c2
+    at.radio(key='simulation_engine').set_value('C1 SMC portfolio').run()
+    assert not at.exception and at.session_state['simulation_result']['run_id']==c1
+    assert not posts

@@ -96,7 +96,7 @@ def frame_for(frame,settings,provenance):
     if not f.Ready.any():raise ValueError('No ready historical indicators')
     return f.sort_values(['Date','Symbol']).reset_index(drop=True)
 
-def fingerprint(f):return hashlib.sha256(f.to_json(orient='split',date_format='iso',double_precision=15).encode()).hexdigest()
+def fingerprint(f):return hashlib.sha256(f.drop(columns=['SMCStage'],errors='ignore').to_json(orient='split',date_format='iso',double_precision=15).encode()).hexdigest()
 
 def create_run(frame,settings,*,source='synthetic',provenance=None,model=None):
     memory=portfolio_memory.bind(settings.portfolio_playbook_id,settings.start_date,settings.memory_allow_development_replay)
@@ -175,6 +175,14 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     p=policy_from_settings(settings)
     path=state_path(run_id);folder=path.parent;groups={str(d.date()):g for d,g in f.groupby('Date',sort=True)}
     def checkpoint():state['updated_utc']=now();save(path,state)
+    def activity(stage,snapshot=None,**details):
+        # Separate bounded sidecar: a tool event never rewrites the financial checkpoint.
+        value={'run_id':run_id,'stage':stage,'updated_utc':now(),
+               'date':(snapshot or {}).get('date',state['dates'][min(state['day_index'],len(state['dates'])-1)])}
+        if snapshot:value['symbol']=snapshot.get('symbol')
+        value.update({k:v for k,v in details.items() if k in {'agent','tool','turn'}})
+        save(folder/'activity.json',value)
+
     def cancelled():
         if (should_cancel and should_cancel()) or (folder/'cancel').exists():raise Cancelled()
     # Reserve before calls. A crash with no durable result leaves the full reservation charged.
@@ -187,10 +195,11 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         else:
             state['uncertain_model_calls']+=8;uncertain_calls_total.inc(8)
         state['inflight']=None;checkpoint()
-    state['status']='RUNNING';state['last_error']=None;checkpoint()
+    state['status']='RUNNING';state['last_error']=None;checkpoint();activity('STARTING_RUN')
 
     def research(snapshot,key):
         cancelled()
+        activity('PREPARING_DATED_EVIDENCE',snapshot)
         if corpus_info()['sha256']!=state['corpus_sha256']:raise ValueError('Policy corpus changed during historical run')
         attempt=state['research_attempts'].get(key,0)
         cid=digest([state['run_id'],key,attempt])[:32];outfile=folder/'research'/f'{cid}.json'
@@ -208,7 +217,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             if cached.get('retryable_provider_failure'):provider_pause(cached)
             return cached,cid
         try:
-            pack=(preparer(snapshot['symbol'],snapshot['date'],progress=lambda _:cancelled()) if preparer is prepare_company_research
+            pack=(preparer(snapshot['symbol'],snapshot['date'],progress=lambda _:(cancelled(),activity('READING_COMPANY_ARCHIVE',snapshot))) if preparer is prepare_company_research
                   else preparer(snapshot['symbol'],snapshot['date']))
         except Cancelled:raise
         except Exception as exc:
@@ -223,6 +232,9 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         cancelled()
         # run_agentic_case always returns usage/errors; unexpected failures retain the reservation.
         memory_args={'lessons':selected_lessons} if state.get('memory_manifest') else {}
+        if researcher is run_agentic_case:
+            memory_args['progress']=lambda event:activity(event['event'].upper(),snapshot,**{k:v for k,v in event.items() if k!='event'})
+        activity('LLM_RESEARCH',snapshot)
         out=researcher(snapshot,flow,model=state['model'],max_calls=8,max_output_tokens=4800,backend=frozen['backend'],**memory_args)
         out['portfolio_memory']={'manifest':state.get('memory_manifest'),'lesson_ids':[x['id'] for x in selected_lessons]}
         out['snapshot']=snapshot
@@ -238,6 +250,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
 
     def decide(snapshot,key):
         out,cid=research(snapshot,key);validated=None;validation_failure=None
+        activity('VALIDATING_RESEARCH',snapshot)
         if out.get('guard_pass'):
             try:validated=validator(out,purpose=snapshot['research_purpose'])
             except (ValueError,KeyError,TypeError) as exc:
@@ -273,6 +286,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             if corpus_info()['sha256']!=state['corpus_sha256']:raise ValueError('Policy corpus changed during historical run')
             def equity(opening=False):return state['cash']+sum(pos['quantity']*(float(getattr(snap[s],'Open' if opening else 'Close')) if s in snap else state['last_marks'][s]['price']) for s,pos in state['positions'].items())
             if state['phase']=='OPEN':
+                activity('PROCESSING_OPEN')
                 pending=[]
                 for order in sorted(state['queued'],key=lambda o:0 if o['side']=='SELL' else 1):
                     sym=order['symbol']
@@ -375,6 +389,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                 if rec['action']=='EXIT':state['queued'].append({'side':'SELL','symbol':sym,'reason':'SELL_'+flow,'signal_date':when,'research_id':rec['id']})
                 state['decisions'].append(rec);state['processed_close_keys'].append(key)
                 checkpoint()
+            activity('SCREENING_CANDIDATES')
             # Screen on every close; reserve slots for existing pending BUYs, not future sale proceeds.
             if index<len(state['dates'])-1:
                 pending_buys={o['symbol'] for o in state['queued'] if o['side']=='BUY'}
@@ -421,6 +436,11 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                         snapshot.pop('smc_context',None)
                     rec=decide(snapshot,key)
                     if flow=='C1' and rec['action']=='SCREEN':
+                        activity('CHECKING_SMC_SIGNAL',snapshot)
+                        from .smc import SMC_REASONS
+                        stage=getattr(bar,'SMCStage','ENTRY_CONFIRMED' if bar.SMCSignal else 'WAITING_SWEEP')
+                        rec.update(smc_stage=stage,research_explanation=rec['explanation'],
+                                   explanation=SMC_REASONS[stage]+' Dated company screening passed.')
                         rec.update(research_order='EVIDENCE_BEFORE_SIGNAL',evidence_passed=True,
                                    smc_signal=bool(bar.SMCSignal),entry_setup='SMC_EVIDENCE_FIRST')
                         rec['action']='ENTER' if bool(bar.SMCSignal) else 'NO_SMC_SIGNAL'
@@ -432,6 +452,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE',**({'smc_context':bar.SMCContext} if flow=='C1' else {})})
                     elif bar.Regime=='BREAKOUT_BOUNCE' and (rec.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'}:
                         state['breakout_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
+                    if flow=='C1' and not rec.get('evidence_passed'):
+                        rec['smc_stage']='NOT_CHECKED_EVIDENCE_BLOCKED'
                     state['decisions'].append(rec);state['processed_close_keys'].append(key)
                     checkpoint()
             state['deferred_entries']=[d for d in state['deferred_entries'] if d['date']==when]
@@ -447,6 +469,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     except Exception as exc:
         state=load(run_id)  # rollback any uncheckpointed partial phase mutations
         state['status']='INTERRUPTED';state['last_error']=type(exc).__name__
+    activity(state['status'])
     checkpoint();return result_for(state)
 
 
@@ -493,10 +516,30 @@ def result_for(state):
     reference_curve=[r for r in state['reference']['curve'] if cutoff and r['date']<=cutoff]
     benchmark={**state['benchmark'],'curve':[r for r in state['benchmark']['curve'] if cutoff and r['date']<=cutoff]}
     if not terminal:benchmark['metrics']={}
-    return normalize({'run_id':state['run_id'],'research_flow':flow,'strategy_definition':'smc-daily-sweep-bos-ob-v1' if flow=='C1' else None,'research_order':'EVIDENCE_BEFORE_SIGNAL' if flow=='C1' else 'SIGNAL_BEFORE_RESEARCH','independent_critic':flow=='C2','version':state['version'],'created_utc':state['created_utc'],'status':state['status'],
+    try:
+        activity=json.loads((state_path(state['run_id']).parent/'activity.json').read_text())
+        if activity.get('run_id')!=state['run_id'] or (state['status']=='RUNNING' and activity.get('date')!=state['dates'][min(state['day_index'],len(state['dates'])-1)]):activity={}
+    except (OSError,ValueError):activity={}
+    if state['status'] not in {'RUNNING','QUEUED'}:activity={**activity,'stage':state['status']}
+    elif not activity:
+        key=(state.get('inflight') or {}).get('key','').split(':')
+        activity={'stage':'QUEUED' if state['status']=='QUEUED' else 'LLM_RESEARCH' if state.get('inflight') else state['phase'],
+                  'symbol':key[1] if len(key)>1 else None,'updated_utc':state.get('updated_utc')}
+    return normalize({'activity':activity,'updated_utc':state.get('updated_utc'),'run_id':state['run_id'],'research_flow':flow,'strategy_definition':'smc-daily-sweep-bos-ob-v1' if flow=='C1' else None,'research_order':'EVIDENCE_BEFORE_SIGNAL' if flow=='C1' else 'SIGNAL_BEFORE_RESEARCH','independent_critic':flow=='C2','version':state['version'],'created_utc':state['created_utc'],'status':state['status'],
         'research_prompt_version':state['prompt_version'],'current_research_prompt_version':CONFIG['version'],
         'research_configuration_changed':state['prompt_version']!=CONFIG['version'] or state['version']!=VERSION or state['corpus_sha256']!=corpus_info()['sha256'],
-        'research_summary':{'company_screens':sum(d.get('purpose')=='COMPANY_SCREEN' for d in decisions),'evidence_passed':sum(bool(d.get('evidence_passed')) for d in decisions),'no_smc_signal':sum(d.get('action')=='NO_SMC_SIGNAL' for d in decisions),'entry_decisions':sum(d.get('action')=='ENTER' for d in decisions)},
+        'signal_checks':[{k:d.get(k) for k in ('date','symbol','smc_stage','smc_signal','action','explanation')} for d in decisions if d.get('evidence_passed')],
+        'research_summary':{'company_screens':sum(d.get('purpose')=='COMPANY_SCREEN' for d in decisions),
+            'eligible_company_sessions':sum(bool(r.get('eligible')) for r in state['selection_audit']),
+            'shortlisted_company_sessions':sum(bool(r.get('selected')) for r in state['selection_audit']),
+            'deferred_reviews':sum(d.get('action')=='DEFERRED_REVIEW' for d in decisions),
+            'queued_buys':sum(o.get('side')=='BUY' for o in state['queued']),
+            'evidence_passed':sum(bool(d.get('evidence_passed')) for d in decisions),
+            'signal_checks':sum(bool(d.get('evidence_passed')) for d in decisions),
+            'signals_found':sum(d.get('smc_signal') is True for d in decisions),
+            'research_blocked':sum(d.get('action') in {'BLOCKED','PROVIDER_FAILURE'} for d in decisions),
+            'buy_fills':sum(t.get('event')=='BUY' for t in state['ledger']),
+            'no_smc_signal':sum(d.get('action')=='NO_SMC_SIGNAL' for d in decisions),'entry_decisions':sum(d.get('action')=='ENTER' for d in decisions)},
         'portfolio_memory':state.get('memory_manifest'),'settings':state['settings'],'data_source':state['data_source'],'data_provenance':state['data_provenance'],
         'strategy_policies':state.get('strategy_policies',{}),'legacy_shared_execution_policy':'strategy_policies' not in state,
         'breakout_reentry_watches':list(state.get('breakout_reentry_watches',{}).values()),
