@@ -2,11 +2,13 @@ from types import SimpleNamespace
 from pathlib import Path
 from urllib.parse import urlsplit
 import json
+import pytest
 from fastapi.testclient import TestClient
 from tests.test_c1_smc_portfolio import smc_history,cfg
 
 
-def test_three_flow_ui_posts_c1_with_consent_and_default_profit(monkeypatch,tmp_path):
+@pytest.mark.parametrize('completed',[False,True])
+def test_three_flow_ui_posts_c1_with_consent_and_default_profit(monkeypatch,tmp_path,completed_c2,completed):
     from streamlit.testing.v1 import AppTest
     import app.api as api
     import aegistrade.c2_portfolio as portfolio
@@ -14,7 +16,9 @@ def test_three_flow_ui_posts_c1_with_consent_and_default_profit(monkeypatch,tmp_
     monkeypatch.setattr(api,'DATA',tmp_path);monkeypatch.setattr(api,'_frame',smc_history())
     monkeypatch.setenv('AEGIS_REVIEWER_TOKEN','c1-portfolio-contract-token')
     monkeypatch.setenv('OPENROUTER_API_KEY','TEST_ONLY');monkeypatch.setenv('AEGIS_ENABLE_LLM_EXPERIMENTS','true')
-    monkeypatch.setattr(portfolio,'active',lambda *a:True);monkeypatch.setattr(portfolio,'launch',lambda *a:None)
+    from tests.test_c1_smc_portfolio import researcher,prepare
+    monkeypatch.setattr(portfolio,'active',lambda *a:not completed)
+    monkeypatch.setattr(portfolio,'launch',lambda rid,frame:portfolio.execute_run(rid,frame,researcher=researcher(completed_c2),preparer=prepare) if completed else None)
     client=TestClient(api.app);sent=[]
     def adapt(r):return SimpleNamespace(ok=r.status_code<400,status_code=r.status_code,text=r.text,json=r.json)
     def get(url,**kw):
@@ -39,6 +43,12 @@ def test_three_flow_ui_posts_c1_with_consent_and_default_profit(monkeypatch,tmp_
     assert body['mode']=='SMC' and body['consent_to_paid_calls'] and body['take_profit_percent']==4
     assert body['screening_candidates_per_session']==3 and not body['breakout_reentry_enabled']
     assert at.session_state['simulation_result']['research_flow']=='C1'
+    if completed:
+        tables=[x.value for x in at.dataframe if 'Stage' in x.value.columns]
+        assert tables and not tables[0].empty
+        assert set(tables[0]['Stage'])=={'Before SMC signal'}
+        assert tables[0]['Estimated shares'].isna().all()
+        assert set(tables[0]['Strategy'])=={'Not evaluated yet'}
     before=len(sent)
     next(x for x in at.button if x.label=='Refresh AI progress').click().run()
     assert not at.exception and len(sent)==before

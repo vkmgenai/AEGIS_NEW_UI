@@ -85,16 +85,21 @@ def render_table(records, caption: str = "", height: int = 320):
 
 
 def selection_table(rows,caption='',height=320):
-    labels={'ALREADY_HELD':'Already held','INSUFFICIENT_HISTORY':'Insufficient warm-up history',
+    labels={'ALREADY_HELD_OR_PENDING':'Already held or pending','ALREADY_HELD':'Already held','INSUFFICIENT_HISTORY':'Insufficient warm-up history',
             'LOW_LIQUIDITY':'Below turnover threshold','REGIME_ABSTAIN':'Regime requires abstention',
             'VOLATILITY_LIMIT':'Volatility limit','UNREVIEWED_PRICE_DISCONTINUITY':'Unreviewed price discontinuity',
             'NO_ENTRY_SIGNAL':'No entry signal','CAPITAL_OR_RISK_LIMIT':'Capital/risk cannot fund one share',
             'POSITION_LIMIT':'Portfolio position limit','DAILY_LOSS_LIMIT':'Daily-loss circuit breaker'}
     display=[]
     for row in rows:
+        before_signal=row.get('research_order')=='EVIDENCE_BEFORE_SIGNAL'
+        reason='Selected for pre-signal screening; signal and quantity are evaluated later' if row.get('selected') else 'Eligible for a later screening batch'
         display.append({'Stock':row['symbol'],'Rank':row.get('rank'),'Selected':row.get('selected',False),
-            'Strategy':row['strategy'],'Score':row['score'],'Estimated shares':row['estimated_quantity_at_signal_close'],
-            'Reason':'; '.join(labels.get(r,r) for r in row.get('reasons',[])) or 'Eligible at signal close'})
+            'Stage':'Before SMC signal' if before_signal else 'Technical signal shortlist',
+            'Strategy':'Not evaluated yet' if before_signal else row.get('strategy','NONE'),
+            'Score':None if before_signal else row.get('score'),
+            'Estimated shares':None if before_signal else row.get('estimated_quantity_at_signal_close'),
+            'Reason':'; '.join(labels.get(r,r) for r in row.get('reasons',[])) or (reason if before_signal else 'Eligible at signal close')})
     render_table(display,caption,height)
 
 
@@ -585,7 +590,7 @@ elif page == "Strategy Backtests":
             selection=result.get('stock_selection',{})
             if selection.get('enabled'):
                 with st.expander('Automatic stock-selection audit'):
-                    st.caption('Ranks use only completed-session evidence. A shortlist is not C2 research or human approval.')
+                    st.caption('Pre-signal rows have no estimated share quantity. In C1, these candidates undergo company research before SMC checks; sizing follows only after evidence and signal pass. A shortlist is not an executed order.')
                     audit=selection.get('audits',{}).get(selected,[])
                     if audit:
                         dates=sorted({x['date'] for x in audit})
