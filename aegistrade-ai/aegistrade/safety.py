@@ -23,7 +23,7 @@ class OrderProposal(BaseModel):
     order_type: Literal["MARKET"] = "MARKET"  # deliberate MVP simplification
     reference_price: float = Field(gt=0)
     stop_loss_price: float = Field(gt=0)
-    strategy: Literal["EMA_TREND", "EMA_PULLBACK", "RSI_REVERSION", "BREAKOUT"]
+    strategy: Literal["EMA_TREND", "EMA_PULLBACK", "RSI_REVERSION", "BREAKOUT", "SMC"]
     account: Literal["DEMO_ONLY"] = "DEMO_ONLY"
     signal_date: str
     expires_at_utc: str

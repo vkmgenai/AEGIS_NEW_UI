@@ -118,7 +118,7 @@ def test_ui_c2_portfolio_requires_and_sends_paid_rule_consent(monkeypatch,tmp_pa
 
     assert status_reads  # fragment performs a read-only poll immediately
     before=len(status_reads)
-    next(x for x in at.button if x.label=='Refresh C2 progress').click().run()
+    next(x for x in at.button if x.label=='Refresh AI progress').click().run()
     assert not at.exception and len(status_reads)>before
     assert sum(path=='/simulation/c2/run' for path,_ in sent)==1
     assert next(x for x in at.number_input if x.label=='Initial stop loss (% below signal close)').value==3.0

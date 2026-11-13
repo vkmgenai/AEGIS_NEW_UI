@@ -11,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 import hashlib,json,math,os,threading,uuid
 import pandas as pd
 from pydantic import Field,model_validator
+from typing import Literal
 from prometheus_client import Counter
 from .simulation_service import SimulationSettings,normalize,execute_simulation,policy_from_settings
 from .selection import prepare_selection_features,rank_candidates
@@ -28,12 +29,13 @@ from . import portfolio_memory
 from .dated_web import eligible as web_eligible
 from .breakout_reentry import register_breakout_stop,reentry_candidates,reentry_context
 
-VERSION='c2-portfolio-v6-pullback-breakout-risk-reentry'
+VERSION='portfolio-v7-c1-smc-evidence-first'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
 
 class C2PortfolioSettings(SimulationSettings):
+    research_flow:Literal['C2']='C2'
     portfolio_playbook_id:str|None=Field(default=None,pattern=r'^[0-9a-f]{32}$')
     memory_allow_development_replay:bool=False
     mode:str='ROUTER'
@@ -44,10 +46,29 @@ class C2PortfolioSettings(SimulationSettings):
 
     @model_validator(mode='after')
     def c2_rules(self):
-        if self.mode!='ROUTER' or not self.automatic_stock_selection:raise ValueError('C2 portfolio uses automatic ROUTER screening')
+        if self.mode!=('SMC' if self.research_flow=='C1' else 'ROUTER') or not self.automatic_stock_selection:raise ValueError('Portfolio must use its flow-specific automatic strategy')
         if not self.consent_to_paid_calls or not self.approve_historical_rules:raise ValueError('Paid consent and upfront historical entry/exit-rule approval are required')
         if not self.start_date or not self.end_date:raise ValueError('Choose an explicit simulation period')
         return self
+
+
+class C1PortfolioSettings(C2PortfolioSettings):
+    research_flow:Literal['C1']='C1'
+    mode:str='SMC'
+    take_profit_percent:float=Field(default=4.,gt=0,le=100,allow_inf_nan=False)
+    trailing_stop_enabled:bool=False
+    breakout_reentry_enabled:bool=False
+    screening_candidates_per_session:int=Field(default=3,ge=1,le=10)
+
+    @model_validator(mode='after')
+    def c1_rules(self):
+        if self.portfolio_playbook_id:raise ValueError('C1 SMC does not consume C2 portfolio lessons')
+        if self.breakout_reentry_enabled:raise ValueError('Breakout re-entry is not used in C1 SMC')
+        return self
+
+
+def settings_for_state(state):
+    return (C1PortfolioSettings if state['settings'].get('research_flow')=='C1' else C2PortfolioSettings).model_validate(state['settings'])
 
 
 def now():return datetime.now(timezone.utc).isoformat()
@@ -66,6 +87,9 @@ def load(run_id):return json.loads(state_path(run_id).read_text())
 def frame_for(frame,settings,provenance):
     if provenance.get('requested_start') and settings.start_date<date.fromisoformat(provenance['requested_start']):raise ValueError('C2 evaluation cannot include frozen-universe warm-up')
     if provenance.get('requested_end') and settings.end_date>date.fromisoformat(provenance['requested_end']):raise ValueError('End exceeds downloaded evaluation window')
+    if settings.research_flow=='C1':
+        from .smc import prepare_smc
+        frame=prepare_smc(frame)
     f=prepare_selection_features(frame)
     f=f[(f.Date.dt.date>=settings.start_date)&(f.Date.dt.date<=settings.end_date)].copy()
     if f.Date.nunique()<2:raise ValueError('C2 replay needs at least two market sessions')
@@ -78,7 +102,7 @@ def create_run(frame,settings,*,source='synthetic',provenance=None,model=None):
     memory=portfolio_memory.bind(settings.portfolio_playbook_id,settings.start_date,settings.memory_allow_development_replay)
     provenance=provenance or {};f=frame_for(frame,settings,provenance);run_id=uuid.uuid4().hex
     state={'run_id':run_id,'version':VERSION,'created_utc':now(),'updated_utc':now(),'status':'QUEUED',
-        'memory_manifest':memory,'settings':settings.model_dump(mode='json'),'model':model_name(model),'inference':identity(model=model),
+        'research_flow':settings.research_flow,'memory_manifest':memory,'settings':settings.model_dump(mode='json'),'model':model_name(model),'inference':identity(model=model),
         'prompt_version':CONFIG['version'],'corpus_sha256':corpus_info()['sha256'],'input_sha256':fingerprint(f),
         'data_source':source,'data_provenance':provenance,'dates':[str(d.date()) for d in sorted(f.Date.unique())],
         'day_index':0,'phase':'OPEN','cash':settings.initial_capital,'previous_equity':settings.initial_capital,
@@ -91,8 +115,9 @@ def create_run(frame,settings,*,source='synthetic',provenance=None,model=None):
     # The reference uses identical data, capital, costs and risk; it has no C2 filters/reviews.
     policy=policy_from_settings(settings)
     state['strategy_policies']=strategy_policy_records(policy)
+    if settings.research_flow=='C1':state['strategy_policies']={'SMC':position_policy_record(policy)}
     from .engine import backtest,buy_and_hold
-    eq,events,metrics=backtest(f,p=policy,automatic_selection=True)
+    eq,events,metrics=backtest(f,mode=settings.mode,p=policy,automatic_selection=True,screening_limit=settings.screening_candidates_per_session if settings.research_flow=='C1' else 3)
     bench,bm=buy_and_hold(f,policy)
     state['reference']={'metrics':normalize(metrics),'curve':[{'date':str(r.Date.date()),'equity':r.Equity} for r in eq.itertuples()]}
     state['reference']['ledger']=[{'date':str(r.Date.date()),'symbol':r.Symbol,'event':r.Event,'quantity':r.Quantity,
@@ -107,6 +132,7 @@ def case_snapshot(bar,*,purpose='ENTRY',position=None,index=0,rank=None):
        'approved_candidate':str(bar.RoutedStrategy),'research_purpose':purpose,
        **{k:float(getattr(bar,k)) for k in ('Close','RSI14','ADX14','EMA20','EMA50','ATR14')}}
     s.update(PullbackRecent=bool(getattr(bar,'PullbackRecent',False)),PriorHigh=float(getattr(bar,'PriorHigh',bar.High)))
+    if getattr(bar,'SMCContext',None):s['smc_context']=bar.SMCContext
     if position:s['holding_context']={'quantity':position['quantity'],'entry_price':position['entry_price'],
         'stop_price':position['stop'],'strategy':position['strategy'],'holding_sessions':index-position['entry_index'],
         'review_trigger':'Scheduled holding review; close-updated stop applies next session' if position.get('trailing_last_close') else 'Scheduled holding review'}
@@ -132,7 +158,7 @@ class PauseProvider(Exception):pass
 
 def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None,news_monitor=None):
     """Resume exact day/phase. Dependency injection is for explicit contract tests only."""
-    state=load(run_id);settings=C2PortfolioSettings.model_validate(state['settings'])
+    state=load(run_id);settings=settings_for_state(state)
     if state['status'].startswith('COMPLETED'):return result_for(state)
     validate_memory_state(state,settings)
     f=frame_for(frame,settings,state['data_provenance'])
@@ -140,7 +166,9 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         raise ValueError('Data, prompts, policy corpus or simulator version changed; create a new run')
     frozen=state.get('inference',{'backend':'openrouter','model':state['model'],'budget_unit':'model_requests','adapter_version':'openrouter-v1'})
     if identity()!=frozen:raise ValueError('Inference backend/model/adapter changed; restore the original configuration or start a new run')
-    researcher=researcher or run_agentic_case;preparer=preparer or prepare_company_research;validator=validator or validate_completed_c2
+    flow=settings.research_flow
+    from .c1_gate import validate_completed_c1,validate_smc_order
+    researcher=researcher or run_agentic_case;preparer=preparer or prepare_company_research;validator=validator or (validate_completed_c1 if flow=='C1' else validate_completed_c2)
     if news_monitor is None and state['data_source']=='nsepython' and preparer is prepare_company_research:
         from .company_research import adverse_news_watch
         news_monitor=adverse_news_watch
@@ -195,7 +223,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         cancelled()
         # run_agentic_case always returns usage/errors; unexpected failures retain the reservation.
         memory_args={'lessons':selected_lessons} if state.get('memory_manifest') else {}
-        out=researcher(snapshot,'C2',model=state['model'],max_calls=8,max_output_tokens=4800,backend=frozen['backend'],**memory_args)
+        out=researcher(snapshot,flow,model=state['model'],max_calls=8,max_output_tokens=4800,backend=frozen['backend'],**memory_args)
         out['portfolio_memory']={'manifest':state.get('memory_manifest'),'lesson_ids':[x['id'] for x in selected_lessons]}
         out['snapshot']=snapshot
         out['retryable_provider_failure']=any(u.get('error') for u in out.get('usage',[]))
@@ -262,7 +290,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             # An opening gap through an existing stop remains a protective stop.
                             stop_gap=float(bar.Open)<=pos['stop']
                             profit_gap=take_profit_reference(pos,p) is not None and float(bar.Open)>=take_profit_reference(pos,p)
-                            if order['reason']=='SELL_C2' and not (stop_gap or profit_gap):
+                            if order['reason'] in {'SELL_C2','SELL_C1'} and not (stop_gap or profit_gap):
                                 try:
                                     out=json.loads((folder/'research'/f"{order['research_id']}.json").read_text())
                                     if validator(out,purpose='HOLDING_REVIEW')['portfolio_action']!='EXIT':raise ValueError('Exit changed')
@@ -275,7 +303,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                         # Durable research is revalidated before a simulated fill; a changed pack blocks it.
                         try:
                             out=json.loads((folder/'research'/f"{order['research_id']}.json").read_text())
-                            validator(out,purpose='ENTRY')
+                            if flow=='C1':validate_smc_order(order,out,f,p)
+                            else:validator(out,purpose='ENTRY')
                         except (ValueError,KeyError,TypeError,OSError):
                             state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Entry research changed before next eligible open']});continue
                         active_policy=policy_for_strategy(p,order['strategy'])
@@ -294,7 +323,8 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             state['ledger'].append({'date':when,'symbol':sym,'event':'BUY','quantity':qty,'price':buy,'fee':fee,
                                 'initial_stop':order['stop'],'strategy':order['strategy'],'realized_pnl':None,'research_id':order['research_id'],'signal_date':order['signal_date'],'original_signal_date':order.get('original_signal_date',order['signal_date']),
                                 'risk_percent_used':active_policy.risk_per_trade*100,'trailing_activation_r':active_policy.trailing_activation_r})
-                            state['ledger'][-1]['entry_setup']='BREAKOUT_BOUNCE' if order.get('breakout_reentry') else 'REGULAR'
+                            state['ledger'][-1]['entry_setup']='SMC_EVIDENCE_FIRST' if flow=='C1' else 'BREAKOUT_BOUNCE' if order.get('breakout_reentry') else 'REGULAR'
+                            if flow=='C1':state['ledger'][-1]['smc_context']=order['smc_context']
                         else:state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Next-open gap, risk, cash or daily-loss check failed']})
                 state['queued']=pending
                 for sym,pos in list(state['positions'].items()):
@@ -342,7 +372,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                 if news_trigger:snapshot['holding_context']['review_trigger']='New dated issuer disclosure candidate; assess actual adverse content'
                 rec=decide(snapshot,key)
                 pos['last_review_index']=index
-                if rec['action']=='EXIT':state['queued'].append({'side':'SELL','symbol':sym,'reason':'SELL_C2','signal_date':when,'research_id':rec['id']})
+                if rec['action']=='EXIT':state['queued'].append({'side':'SELL','symbol':sym,'reason':'SELL_'+flow,'signal_date':when,'research_id':rec['id']})
                 state['decisions'].append(rec);state['processed_close_keys'].append(key)
                 checkpoint()
             # Screen on every close; reserve slots for existing pending BUYs, not future sale proceeds.
@@ -350,8 +380,14 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                 pending_buys={o['symbol'] for o in state['queued'] if o['side']=='BUY'}
                 entry_daily=reentry_candidates(daily,state.setdefault('breakout_reentry_watches',{}),index) if p.breakout_reentry_enabled else daily
                 entry_snap={str(r.Symbol):r for r in entry_daily.itertuples()}
-                audit=rank_candidates(entry_daily,'ROUTER',equity=close_equity,cash=state['cash'],trade_policy=p,
-                    held_symbols=set(state['positions'])|pending_buys,available_slots=max(0,p.max_positions-len(state['positions'])-len(pending_buys)))
+                if flow=='C1':
+                    from .smc import screening_candidates
+                    audit=screening_candidates(entry_daily,set(state['positions'])|pending_buys,index,settings.screening_candidates_per_session)
+                    if len(state['positions'])+len(pending_buys)>=p.max_positions:
+                        for r in audit:r['selected']=False;r['reasons'].append('POSITION_LIMIT')
+                else:
+                    audit=rank_candidates(entry_daily,'ROUTER',equity=close_equity,cash=state['cash'],trade_policy=p,
+                        held_symbols=set(state['positions'])|pending_buys,available_slots=max(0,p.max_positions-len(state['positions'])-len(pending_buys)))
                 if daily_block:
                     for r in audit:r['selected']=False;r['reasons'].append('DAILY_LOSS_LIMIT')
                 if not any(x['date']==when for x in state['selection_audit']):state['selection_audit'].extend(audit);checkpoint()
@@ -379,12 +415,21 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                     bar=entry_snap[sym];snapshot=case_snapshot(bar,rank=rank)
                     if bar.Regime=='BREAKOUT_BOUNCE':snapshot['breakout_reentry']=reentry_context(state['breakout_reentry_watches'][sym])
                     if sym in origins:snapshot['original_signal_date']=origins[sym]
+                    if flow=='C1':
+                        # The single agent sees no SMC signal/context or routed strategy before its company screen.
+                        snapshot.update(regime='UNCERTAIN',approved_candidate='NONE',research_purpose='COMPANY_SCREEN',PullbackRecent=False)
+                        snapshot.pop('smc_context',None)
                     rec=decide(snapshot,key)
+                    if flow=='C1' and rec['action']=='SCREEN':
+                        rec.update(research_order='EVIDENCE_BEFORE_SIGNAL',evidence_passed=True,
+                                   smc_signal=bool(bar.SMCSignal),entry_setup='SMC_EVIDENCE_FIRST')
+                        rec['action']='ENTER' if bool(bar.SMCSignal) else 'NO_SMC_SIGNAL'
+                        if bool(bar.SMCSignal):rec['smc_context']=bar.SMCContext
                     if rec['action']=='ENTER':
                         stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,chosen_strategy(bar)))
                         if stop>0:state['queued'].append({'side':'BUY','symbol':sym,'strategy':chosen_strategy(bar),
                             'stop':stop,'signal_date':when,'original_signal_date':origins.get(sym,when),'research_id':rec['id'],
-                            'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE'})
+                            'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE',**({'smc_context':bar.SMCContext} if flow=='C1' else {})})
                     elif bar.Regime=='BREAKOUT_BOUNCE' and (rec.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'}:
                         state['breakout_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
                     state['decisions'].append(rec);state['processed_close_keys'].append(key)
@@ -406,6 +451,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
 
 
 def result_for(state):
+    flow=state.get('research_flow','C2');reference_mode='SMC_REFERENCE' if flow=='C1' else 'ROUTER'
     decisions=[]
     for stored in state['decisions']:
         decision=dict(stored)
@@ -434,7 +480,7 @@ def result_for(state):
     realized=sum(x['realized_pnl'] or 0 for x in state['ledger']);unrealized=sum(h['unrealized_pnl'] for h in holdings)
     usage=state['usage'];costs=[u.get('cost') for u in usage]
     cost_complete=bool(usage) and all(isinstance(x,(int,float)) for x in costs) and not state['uncertain_model_calls']
-    metrics={'mode':'C2','initial_capital':initial,'ending_equity':eq,'ending_cash':state['cash'],
+    metrics={'mode':flow,'initial_capital':initial,'ending_equity':eq,'ending_cash':state['cash'],
         'total_return_pct':100*(eq/initial-1),'realized_pnl':realized,'unrealized_pnl':unrealized,'open_positions':len(holdings)}
     if rows:
         curve=pd.DataFrame([{'Date':r['date'],'Equity':r['equity']} for r in rows])
@@ -447,17 +493,18 @@ def result_for(state):
     reference_curve=[r for r in state['reference']['curve'] if cutoff and r['date']<=cutoff]
     benchmark={**state['benchmark'],'curve':[r for r in state['benchmark']['curve'] if cutoff and r['date']<=cutoff]}
     if not terminal:benchmark['metrics']={}
-    return normalize({'run_id':state['run_id'],'version':state['version'],'created_utc':state['created_utc'],'status':state['status'],
+    return normalize({'run_id':state['run_id'],'research_flow':flow,'strategy_definition':'smc-daily-sweep-bos-ob-v1' if flow=='C1' else None,'research_order':'EVIDENCE_BEFORE_SIGNAL' if flow=='C1' else 'SIGNAL_BEFORE_RESEARCH','independent_critic':flow=='C2','version':state['version'],'created_utc':state['created_utc'],'status':state['status'],
         'research_prompt_version':state['prompt_version'],'current_research_prompt_version':CONFIG['version'],
         'research_configuration_changed':state['prompt_version']!=CONFIG['version'] or state['version']!=VERSION or state['corpus_sha256']!=corpus_info()['sha256'],
+        'research_summary':{'company_screens':sum(d.get('purpose')=='COMPANY_SCREEN' for d in decisions),'evidence_passed':sum(bool(d.get('evidence_passed')) for d in decisions),'no_smc_signal':sum(d.get('action')=='NO_SMC_SIGNAL' for d in decisions),'entry_decisions':sum(d.get('action')=='ENTER' for d in decisions)},
         'portfolio_memory':state.get('memory_manifest'),'settings':state['settings'],'data_source':state['data_source'],'data_provenance':state['data_provenance'],
         'strategy_policies':state.get('strategy_policies',{}),'legacy_shared_execution_policy':'strategy_policies' not in state,
         'breakout_reentry_watches':list(state.get('breakout_reentry_watches',{}).values()),
         'period':{'start':state['dates'][0],'end':state['dates'][-1]},'sessions':len(state['dates']),
         'progress':{'completed_sessions':state['day_index'],'total_sessions':len(state['dates']),'phase':state['phase'],
                     'current_date':state['dates'][min(state['day_index'],len(state['dates'])-1)]},
-        'metrics':[metrics]+([{'mode':'ROUTER','initial_capital':initial,**state['reference']['metrics']}] if terminal else []),
-        'curves':{'C2':rows,'ROUTER':reference_curve},'ledgers':{'C2':state['ledger'],'ROUTER':state['reference'].get('ledger',[]) if terminal else []},
+        'metrics':[metrics]+([{'mode':reference_mode,'initial_capital':initial,**state['reference']['metrics']}] if terminal else []),
+        'curves':{flow:rows,reference_mode:reference_curve},'ledgers':{flow:state['ledger'],reference_mode:state['reference'].get('ledger',[]) if terminal else []},
         'news_checks':list(state.get('news_checks',{}).values()),
         'benchmark':benchmark,'open_holdings':holdings,'pending_orders':state['queued'],'decisions':decisions,
         'initial_stop_loss':initial_stop_settings(exit_settings),'stop_updates':state.get('stop_updates',[]),'deferred_entries':state.get('deferred_entries',[]),
@@ -467,8 +514,9 @@ def result_for(state):
             'basis':'highest completed close since entry','atr_source':'entry signal; distance fixed for the holding',
             'activation':'raised at completed close, effective from next session',
             'breakout_settings':{k:v for k,v in state['settings'].items() if k.startswith('breakout_')},
-            'breakout_reentry_window_sessions':10 if state.get('strategy_policies') else None},
-        'stock_selection':{'enabled':True,'audits':{'C2':state['selection_audit']},'note':'Code shortlist is not an executed C2 entry; inspect research decisions and ledger.'},
+            'breakout_reentry_window_sessions':10 if state.get('strategy_policies') and flow=='C2' else None,
+            'smc_signal_exit':'none; target/protective stop/adverse research exit' if flow=='C1' else None},
+        'stock_selection':{'enabled':True,'audits':{flow:state['selection_audit']},'note':'C1 liquidity screens precede SMC eligibility; C2 shortlists precede specialist research. Neither shortlist is an executed entry.'},
         'inference':state.get('inference',identity(backend='openrouter',model=state['model'])),
         'model_usage':{'budget_unit':state.get('inference',{}).get('budget_unit','model_requests'),
             'provider_requests_counted':state.get('inference',{}).get('backend','openrouter')=='openrouter','attempted_calls':state['model_calls'],'budget_charged_calls':state['budget_charged'],
@@ -503,7 +551,7 @@ def resume(run_id,frame,additional_calls):
         state=load(run_id)
         if state['status'].startswith('COMPLETED'):raise ValueError('Completed run cannot be resumed')
         if not 0<=additional_calls<=2400:raise ValueError('Additional call allowance must be between 0 and 2400')
-        settings=C2PortfolioSettings.model_validate(state['settings'])
+        settings=settings_for_state(state)
         validate_memory_state(state,settings)
         f=frame_for(frame,settings,state['data_provenance'])
         if state['version']!=VERSION or fingerprint(f)!=state['input_sha256'] or state['prompt_version']!=CONFIG['version'] or state['corpus_sha256']!=corpus_info()['sha256']:raise ValueError('Data, research or exit-policy configuration changed; start a new run')

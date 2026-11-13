@@ -42,7 +42,7 @@ class SimulationSettings(BaseModel):
 
     @model_validator(mode="after")
     def validate_dates_and_mode(self):
-        if self.mode not in (*MODES, "ALL"):
+        if self.mode not in (*MODES, "ALL", "SMC"):
             raise ValueError(f"mode must be ALL or one of {MODES}")
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValueError("start_date must be on or before end_date")
@@ -91,6 +91,9 @@ def execute_simulation(market_frame: pd.DataFrame, settings: SimulationSettings,
             raise ValueError('Evaluation end exceeds the downloaded window')
         if settings.start_date is None:settings=settings.model_copy(update={'start_date':earliest})
         if settings.end_date is None:settings=settings.model_copy(update={'end_date':latest})
+    if settings.mode=='SMC':
+        from .smc import prepare_smc
+        market_frame=prepare_smc(market_frame)
     from .selection import prepare_selection_features
     f = prepare_selection_features(market_frame) if settings.automatic_stock_selection else market_frame.copy()
     if settings.start_date:
@@ -142,7 +145,7 @@ def execute_simulation(market_frame: pd.DataFrame, settings: SimulationSettings,
         "metrics": metrics,
         "curves": curves,
         "ledgers": ledgers,
-        "stock_selection":{"enabled":settings.automatic_stock_selection,"version":SelectionPolicy().version,"policy":asdict(SelectionPolicy()),
+        "stock_selection":{"enabled":settings.automatic_stock_selection,"version":SelectionPolicy().version,"policy":{**asdict(SelectionPolicy()),**({"smc_rotating_candidates_per_session":3,"smc_signal_checked_after_liquidity_screen":True} if settings.mode=="SMC" else {})},
                            "audits":selection_audits,"note":"Signals ranked at each completed close; actual next-open quantity is recalculated. No LLM-selected portfolio returns."},
         "disclaimer": "Deterministic historical simulation only. ROUTER is code-based, NOT OpenRouter C2.",
     })

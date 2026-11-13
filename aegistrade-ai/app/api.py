@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.23.0',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.24.0',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -234,7 +234,7 @@ def health():
             'dated_web_search_supported':True,'dated_web_search_enabled':os.getenv('AEGIS_DATED_WEB_SEARCH','true').lower()=='true',
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],
-            'breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
+            'c1_smc_portfolio_supported':True,'portfolio_flows':['C2','C1','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
             'portfolio_memory_supported':True,'max_portfolio_lessons_per_case':3,'company_evidence_view':'company-view-v5-substantive-body','breakout_source_quote_required':True,'structural_action_quarantine_supported':True,'signal_specific_evidence_supported':True,'adverse_news_exit_supported':True,
             'fresh_adverse_profit_policy_supported':True,'take_profit_default_percent':8.0,'friday_entry_review':'Next trading close; fill no earlier than the following eligible open',
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,
@@ -693,7 +693,7 @@ def prepare_company_evidence(body:CompanyResearchRequest,x_reviewer_token:str|No
     except Exception:raise HTTPException(502,'Public company archive unavailable or invalid; no model calls made. Retry preparation later.') from None
 
 # C2 historical portfolio jobs: paid consent and reviewer auth precede all model work.
-from aegistrade.c2_portfolio import C2PortfolioSettings
+from aegistrade.c2_portfolio import C2PortfolioSettings,C1PortfolioSettings
 
 def _paid_c2_portfolio_auth(token,consent):
     auth(token)
@@ -712,6 +712,16 @@ def c2_portfolio_start(body:C2PortfolioSettings,x_reviewer_token:str|None=Header
         rid=create_run(run_frame,body,source=source,provenance=provenance)
         launch(rid,run_frame);return status(rid)
     except ValueError as e:raise HTTPException(422,str(e)) from None
+
+@app.post('/simulation/c1/run')
+def c1_portfolio_start(body:C1PortfolioSettings,x_reviewer_token:str|None=Header(default=None)):
+    _paid_c2_portfolio_auth(x_reviewer_token,body.consent_to_paid_calls)
+    from aegistrade.c2_portfolio import create_run,launch,status
+    try:
+        run_frame,source,provenance=market_snapshot_context()
+        rid=create_run(run_frame,body,source=source,provenance=provenance)
+        launch(rid,run_frame);return status(rid)
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
 
 @app.get('/simulation/c2/recent')
 def c2_portfolio_recent():
@@ -817,3 +827,30 @@ def portfolio_lessons_freeze(body:PortfolioLessonFreeze,x_reviewer_token:str|Non
     from aegistrade import portfolio_memory as memory
     try:return memory.freeze(body.candidate_ids)
     except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+# C1 and C2 share durable job controls; a run's frozen research_flow never changes.
+app.add_api_route('/simulation/c1/recent',c2_portfolio_recent,methods=['GET'])
+app.add_api_route('/simulation/c1/status/{run_id}',c2_portfolio_status,methods=['GET'])
+app.add_api_route('/simulation/c1/resume/{run_id}',c2_portfolio_resume,methods=['POST'])
+app.add_api_route('/simulation/c1/pause/{run_id}',c2_portfolio_pause,methods=['POST'])
+app.add_api_route('/simulation/c1/research/{run_id}/{decision_id}',c2_portfolio_research,methods=['GET'])
+
+class ReviewedNewsletterImport(BaseModel):
+    symbol:str=Field(pattern=r'^[A-Z0-9][A-Z0-9_&-]{1,29}$')
+    signal_date:date
+    reviewer:str=Field(min_length=3,max_length=100)
+    jsonl:str=Field(min_length=100,max_length=12000)
+
+@app.post('/company-research/import-news')
+def import_reviewed_news(body:ReviewedNewsletterImport,x_reviewer_token:str|None=Header(default=None)):
+    auth(x_reviewer_token)
+    from aegistrade.c2_portfolio import root,active
+    if any(active(p.parent.name) for p in root().glob('*/state.json')):
+        raise HTTPException(409,'Pause portfolio workers before importing evidence')
+    import tempfile
+    from aegistrade.company_research import import_archived_news
+    try:
+        with tempfile.TemporaryDirectory(prefix='aegis-reviewed-news-') as tmp:
+            path=Path(tmp)/'news.jsonl';path.write_text(body.jsonl)
+            return import_archived_news(body.symbol,body.signal_date.isoformat(),path,reviewer=body.reviewer)
+    except (ValueError,KeyError,TypeError) as exc:raise HTTPException(422,str(exc)) from None

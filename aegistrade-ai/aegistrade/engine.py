@@ -45,7 +45,7 @@ def allowable_shares(entry: float, stop: float, cash: float, equity: float, p: T
     return max(0, min(risk_cap, exposure_cap, available_cap))
 
 
-def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = None, *, automatic_selection:bool=False) -> tuple[pd.DataFrame,pd.DataFrame,dict]:
+def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = None, *, automatic_selection:bool=False, screening_limit:int=3) -> tuple[pd.DataFrame,pd.DataFrame,dict]:
     """Signal from day T close enters at T+1 open. Stops use daily OHLC and conservative gap handling.
 
     This is a research backtest, not executable broker infrastructure. No same-bar close lookahead.
@@ -140,8 +140,14 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
         eligible_symbols=None
         if automatic_selection:
             from .selection import rank_candidates
-            audit=rank_candidates(daily,mode,equity=marked_equity,cash=cash,trade_policy=p,
-                                  held_symbols=positions,available_slots=max(0,p.max_positions-len(positions)))
+            if mode=='SMC':
+                from .smc import screening_candidates
+                audit=screening_candidates(daily,set(positions),day_index,screening_limit)
+                if len(positions)>=p.max_positions:
+                    for item in audit:item['selected']=False;item['reasons'].append('POSITION_LIMIT')
+            else:
+                audit=rank_candidates(daily,mode,equity=marked_equity,cash=cash,trade_policy=p,
+                                      held_symbols=positions,available_slots=max(0,p.max_positions-len(positions)))
             if daily_loss_block:
                 for row in audit:
                     row['selected']=False

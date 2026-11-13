@@ -65,7 +65,7 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
     client=create_client(backend=backend,model=model,max_calls=min(CONFIG['max_calls_per_case'],max_calls),
                         max_output_tokens_total=max_output_tokens)
     trace=[]; events=[]; handoffs={}; observations={}; cited=set(); corpus_hashes=set(); company_hashes=set(); tool_count=0
-    result={'config':config,'model':model,'inference':identity(backend=backend,model=model),'expected_strategy':snapshot['approved_candidate'],
+    result={'config':config,'independent_critic':config=='C2','model':model,'inference':identity(backend=backend,model=model),'expected_strategy':snapshot['approved_candidate'],
         'research_purpose':evidence.research_purpose,
         'expected_regime':snapshot['regime'],'market_regime':snapshot['regime'],
         'selected_strategy':'NONE','citations':[],'guard_pass':False,'model_errors':[],
@@ -204,7 +204,7 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                                 if decision.company.status!='REVIEW_REQUIRED':raise ValueError('Adverse holding assessment must be REVIEW_REQUIRED for an EXIT')
                                 validate_company_assessment(decision.company,pack,allow_review_required=True,snapshot=snapshot)
                         if role in {'strategy','single'}:
-                            allowed_actions={'HOLD','EXIT'} if evidence.research_purpose=='HOLDING_REVIEW' else {'ENTER'}
+                            allowed_actions={'SCREEN'} if evidence.research_purpose=='COMPANY_SCREEN' else {'HOLD','EXIT'} if evidence.research_purpose=='HOLDING_REVIEW' else {'ENTER'}
                             if decision.portfolio_action not in allowed_actions:raise ValueError('Action conflicts with research purpose')
                             if decision.strategy!=approved_route(evidence.regime):raise ValueError('Strategy conflicts with code')
                             if not decision.citations or not set(decision.citations).issubset(cited):raise ValueError('Unsupported citation')

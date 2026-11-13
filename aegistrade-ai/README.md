@@ -276,3 +276,7 @@ Breakout approval now requires a recent exact visible source quote supporting a 
 ### Breakout recovery and trend pullbacks (0.23.0)
 
 Four strategies are available, including EMA_PULLBACK; BREAKOUT is retained with separate risk/stop controls. A stopped breakout can make one confirmed recovery entry after fresh C2 research. See [rules and UI demo guide](docs/AegisTrade_Breakout_Reentry_and_Pullback_Guide.md). Start a fresh run; historical results are preserved.
+
+### Three portfolio flows (0.24.0)
+
+Strategy Backtests now offers C2 specialist research, C1 evidence-first SMC and technical-only simulation. C1 checks dated company RAG/filings/news/newsletters before evaluating the SMC pattern, uses one tool-using LLM agent without an independent critic, and defaults to a configurable 4% net trading profit target with protective stops. Existing C2 strategies and universes remain. See [C1 design, UI demo and viva guide](docs/AegisTrade_C1_SMC_Three_Flow_Guide.md). Start a fresh run for the new engine/policy version.

@@ -59,6 +59,7 @@ def prepare_indicators(df: pd.DataFrame) -> pd.DataFrame:
 def entry_signal(row, strategy: str) -> bool:
     if not bool(row.Ready):
         return False
+    if strategy=="SMC":return bool(getattr(row,"SMCSignal",False))
     if strategy == "EMA_TREND":
         return bool(row.EMA20 > row.EMA50 and row.Close > row.EMA20)
     if strategy=='EMA_PULLBACK':return pullback_entry(row)

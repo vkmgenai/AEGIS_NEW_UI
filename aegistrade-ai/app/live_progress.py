@@ -24,7 +24,7 @@ def render_c2_progress(initial_result,fetch_status):
                     raise ValueError('Status response does not match the selected portfolio')
                 fresh=candidate;result=fresh;st.session_state['simulation_result']=fresh
             except Exception:
-                st.warning('Automatic progress refresh is temporarily unavailable. Showing the last saved status; you can still use Refresh C2 progress.')
+                st.warning('Automatic progress refresh is temporarily unavailable. Showing the last saved status; you can still use Refresh AI progress.')
         progress=result['progress']
         done=progress['completed_sessions'];total=progress['total_sessions']
         fraction=max(0.0,min(1.0,done/max(1,total)))
@@ -34,8 +34,8 @@ def render_c2_progress(initial_result,fetch_status):
         if polling:
             checked=datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S IST')
             if fresh:st.caption(f'Live progress updates every {POLL_SECONDS} seconds · Last checked {checked}')
-            if result['status']=='QUEUED':st.caption('Queued jobs wait for the single C2 worker; no research calls start for this job until its turn.')
-            st.caption('The session counter advances after a market session finishes. C2 research can take several calls. Refresh C2 progress also reloads the other result tables.')
+            if result['status']=='QUEUED':st.caption('Queued jobs wait for the shared AI portfolio worker; no research calls start for this job until its turn.')
+            st.caption('The session counter advances after a market session finishes. AI research can take several calls. Refresh AI progress also reloads the other result tables.')
         st.json(result['model_usage'])
         if fresh and fresh.get('status') not in LIVE_STATUSES:
             # One app rerun updates final tables/warnings and removes the polling timer.

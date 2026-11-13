@@ -303,17 +303,21 @@ elif page == "Overview":
 
 elif page == "Strategy Backtests":
     heading("Portfolio simulation", "Choose your capital, historical date range and risk. This is a reproducible DAILY-BAR backtest, not real-time paper trading.")
-    simulation_engine=st.radio('Simulation engine',['C2 historical portfolio','Technical-only baseline'],horizontal=True,key='simulation_engine')
+    simulation_engine=st.radio('Simulation engine',['C2 historical portfolio','C1 SMC portfolio','Technical-only baseline'],horizontal=True,key='simulation_engine')
+    is_c1=simulation_engine=='C1 SMC portfolio'
     is_c2=simulation_engine=='C2 historical portfolio'
+    is_ai=is_c1 or is_c2
+    flow_label='C1' if is_c1 else 'C2'
+    if is_c1:st.info('C1 evidence-first: one LLM agent checks dated filings, reviewed newsletters and available news via RAG/tools before code evaluates the SMC signal. SMC = liquidity sweep → bullish structure break → later order-block retest. Default profit target 4% net of modeled trading costs; protective stops and cited adverse exits remain active. C1 has no independent LLM critic.')
     if is_c2 and health.get('signal_specific_evidence_supported'):
         st.info('Entry policy: strong trend and RSI-reversion signals can proceed with explicitly incomplete coverage after dated research, if no concrete adverse event remains unresolved. Breakouts require a recent verbatim source quote supporting actual improvement or a completed commercial event, independently corroborated by the critic. Known recent structural actions quarantine new entries on unadjusted prices. A cited adverse finding requires an EXIT after critic validation; it fills at a later eligible open.')
-    st.info('C2 mode researches each prospective entry and periodically reviews holdings. Historical fills follow upfront approved rules; the separate supervised workflow retains per-order human review. Stops and strategy exits remain code-controlled. Open holdings are marked, never forcibly sold at the end.')
-    if is_c2:
+    st.info('C2 researches prospective technical entries. C1 researches liquid candidates before checking SMC. Both periodically review holdings. Historical fills follow upfront approved rules; the separate supervised workflow retains per-order human review. Stops and strategy exits remain code-controlled. Open holdings are marked, never forcibly sold at the end.')
+    if is_ai:
         inf=health.get('inference',{})
         st.caption('Backend: '+inf.get('backend','openrouter')+' | Model: '+health.get('agent_model','unknown')+' | Allowance unit: '+inf.get('budget_unit','model_requests'))
         if inf.get('backend')=='codex_cli':st.info('Codex consumes ChatGPT plan allowance. Caps count CLI invocations; internal provider requests and per-run USD cost are unknown. Response-token budgets are guidance, not hard provider token caps.')
-    if is_c2 and health.get('dated_web_search_supported'):st.caption('Eligible cases with missing/UNKNOWN company evidence can use bounded dated web search before an evidence-based block. Sources must pass date/identity checks; strong technical signals do not override unresolved material risks.')
-    if is_c2:st.caption('A long period can consume substantial API or ChatGPT plan allowance. The total allowance pauses the run before another case would exceed it. Normal research uses six inference units per case; eight are reserved conservatively. Begin with a short date window.')
+    if is_ai and health.get('dated_web_search_supported'):st.caption('Eligible cases with missing/UNKNOWN company evidence can use bounded dated web search before an evidence-based block. Sources must pass date/identity checks; strong technical signals do not override unresolved material risks.')
+    if is_ai:st.caption('A long period can consume substantial API or ChatGPT plan allowance. The total allowance pauses the run before another case would exceed it. C2 normally uses six inference units per case; C1 often uses two but may need tool/correction turns. Eight are reserved conservatively per case. C1 researches up to three liquid candidates per session before evaluating signals. Begin with a short date window.')
     from datetime import date, timedelta
     first = date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"])
     last = date.fromisoformat(universe["last_date"])
@@ -326,103 +330,130 @@ elif page == "Strategy Backtests":
         except Exception as exc:fail('Could not load portfolio lesson versions.',exc)
     if not health.get('configurable_stop_loss_supported',False):
         st.info('The initial stop-loss controls below need the updated API. Existing jobs can continue; finish or pause them, then restart the API and dashboard together before submitting a new simulation.')
+    if is_c1:
+        with st.expander('Optional: add reviewed historical news or newsletters before research'):
+            st.caption('Use a licensed excerpt with a verified original publication date. Prepare the dated company pack first, then import 1–2 JSONL excerpts. These supplement official filings; they do not bypass missing evidence. Imports apply only to this exact symbol and decision date, not every date in the run. Pause running portfolios before importing.')
+            news_symbol=st.selectbox('Newsletter company',universe['symbols'],key='c1_news_symbol')
+            news_day=st.date_input('Newsletter research decision date',value=first,min_value=first,max_value=last,key='c1_news_day')
+            news_reviewer=st.text_input('Original source/date verified by',key='c1_news_reviewer')
+            news_file=st.file_uploader('Reviewed news/newsletter JSONL',type=['jsonl'],key='c1_news_upload')
+            st.code('{"symbol":"RELIANCE","kind":"newsletter","title":"Original title","publisher":"Original publisher","source_url":"https://publisher.example/original","published_at":"2023-11-30T10:00:00+05:30","original_publication_verified":true,"text":"100–4000 characters of licensed, verified source excerpt"}',language='json')
+            st.caption('The example is a format template, not real evidence. Do not mark a fabricated or unverified source as verified. Date-only publications become available the following local midnight. Later publications are rejected.')
+            if st.button('Prepare dated company pack for newsletter',disabled=not bool(reviewer_token)):
+                try:
+                    with st.spinner('Preparing dated official sources without generation...'):
+                        post('/company/research/prepare',{'symbol':news_symbol,'signal_date':news_day.isoformat(),'refresh':False},reviewer_token,timeout=180)
+                    st.success('Dated pack prepared. Inspect coverage before importing your excerpt.')
+                except Exception as exc:fail('Could not prepare dated company evidence.',exc)
+            if st.button('Import reviewed historical excerpts',disabled=not bool(reviewer_token and news_file and len(news_reviewer.strip())>=3)):
+                try:
+                    imported=post('/company-research/import-news',{'symbol':news_symbol,'signal_date':news_day.isoformat(),'reviewer':news_reviewer,'jsonl':news_file.getvalue().decode('utf-8')},reviewer_token)
+                    st.success('Reviewed excerpts added to the dated evidence pack. Start a fresh run to use them.');st.json(imported)
+                except Exception as exc:fail('Import rejected; check date, source, symbol, length and pack preparation.',exc)
     stop_method=st.selectbox('Initial stop-loss method',['ATR distance','Percentage below signal close'],key='initial_stop_method')
-    breakout_method=st.selectbox('Breakout initial stop method',['ATR distance','Percentage below signal close'],key='breakout_stop_method')
+    breakout_method=st.selectbox('Breakout initial stop method',['ATR distance','Percentage below signal close'],key='breakout_stop_method',disabled=is_c1)
     with st.form("capital_simulation_form"):
         st.markdown("#### Simulation settings")
         c1,c2,c3=st.columns(3)
         with c1:
             capital=st.number_input("Initial capital (₹)",min_value=1000.0,max_value=100000000.0,value=200000.0,step=10000.0)
-            risk_pct=st.number_input("Other strategies: maximum risk per trade (%)",min_value=0.25,max_value=3.0,value=1.0,step=0.25)
+            risk_pct=st.number_input("SMC maximum risk per trade (%)" if is_c1 else "Other strategies: maximum risk per trade (%)",min_value=0.25,max_value=3.0,value=1.0,step=0.25)
         with c2:
             start_date=st.date_input("Simulation start",value=first,min_value=first,max_value=last)
             end_date=st.date_input("Simulation end",value=last,min_value=first,max_value=last)
         with c3:
-            automatic_selection=st.checkbox("Automatically screen and rank stocks",value=True,disabled=is_c2)
-            sim_mode=st.selectbox("Strategies to run",["ROUTER"] if is_c2 else ["ALL","ROUTER","EMA_TREND","EMA_PULLBACK","RSI_REVERSION","BREAKOUT"],
+            automatic_selection=st.checkbox("Automatically screen and rank stocks",value=True,disabled=is_ai)
+            sim_mode=st.selectbox("Strategies to run",["SMC"] if is_c1 else ["ROUTER"] if is_c2 else ["ALL","ROUTER","EMA_TREND","EMA_PULLBACK","RSI_REVERSION","BREAKOUT","SMC"],
                                   help="ALL compares five rule-based strategy configurations using identical starting capital and dates.")
             fee_bps=st.number_input("Fees (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
             slippage_bps=st.number_input("Slippage (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
-        st.caption('The following common initial-stop and trailing controls apply to EMA trend, EMA pullback and RSI reversion. Separate breakout controls appear below.')
+        st.caption('The following common initial-stop and trailing controls apply to EMA trend, EMA pullback, RSI reversion and C1 SMC. Separate breakout controls appear below.')
         initial_atr=st.number_input('Initial stop distance (× ATR14 at signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=stop_method!='ATR distance')
         initial_percent=st.number_input('Initial stop loss (% below signal close)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=stop_method=='ATR distance')
         st.caption('The initial stop is fixed from the completed signal close before a later-open fill. A 5% stop means 5% below that close; fees, slippage and opening gaps can change the actual loss. This is separate from the portfolio risk-per-trade percentage.')
-        take_profit=st.number_input('Take-profit target (% net return; 0 disables)',min_value=0.0,max_value=100.0,value=8.0,step=1.0)
+        take_profit=st.number_input('Take-profit target (% net return; required for C1)' if is_c1 else 'Take-profit target (% net return; 0 disables)',min_value=0.1 if is_c1 else 0.0,max_value=100.0,value=4.0 if is_c1 else 8.0,step=1.0,key="c1_profit_target" if is_c1 else "profit_target")
         st.caption('Friday or pre-gap entry candidates are reviewed again at the next trading close before a later-open fill. Profit targets are net of modeled trading fees; slippage is included in execution. If a daily bar touches both stop and target after opening, the stop takes priority.')
-        trailing_enabled=st.checkbox('Enable trailing stop',value=True,key='simulation_trailing_stop')
+        trailing_enabled=st.checkbox('Enable trailing stop',value=not is_c1,key='c1_trailing_stop' if is_c1 else 'simulation_trailing_stop')
         trailing_multiple=st.number_input('Trailing distance (× ATR14 at entry signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=not trailing_enabled)
         st.caption('A trailing stop follows the highest completed close since entry and never falls. Its ATR distance is fixed from the entry signal. Each increase applies from the next session; existing strategy and C2 exits still apply. Trailing can tighten your chosen initial stop; disable trailing if you want the initial stop price to stay fixed.')
-        st.markdown('#### Breakout risk and stopped-setup re-entry')
-        breakout_risk=st.number_input('Breakout risk per trade (%)',min_value=0.1,max_value=3.0,value=0.5,step=0.1)
-        breakout_atr=st.number_input('Breakout initial stop (× ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=breakout_method!='ATR distance')
-        breakout_percent=st.number_input('Breakout initial stop (%)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=breakout_method=='ATR distance')
-        breakout_trail=st.number_input('Breakout trailing distance (× entry ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=not trailing_enabled)
-        breakout_activation=st.number_input('Breakout trailing activation (× original risk R)',min_value=0.0,max_value=5.0,value=1.0,step=0.5,disabled=not trailing_enabled)
-        breakout_reentry=st.checkbox('Allow one confirmed breakout re-entry after a stop',value=True)
-        st.caption('Sell at the stop first. Within ten later trading sessions, require a completed close above the stopped level, EMA20 and previous high, with ADX≥18. C2 must research again and pass the strict breakout evidence/critic checks before a later-open buy. No same-candle re-entry. A second stop exhausts this setup. Wider stops reduce quantity under the selected risk budget; gaps can exceed planned risk.')
-        if is_c2:
+        if is_c1:
+            breakout_risk=.5;breakout_atr=2.5;breakout_percent=5.;breakout_trail=2.5;breakout_activation=1.;breakout_reentry=False
+        else:
+            st.markdown('#### Breakout risk and stopped-setup re-entry')
+            breakout_risk=st.number_input('Breakout risk per trade (%)',min_value=0.1,max_value=3.0,value=0.5,step=0.1)
+            breakout_atr=st.number_input('Breakout initial stop (× ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=breakout_method!='ATR distance')
+            breakout_percent=st.number_input('Breakout initial stop (%)',min_value=0.1,max_value=50.0,value=5.0,step=0.5,disabled=breakout_method=='ATR distance')
+            breakout_trail=st.number_input('Breakout trailing distance (× entry ATR14)',min_value=0.5,max_value=10.0,value=2.5,step=0.5,disabled=not trailing_enabled)
+            breakout_activation=st.number_input('Breakout trailing activation (× original risk R)',min_value=0.0,max_value=5.0,value=1.0,step=0.5,disabled=not trailing_enabled)
+            breakout_reentry=st.checkbox('Allow one confirmed breakout re-entry after a stop',value=True)
+            st.caption('Sell at the stop first. Within ten later trading sessions, require a completed close above the stopped level, EMA20 and previous high, with ADX≥18. C2 must research again and pass the strict breakout evidence/critic checks before a later-open buy. No same-candle re-entry. A second stop exhausts this setup. Wider stops reduce quantity under the selected risk budget; gaps can exceed planned risk.')
+        if is_ai:
             development_memory=st.checkbox('Mark as development replay if lesson training overlaps these dates',value=False,disabled=selected_book is None)
             if selected_book:st.caption('Pinned version: '+selected_book['sha256']+' · Lessons are conditional reminders; they cannot alter risk limits or force trades. Later-period evaluation must start after '+selected_book['trained_through']+'.')
             max_calls=st.number_input('Total inference allowance (requests or CLI invocations)',min_value=8,max_value=2400,value=48,step=8)
+            if is_c1:screen_count=st.number_input('Company screens per session before checking SMC',min_value=1,max_value=10,value=3,step=1)
             review_every=st.number_input('Review each holding every N market sessions',min_value=1,max_value=60,value=5,step=1)
-            if health.get('adverse_news_exit_supported'):st.caption('For NSE portfolios, dated issuer disclosures are also checked between scheduled reviews. A new candidate triggers C2 review; an empty check makes no generation call. This is a bounded source check, not a complete news feed.')
+            if health.get('adverse_news_exit_supported'):st.caption('For NSE portfolios, dated issuer disclosures are also checked between scheduled reviews. A new candidate triggers AI review; an empty check makes no generation call. This is a bounded source check, not a complete news feed.')
             c2_consent=st.checkbox('I authorize external inference for this historical portfolio, up to the displayed allowance',value=False)
         approve_rules=st.checkbox("I approve these stock-selection, risk and cost assumptions for automatic historical replay",value=False)
-        if is_c2:st.caption('This approval includes fresh post-gap entry review, automatic historical entries, code stop/profit/strategy exits and accepted C2 EXIT decisions. No per-fill human pause; no live broker action; no forced end sale.')
+        if is_ai:st.caption('This approval includes fresh post-gap entry review, automatic historical entries, code stop/profit/strategy exits and accepted AI EXIT decisions. No per-fill human pause; no live broker action; no forced end sale.')
         run_sim=st.form_submit_button("Run historical portfolio simulation",type="primary",use_container_width=True)
     if run_sim:
         if not approve_rules:st.error("Approve the displayed replay assumptions before running the historical simulation.")
+        elif is_c1 and not health.get('c1_smc_portfolio_supported',False):st.error('Restart API and dashboard to load C1 SMC support.')
         elif not health.get('breakout_reentry_supported',False):st.error('Restart the API and dashboard to load breakout risk and re-entry support before starting a new run.')
         elif not health.get('configurable_stop_loss_supported',False):st.error('The backend has not loaded configurable initial stops yet. Finish or pause active work, then restart the API and dashboard together before starting a new run.')
         elif not health.get('fresh_adverse_profit_policy_supported',False):st.error('Restart the API and dashboard together to load fresh entry review, adverse-event research and take-profit rules before starting this new run.')
         elif trailing_enabled and not health.get('trailing_stop_supported',False):st.error('The running backend does not yet support trailing stops. Restart the API and dashboard together before starting this run.')
-        elif is_c2 and (not reviewer_token or not c2_consent):st.error('Reviewer token and explicit paid C2 consent are required.')
+        elif is_ai and (not reviewer_token or not c2_consent):st.error('Reviewer token and explicit inference consent are required.')
         elif start_date>end_date:
             st.error("The simulation start date must be before the end date.")
         else:
             payload={"initial_capital":float(capital),"start_date":start_date.isoformat(),"end_date":end_date.isoformat(),
-                     "breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
+                     "breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
                      "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
             try:
-                if is_c2:
+                if is_ai:
                     payload.update(consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=int(max_calls),holding_review_sessions=int(review_every),portfolio_playbook_id=selected_book['id'] if selected_book else None,memory_allow_development_replay=bool(development_memory))
-                    with st.spinner('Creating checkpointed C2 portfolio job...'):
-                        st.session_state['simulation_result']=post('/simulation/c2/run',payload,reviewer_token,timeout=120)
+                    if is_c1:payload['screening_candidates_per_session']=int(screen_count)
+                    with st.spinner('Creating checkpointed '+flow_label+' portfolio job...'):
+                        st.session_state['simulation_result']=post('/simulation/'+flow_label.lower()+'/run',payload,reviewer_token,timeout=120)
                     st.session_state['c2_portfolio_id']=st.session_state['simulation_result']['run_id']
                     st.session_state['c2_job_input']=st.session_state['c2_portfolio_id']
-                    st.success('C2 job started. Progress updates automatically every 5 seconds; the manual refresh button remains available.')
+                    st.success(flow_label+' job started. Progress updates automatically every 5 seconds; the manual refresh button remains available.')
                 else:
                     with st.spinner("Replaying the selected daily OHLCV period..."):
                         st.session_state["simulation_result"]=post("/simulation/run",payload,timeout=240)
                     st.success("Technical-only simulation completed and saved.")
             except Exception as exc:
                 fail("Portfolio simulation failed. Try a longer date interval (at least 45 sessions).",exc)
-    with st.expander('C2 portfolio progress, resume and saved jobs',expanded=is_c2):
+    with st.expander('C1 / C2 portfolio progress, resume and saved jobs',expanded=is_ai):
         if st.session_state.get('c2_job_next'):st.session_state['c2_job_input']=st.session_state.pop('c2_job_next')
         st.session_state.setdefault('c2_job_input',st.session_state.get('c2_portfolio_id',''))
-        job_id=st.text_input('C2 portfolio run ID',key='c2_job_input')
+        st.caption('These shared saved-job controls also operate C1 runs; the saved flow cannot be switched on resume.')
+        job_id=st.text_input('AI portfolio run ID',key='c2_job_input')
         try:
             jobs=get('/simulation/c2/recent').get('runs',[])
             if jobs:
-                labels={x['created_utc'][:19]+' | '+x['status']+' | '+x['run_id']:x['run_id'] for x in jobs}
-                choice=st.selectbox('Saved C2 portfolio',list(labels))
-                if st.button('Open saved C2 portfolio'):
+                labels={x['settings'].get('research_flow','C2')+' | '+x['created_utc'][:19]+' | '+x['status']+' | '+x['run_id']:x['run_id'] for x in jobs}
+                choice=st.selectbox('Saved AI portfolio',list(labels))
+                if st.button('Open saved AI portfolio'):
                     st.session_state['c2_portfolio_id']=labels[choice]
                     st.session_state['c2_job_next']=labels[choice]
                     st.session_state['simulation_result']=get('/simulation/c2/status/'+labels[choice]);st.rerun()
-        except Exception as exc:fail('Could not list C2 jobs.',exc)
-        if st.button('Refresh C2 progress',disabled=not bool(job_id)):
+        except Exception as exc:fail('Could not list AI jobs.',exc)
+        if st.button('Refresh AI progress',disabled=not bool(job_id)):
             try:
                 st.session_state['simulation_result']=get('/simulation/c2/status/'+job_id)
                 st.session_state['c2_portfolio_id']=job_id
-            except Exception as exc:fail('Unable to load C2 job.',exc)
+            except Exception as exc:fail('Unable to load AI job.',exc)
         more=st.number_input('Additional inference units on resume',min_value=0,max_value=2400,value=48,step=8)
         resume_consent=st.checkbox('I authorize resuming this historical job with the additional allowance',value=False)
         a,b=st.columns(2)
-        if a.button('Resume C2 portfolio',disabled=not bool(job_id and reviewer_token and resume_consent)):
+        if a.button('Resume AI portfolio',disabled=not bool(job_id and reviewer_token and resume_consent)):
             try:st.session_state['simulation_result']=post('/simulation/c2/resume/'+job_id,{'additional_model_calls':int(more),'consent_to_paid_calls':True},reviewer_token)
             except Exception as exc:fail('Resume rejected; inspect configuration, run status and consent.',exc)
-        if b.button('Pause C2 portfolio',disabled=not bool(job_id and reviewer_token)):
+        if b.button('Pause AI portfolio',disabled=not bool(job_id and reviewer_token)):
             try:post('/simulation/c2/pause/'+job_id,{},reviewer_token);st.info('Pause requested at the next safe boundary.')
             except Exception as exc:fail('Pause request failed.',exc)
     result=st.session_state.get("simulation_result")
@@ -448,11 +479,14 @@ elif page == "Strategy Backtests":
         if result.get('initial_stop_loss'):
             with st.expander('Initial stop-loss settings'):st.json(result['initial_stop_loss'])
         c2_result='model_usage' in result
-        st.markdown('#### Results — C2 historical portfolio' if c2_result else '#### Results — technical-only baseline')
+        result_flow=result.get('research_flow','C2')
+        st.markdown('#### Results — '+result_flow+' historical portfolio' if c2_result else '#### Results — technical-only baseline')
+        if c2_result and result_flow=='C1':st.caption('Evidence-first single-agent research, followed by code SMC checks. No independent LLM critic. NO_SMC_SIGNAL means evidence passed but price structure did not qualify.')
         if c2_result:
             if result.get('portfolio_memory'):
                 with st.expander('Pinned portfolio lesson memory'):st.json(result['portfolio_memory'])
             render_c2_progress(result,get)
+            if result_flow=='C1':st.json(result.get('research_summary',{}))
             if result.get('research_configuration_changed'):
                 st.info('This saved job uses an earlier research prompt version or simulation/exit-policy version. Its original results and usage are preserved. Start a new run to use the current rules; the earlier job cannot resume under changed rules.')
             if result['status']=='PAUSED_PROVIDER':
@@ -469,12 +503,12 @@ elif page == "Strategy Backtests":
             with st.expander('Exit rules, profit target and stop adjustments'):
                 st.json(result.get('exit_policy',{'trailing_stop_enabled':False}))
                 render_table(result.get('stop_updates',[]),'Stop increases are calculated at the completed close and become effective from the next session.',height=240)
-            with st.expander('C2 entry / holding-review decisions and traces'):
+            with st.expander('AI evidence / entry / holding-review decisions and traces'):
                 decisions=result.get('decisions',[])
                 st.caption('HOLD keeps the existing shares after a scheduled review; it creates no new trade. Code stops and strategy exits remain active.')
                 if any('CONTEXT_BUDGET_EXCEEDED' in ' '.join(d.get('errors',[])) for d in decisions):
                     st.info('A context-budget failure concerns research input size, separately from your inference-call allowance. Refreshing or adding calls does not fix it. Inspect the research trace; after updating an affected backend, start a new run to re-evaluate previously blocked candidates.')
-                render_table([{**{k:d.get(k) for k in ['date','symbol','purpose','action','llm_calls','failure_category']},
+                render_table([{**{k:d.get(k) for k in ['date','symbol','purpose','action','llm_calls','failure_category','research_order','smc_signal']},
                                'evidence_policy':(d.get('company_assessment') or {}).get('adverse_risk',''),
                                'web_search':(d.get('dated_web_search') or {}).get('status',''),'reason':'; '.join(d.get('errors',[])) or d.get('explanation','')} for d in decisions],height=300)
                 records=[d for d in decisions if d.get('id')]
@@ -484,8 +518,10 @@ elif page == "Strategy Backtests":
                             'candidates':len(x.get('candidates',[])),'error':x.get('error','')} for x in result['news_checks']])
                 if records:
                     choices={d['date']+' '+d['symbol']+' '+d.get('purpose','')+' '+d['id']:d['id'] for d in records}
-                    decision_choice=st.selectbox('C2 portfolio research record',list(choices))
+                    decision_choice=st.selectbox('AI portfolio research record',list(choices))
                     selected_record=next(d for d in records if d['id']==choices[decision_choice])
+                    if selected_record.get('smc_context'):
+                        st.write('**Code-confirmed SMC setup after company screening**');st.json(selected_record['smc_context'])
                     company=selected_record.get('company_assessment') or {}
                     if company.get('breakout_support'):
                         st.write('**Breakout explanation:** '+company['breakout_support'])
@@ -513,12 +549,12 @@ elif page == "Strategy Backtests":
                         st.caption('Failed invocation elapsed time: '+str(selected_record['failure']['elapsed_seconds'])+' seconds.')
                     if selected_record.get('failure',{}).get('unproductive_revision_after_rejection'):
                         st.info('This older trace attempted another strategy call after the critic had rejected the case. The current workflow ends at critic rejection and saves that extra call.')
-                    if st.button('Load C2 portfolio research trace'):
+                    if st.button('Load AI portfolio research trace'):
                         try:st.json(get('/simulation/c2/research/'+result['run_id']+'/'+choices[decision_choice]))
                         except Exception as exc:fail('Unable to read research trace.',exc)
         st.caption(f"Run ID: {result['run_id']} | Sessions: {result['sessions']} | Actual selected period: {result['period']['start']} to {result['period']['end']}")
         metrics=pd.DataFrame(result.get("metrics",[]))
-        render_table(metrics, "C2 entries require completed research; code/risk exits and scheduled C2 reviews govern holdings." if c2_result else "No model calls: technical-only fills including selected fees and slippage.",height=250)
+        render_table(metrics, "AI entries require completed dated research; code risk/target exits and holding reviews govern holdings." if c2_result else "No model calls: technical-only fills including selected fees and slippage.",height=250)
         if not metrics.empty:
             mode_list=list(metrics["mode"])
             selected=st.selectbox("Inspect portfolio / trading ledger for",mode_list,key="simulation_curve_pick")

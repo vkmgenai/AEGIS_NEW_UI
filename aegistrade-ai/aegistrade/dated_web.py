@@ -22,7 +22,7 @@ def eligible(snapshot):
     from .agent_tools import CaseEvidence
     try:e=CaseEvidence.from_snapshot(snapshot)
     except ValueError:return False
-    if e.research_purpose=='HOLDING_REVIEW':return True
+    if e.research_purpose in {'HOLDING_REVIEW','COMPANY_SCREEN'} or e.regime=='SMC':return True
     if e.ATR14<=0:return False
     if e.regime in {'TREND','PULLBACK'}:return e.ADX14>=22 and e.Close>e.EMA20>e.EMA50
     if e.regime=='RANGE':return e.RSI14<42 and e.Close>.88*e.EMA50
