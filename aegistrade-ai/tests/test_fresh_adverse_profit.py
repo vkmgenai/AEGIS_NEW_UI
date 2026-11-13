@@ -62,11 +62,12 @@ def test_budget_pause_preserves_friday_origin_and_does_not_repeat_deferral(compl
 
 
 def test_profit_target_is_net_of_fees_and_slippage():
-    p=TradePolicy(fee_bps=10,slippage_bps=10,take_profit_percent=8)
+    p=TradePolicy(slippage_bps=10,take_profit_percent=8)
     pos={'quantity':10,'entry_price':100.,'entry_fee':1.,'stop':90.,'initial_stop':90.}
     target=take_profit_reference(pos,p)
     event,ref=protective_exit(pos,SimpleNamespace(Open=100,Low=99,High=target,Close=105),p)
-    proceeds=10*ref*.999*.999
+    from aegistrade.fees import SELL_FEE_BPS
+    proceeds=10*ref*.999*(1-SELL_FEE_BPS/10000)
     assert event=='SELL_TAKE_PROFIT' and proceeds/1001-1==pytest.approx(.08)
     event,ref=protective_exit(pos,SimpleNamespace(Open=120,Low=80,High=125),p)
     assert event=='SELL_TAKE_PROFIT' and ref==120  # Open precedes later low.

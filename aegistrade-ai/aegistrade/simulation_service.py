@@ -1,5 +1,6 @@
 """Validated, repeatable portfolio simulations; never talks to a broker or LLM."""
 from __future__ import annotations
+from .fees import BUY_FEE_BPS, SELL_FEE_BPS, FEE_MODEL
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Literal
@@ -22,7 +23,9 @@ class SimulationSettings(BaseModel):
     end_date: date | None = None
     risk_percent: float = Field(default=1.0, ge=0.25, le=3.0)
     mode: str = Field(default="ROUTER")
-    fee_bps: float = Field(default=10.0, ge=0, le=100)
+    fee_bps: Literal[BUY_FEE_BPS] = BUY_FEE_BPS
+    sell_fee_bps: Literal[SELL_FEE_BPS] = SELL_FEE_BPS
+    fee_model: Literal[FEE_MODEL] = FEE_MODEL
     automatic_stock_selection: bool = True
     slippage_bps: float = Field(default=10.0, ge=0, le=100)
     take_profit_percent: float = Field(default=8.0,ge=0,le=100,allow_inf_nan=False)
@@ -54,7 +57,7 @@ class SimulationSettings(BaseModel):
 def policy_from_settings(settings):
     return TradePolicy(initial_cash=settings.initial_capital,risk_per_trade=settings.risk_percent/100,
         stop_loss_mode=settings.stop_loss_mode,stop_loss_percent=settings.stop_loss_percent,
-        atr_stop_multiple=settings.initial_stop_atr_multiple,fee_bps=settings.fee_bps,slippage_bps=settings.slippage_bps,
+        atr_stop_multiple=settings.initial_stop_atr_multiple,slippage_bps=settings.slippage_bps,
         take_profit_percent=settings.take_profit_percent,review_after_gap=settings.review_after_gap,
         trailing_stop_enabled=settings.trailing_stop_enabled,trailing_atr_multiple=settings.trailing_atr_multiple,
         breakout_risk_per_trade=settings.breakout_risk_percent/100,breakout_stop_loss_mode=settings.breakout_stop_loss_mode,

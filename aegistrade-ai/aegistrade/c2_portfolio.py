@@ -4,6 +4,7 @@ Each new entry needs fresh, dated completed C2. Protective/strategy exits are
 pre-approved code rules; scheduled holding reviews can produce cited HOLD/EXIT.
 """
 from __future__ import annotations
+from .fees import BUY_FEE_BPS, SELL_FEE_BPS, FEE_MODEL
 from .company_research import company_pack_researchable
 from datetime import date,datetime,timezone
 from pathlib import Path
@@ -30,7 +31,7 @@ from .dated_web import eligible as web_eligible
 from .breakout_reentry import register_breakout_stop,reentry_candidates,reentry_context
 from . import smc_reentry
 
-VERSION='portfolio-v8-smc-stop-recovery'
+VERSION='portfolio-v8-smc-stop-recovery-fixed-delivery-fees-v1'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
@@ -278,7 +279,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             smc_watch_id=smc_reentry.register_stop(state.setdefault('smc_reentry_watches',{}),{**pos,'symbol':sym},when,state['day_index'],enabled=p.smc_reentry_enabled,window=p.smc_reentry_window_sessions)
             if smc_watch_id and research_id and any(d.get('id')==research_id and (d.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE'} for d in state['decisions']):
                 state['smc_reentry_watches'][sym]['status']='CANCELLED_ADVERSE'
-        fee=price*pos['quantity']*p.fee_bps/10000;net=price*pos['quantity']-fee
+        fee=price*pos['quantity']*SELL_FEE_BPS/10000;net=price*pos['quantity']-fee
         state['cash']+=net
         state['ledger'].append({'date':when,'symbol':sym,'event':reason,'quantity':pos['quantity'],'price':price,'fee':fee,
             'strategy':pos['strategy'],'realized_pnl':net-pos['quantity']*pos['entry_price']-pos['entry_fee'],
@@ -505,7 +506,7 @@ def result_for(state):
         decisions.append(decision)
     rows=list(state['curves']);initial=state['settings']['initial_capital'];holdings=[]
     exit_settings=TradePolicy(stop_loss_mode=state['settings'].get('stop_loss_mode','ATR'),
-        stop_loss_percent=state['settings'].get('stop_loss_percent',5.0),atr_stop_multiple=state['settings'].get('initial_stop_atr_multiple',2.0),take_profit_percent=state['settings'].get('take_profit_percent',0),fee_bps=state['settings']['fee_bps'],slippage_bps=state['settings']['slippage_bps'])
+        stop_loss_percent=state['settings'].get('stop_loss_percent',5.0),atr_stop_multiple=state['settings'].get('initial_stop_atr_multiple',2.0),take_profit_percent=state['settings'].get('take_profit_percent',0),slippage_bps=state['settings']['slippage_bps'])
     for sym,pos in state['positions'].items():
         mark=state['last_marks'].get(sym,{'price':pos['entry_price'],'date':pos['entry_date']})
         holdings.append({'symbol':sym,**pos,'take_profit_reference':take_profit_reference(pos,exit_settings),'mark_price':mark['price'],'mark_date':mark['date'],

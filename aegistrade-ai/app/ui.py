@@ -416,7 +416,7 @@ elif page == "Strategy Backtests":
             automatic_selection=st.checkbox("Automatically screen and rank stocks",value=True,disabled=is_ai)
             sim_mode=st.selectbox("Strategies to run",["SMC"] if is_c1 else ["ROUTER"] if is_c2 else ["ALL","ROUTER","EMA_TREND","EMA_PULLBACK","RSI_REVERSION","BREAKOUT","SMC"],
                                   help="ALL compares five rule-based strategy configurations using identical starting capital and dates.")
-            fee_bps=st.number_input("Fees (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
+            st.caption("Fixed NSE delivery fees: buy 11.87406 bps; sell 10.37406 bps. Zero brokerage; STT, buy stamp duty, NSE/SEBI charges and GST included. Slippage is separate. DP charges excluded (not specified in supplied schedule).")
             slippage_bps=st.number_input("Slippage (basis points per transaction)",min_value=0.0,max_value=100.0,value=10.0,step=5.0)
         st.caption('The following common initial-stop and trailing controls apply to EMA trend, EMA pullback, RSI reversion and C1 SMC. Separate breakout controls appear below.')
         initial_atr=st.number_input('Initial stop distance (× ATR14 at signal)',min_value=0.5,max_value=10.0,value=2.0,step=0.5,disabled=stop_method!='ATR distance')
@@ -465,7 +465,7 @@ elif page == "Strategy Backtests":
             st.error("The simulation start date must be before the end date.")
         else:
             payload={"initial_capital":float(capital),"start_date":start_date.isoformat(),"end_date":end_date.isoformat(),
-                     "smc_reentry_enabled":bool(smc_reentry_enabled),"smc_reentry_window_sessions":int(smc_reentry_window),"breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"fee_bps":float(fee_bps),"slippage_bps":float(slippage_bps),
+                     "smc_reentry_enabled":bool(smc_reentry_enabled),"smc_reentry_window_sessions":int(smc_reentry_window),"breakout_risk_percent":float(breakout_risk),"breakout_stop_loss_mode":"ATR" if breakout_method=='ATR distance' else "PERCENT","breakout_stop_loss_percent":float(breakout_percent),"breakout_initial_stop_atr_multiple":float(breakout_atr),"breakout_trailing_atr_multiple":float(breakout_trail),"breakout_trailing_activation_r":float(breakout_activation),"breakout_reentry_enabled":False if is_c1 else bool(breakout_reentry),"risk_percent":float(risk_pct),"mode":sim_mode,"automatic_stock_selection":bool(automatic_selection),"slippage_bps":float(slippage_bps),
                      "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
             try:
                 if is_ai:

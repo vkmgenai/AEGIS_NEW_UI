@@ -3,6 +3,7 @@
 No real brokerage access. Notebook approvals are educational and do not authenticate users.
 """
 from __future__ import annotations
+from .fees import BUY_FEE_BPS, SELL_FEE_BPS, FEE_MODEL
 from datetime import datetime, timezone, timedelta
 import hashlib
 import json
@@ -59,7 +60,7 @@ class RiskParameters(BaseModel):
     max_position_fraction: float = Field(default=0.20, gt=0, le=0.50)
     max_positions: int = Field(default=4, ge=1)
     max_daily_loss_pct: float = Field(default=3.0, gt=0)
-    fee_bps: float = Field(default=10.0, ge=0)
+    fee_bps: Literal[BUY_FEE_BPS] = BUY_FEE_BPS
     max_quote_age_seconds: int = Field(default=90, ge=1)
     max_price_deviation_fraction: float = Field(default=0.02, gt=0)
 

@@ -1,4 +1,5 @@
 """Daily-bar execution rules; no future-bar decisions or model arithmetic."""
+from .fees import BUY_FEE_BPS, SELL_FEE_BPS, FEE_MODEL
 from datetime import date
 from dataclasses import replace
 
@@ -32,7 +33,7 @@ def defer_entry_review(day,next_day):
 def take_profit_reference(position,policy):
     if policy.take_profit_percent<=0:return None
     cost=position['quantity']*position['entry_price']+position['entry_fee']
-    return cost*(1+policy.take_profit_percent/100)/(position['quantity']*(1-policy.fee_bps/10000)*(1-policy.slippage_bps/10000))
+    return cost*(1+policy.take_profit_percent/100)/(position['quantity']*(1-SELL_FEE_BPS/10000)*(1-policy.slippage_bps/10000))
 
 
 def protective_exit(position,bar,policy):

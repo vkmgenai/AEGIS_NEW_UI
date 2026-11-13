@@ -1,6 +1,7 @@
 """Causal, next-session daily-bar backtester; one cash-only portfolio."""
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+from .fees import BUY_FEE_BPS, SELL_FEE_BPS, FEE_MODEL
+from dataclasses import dataclass, asdict, field
 import math
 import numpy as np
 import pandas as pd
@@ -17,7 +18,7 @@ class TradePolicy:
     risk_per_trade: float = 0.01
     max_position_fraction: float = 0.20
     max_positions: int = 4
-    fee_bps: float = 10.0
+    fee_bps: float = field(default=BUY_FEE_BPS, init=False)
     slippage_bps: float = 10.0
     atr_stop_multiple: float = 2.0
     stop_loss_mode: str = "ATR"
@@ -86,7 +87,7 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
                 pos = positions.pop(sym)
                 sell = float(bar.Open) * (1 - p.slippage_bps/10_000)
                 notional = sell * pos["quantity"]
-                fee = notional * p.fee_bps/10_000
+                fee = notional * SELL_FEE_BPS/10_000
                 cash += notional - fee
                 reason=stop_exit_reason(pos) if float(bar.Open)<=pos['stop'] else ('SELL_TAKE_PROFIT' if take_profit_reference(pos,p) is not None and float(bar.Open)>=take_profit_reference(pos,p) else 'SELL_SIGNAL')
                 if reason in {'SELL_STOP','SELL_TRAILING_STOP'}:
@@ -134,7 +135,7 @@ def backtest(frame: pd.DataFrame, mode: str = "ROUTER", p: TradePolicy | None = 
                     smc_reentry.register_stop(smc_watches,{**pos,'symbol':sym},str(date.date()),day_index,enabled=p.smc_reentry_enabled,window=p.smc_reentry_window_sessions)
                 sell = ref*(1-p.slippage_bps/10_000)
                 value = sell*pos["quantity"]
-                fee = value*p.fee_bps/10_000
+                fee = value*SELL_FEE_BPS/10_000
                 cash += value-fee
                 trade_events.append(dict(Date=date,Symbol=sym,Event=reason,Quantity=pos["quantity"],Price=sell,Fee=fee,Strategy=pos["strategy"],PnL=(sell-pos["entry_price"])*pos["quantity"]-fee-pos["entry_fee"]))
                 del positions[sym]
