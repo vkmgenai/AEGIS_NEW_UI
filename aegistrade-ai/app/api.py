@@ -2,7 +2,7 @@
 from __future__ import annotations
 import json,os,sqlite3,uuid,math,threading
 from pathlib import Path
-from datetime import timedelta,date
+from datetime import timedelta,date,datetime,timezone
 import pandas as pd
 from fastapi import FastAPI,HTTPException,Header
 from fastapi.responses import StreamingResponse,HTMLResponse,FileResponse
@@ -516,7 +516,7 @@ def research_experiments_recent():
         try:
             obj=json.loads(path.read_text(encoding='utf-8'))
             result.append({'run_id':obj['run_id'],'model':obj['model'],'created_utc':obj['created_utc'],
-                           'settings':obj['settings'],'summary':obj['summary']})
+                           'settings':obj['settings'],'summary':obj['summary'],'status':obj.get('status','COMPLETED')})
         except (ValueError,KeyError,OSError):
             continue
     return {'runs':result}
@@ -529,6 +529,77 @@ def research_experiments_result(run_id:str):
     path=DATA/'research_runs'/f'{run_id}.json'
     if not path.exists():raise HTTPException(404,'Research run not found')
     return json.loads(path.read_text(encoding='utf-8'))
+
+
+class ResearchDecisionReview(BaseModel):
+    run_id:str=Field(pattern=r'^[0-9a-f]{32}$')
+    case_id:str=Field(min_length=3,max_length=100)
+    decision:str
+    rationale:str=Field(min_length=3,max_length=500)
+    reviewer:str=Field(min_length=2,max_length=80)
+
+
+def _research_reviews_path():return DATA/'human_research_reviews.jsonl'
+
+
+@app.post('/research/experiments/review')
+def review_c2_decision(body:ResearchDecisionReview,x_reviewer_token:str|None=Header(default=None)):
+    """Human approve/reject of a grounded C2 BUY/SELL recommendation; no live order."""
+    auth(x_reviewer_token)
+    decision=body.decision.upper()
+    if decision not in {'APPROVE','REJECT'}:raise HTTPException(422,'decision must be APPROVE or REJECT')
+    run=research_experiments_result(body.run_id)
+    matches=[x for x in run.get('outputs',[]) if x.get('config')=='C2' and x.get('case_id')==body.case_id]
+    if len(matches)!=1:raise HTTPException(422,'Select one C2 result from this experiment')
+    output=matches[0];purpose=output.get('research_purpose') or output.get('snapshot',{}).get('research_purpose','ENTRY')
+    from aegistrade.research_gate import validate_completed_c2
+    try:validated=validate_completed_c2(output,purpose=purpose)
+    except (ValueError,KeyError,TypeError) as exc:raise HTTPException(422,'Only completed, grounded, critic-accepted C2 decisions can be reviewed') from exc
+    action={'ENTER':'BUY','EXIT':'SELL'}.get(validated['portfolio_action'])
+    if action is None:raise HTTPException(422,'HOLD and abstention do not require human approval')
+    snapshot=output.get('snapshot',{});signal=pd.Timestamp(validated['date']);market=frame()
+    symbol_rows=market[market.Symbol==validated['symbol']].sort_values('Date')
+    future=symbol_rows[symbol_rows.Date>signal].head(10);horizon=(future.iloc[-1] if not future.empty else None)
+    start_value=snapshot.get('Close')
+    if start_value is None:
+        observed=symbol_rows[symbol_rows.Date<=signal]
+        start_value=(observed.iloc[-1].Close if not observed.empty else None)
+    start_price=(float(start_value) if start_value is not None else None)
+    holding_return=(round(100*(float(horizon.Close)/start_price-1),4)
+                    if horizon is not None and start_price not in {None,0} else None)
+    if holding_return is None:assessment='OUTCOME_UNAVAILABLE'
+    elif action=='BUY':assessment=('SUPPORTED_BY_HORIZON' if (decision=='APPROVE')==(holding_return>0) else 'NOT_SUPPORTED_BY_HORIZON')
+    else:assessment=('SUPPORTED_BY_HORIZON' if (decision=='APPROVE')==(holding_return<0) else 'NOT_SUPPORTED_BY_HORIZON')
+    row={'id':uuid.uuid4().hex,'created_utc':datetime.now(timezone.utc).isoformat(),'run_id':body.run_id,
+         'case_id':body.case_id,'symbol':validated['symbol'],'signal_date':validated['date'],'strategy':validated['strategy'],
+         'action':action,'decision':decision,'rationale':body.rationale.strip(),'reviewer':body.reviewer.strip(),
+         'result_digest':validated['result_digest'],'company_pack_sha256':validated['company_pack_sha256'],
+         'outcome_horizon_sessions':10,'outcome_date':str(horizon.Date.date()) if horizon is not None else None,
+         'holding_return_pct':holding_return,'outcome_assessment':assessment,
+         'lesson_candidate_status':'ELIGIBLE_FOR_HUMAN_REVIEW' if holding_return is not None else 'WAITING_FOR_OUTCOME',
+         'simulated_only':True}
+    path=_research_reviews_path();path.parent.mkdir(parents=True,exist_ok=True)
+    with path.open('a',encoding='utf-8') as stream:stream.write(json.dumps(row,allow_nan=False)+'\n')
+    broker()._log('C2-'+body.case_id,'HUMAN_'+decision+'_'+action,json.dumps({k:row[k] for k in ('run_id','case_id','rationale','result_digest')}))
+    run_path=DATA/'research_runs'/f'{body.run_id}.json'
+    experiment_status='COMPLETED'
+    if run_path.exists():
+        saved=json.loads(run_path.read_text(encoding='utf-8'));decisions=saved.setdefault('human_decisions',[])
+        decisions.append(row);required={x['case_id'] for x in saved.get('human_review_required',[])}
+        reviewed={x['case_id'] for x in decisions};saved['status']='COMPLETED' if required.issubset(reviewed) else 'WAITING_HUMAN'
+        temp=run_path.with_name(run_path.name+'.'+uuid.uuid4().hex+'.tmp');temp.write_text(json.dumps(saved,indent=2,allow_nan=False));temp.replace(run_path)
+        experiment_status=saved['status']
+    return {**row,'experiment_status':experiment_status}
+
+
+@app.get('/research/experiments/reviews')
+def list_c2_decision_reviews():
+    path=_research_reviews_path();rows=[]
+    if path.exists():
+        for line in path.read_text(encoding='utf-8').splitlines()[-100:]:
+            try:rows.append(json.loads(line))
+            except ValueError:continue
+    return {'reviews':rows}
 
 
 class ReflectionRequest(BaseModel):

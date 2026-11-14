@@ -160,7 +160,10 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                     if context_chars>CONFIG['max_context_chars']:
                         raise ValueError('Context budget exceeded; evidence was not silently removed')
                     last=turn==2 or client.calls==client.max_calls-1
-                    tokens=min(600,client.max_output_tokens_total-client.output_budget_used)
+                    # Typed specialist hand-offs are deliberately concise. Six normal
+                    # turns fit within 2,700 response tokens; the remaining budget is
+                    # reserved for a bounded schema/evidence correction.
+                    tokens=min(450,client.max_output_tokens_total-client.output_budget_used)
                     if tokens<150:raise ValueError('Output budget exhausted')
                     emit('llm_request',agent=role,turn=turn+1,tool_choice='none' if last else 'auto')
                     message=await asyncio.to_thread(client.chat,messages,max_tokens=tokens,tools=selected,

@@ -147,7 +147,6 @@ def test_ui_selects_and_activates_prepared_universe_without_generation(tmp_path,
         parsed=urlsplit(url);writes.append((parsed.path,json));return adapt(client.post(parsed.path,json=json,headers=headers or {}))
     monkeypatch.setattr(requests,'get',get);monkeypatch.setattr(requests,'post',post)
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app/ui.py',default_timeout=30).run()
-    next(x for x in at.text_input if 'token' in x.label.lower()).input('universe-ui-reviewer').run()
     assert at.selectbox(key='market_universe_choice').options==[u.profile(k)['name'] for k in u.PROFILES]
     at.selectbox(key='market_universe_choice').select('research30').run()
     next(x for x in at.checkbox if x.label.startswith('Use this provisional')).check().run()

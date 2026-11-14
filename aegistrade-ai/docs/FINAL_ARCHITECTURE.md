@@ -1,4 +1,4 @@
-# AegisTrade AI v0.27 — final architecture and walkthrough
+# AegisTrade AI v0.31 — final architecture and walkthrough
 
 This is the original AegisTrade detailed-design diagram for final review. Its numbered layered presentation follows the capstone guideline's diagram convention, while every component and connection describes this repository. The system is simulation-only.
 
@@ -8,7 +8,7 @@ This is the original AegisTrade detailed-design diagram for final review. Its nu
 
 ```mermaid
 flowchart TB
-  U[Researcher / reviewer] --> UI[Streamlit UI<br/>market, backtest, experiments, approval, lessons]
+  U[Researcher / reviewer] --> UI[Streamlit UI<br/>C0/C2, capital, dates, consent, approval]
   UI --> API[FastAPI<br/>auth, consent, sessions, budgets, streaming/status]
   API --> IG[Input guardrails<br/>scope, typed schemas, injection scan, cutoff]
 
@@ -60,7 +60,7 @@ flowchart TB
     HOOK[Pre/post tool hooks<br/>permission, budget, trace, scrub]
     TYPED[Typed hand-offs + deterministic validation<br/>citations, dates, route, adverse evidence]
     RISK[Python risk/execution engine<br/>whole shares, fees, slippage, stops, targets]
-    GATE{Exact-payload human gate<br/>approve · edit · reject}
+    GATE{WAITING_HUMAN gate<br/>approve · reject + rationale<br/>no repeated C2 call}
     FRESH[Final freshness / risk / kill-switch checks]
     MOCK[Local simulated broker / historical later-open fill]
   end
@@ -73,12 +73,13 @@ flowchart TB
   C1 --> TYPED
   R0 --> RISK
   TYPED --> RISK
-  RISK -->|supervised action| GATE
-  GATE -->|edit invalidates prior hash| RISK
-  GATE -->|approve exact hash| FRESH --> MOCK
+  RISK -->|grounded BUY / SELL recommendation| GATE
+  GATE -->|approve reviewed recommendation| FRESH --> MOCK
   RISK -->|upfront-approved historical replay| MOCK
 
-  MOCK --> AUDIT[(SQLite / JSON audit<br/>ledger, decisions, checkpoints, traces)]
+  MOCK --> AUDIT[(SQLite / JSON audit<br/>trade ledger, decision ledger<br/>checkpoints, traces)]
+  GATE --> OUT[Fixed 10-session outcome<br/>review evidence, not causal proof]
+  OUT --> AUDIT
   AUDIT --> MEM[Reviewed Reflexion lessons<br/>accept/reject/freeze/retrieve]
   MEM --> RMCP
 
@@ -98,7 +99,7 @@ flowchart TB
 
 ## Numbered walkthrough
 
-1. The reviewer selects a frozen universe, historical period, capital and risk policy in Streamlit.
+1. The reviewer selects a frozen universe, C0 or C2, historical period and capital in Streamlit. The reproducible risk policy is displayed but fixed. C2 can use ChatGPT/Codex CLI, OpenRouter API or Claude CLI.
 2. FastAPI validates authentication, explicit inference consent and a bounded allowance. Historical replay receives upfront approval of deterministic rules; supervised actions use exact-payload approval later.
 3. Code creates a locked case from completed daily bars. No future price or post-cutoff evidence is available.
 4. C0 routes the case through four deterministic strategies and makes zero model calls. In the E1 experiment, C1 receives the same case, tools, model and budget as C2 but uses one agent.
@@ -106,10 +107,11 @@ flowchart TB
 6. Market/company tools return dated evidence. Hybrid policy retrieval combines BM25 and vectors with RRF, reranking and query rewriting. Every result retains source/date/passage IDs.
 7. Typed hand-offs are validated. A contradiction causes a bounded correction/replan. Missing evidence is recorded honestly; it is never described as a positive fundamental finding. Breakouts require stricter corroboration.
 8. Python—not the LLM—calculates ranking, quantity, fees, slippage, stops, profit targets and portfolio limits.
-9. Supervised simulated actions pause for approve/edit/reject on the exact hashed payload; editing invalidates the old approval. Historical replay uses the separately approved replay policy and later-open fills.
-10. Decisions, model/tool traces, checkpoints and ledger events are persisted. Interrupted portfolio jobs resume only when data, prompt, corpus, backend and engine versions still match.
-11. Failed development cases can produce conditional Reflexion lessons. A human accepts or rejects each lesson and freezes a version before later-period evaluation.
-12. The evaluation harness runs code-first checks, C0/C1/C2 comparisons, security trials, memory ablations and critic/retrieval ablations. Prometheus/Grafana and CI expose operational evidence.
+9. Grounded C2 BUY/SELL recommendations enter `WAITING_HUMAN`. The reviewer approves or rejects with a rationale and name/initials; this reuses the completed C2 result and makes zero additional research calls.
+10. Human decisions are stored separately from model traces and trade ledgers. When data permits, a fixed 10-session outcome is attached for review. This association is not a claim of causality or universal correctness.
+11. Decisions, model/tool traces, checkpoints and ledger events are persisted. Interrupted portfolio jobs resume only when data, prompt, corpus, backend and engine versions still match.
+12. Failed development cases and eligible reviewed outcomes can inform conditional Reflexion lesson candidates. Nothing is learned automatically: a human accepts or rejects each lesson and freezes a version before later-period evaluation.
+13. The evaluation harness runs code-first checks, C0/C1/C2 comparisons, security trials, memory ablations and critic/retrieval ablations. Prometheus/Grafana and CI expose operational evidence.
 
 ## Decision ownership
 

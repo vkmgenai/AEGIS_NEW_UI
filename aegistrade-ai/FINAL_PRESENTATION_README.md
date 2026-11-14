@@ -53,7 +53,7 @@ Open Streamlit at `http://127.0.0.1:8501`, API documentation at `http://127.0.0.
 
 ### 5. Human control and security — 2 minutes
 
-- In **Supervised Trading**, open a completed C2-linked proposal.
+- In **AI Agent Experiments**, open a grounded C2 BUY/SELL recommendation and its cited evidence.
 - Edit it and show that the old approval hash becomes invalid; then reject or approve a fresh exact payload.
 - Show stale-price or injected-text defence and the audit entry. Remind the panel that submission is simulated locally.
 

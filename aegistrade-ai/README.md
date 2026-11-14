@@ -27,9 +27,9 @@ AegisTrade is a human-governed multi-agent algorithmic trading research platform
 
 ## New: configurable capital and web-based C0/C1/C2
 
-In **Strategy Backtests → Technical-only baseline**, enter a starting capital (e.g. ₹200,000), historical start/end dates, risk percentage, cost assumptions, and choose ALL or one of the four **deterministic** strategies. Compare returns, drawdown, equity curves, order ledger and download/reopen saved simulations.
+In **Strategy Backtests → C0 Technical baseline**, enter a starting capital (e.g. ₹200,000) and historical start/end dates. The dashboard uses the fixed ROUTER risk/cost policy documented below so C0 and C2 remain directly comparable. Compare returns, drawdown, equity curves, order ledger and reopen saved simulations.
 
-In **AI Agent Experiments**, select C0 (no key, zero LLM calls), C1 (one tool-using agent), C2 (LangGraph supervisor plus market, strategy and compliance-critic specialists; normally six inference units) or ALL. C1/C2 share an eight-inference-unit ceiling per case and the same available tools. The UI caps cases at three, requires a reviewer token and explicit consent for paid requests, and does **not** place any trading orders.
+In **AI Agent Experiments**, select C0 (no key, zero LLM calls), C1 (one tool-using agent), C2 (LangGraph supervisor plus market, strategy and compliance-critic specialists; normally six inference units) or ALL. C1/C2 share an eight-inference-unit ceiling per case and the same available tools. The UI caps cases at three and requires explicit consent for inference. The reviewer credential is loaded internally from `.env`, not typed or displayed, and the system does **not** place any trading orders.
 
 External inference is **disabled by default**. Select `AEGIS_LLM_BACKEND=claude_cli` for Claude login, `codex_cli` for supported ChatGPT login or `openrouter` for a private API key, or choose the provider later from the dashboard dropdown; set `AEGIS_ENABLE_LLM_EXPERIMENTS=true` and consent to each run. The current local configuration uses Codex with ChatGPT sign-in. Plus has usage limits and does not fund OpenRouter. Never commit `.env`.
 
@@ -38,7 +38,7 @@ For update instructions see [docs/CAPITAL_AND_AGENT_UI_UPDATE.md](docs/CAPITAL_A
 
 ### End-to-end C2 historical portfolio (v0.27)
 
-In **Strategy Backtests**, select **C2 historical portfolio**, dates/capital, total inference allowance and holding-review interval. Supply the reviewer token, inference consent and upfront replay-rule approval. C2 uses five routes: EMA Trend, EMA Pullback, RSI Reversion, Breakout and SMC. A bounded ranked pool (default three) lets C2 consider the next technical candidate when a higher-ranked candidate is evidence-blocked; missing evidence is never labelled fundamental strength. Every prospective entry requires completed dated C2; scheduled holding reviews return HOLD/EXIT. Code applies stops/strategy exits, next-open sizing/fills and portfolio accounting. Jobs pause/resume at bounded checkpoints and retain research traces. **The end date does not force a sale**: open holdings remain marked with unrealized P&L. The separate C0 **Technical-only baseline** uses the four non-SMC routes and makes no generation calls. C1 is no longer a new portfolio flow; it remains in AI Agent Experiments to satisfy the fair single-agent comparison.
+In **Strategy Backtests**, select **C2 historical portfolio**, dates/capital and total inference allowance. Configure reviewer authorization in `.env`, then provide inference consent and upfront replay-rule approval. C2 uses five routes: EMA Trend, EMA Pullback, RSI Reversion, Breakout and SMC. A bounded ranked pool (fixed at three) lets C2 consider the next technical candidate when a higher-ranked candidate is evidence-blocked; missing evidence is never labelled fundamental strength. Every prospective entry requires completed dated C2; five-session holding reviews return HOLD/EXIT. Code applies fixed stops/strategy exits, next-open sizing/fills and portfolio accounting. Jobs pause/resume at bounded checkpoints and retain research traces. **The end date does not force a sale**: open holdings remain marked with unrealized P&L. The **C0 Technical baseline** runs the same ROUTER financial policy without generation. C1 is no longer a portfolio flow; it remains in AI Agent Experiments for the fair single-agent comparison.
 
 ## Quick start: local computer
 
@@ -91,7 +91,7 @@ Docker builds require an internet connection on the first build.
 
 ### Updated UI and hands-on testing
 
-The Streamlit frontend uses a high-contrast native light theme and an always-visible Workspace selector to avoid hidden sidebar controls on smaller screens. The eight workspaces are **Market Data**, **Overview**, **Strategy Backtests**, **AI Agent Experiments**, **Supervised Trading**, **Policy Knowledge**, **Learning & Lessons**, and **Broker Audit**.
+The Streamlit frontend uses a high-contrast native light theme and an always-visible Workspace selector. Its capstone workspaces are **Market Data**, **Overview**, **Strategy Backtests**, **AI Agent Experiments**, **Capstone Evaluation**, **Policy Knowledge**, and **Learning & Lessons**. The single-stock C0/C2 comparison now sits beside the portfolio workflows. Grounded C2 BUY/SELL recommendations, human approve/reject consent and their audit ledger sit inside AI Agent Experiments; separate Supervised Trading and Broker Audit navigation was removed. Use the [Simplified UI Demo Guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md).
 
 For your Plus account, start with the [ChatGPT Plus Full UI Demo Runbook](docs/AegisTrade_ChatGPT_Plus_Full_UI_Demo_Runbook.docx). It includes verified genuine C2 research and a tiny portfolio, all UI steps, approvals, exit behavior, quotas and reversible configuration switching. OpenRouter remains a separate option.
 
@@ -163,11 +163,11 @@ python -m scripts.mcp_smoke           # Requires installed FastMCP/adapters
 
 1. In **Dashboard**, inspect one synthetic symbol, closing prices, EMA20/EMA50 and the detected regime.
 2. In **Strategy Backtests**, run the comparison and plot a router/fixed-strategy equity curve.
-3. In **Supervised Trading**, submit a proposal; first reject it; then approve a fresh one with the reviewer token.
+3. In **AI Agent Experiments**, review a grounded C2 recommendation and record APPROVE or REJECT with a rationale.
 4. Enable **stale quote injection** and verify rejection. Enable **timeout injection** and inspect reconciliation.
 5. In **Policy Knowledge**, retrieve numbered, dated approval/risk policy passages.
 6. In **Learning & Lessons**, accept a valid development lesson and reject the unsafe lesson; freeze the playbook.
-7. In **Broker Audit**, show the event ledger, then open `/docs` or Grafana for operational evidence.
+7. Expand **Human C2 decisions and simulated-action audit**, then open `/docs` or Grafana for operational evidence.
 
 More detail: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md) and [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
 
@@ -183,7 +183,7 @@ The technical-only baseline uses no generative inference. C2 research and superv
    ```
 4. Preserve cost, token, latency, accuracy and failure traces. For a full claim of agentic benefit, compare the same inputs, tools and budget across C0/C1/C2.
 
-The `Supervised Trading` UI requires already completed C2 research before preparing an order. Approval, sizing and simulated submission add no model call. Protected inference requires reviewer authentication and explicit consent.
+The human-decision section in `AI Agent Experiments` requires completed, critic-accepted C2 research. Recording APPROVE/REJECT adds no model call and retains the validated research digest internally. Protected inference requires reviewer authentication and explicit consent.
 
 ## Publish the folder to GitHub
 
@@ -201,7 +201,7 @@ Team: **Veneet** (quant/evaluation), **Karthika** (agents/orchestration), **Math
 
 Current documentation: [Viva handbook](docs/AegisTrade_Capstone_Review_and_Viva_Guide.md), [source-to-code gap review](docs/CAPSTONE_GAP_REVIEW.md), [tool schemas](docs/MCP_TOOL_INVENTORY.json), and [verification status](docs/BUILD_AND_VERIFICATION_STATUS.json).
 
-Completed, critic-accepted C2 research is **required before every supervised order proposal**. Select its case in **AI Agent Experiments**, then open **Supervised Trading**; the backend rechecks source evidence and eligibility before creating a human-reviewed simulated proposal. Research memory-on requires a frozen reviewed playbook. A development failure can generate one paid reflection draft, which remains pending until human review. No extra AI variants were added.
+Completed, critic-accepted C2 research is required before a BUY/SELL recommendation can be presented for human review in **AI Agent Experiments**. The run enters `WAITING_HUMAN`; the reviewer sees the explanation, policy citations and company evidence and records APPROVE or REJECT with a rationale and name/initials. This appends to a separate decision ledger and does **not** repeat any C2 model call. A fixed 10-session return is attached when historical data permits, only as outcome-review evidence. It can become a candidate for a later conditional lesson after human review; it is never learned automatically. Research memory-on requires a frozen reviewed playbook.
 
 Use `python -m evaluation.run_capstone --experiment E4` for a free deterministic routing ablation. E1/E2/E3 require independently reviewed case inputs, explicit paid consent and an adequate call cap; see the handbook before running them.
 
@@ -233,7 +233,7 @@ Research preflight fix (0.15.1): lesson memory is disabled until a nonempty revi
 
 `aegistrade/llm_backend.py` now supports three transports: `claude_cli` (Claude Code CLI, Claude login), `codex_cli` (ChatGPT login) and `openrouter` (API key). One is active at a time and there is no automatic fallback.
 
-- **Choosing in the dashboard.** The *Strategy Backtests* page (for C1/C2 flows) and the *AI Agent Experiments* page show a **Run AI agents using** dropdown with Claude, ChatGPT and OpenRouter, each marked ready or not ready. Enter the reviewer token and press **Use this provider**. The switch takes effect without a restart and is saved in `data/inference_backend.json`, which holds only the provider name. `AEGIS_LLM_BACKEND` in `.env` remains the start-up default.
+- **Choosing in the dashboard.** The *Strategy Backtests* C2 flow and *AI Agent Experiments* show a **Run AI agents using** dropdown with all three retained adapters: **Claude CLI**, **ChatGPT/Codex CLI**, and **OpenRouter API**. Each is marked ready or not ready. Configure `AEGIS_REVIEWER_TOKEN` in `.env`, then press **Use this provider**. The credential is never displayed. The switch takes effect without a restart and is saved in `data/inference_backend.json`, which holds only the provider name. `AEGIS_LLM_BACKEND` in `.env` remains the start-up default.
 - **Claude setup.** Install Claude Code and run `claude auth login` in Terminal. No API key is used: `ANTHROPIC_API_KEY`, the OpenRouter key and the reviewer token are not passed to the CLI. Optional settings: `AEGIS_CLAUDE_BIN`, `AEGIS_CLAUDE_MODEL`, `AEGIS_CLAUDE_TIMEOUT_SECONDS`, `AEGIS_CLAUDE_HOME`.
 - **Same contract as Codex.** The CLI runs in print mode with a JSON schema, no native tools, no MCP servers, no slash commands and no saved session, from an empty temporary folder. AegisTrade executes every tool call and validates every answer. Limits count CLI invocations; the USD figure the CLI reports is recorded as notional and is not billed.
 - **Saved runs.** A C1 or C2 run stays tied to the provider, model and adapter it started on. Switch back to that provider to resume it, or start a new run.
@@ -322,4 +322,4 @@ All configured universes share a dated 103-stock source library. View **Policy K
 
 ### Capstone comparison UI (0.26.0)
 
-Strategy Backtests can explicitly clear the displayed saved run and begin a new C1/C2 session. Protective stop loss is optional for new simulations; disabling it also disables trailing and stop-recovery behavior. AI Agent Experiments adds a coordinated single-stock C0/C1/C2 P&L comparison with aligned curves and ledgers, plus a capstone minimum-bar evidence matrix. Use the same-case case experiment for the fair multi-agent ablation. See [evaluation and UI guide](docs/AegisTrade_v0_26_Capstone_Evaluation_and_UI_Guide.md).
+Strategy Backtests can clear the displayed saved run and begin a new C2 session and also hosts the single-stock C0/C2 portfolio comparison. AI Agent Experiments keeps only the same-case C0/C1/C2 research ablation and human review of grounded C2 recommendations. The minimum-bar evidence matrix remains in Capstone Evaluation rather than cluttering the experiment page. See the [simplified UI guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md).

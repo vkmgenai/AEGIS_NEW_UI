@@ -1,6 +1,6 @@
 # AegisTrade AI — final capstone project report
 
-Version 0.27 · 14 November 2026 · Team size: three, approved by faculty
+Version 0.30 · 14 November 2026 · Team size: three, approved by faculty
 
 ## Executive summary
 
@@ -29,7 +29,7 @@ The detailed diagram and numbered walkthrough are in [FINAL_ARCHITECTURE.md](FIN
 
 ### Figure 1 execution walkthrough
 
-1. The reviewer chooses a frozen universe, historical window, capital, risk policy and inference configuration in Streamlit. FastAPI authenticates the reviewer, records paid-call consent and locks the point-in-time case.
+1. The reviewer chooses a frozen universe, C0 or C2, historical window, capital and (for C2) one of three inference adapters in Streamlit. The dashboard fixes the risk/execution policy so that C0/C2 comparisons cannot be post-hoc tuned. FastAPI authenticates the reviewer, records paid-call consent and locks the point-in-time case.
 2. The experiment harness sends an identical locked case to C0, C1 and C2 when performing the architecture evaluation. C0 is deterministic; C1 uses one tool-using agent; C2 creates a bounded supervisor plan for three specialists.
 3. The C2 market specialist reads the historical snapshot and dated company evidence. A bounded dated-web fallback may supplement a genuinely incomplete historical pack, but it cannot introduce evidence published after the decision cutoff.
 4. The strategy specialist reads policy RAG and the code-approved route. It returns a typed strategy, cited explanation and permitted portfolio action; it cannot change the strategy catalogue or calculate an order quantity.
@@ -38,6 +38,14 @@ The detailed diagram and numbered walkthrough are in [FINAL_ARCHITECTURE.md](FIN
 7. Deterministic validation checks schemas, dates, citations, route agreement and adverse evidence. Python then owns quantity, fixed delivery fees, slippage, stops, targets, capacity and all cash/ledger arithmetic.
 8. Historical replay proceeds only under upfront-approved rules and fills at the eligible later open. A separately supervised action pauses for approve, edit or reject on the exact payload hash, then repeats freshness and risk checks before simulated submission. No live broker exists.
 9. JSON/SQLite records preserve traces, checkpoints, decisions and ledger events. Human-reviewed lessons may be frozen for later development runs; the E1–E4 harness, monitoring dashboards and CI measure quality, safety, latency and cost.
+
+### Final demonstration UI
+
+The portfolio form deliberately exposes only the decisions needed for the capstone demonstration: C0 or C2, starting capital, start/end dates, inference allowance, reviewed-memory version, consent and replay-rule approval. The risk policy is displayed but not editable: ROUTER, 1% normal risk, 0.5% breakout risk, ATR stops/trails, 8% net target, 10 bps slippage, three C2 research candidates and five-session holding reviews. This reduces accidental configuration drift while every value remains recorded in the saved result. The inference selector retains all three adapters: **ChatGPT/Codex CLI**, **OpenRouter API**, and **Claude CLI**. C1 remains only in the controlled C0/C1/C2 agent experiment required by the evaluation protocol.
+
+The single-stock C0/C2 system comparison is grouped with Strategy Backtests. AI Agent Experiments automatically ranks eligible cases and presents only validated, critic-accepted actionable C2 recommendations for human APPROVE/REJECT consent. The primary UI no longer asks the user to choose a BUY or holding-review scenario; historical holding reviews and exits remain in the C2 portfolio engine and retained traces. An actionable experiment enters `WAITING_HUMAN`; approval/rejection records the reviewer, rationale and immutable research digest in a separate ledger without repeating C2 inference. HOLD, blocked and failed cases do not request approval. A fixed 10-session outcome is attached when data exists and exposed for later lesson review, but is not automatically learned or treated as causal proof. Separate Supervised Trading and Broker Audit navigation was removed to keep the viva path focused. The backend reviewer secret remains required for authenticated writes but is loaded from `.env` and hidden from the presentation UI.
+
+C2 does not require a frontier reasoning model for routine typed extraction and policy checking. The balanced response budget is 3,600 tokens per case, with specialist turns targeted near 450 tokens and a reserve for a bounded correction. A smaller instruction-following model is appropriate only after it passes the schema, citation, breakout-evidence and adverse-event evaluations; held-out quality and failure rate govern model choice, not price alone.
 
 ## Minimum-bar assessment
 
@@ -51,7 +59,7 @@ The detailed diagram and numbered walkthrough are in [FINAL_ARCHITECTURE.md](FIN
 | Multi-agent | C2 supervisor + three specialists; C1 same-tool/budget baseline | Partial: final funded three-repeat E1 is still required |
 | Improvement | Development reflection, conditional lessons, human review, rejected lessons and frozen versions | Partial: held-out before/after result and lesson-generation cost required |
 | Evaluation/monitoring | 20 development + 40 held-out candidate cases; traces; Prometheus/Grafana | Partial: independent labels, calibrated judge and final dashboard evidence required |
-| Human control/hooks | Exact-payload approve/edit/reject; permission/budget/logging hooks | Partial: record the edit-invalidates-approval demonstration |
+| Human control/hooks | Grounded C2 BUY/SELL approve/reject with rationale; internal research binding; permission/budget/logging hooks | Partial: retain independently reviewed approve and reject demonstrations |
 | Security | Threat model, scoped tools, guardrails and 32 attacks | Partial: run model-level defence-off/on plus ten clean cases and report false blocks |
 | Deployment | FastAPI, Streamlit, Docker Compose, CI, Prometheus, Grafana and alert rules | Partial: clean-machine proof, fired alert and hosted failed-CI record required |
 
@@ -89,7 +97,7 @@ Repeat the final held-out comparison three times. Preserve failures and timeouts
 
 ## Current measured development evidence
 
-- Full local test suite: **346 passed** on 14 November 2026, including an end-to-end C2 SMC entry with a four-route, non-SMC C0 reference.
+- Full local test suite: **361 passed** on 14 November 2026 after the final UI consolidation, including the three-adapter provider contract, C0/C2 UI payload checks and authenticated human C2 review audit.
 - Golden development checker: 20/20 seeded development cases in `reports/capstone_review_dev.json`; the report itself states that labels require independent review.
 - Fresh v0.27 offline development evidence is saved in `reports/final_dev_offline_v027.json` and `reports/final_rag_offline_v027.json`. On the current expanded corpus, the 36 legacy queries improved from 0.6944 to 0.7500 Recall@5 with rewriting; the 101 authored development queries scored 0.9010. The original 16-passage/36-query setup scored 0.9444, so corpus expansion regressed the old labels even though rewriting improved the current configuration. These labels are not independently reviewed and this is not a held-out claim.
 - The deterministic scanner detected 93.8% of 32 authored attack strings with zero false blocks on ten clean strings. This is a scanner proxy only; model-level E2 remains required.

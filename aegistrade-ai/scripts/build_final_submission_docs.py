@@ -17,8 +17,8 @@ def architecture():
     def line(a,c,label='',rad=0): b.arrow(ax,a,c,label,rad)
 
     # User, API and model-facing guardrail boundary.
-    b.box(ax,.25,11.75,2.0,.72,'Reviewer','select • consent\nwatch • approve','#e9f2e8')
-    b.box(ax,2.55,11.75,4.9,.72,'Streamlit UI + FastAPI','auth • sessions • allowance • live progress • resume')
+    b.box(ax,.25,11.75,2.0,.72,'Reviewer','C0/C2 • dates • capital\nconsent • approve','#e9f2e8')
+    b.box(ax,2.55,11.75,4.9,.72,'Simplified Streamlit UI + FastAPI','fixed risk policy • auth • allowance • progress • resume')
     b.box(ax,7.75,11.75,2.0,.72,'Input / output guards','typed requests • cutoff\ninjection scan • scrub','#fde8e5')
     line((2.25,12.1),(2.55,12.1));line((7.45,12.1),(7.75,12.1));number(.42,12.42,1)
 
@@ -58,10 +58,10 @@ def architecture():
     line((5,5.25),(5,4.67));number(.42,4.57,7)
 
     b.box(ax,.25,2.45,4.45,.85,'Historical portfolio replay','upfront-approved rules • candidate pool\nlater-open simulated fills • no forced final sale','#e9f2e8')
-    b.box(ax,5.3,2.45,4.45,.85,'Supervised simulated action','exact-payload approve / edit / reject\nfreshness + risk + kill-switch recheck','#e9f2e8')
+    b.box(ax,5.3,2.45,4.45,.85,'WAITING_HUMAN decision','C2 BUY / SELL • approve / reject + rationale\nno repeated C2 call • separate decision ledger','#e9f2e8')
     line((3.3,3.85),(2.48,3.3));line((6.7,3.85),(7.52,3.3));number(.42,3.17,8)
 
-    b.box(ax,.25,1.15,9.5,.72,'Simulated broker / historical fill engine → immutable audit ledger','cash • holdings • decisions • citations • model/tool usage • failures • checkpoints • realized/unrealized P&L','#edf4fa')
+    b.box(ax,.25,1.15,9.5,.72,'Simulated broker / historical fill engine → immutable audit ledger','cash • holdings • decisions • 10-session outcome • citations • model/tool usage • failures • checkpoints • P&L','#edf4fa')
     line((2.48,2.45),(3.4,1.87));line((7.52,2.45),(6.6,1.87))
     b.box(ax,.25,.12,2.9,.55,'E1–E4 evaluation','C0/C1/C2 • security • memory')
     b.box(ax,3.55,.12,2.9,.55,'Prometheus + Grafana','latency • calls • errors • outcomes')
@@ -73,9 +73,9 @@ def architecture():
 
 def main():
     image=architecture();figures={'final_architecture':image}
-    report=b.build('FINAL_PROJECT_REPORT',figures,'FINAL CAPSTONE PROJECT REPORT',version='0.27.0',document_date='14 November 2026')
+    report=b.build('FINAL_PROJECT_REPORT',figures,'FINAL CAPSTONE PROJECT REPORT',version='0.31.0',document_date='14 November 2026')
     old=b.DOCS;b.DOCS=ROOT
-    try:presentation=b.build('FINAL_PRESENTATION_README',{},'FINAL PRESENTATION & DEMO GUIDE',version='0.27.0',document_date='14 November 2026')
+    try:presentation=b.build('FINAL_PRESENTATION_README',{},'FINAL PRESENTATION & DEMO GUIDE',version='0.31.0',document_date='14 November 2026')
     finally:b.DOCS=old
     print(report);print(presentation)
     assert len(Document(report).paragraphs)>40

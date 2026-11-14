@@ -62,13 +62,14 @@ class ResearchSettings(BaseModel):
     start_date: date | None = None
     end_date: date | None = None
     consent_to_paid_calls: bool = False
-    max_output_tokens_per_case: int = Field(default=4800, ge=4800, le=6400)
+    max_output_tokens_per_case: int = Field(default=3600, ge=2400, le=4800)
 
     selection_run_id: str|None = Field(default=None,pattern=r"^[0-9a-f]{32}$")
     automatic_stock_selection: bool = False
     reference_capital: float = Field(default=200000,ge=1000,le=100000000)
     use_memory: bool = False
     dataset_split: str = "development"
+    research_purpose: str = "ENTRY"
 
     @model_validator(mode="after")
     def validate_config(self):
@@ -76,6 +77,8 @@ class ResearchSettings(BaseModel):
             raise ValueError("dataset_split must be development or heldout")
         if self.configuration not in {"C0", "C1", "C2", "ALL"}:
             raise ValueError("configuration must be C0, C1, C2 or ALL")
+        if self.research_purpose not in {'ENTRY','HOLDING_REVIEW'}:
+            raise ValueError('research_purpose must be ENTRY or HOLDING_REVIEW')
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValueError("Invalid date range")
         return self
@@ -111,12 +114,19 @@ def select_cases(frame: pd.DataFrame, s: ResearchSettings, *, allowed_symbols=No
     else:
         if len(f)<s.cases:raise ValueError('Insufficient ready historical rows within selected period')
         chosen=f.iloc[[round(i*(len(f)-1)/max(1,s.cases-1)) for i in range(s.cases)]] if s.cases>1 else f.iloc[[-1]]
-    return [{"symbol": str(r.Symbol), "date": r.Date.date().isoformat(),
+    cases=[{"symbol": str(r.Symbol), "date": r.Date.date().isoformat(),
              "regime": str(r.Regime), "approved_candidate": str(r.RoutedStrategy),
              **({"selection_score":selection_lookup[r.Symbol]['score'],"selection_rank":selection_lookup[r.Symbol]['rank'],
                  "average_turnover_20_inr":selection_lookup[r.Symbol]['average_turnover_20_inr']} if r.Symbol in selection_lookup else {}),
              **{k: float(getattr(r, k)) for k in ("Close", "RSI14", "ADX14", "EMA20", "EMA50", "ATR14", "PriorHigh", "PullbackRecent")}}
             for r in chosen.itertuples()]
+    if s.research_purpose=='HOLDING_REVIEW':
+        for case in cases:
+            case['research_purpose']='HOLDING_REVIEW'
+            case['holding_context']={'quantity':1,'entry_price':case['Close'],'stop_price':max(.01,case['Close']-2*case['ATR14']),
+                'strategy':case['approved_candidate'] if case['approved_candidate']!='NONE' else 'EMA_TREND',
+                'holding_sessions':5,'review_trigger':'Controlled AI Experiment holding review'}
+    return cases
 
 
 def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|None=None, save_dir: Path | None = None, source: str|None=None, provenance:dict|None=None) -> dict:
@@ -186,6 +196,11 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                         "cost_reporting_complete":bool(usages) and len(reported_cost)==len(usages),
                         "mean_latency_s": round(sum(latencies)/len(rows),3),"median_latency_s":round(latencies[len(latencies)//2],3),
                         "p95_latency_s":round(p95,3)})
+    actionable=[{'case_id':x['case_id'],'portfolio_action':x.get('portfolio_action'),
+                 'action':'BUY' if x.get('portfolio_action')=='ENTER' else 'SELL'}
+                for x in outputs if x.get('config')=='C2' and x.get('guard_pass') is True
+                and x.get('critic_accept') is True and not x.get('model_errors')
+                and x.get('portfolio_action') in {'ENTER','EXIT'}]
     result = normalize({"run_id": uuid.uuid4().hex,
                         "created_utc": datetime.now(timezone.utc).isoformat(),
                         "model": model if needs_llm(s) else "not_used",
@@ -196,6 +211,8 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                         "knowledge_corpus":__import__("aegistrade.corpus",fromlist=["corpus_info"]).corpus_info(),
                         "max_possible_paid_calls": required_call_budget(s),
                         "summary":summary, "outputs":outputs,
+                        "status":"WAITING_HUMAN" if actionable else "COMPLETED",
+                        "human_review_required":actionable,"human_decisions":[],
                         "disclaimer":"Research-only route audit. Not portfolio backtesting, investment advice, or order execution. Actual costs depend on provider usage."})
     if save_dir is not None:
         save_dir.mkdir(parents=True, exist_ok=True)

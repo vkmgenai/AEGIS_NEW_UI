@@ -1,5 +1,41 @@
 # UI visibility and usability update — 6 November 2026
 
+## 14 November 2026 — Strategy Backtests cleanup
+
+- Renamed the user-facing technical workflow to **C0 Technical baseline** while retaining compatible API and saved-run identifiers.
+- Reduced explanatory notices to one concise C0/C2 comparison statement.
+- Kept only capital, dates, C2 allowance, consent and replay approval in the main run form.
+- Moved reviewed-memory selection into a collapsed **Optional evaluation controls** section.
+- Renamed the primary actions to **Run C0 backtest** and **Run C2 backtest**.
+
+## 14 November 2026 — final experiment-page cleanup
+
+- Removed the minimum-bar evidence canvas from AI Agent Experiments; the evidence remains in Capstone Evaluation and the report.
+- Removed the visible BUY/holding-review scenario selector, manual company-pack preparation, shortlist preview, token-budget tuning and memory toggle from the primary experiment form.
+- AI Agent Experiments now asks only for configuration, case count, date range and inference consent; stock ranking, evidence preparation and the balanced 3,600-token budget are automatic.
+- Retained saved runs, full traces, the C2 human interrupt, separate decision audit and all three inference adapters.
+
+## 14 November 2026 — C2 human interrupt without duplicate inference
+
+- Actionable, grounded C2 BUY/SELL experiments enter `WAITING_HUMAN`; HOLD, blocked and failed cases do not interrupt.
+- Approve/reject reuses completed C2 research and makes zero additional research calls.
+- Reviewer, rationale, research digest and decision are stored in a separate JSONL ledger and audit event.
+- A fixed 10-session outcome is displayed in Learning & Lessons as review evidence and is never learned automatically.
+- The reviewer credential remains required for authenticated writes but is loaded from `.env` and hidden from the UI.
+
+## 14 November 2026 — final capstone UI simplification
+
+- Moved the single-stock C0/C2 comparison into Strategy Backtests.
+- Integrated grounded C2 BUY/SELL human APPROVE/REJECT review and the audit ledger into AI Agent Experiments.
+- Removed Supervised Trading and Broker Audit from navigation; internal research-binding and audit safeguards remain.
+- Reduced the balanced C2 response budget to 3,600 tokens per case with concise approximately 450-token specialist turns.
+- Kept C0 technical and C2 historical portfolio as the two portfolio choices; C1 remains in the required C0/C1/C2 agent experiment only.
+- Retained all three switchable inference adapters: ChatGPT/Codex CLI, OpenRouter API and Claude CLI.
+- Replaced manual strategy, risk, stop, trailing, target, re-entry, slippage, research-pool and holding-review inputs with a visible fixed policy recorded in every run.
+- Kept capital, dates, C2 allowance, frozen lesson selection, explicit consent, replay approval, progress, refresh/pause/resume and saved runs.
+- Removed the dead C1 newsletter-import branch from the portfolio page. Evidence ingestion remains available in the evidence/data workflow.
+- Added `SIMPLIFIED_UI_DEMO_GUIDE.md` and aligned the final report, architecture walkthrough and README.
+
 ## What changed
 
 - Replaced broad sidebar CSS coloring, which could hide control labels and selected values, with native Streamlit theme colors in `.streamlit/config.toml`.

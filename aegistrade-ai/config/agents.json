@@ -5,7 +5,7 @@
   "max_calls_per_case": 8,
   "max_tool_calls_per_case": 16,
   "max_context_chars": 36000,
-  "output_tokens_per_case": 4800,
+  "output_tokens_per_case": 3600,
   "roles": {
     "market": {
       "tools": [

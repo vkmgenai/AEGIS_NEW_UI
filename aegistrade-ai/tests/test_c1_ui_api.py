@@ -20,9 +20,8 @@ def test_c1_portfolio_is_hidden_from_new_run_ui_but_evaluation_baseline_remains(
         u=urlsplit(url);return adapt(client.get(u.path+('?' +u.query if u.query else '')))
     monkeypatch.setattr(requests,'get',get)
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30).run()
-    next(x for x in at.text_input if 'token' in x.label.lower()).input('c1-portfolio-contract-token').run()
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
-    assert at.radio(key='simulation_engine').options==['C2 historical portfolio','Technical-only baseline']
+    assert at.radio(key='simulation_engine').options==['C2 historical portfolio','C0 Technical baseline']
     at.selectbox(key='aegis_workspace').select('AI Agent Experiments').run()
     experiment=next(x for x in at.selectbox if x.label=='Experiment configuration')
     assert set(experiment.options)=={'C0','C1','C2','ALL'}
@@ -79,7 +78,7 @@ def test_hidden_legacy_c1_does_not_replace_c2_or_technical_ui_state(monkeypatch,
     at.session_state['simulation_result']=technical;at.run()
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
     assert not at.exception and at.session_state['simulation_result']['run_id']==c2
-    at.radio(key='simulation_engine').set_value('Technical-only baseline').run()
+    at.radio(key='simulation_engine').set_value('C0 Technical baseline').run()
     assert not at.exception and at.session_state['simulation_result']['run_id']==technical['run_id']
     at.radio(key='simulation_engine').set_value('C2 historical portfolio').run()
     assert not at.exception and at.session_state['simulation_result']['run_id']==c2

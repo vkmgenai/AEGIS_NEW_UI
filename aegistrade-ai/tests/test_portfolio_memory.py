@@ -127,15 +127,10 @@ def test_ui_portfolio_draft_review_freeze_and_select_without_inference(tmp_path,
         u=urlsplit(url);writes.append(u.path);return adapt(client.post(u.path,json=json,headers=headers or {}))
     monkeypatch.setattr(requests,'get',get);monkeypatch.setattr(requests,'post',post)
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30).run()
-    next(x for x in at.text_input if 'token' in x.label.lower()).input('portfolio-memory-ui-token').run()
     at.selectbox(key='aegis_workspace').select('Learning & Lessons').run()
     next(x for x in at.button if x.label=='Draft portfolio lesson candidates').click().run()
     assert not at.exception and len(mem.list_candidates())==2 and not mem.list_versions()
     next(x for x in at.text_input if x.label=='Portfolio review rationale').input('I accept this lesson.').run()
-    next(x for x in at.text_input if 'token' in x.label.lower()).input('').run()
-    assert next(x for x in at.button if x.label=='Save portfolio lesson review').disabled
-    assert any('To enable Save, enter your AEGIS_REVIEWER_TOKEN' in x.value for x in at.info)
-    next(x for x in at.text_input if 'token' in x.label.lower()).input('portfolio-memory-ui-token').run()
     assert not next(x for x in at.button if x.label=='Save portfolio lesson review').disabled
     next(x for x in at.radio if x.label=='Portfolio lesson decision').set_value('ACCEPT').run()
     next(x for x in at.text_input if x.label=='Portfolio review rationale').input('Reviewed dated source and narrow condition.').run()
