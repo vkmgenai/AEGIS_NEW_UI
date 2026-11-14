@@ -7,6 +7,7 @@ Final submission navigation:
 - [Final project report](docs/FINAL_PROJECT_REPORT.md)
 - [Final detailed architecture and numbered walkthrough](docs/FINAL_ARCHITECTURE.md)
 - [Team experiment-review questionnaires](docs/TEAM_EXPERIMENT_REVIEW_QUESTIONNAIRES.md)
+- [Evidence and LLM-assistance guide for answering team questionnaires](docs/TEAM_REVIEW_EVIDENCE_AND_LLM_ASSISTANCE_GUIDE.md)
 - [Background experiment ledger and replay guide](docs/CAPSTONE_EXPERIMENT_LEDGER_GUIDE.md)
 
 Retained capstone runs are also visible in Streamlit under **Workspace → Capstone Evaluation**. This read-only viewer shows manifests, summaries, lifecycle events and report downloads without making model calls.

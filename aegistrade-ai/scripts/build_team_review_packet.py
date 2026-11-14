@@ -8,14 +8,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
-    path = builder.build(
+    questionnaire = builder.build(
         "TEAM_EXPERIMENT_REVIEW_QUESTIONNAIRES",
         {},
         "TEAM EXPERIMENT REVIEW QUESTIONNAIRES",
         version="1.0",
         document_date="14 November 2026",
     )
-    print(path)
+    guide = builder.build(
+        "TEAM_REVIEW_EVIDENCE_AND_LLM_ASSISTANCE_GUIDE",
+        {},
+        "TEAM REVIEW EVIDENCE & LLM ASSISTANCE GUIDE",
+        version="1.0",
+        document_date="14 November 2026",
+    )
+    print(questionnaire)
+    print(guide)
 
 
 if __name__ == "__main__":
