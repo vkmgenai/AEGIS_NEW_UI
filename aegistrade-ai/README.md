@@ -1,6 +1,6 @@
 # 🛡️ AegisTrade AI
 
-**Current final-review source: v0.27.0 — C0/C2 portfolio design with C1 retained as the required evaluation-only baseline.**
+**Current final-review source: v0.28.0 — C0/C2 portfolio design with C1 retained as the required evaluation-only baseline.**
 
 Final submission navigation:
 
@@ -31,7 +31,7 @@ In **Strategy Backtests → Technical-only baseline**, enter a starting capital 
 
 In **AI Agent Experiments**, select C0 (no key, zero LLM calls), C1 (one tool-using agent), C2 (LangGraph supervisor plus market, strategy and compliance-critic specialists; normally six inference units) or ALL. C1/C2 share an eight-inference-unit ceiling per case and the same available tools. The UI caps cases at three, requires a reviewer token and explicit consent for paid requests, and does **not** place any trading orders.
 
-External inference is **disabled by default**. Select `AEGIS_LLM_BACKEND=codex_cli` for supported ChatGPT login or `openrouter` for a private API key; set `AEGIS_ENABLE_LLM_EXPERIMENTS=true` and consent to each run. The current local configuration uses Codex with ChatGPT sign-in. Plus has usage limits and does not fund OpenRouter. Never commit `.env`.
+External inference is **disabled by default**. Select `AEGIS_LLM_BACKEND=claude_cli` for Claude login, `codex_cli` for supported ChatGPT login or `openrouter` for a private API key, or choose the provider later from the dashboard dropdown; set `AEGIS_ENABLE_LLM_EXPERIMENTS=true` and consent to each run. The current local configuration uses Codex with ChatGPT sign-in. Plus has usage limits and does not fund OpenRouter. Never commit `.env`.
 
 For update instructions see [docs/CAPITAL_AND_AGENT_UI_UPDATE.md](docs/CAPITAL_AND_AGENT_UI_UPDATE.md).
 
@@ -228,6 +228,16 @@ Rebuild: `python -m scripts.build_rag_index --mode neural --activate`. Evaluate:
 Current detailed RAG/viva documentation: [RAG Word guide](docs/RAG_IMPLEMENTATION_GUIDE.docx), [RAG source corpus](knowledge/corpus.jsonl), and [current full viva handbook](docs/AegisTrade_Capstone_Review_and_Viva_Guide.docx). The Policy Knowledge screen shows actual active mode, source links and historical cutoff; every C2 result must bind to the current knowledge-corpus fingerprint.
 
 Research preflight fix (0.15.1): lesson memory is disabled until a nonempty reviewed playbook is frozen. Unavailable memory is rejected before archive/model work; the UI displays the actual API cause and next action. Screening previews use the submitted case date.
+
+### Claude CLI transport and provider dropdown (0.28.0)
+
+`aegistrade/llm_backend.py` now supports three transports: `claude_cli` (Claude Code CLI, Claude login), `codex_cli` (ChatGPT login) and `openrouter` (API key). One is active at a time and there is no automatic fallback.
+
+- **Choosing in the dashboard.** The *Strategy Backtests* page (for C1/C2 flows) and the *AI Agent Experiments* page show a **Run AI agents using** dropdown with Claude, ChatGPT and OpenRouter, each marked ready or not ready. Enter the reviewer token and press **Use this provider**. The switch takes effect without a restart and is saved in `data/inference_backend.json`, which holds only the provider name. `AEGIS_LLM_BACKEND` in `.env` remains the start-up default.
+- **Claude setup.** Install Claude Code and run `claude auth login` in Terminal. No API key is used: `ANTHROPIC_API_KEY`, the OpenRouter key and the reviewer token are not passed to the CLI. Optional settings: `AEGIS_CLAUDE_BIN`, `AEGIS_CLAUDE_MODEL`, `AEGIS_CLAUDE_TIMEOUT_SECONDS`, `AEGIS_CLAUDE_HOME`.
+- **Same contract as Codex.** The CLI runs in print mode with a JSON schema, no native tools, no MCP servers, no slash commands and no saved session, from an empty temporary folder. AegisTrade executes every tool call and validates every answer. Limits count CLI invocations; the USD figure the CLI reports is recorded as notional and is not billed.
+- **Saved runs.** A C1 or C2 run stays tied to the provider, model and adapter it started on. Switch back to that provider to resume it, or start a new run.
+- **API.** `GET /inference/backends` lists the three providers with readiness; `POST /inference/backend` (reviewer token) switches. `AEGIS_LLM_MODEL` applies only to the provider named in `.env`.
 
 ### Codex / ChatGPT Plus transport (0.16.0)
 

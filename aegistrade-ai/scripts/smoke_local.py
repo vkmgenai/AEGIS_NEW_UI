@@ -29,7 +29,7 @@ def main() -> int:
         ]
         for name, endpoint, body in cases:
             result = fetch(endpoint, body)
-            if endpoint=='/health' and result.get('version')!='0.27.0':
+            if endpoint=='/health' and result.get('version')!='0.28.0':
                 print('NOTE: Running API source version differs from this final-review source; restart the matching checkout.')
             print(f'PASS {name}: {str(list(result) if isinstance(result,dict) else len(result))[:80]}')
         print('Smoke test passed. No real trades were placed.')

@@ -18,14 +18,14 @@ from aegistrade.lessons import ReviewedPlaybook,propose_failure_lesson
 from aegistrade.safety import AuditBroker,RiskInputs,RiskParameters,utc_now
 from aegistrade.security import check_reviewer_token,scan_untrusted_text
 from aegistrade.openrouter import BudgetedExplainer
-from aegistrade.llm_backend import backend_info,model_name,require_backend_ready
+from aegistrade.llm_backend import backend_info,backend_options,model_name,require_backend_ready,select_backend
 from app.backend_compat import UI_API_CONTRACT
 from aegistrade.simulation_service import SimulationSettings,execute_simulation
 from aegistrade.research_service import ResearchSettings,execute_research,needs_llm,required_call_budget,ResearchPreflightError,memory_preflight
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.27.0',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.28.0',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -241,7 +241,7 @@ def health():
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,
             'live_broker_enabled':False,'openrouter_opt_in':bool(os.getenv('OPENROUTER_API_KEY')),
             'llm_experiments_enabled':backend_info()['ready'] and os.getenv('AEGIS_ENABLE_LLM_EXPERIMENTS','false').lower()=='true',
-            'inference':backend_info(),
+            'inference':backend_info(),'inference_backend_switch_supported':True,'inference_backends':['claude_cli','codex_cli','openrouter'],
             'ui_llm_max_cases':3,'agent_model':model_name(),'c0_routes':['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT'],
             'c2_routes':['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT','SMC'],'c2_research_candidates_default':3,
             'c2_required_before_order':True,'company_research_required':True,'company_decision_cutoff':'15:30 Asia/Kolkata on signal date',
@@ -642,6 +642,28 @@ def prepare_nse_dataset(body:DatasetPreparation,x_reviewer_token:str|None=Header
     from aegistrade.dataset_jobs import prepare
     try:return prepare(DATA,body.universe_id,body.start_date,body.end_date,legacy=legacy_nse_directory())
     except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+
+class InferenceBackendChoice(BaseModel):
+    backend:str
+
+@app.get('/inference/backends')
+def inference_backends():
+    """Readiness of every transport for the dashboard dropdown. Never returns keys or logins."""
+    requests_total.labels('inference_backends').inc()
+    listing=backend_options()
+    for option in listing['options']:option.pop('binary',None)
+    return listing
+
+@app.post('/inference/backend')
+def choose_inference_backend(body:InferenceBackendChoice,x_reviewer_token:str|None=Header(default=None)):
+    """Switch Claude CLI / Codex CLI / OpenRouter without a restart. Saved runs stay bound to the backend they started on."""
+    auth(x_reviewer_token)
+    try:select_backend(body.backend)
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+    info=backend_info();info.pop('binary',None)
+    return {'selected':info['backend'],'inference':info,'agent_model':model_name(),
+            'llm_experiments_enabled':info['ready'] and os.getenv('AEGIS_ENABLE_LLM_EXPERIMENTS','false').lower()=='true'}
 
 
 class DatasetActivation(BaseModel):

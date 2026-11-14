@@ -55,7 +55,7 @@ def main() -> int:
     env.update(values)
     env.setdefault('AEGIS_API_URL', 'http://127.0.0.1:8000')
     env['PYTHONPATH'] = str(ROOT) + os.pathsep + env.get('PYTHONPATH', '')
-    print('Selected inference backend: '+env.get('AEGIS_LLM_BACKEND','openrouter'))
+    print('Selected inference backend: '+env.get('AEGIS_LLM_BACKEND','openrouter')+' (the dashboard provider dropdown can override this)')
     print('Starting AegisTrade in simulation-only mode.')
     print('Dashboard: http://127.0.0.1:8501')
     print('API docs:  http://127.0.0.1:8000/docs')

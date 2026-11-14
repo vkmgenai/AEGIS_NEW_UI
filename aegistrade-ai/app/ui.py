@@ -166,6 +166,43 @@ if not compatible_backend(health):
     st.code('bash scripts/start_unix.sh',language='bash')
     st.stop()
 
+PROVIDER_LABELS={'claude_cli':'Claude (Claude CLI login)','codex_cli':'ChatGPT (Codex CLI login)','openrouter':'OpenRouter (API key)'}
+PROVIDER_NOTES={
+    'claude_cli':'Uses your signed-in Claude CLI and Claude plan allowance. Limits count CLI invocations, not internal provider requests. Response-token settings are guidance, not a hard provider token cap. Plan limits may pause a run; the USD figure the CLI reports is notional and is not billed.',
+    'codex_cli':'Uses your signed-in Codex CLI and ChatGPT plan allowance. Limits count CLI invocations, not internal provider requests. Response-token settings are guidance, not a hard provider token cap. Plus limits may pause the demo; per-run USD billing is unavailable.',
+    'openrouter':'Uses the OpenRouter API key in .env. Limits count HTTP model requests and cost is the usage the provider reports.'}
+
+
+def provider_selector(place):
+    """Dropdown to run the AI flows on Claude, ChatGPT or OpenRouter. Returns the active backend name."""
+    active=health.get('inference',{}).get('backend','openrouter')
+    if not health.get('inference_backend_switch_supported'):
+        st.caption('Inference provider: '+PROVIDER_LABELS.get(active,active)+'. Restart the API from this project folder to choose the provider here.')
+        return active
+    try:listing=get('/inference/backends',timeout=40)
+    except Exception as exc:
+        fail('Could not load the inference providers.',exc);return active
+    options={o['backend']:o for o in listing.get('options',[])}
+    names=[n for n in PROVIDER_LABELS if n in options]
+    if not names:return active
+    active=listing.get('selected',active)
+    a,b=st.columns([3,1])
+    chosen=a.selectbox('Run AI agents using',names,index=names.index(active) if active in names else 0,key='provider_'+place,
+        format_func=lambda n:PROVIDER_LABELS[n]+(' — ready' if options[n].get('ready') else ' — not ready'),
+        help='Claude and ChatGPT use the login of their command-line tool on this computer. OpenRouter uses the API key in .env. No key or password is entered here.')
+    picked=options[chosen]
+    b.write('');b.write('')
+    if b.button('Use this provider',key='provider_apply_'+place,disabled=chosen==active or not reviewer_token):
+        try:
+            post('/inference/backend',{'backend':chosen},reviewer_token,timeout=40);st.rerun()
+        except Exception as exc:fail('The provider could not be changed.',exc)
+    if chosen!=active:
+        st.caption('Selected: '+PROVIDER_LABELS[chosen]+'. '+('Enter the reviewer token in the sidebar, then press "Use this provider".' if not reviewer_token else 'Press "Use this provider" to switch.')+' Currently active: '+PROVIDER_LABELS.get(active,active)+'.')
+    st.caption(('Ready. ' if picked.get('ready') else 'Not ready. ')+str(picked.get('reason',''))+' Model: '+str(picked.get('model','unknown'))+'.')
+    st.caption(PROVIDER_NOTES[chosen]+' A saved C1 or C2 run stays tied to the provider it started on: switch back to resume it, or start a new run.')
+    return active
+
+
 with st.container(border=True):
     c1, c2, c3 = st.columns(3)
     c1.metric("Execution", "Simulation only")
@@ -374,10 +411,10 @@ elif page == "Strategy Backtests":
     st.info('C2 researches prospective technical entries. C1 researches liquid candidates before checking SMC. Both periodically review holdings. Historical fills follow upfront approved rules; the separate supervised workflow retains per-order human review. Stops and strategy exits remain code-controlled. Open holdings are marked, never forcibly sold at the end.')
     if is_ai:
         inf=health.get('inference',{})
+        with st.container(border=True):provider_selector('backtest')
         st.caption('Backend: '+inf.get('backend','openrouter')+' | Model: '+health.get('agent_model','unknown')+' | Allowance unit: '+inf.get('budget_unit','model_requests'))
-        if inf.get('backend')=='codex_cli':st.info('Codex consumes ChatGPT plan allowance. Caps count CLI invocations; internal provider requests and per-run USD cost are unknown. Response-token budgets are guidance, not hard provider token caps.')
     if is_ai and health.get('dated_web_search_supported'):st.caption('Eligible cases with missing/UNKNOWN company evidence can use bounded dated web search before an evidence-based block. Sources must pass date/identity checks; strong technical signals do not override unresolved material risks.')
-    if is_ai:st.caption('A long period can consume substantial API or ChatGPT plan allowance. The total allowance pauses the run before another case would exceed it. C2 normally uses six inference units per case; C1 often uses two but may need tool/correction turns. Eight are reserved conservatively per case. C1 researches up to three liquid candidates per session before evaluating signals. Begin with a short date window.')
+    if is_ai:st.caption('A long period can consume substantial API, Claude or ChatGPT plan allowance. The total allowance pauses the run before another case would exceed it. C2 normally uses six inference units per case; C1 often uses two but may need tool/correction turns. Eight are reserved conservatively per case. C1 researches up to three liquid candidates per session before evaluating signals. Begin with a short date window.')
     from datetime import date, timedelta
     first = date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"])
     last = date.fromisoformat(universe["last_date"])
@@ -656,13 +693,11 @@ elif page == "AI Agent Experiments":
     with st.container(border=True):
         a,b=st.columns(2)
         inference=health.get("inference",{})
-        a.metric("Inference backend", inference.get("backend","openrouter"))
+        a.metric("Inference provider", PROVIDER_LABELS.get(inference.get("backend","openrouter"),inference.get("backend","openrouter")).split(" (")[0])
         b.metric("Inference enabled and ready", "Yes" if health.get("llm_experiments_enabled") else "No")
-        st.caption(inference.get("reason", "Check the selected backend configuration."))
-        if inference.get("backend")=="codex_cli":
-            st.info("Uses your signed-in Codex CLI and ChatGPT plan allowance. Limits count CLI invocations, not internal provider requests. Response-token settings are guidance, not a hard provider token cap. Plus limits may pause the demo; per-run USD billing is unavailable.")
+        provider_selector('experiments')
         if not health.get("llm_experiments_enabled"):
-            st.caption("To activate C1/C2: select AEGIS_LLM_BACKEND, complete its key or Codex login setup, set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
+            st.caption("To activate C1/C2: choose a provider above that shows ready (Claude: run claude auth login in Terminal; ChatGPT: run codex login; OpenRouter: set OPENROUTER_API_KEY in .env), set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
     from datetime import date
     with st.expander('Capstone minimum-bar evidence and remaining proof',expanded=False):
         st.caption('The guideline specifies four members; your professor-approved three-person exception is the governing team decision. Keep that approval with the contribution log.')
@@ -819,7 +854,7 @@ elif page == "AI Agent Experiments":
             eval_end=st.date_input("Latest case date",value=date.fromisoformat(selection_settings.get("end")) if selection_settings.get("end") else last,min_value=first,max_value=last,key="ai_eval_end")
         with s3:
             token_cap=st.selectbox("Response-token budget per case (CLI: guidance)",[4800,6400],index=0)
-            st.caption("Maximum attempted inference units: 0 for C0, 8 per case for C1 or C2, 16 per case for ALL. C2 normally uses six units. OpenRouter units are HTTP requests; Codex units are CLI invocations.")
+            st.caption("Maximum attempted inference units: 0 for C0, 8 per case for C1 or C2, 16 per case for ALL. C2 normally uses six units. OpenRouter units are HTTP requests; Claude and Codex units are CLI invocations.")
         automatic_research_selection=st.checkbox("Research automatically ranked eligible stocks",value=True)
         use_memory=st.checkbox("Use frozen human-reviewed lessons",value=False,key="ai_use_memory",disabled=not memory_available)
         if not memory_available:st.caption(memory_status.get("reason","No frozen reviewed playbook is available."))
@@ -845,7 +880,7 @@ elif page == "AI Agent Experiments":
         if eval_start>eval_end:st.error("Invalid experiment date range")
         elif is_paid and not consent:st.error("Explicit consent is needed before external inference")
         elif is_paid and not reviewer_token:st.error("Enter reviewer token in the sidebar before requesting external inference")
-        elif is_paid and not health.get("llm_experiments_enabled"):st.error("The selected inference backend is not enabled and ready. Inspect its status, update .env or login, and restart.")
+        elif is_paid and not health.get("llm_experiments_enabled"):st.error("The selected inference provider is not enabled and ready. Choose a ready provider in the dropdown above, or fix its login or key.")
         else:
             payload={"configuration":cfg,"cases":int(count),"start_date":eval_start.isoformat(),"end_date":eval_end.isoformat(),
                      "consent_to_paid_calls":bool(consent),"max_output_tokens_per_case":int(token_cap),"use_memory":bool(use_memory),"automatic_stock_selection":bool(automatic_research_selection),"reference_capital":float(screening_capital),"selection_run_id":selection_settings.get("run_id") if automatic_research_selection else None}
@@ -884,7 +919,8 @@ elif page == "AI Agent Experiments":
         if provider_failures:
             statuses=sorted({str(u.get('error_code') or u.get('http_status') or 'network/timeout') for u in provider_failures})
             st.error('Inference failed: '+', '.join('HTTP '+s if s.isdigit() else s for s in statuses)+'. No eligible research result was produced for the failed case.')
-            if any(str(u.get('error_code','')).startswith('CODEX_') for u in provider_failures):st.info('Check Codex login status, ChatGPT usage allowance and the selected CLI model. Quota failures pause historical runs; restore access before consenting to resume. No automatic switch to OpenRouter occurs.')
+            if any(str(u.get('error_code','')).startswith('CLAUDE_') for u in provider_failures):st.info('Check Claude CLI login status (claude auth status), your Claude plan usage allowance and the selected model. Quota failures pause historical runs; restore access before consenting to resume.')
+            elif any(str(u.get('error_code','')).startswith('CODEX_') for u in provider_failures):st.info('Check Codex login status, ChatGPT usage allowance and the selected CLI model. Quota failures pause historical runs; restore access before consenting to resume. No automatic switch to OpenRouter occurs.')
             elif any(u.get('http_status')==402 for u in provider_failures):st.info('OpenRouter rejected payment/account access. Check credits, spending limits and model access in your OpenRouter account before another explicitly authorized run.')
             elif any(u.get('http_status')==401 for u in provider_failures):st.info('Check the private OpenRouter API key and restart the API after correcting it.')
             else:st.info('Inspect provider status, model access or connectivity before another explicitly authorized run. Provider requests are not silently retried.')

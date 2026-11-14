@@ -27,6 +27,13 @@ def inference_diagnostic(usage,role=None):
         'CODEX_AUTH_REQUIRED':'Codex ChatGPT sign-in is unavailable. Check login status in Terminal.',
         'CODEX_MODEL_UNAVAILABLE':'The selected CLI model is unavailable to this account. Check the configured model.',
         'CODEX_TOOL_VIOLATION':'Unexpected native CLI tool output was blocked; inspect the adapter configuration.',
+        'CLAUDE_TIMEOUT':'Claude did not finish before the local CLI timeout. The invocation was stopped. This does not establish a login or quota problem.',
+        'CLAUDE_OUTPUT_INVALID':'Claude returned output the adapter could not validate. Inspect the response-format diagnostics; this does not establish an account-credit problem.',
+        'CLAUDE_QUOTA':'Claude reported an account usage/rate limit. Check the plan allowance before consenting to retry.',
+        'CLAUDE_AUTH_REQUIRED':'Claude CLI sign-in is unavailable. Run claude auth login in Terminal.',
+        'CLAUDE_MODEL_UNAVAILABLE':'The selected Claude model is unavailable to this account. Check the configured model.',
+        'CLAUDE_TOOL_VIOLATION':'Unexpected native CLI tool output was blocked; inspect the adapter configuration.',
+        'CLAUDE_EXEC_FAILED':'Claude could not finish its invocation. Inspect local execution/connectivity diagnostics before retrying.',
         'CODEX_EXEC_FAILED':'Codex could not finish its invocation. Inspect local execution/connectivity diagnostics before retrying.',
     }
     if code not in messages:
@@ -41,7 +48,7 @@ def inference_diagnostic(usage,role=None):
         'Tool request outside declared schema','Invalid final response envelope','No successful Codex completion event',
         'CLI final envelope exceeds response size bound','CLI output exceeds adapter bounds'}:
         diagnostic['invalid_reason']=failed['invalid_reason']
-    if failed.get('validation_stage') in {'event_stream','answer_file','response_envelope','virtual_tool_arguments','specialist_content'}:
+    if failed.get('validation_stage') in {'event_stream','answer_file','result_object','response_envelope','virtual_tool_arguments','specialist_content'}:
         diagnostic['validation_stage']=failed['validation_stage']
         error=failed.get('json_error',{})
         diagnostic['json_error']={k:error[k] for k in ('line','column','position') if isinstance(error.get(k),int)}

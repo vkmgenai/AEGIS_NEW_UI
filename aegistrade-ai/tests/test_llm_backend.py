@@ -30,6 +30,9 @@ def test_configuration_selects_one_transport_without_fallback(monkeypatch):
     assert isinstance(b.create_client(),RouterClient)
     assert b.model_name()=='router-only-model'
     monkeypatch.setenv('AEGIS_LLM_BACKEND','claude_cli')
+    assert isinstance(b.create_client(),b.ClaudeCliClient)
+    assert b.model_name()=='claude-default'
+    monkeypatch.setenv('AEGIS_LLM_BACKEND','gemini_cli')
     with pytest.raises(ValueError):b.create_client()
 
 
@@ -185,3 +188,111 @@ def test_fenced_json_is_unwrapped_without_retry_or_content_repair(monkeypatch):
     fake_cli(monkeypatch,{'kind':'final','content':'```json\n{"accept":false,"reason":"Unresolved exposure"}\n```','tool_calls':[]})
     client=b.CodexClient();payload=json.loads(client.complete('Return JSON'))
     assert payload=={'accept':False,'reason':'Unresolved exposure'} and client.calls==1
+
+
+def fake_claude(monkeypatch,result,*,code=0,stderr=''):
+    monkeypatch.setattr(b,'claude_binary',lambda:'/test/claude')
+    monkeypatch.setattr(b,'backend_info',lambda **kw:{'ready':True,'cli_version':'test-claude'})
+    seen={}
+    def execute(command,prompt,*,env,cwd,timeout):
+        seen.update(command=command,prompt=json.loads(prompt),env=env,cwd=cwd)
+        return code,json.dumps(result),stderr
+    monkeypatch.setattr(b,'_execute',execute)
+    return seen
+
+
+def ok(envelope,**extra):
+    return {'type':'result','subtype':'success','is_error':False,'num_turns':1,'structured_output':envelope,
+            'usage':{'input_tokens':80,'output_tokens':20},'total_cost_usd':0.01,'modelUsage':{'claude-test':{}},**extra}
+
+
+def test_claude_cli_is_tool_free_secret_free_and_budgeted(monkeypatch):
+    monkeypatch.setenv('ANTHROPIC_API_KEY','do-not-pass');monkeypatch.setenv('OPENROUTER_API_KEY','do-not-pass')
+    monkeypatch.setenv('AEGIS_REVIEWER_TOKEN','private-reviewer')
+    seen=fake_claude(monkeypatch,ok({'kind':'final','content':'{"accept":true}','tool_calls':[]}))
+    c=b.ClaudeCliClient(max_calls=1)
+    assert json.loads(c.complete('Return a typed decision'))=={'accept':True}
+    assert not any(k in seen['env'] for k in ('ANTHROPIC_API_KEY','OPENROUTER_API_KEY','AEGIS_REVIEWER_TOKEN'))
+    cmd=seen['command']
+    for flag in ['-p','--json-schema','--no-session-persistence','--strict-mcp-config','--disable-slash-commands']:assert flag in cmd
+    assert cmd[cmd.index('--tools')+1]=='' and '--model' not in cmd
+    assert c.usage[0]['total_tokens']==100 and c.usage[0]['cost'] is None and c.usage[0]['notional_cost_usd']==0.01
+    assert seen['cwd']!=Path.cwd() and not seen['cwd'].exists()
+    with pytest.raises(RuntimeError,match='budget'):c.complete('Another invocation')
+
+
+def test_claude_cli_returns_virtual_tools_and_pins_model(monkeypatch):
+    seen=fake_claude(monkeypatch,ok({'kind':'tool_calls','content':None,'tool_calls':[{'name':'company_evidence','arguments':'{}'}]}))
+    c=b.ClaudeCliClient(model='claude-sonnet-5-5');tools=[{'type':'function','function':{'name':'company_evidence','parameters':{'type':'object'}}}]
+    answer=c.chat([{'role':'user','content':'Assess'}],tools=tools)
+    assert answer['tool_calls'][0]['function']=={'name':'company_evidence','arguments':'{}'}
+    assert seen['command'][seen['command'].index('--model')+1]=='claude-sonnet-5-5'
+
+
+def test_claude_cli_falls_back_to_result_text_when_no_structured_output(monkeypatch):
+    envelope={'kind':'final','content':{'accept':True},'tool_calls':[]}
+    fake_claude(monkeypatch,{'type':'result','subtype':'success','is_error':False,'result':json.dumps(envelope),'usage':{}})
+    assert json.loads(b.ClaudeCliClient().complete('x'))=={'accept':True}
+
+
+@pytest.mark.parametrize('result,code',[
+    (ok({'kind':'tool_calls','content':None,'tool_calls':[{'name':'shell','arguments':'{}'}]}),'CLAUDE_OUTPUT_INVALID'),
+    (ok({'kind':'final','content':'{"accept":true}','tool_calls':[]},permission_denials=[{'tool_name':'Bash'}]),'CLAUDE_TOOL_VIOLATION'),
+    ({'type':'result','subtype':'success','is_error':True,'result':'Usage limit reached','usage':{}},'CLAUDE_QUOTA'),
+    ({'type':'result','subtype':'success','is_error':True,'result':'Not logged in · Please run /login','usage':{}},'CLAUDE_AUTH_REQUIRED'),
+])
+def test_claude_cli_fails_closed_and_counts_the_attempt(monkeypatch,result,code):
+    fake_claude(monkeypatch,result)
+    c=b.ClaudeCliClient()
+    with pytest.raises(RuntimeError,match=code):c.chat([{'role':'user','content':'x'}],tools=[{'type':'function','function':{'name':'company_evidence','parameters':{}}}])
+    assert c.calls==1 and c.usage[0]['error_code']==code
+
+
+def test_claude_cli_requires_login_before_starting(monkeypatch):
+    monkeypatch.setattr(b,'backend_info',lambda **kw:{'ready':False,'reason':'Run claude auth login'})
+    c=b.ClaudeCliClient()
+    with pytest.raises(RuntimeError,match='login'):c.complete('Return JSON')
+    assert c.calls==0 and c.usage[0]['invocation_started'] is False
+
+
+def test_dashboard_choice_overrides_environment_and_persists(monkeypatch,tmp_path):
+    monkeypatch.setenv('AEGIS_LLM_BACKEND','codex_cli');monkeypatch.setenv('AEGIS_LLM_MODEL','gpt-pinned')
+    assert b.backend_name()=='codex_cli' and b.selected_backend() is None and b.model_name()=='gpt-pinned'
+    b.select_backend('claude_cli')
+    assert b.backend_name()=='claude_cli' and isinstance(b.create_client(),b.ClaudeCliClient)
+    # The model pinned in .env belongs to the .env backend, never to a different dashboard choice.
+    assert b.model_name()=='claude-default' and b.identity()['adapter_version']=='claude-intent-v1'
+    saved=json.loads((tmp_path/'inference_backend.json').read_text())
+    assert saved['backend']=='claude_cli' and set(saved)=={'backend','selected_at'}
+    with pytest.raises(ValueError):b.select_backend('gemini_cli')
+    (tmp_path/'inference_backend.json').write_text('{"backend":"unknown"}')
+    assert b.backend_name()=='codex_cli'
+
+
+def test_backend_options_lists_all_three_with_one_selected(monkeypatch):
+    monkeypatch.setattr(b,'claude_binary',lambda:None);monkeypatch.setattr(b,'codex_binary',lambda:None)
+    monkeypatch.setenv('OPENROUTER_API_KEY','k')
+    listing=b.backend_options()
+    assert [o['backend'] for o in listing['options']]==['claude_cli','codex_cli','openrouter']
+    assert [o['selected'] for o in listing['options']]==[False,False,True] and listing['source']=='environment'
+    assert [o['ready'] for o in listing['options']]==[False,False,True]
+    b.select_backend('claude_cli')
+    assert b.backend_options()['selected']=='claude_cli' and b.backend_options()['source']=='dashboard'
+
+
+def test_api_switches_provider_only_with_reviewer_token(monkeypatch):
+    from fastapi.testclient import TestClient
+    import app.api as api
+    monkeypatch.setenv('AEGIS_REVIEWER_TOKEN','reviewer-token-123');monkeypatch.setenv('AEGIS_ENABLE_LLM_EXPERIMENTS','true')
+    monkeypatch.setattr(b,'claude_binary',lambda:'/test/claude');monkeypatch.setattr(b,'codex_binary',lambda:None)
+    monkeypatch.setattr(b,'_probe_claude',lambda *a:{'ready':True,'cli_version':'test','reason':'Claude CLI sign-in is available.'})
+    client=TestClient(api.app)
+    assert client.post('/inference/backend',json={'backend':'claude_cli'}).status_code==403
+    assert b.backend_name()=='openrouter'
+    assert client.post('/inference/backend',json={'backend':'gemini'},headers={'X-Reviewer-Token':'reviewer-token-123'}).status_code==422
+    changed=client.post('/inference/backend',json={'backend':'claude_cli'},headers={'X-Reviewer-Token':'reviewer-token-123'}).json()
+    assert changed['selected']=='claude_cli' and changed['llm_experiments_enabled'] and 'binary' not in changed['inference']
+    health=client.get('/health').json()
+    assert health['inference']['backend']=='claude_cli' and health['inference_backend_switch_supported'] and health['agent_model']=='claude-default'
+    listing=client.get('/inference/backends').json()
+    assert listing['selected']=='claude_cli' and all('binary' not in o for o in listing['options'])
