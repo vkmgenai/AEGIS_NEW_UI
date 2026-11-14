@@ -16,24 +16,28 @@ The prototype supports frozen Nifty20, Nifty100 and diversified research30 unive
 
 ## Final system design
 
-The detailed diagram and twelve-step walkthrough are in [FINAL_ARCHITECTURE.md](FINAL_ARCHITECTURE.md).
+The detailed diagram and numbered walkthrough are in [FINAL_ARCHITECTURE.md](FINAL_ARCHITECTURE.md). The numbered markers in Figure 1 match the walkthrough below.
 
 [[FIGURE:final_architecture]]
+
+*Figure 1: AegisTrade AI detailed design. Numbers match the execution walkthrough.*
 
 - **C0 portfolio baseline:** zero-generation deterministic ROUTER using EMA Trend, EMA Pullback, RSI Reversion and Breakout.
 - **C1 evaluation baseline:** one ReAct agent with the same model, read tools and eight-call ceiling as C2. It remains in AI Agent Experiments because the guideline explicitly requires it; it is not offered as a new portfolio flow.
 - **C2 agentic system:** supervisor plus market, strategy and compliance-critic specialists. C2 adds an SMC route, dated RAG/web evidence, typed hand-offs, correction/replan, holding reviews and adverse-event exits. At each close it can research a bounded default pool of three top technical candidates; if the first is evidence-blocked, the next candidate can be considered. It selects the highest-ranked evidence-qualified candidate rather than treating missing evidence as strength.
 - **Control:** Python owns arithmetic, eligibility, costs and execution. Supervised actions require an exact-payload approval hash; historical replay uses upfront-approved rules. There is no live exchange API.
 
-## Review of the Claude/Fable implementation
+### Figure 1 execution walkthrough
 
-The parallel repository at `/Users/karthikakrishnakumar/Claude_Repo/aegistrade-ai` was reviewed read-only and compared at source level without copying credentials or private runtime data.
-
-Useful idea adopted: its offline retuning study separates a development window from a later-period window, freezes candidate defaults and states that short replays do not prove durable edge. This structure is carried into the final evaluation protocol.
-
-Idea rejected: `coverage_fallback.py` changes a blocked entry into ENTER whenever no cited adverse finding exists. Missing evidence is not adverse evidence, but it is also not proof of strength. The final project records coverage limits, permits only explicitly defined signal-specific behaviour and never labels missing evidence as a clean fundamental conclusion.
-
-The current project already has newer evidence-library/OCR controls, fixed delivery fees, SMC stop recovery, portfolio memory, C0/C2 comparison, live progress and a broader UI/test suite. Wholesale merging would regress these controls.
+1. The reviewer chooses a frozen universe, historical window, capital, risk policy and inference configuration in Streamlit. FastAPI authenticates the reviewer, records paid-call consent and locks the point-in-time case.
+2. The experiment harness sends an identical locked case to C0, C1 and C2 when performing the architecture evaluation. C0 is deterministic; C1 uses one tool-using agent; C2 creates a bounded supervisor plan for three specialists.
+3. The C2 market specialist reads the historical snapshot and dated company evidence. A bounded dated-web fallback may supplement a genuinely incomplete historical pack, but it cannot introduce evidence published after the decision cutoff.
+4. The strategy specialist reads policy RAG and the code-approved route. It returns a typed strategy, cited explanation and permitted portfolio action; it cannot change the strategy catalogue or calculate an order quantity.
+5. The independent critic obtains its own scoped observations and accepts or rejects the proposed interpretation. Schema or evidence contradictions can trigger a bounded correction; rejection cannot authorize execution.
+6. FastMCP tools provide market, company, policy, route and reviewed-memory observations. Pre/post-tool hooks enforce permissions and budgets, scan untrusted content, scrub secrets and append the trace.
+7. Deterministic validation checks schemas, dates, citations, route agreement and adverse evidence. Python then owns quantity, fixed delivery fees, slippage, stops, targets, capacity and all cash/ledger arithmetic.
+8. Historical replay proceeds only under upfront-approved rules and fills at the eligible later open. A separately supervised action pauses for approve, edit or reject on the exact payload hash, then repeats freshness and risk checks before simulated submission. No live broker exists.
+9. JSON/SQLite records preserve traces, checkpoints, decisions and ledger events. Human-reviewed lessons may be frozen for later development runs; the E1–E4 harness, monitoring dashboards and CI measure quality, safety, latency and cost.
 
 ## Minimum-bar assessment
 
@@ -51,7 +55,7 @@ The current project already has newer evidence-library/OCR controls, fixed deliv
 | Security | Threat model, scoped tools, guardrails and 32 attacks | Partial: run model-level defence-off/on plus ten clean cases and report false blocks |
 | Deployment | FastAPI, Streamlit, Docker Compose, CI, Prometheus, Grafana and alert rules | Partial: clean-machine proof, fired alert and hosted failed-CI record required |
 
-Therefore the implementation is substantial, but the **minimum bar is not yet fully evidenced for final review**. The missing items are experimental or independent-human evidence; they must not be replaced with generated claims.
+Therefore the implementation is substantial, but the **minimum bar is not yet fully evidenced for final review**. Independent human labels and reviewed held-out experiments are major gaps, but not the only gaps. The final evidence package also needs three repetitions, different-family judge calibration, E2/E3/E4 ablations, actual contribution entries, slides/video, hosted failed-CI proof and a fired-alert demonstration. These items must be linked to retained artifacts rather than replaced with generated claims. Role-specific forms are provided in [TEAM_EXPERIMENT_REVIEW_QUESTIONNAIRES.md](TEAM_EXPERIMENT_REVIEW_QUESTIONNAIRES.md), and background evaluation runs can be retained under `reports/capstone_runs/` using `evaluation/experiment_ledger.py`.
 
 ## Evaluation protocol: answers and justification
 

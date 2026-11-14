@@ -22,13 +22,13 @@ Status meanings: `DONE` verified now; `PARTIAL` implemented but final-review evi
 - [x] DONE — Keep C1 in AI Experiment only; label it `evaluation baseline`, not a portfolio product flow.
 - [ ] TODO — Run same-case/model/tools/budget C0/C1/C2 comparison three times and report spread, failures, timeouts, cost/usage and latency.
 
-## C. Claude/Fable repository review
+## C. Independent team review workflow
 
-- [x] DONE — Compared source trees without reading/copying secrets or generated private data.
-- [x] DONE — Rejected permissive `coverage_fallback.py`: missing evidence must not silently become a clean fundamental finding.
-- [x] DONE — Identified reusable evaluation pattern in `run_retune_study.py`: development window, later-period window, frozen settings and explicit limits.
-- [x] DONE — Current project confirmed newer in evidence library/OCR, SMC recovery, portfolio comparison, live progress and portfolio UI.
-- [x] DONE — Final project report contains adopted/rejected Claude/Fable items and test evidence.
+- [x] DONE — Role-specific questionnaires prepared for Veneet, Karthika and Mathangi from the approved proposal responsibilities.
+- [x] DONE — Cross-review rule recorded: a subsystem owner may prepare evidence but does not independently certify their own tuned component.
+- [x] DONE — Durable background experiment ledger implemented with configuration, copied input/hash, logs, events, report and replay support.
+- [ ] BLOCKED-TEAM — Complete and sign the questionnaires against actual retained experiment run IDs.
+- [ ] BLOCKED-TEAM — Resolve reviewer disagreements without tuning on held-out outputs; quarantine and replace defective held-out cases.
 
 ## D. Minimum-bar audit
 

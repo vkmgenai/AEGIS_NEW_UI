@@ -6,6 +6,8 @@ Final submission navigation:
 
 - [Final project report](docs/FINAL_PROJECT_REPORT.md)
 - [Final detailed architecture and numbered walkthrough](docs/FINAL_ARCHITECTURE.md)
+- [Team experiment-review questionnaires](docs/TEAM_EXPERIMENT_REVIEW_QUESTIONNAIRES.md)
+- [Background experiment ledger and replay guide](docs/CAPSTONE_EXPERIMENT_LEDGER_GUIDE.md)
 - [Final presentation and UI demo guide](FINAL_PRESENTATION_README.md)
 - [Capstone completion checklist](docs/FINAL_CAPSTONE_COMPLETION_CHECKLIST.md)
 - [Threat model](docs/THREAT_MODEL.md) and [memory policy](docs/MEMORY_POLICY.md)

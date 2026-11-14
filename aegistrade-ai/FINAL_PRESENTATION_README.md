@@ -83,7 +83,6 @@ Do not start a long external-inference run during the live exam. Use saved compl
 - Why retain C1? It is the fair single-agent baseline required to measure whether the specialist team justifies its cost.
 - Does C2 guarantee higher return? No. It targets grounded, auditable decisions; return depends on data, exposure and market conditions.
 - What is the key limitation? Frozen current constituents and raw prices limit financial conclusions; independent held-out evaluation must also be completed.
-- What did the Claude/Fable review add? A better development/later-period evaluation structure; its permissive missing-evidence entry fallback was rejected.
 
 ## Before entering the exam room
 

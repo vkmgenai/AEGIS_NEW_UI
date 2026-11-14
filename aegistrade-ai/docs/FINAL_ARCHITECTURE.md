@@ -1,6 +1,10 @@
 # AegisTrade AI v0.27 — final architecture and walkthrough
 
-This is the redrawn project architecture for the final review. Coral/control concepts in the faculty reference are represented by the guard, hook and approval nodes. The system is simulation-only.
+This is the original AegisTrade detailed-design diagram for final review. Its numbered layered presentation follows the capstone guideline's diagram convention, while every component and connection describes this repository. The system is simulation-only.
+
+![AegisTrade detailed design — numbered execution architecture](assets/design_final_architecture_v027.png)
+
+*Figure 1: AegisTrade AI detailed design. Numbers match the walkthrough below.*
 
 ```mermaid
 flowchart TB

@@ -1,0 +1,34 @@
+{
+  "review_id": "REPLACE_WITH_UNIQUE_ID",
+  "reviewer": "Veneet | Karthika | Mathangi",
+  "role_from_proposal": "research_evaluation | agents_intelligence | safety_platform",
+  "reviewed_at_utc": null,
+  "experiment_run_ids": [],
+  "artifact_sha256": {},
+  "independence": {
+    "authored_or_tuned_reviewed_component": null,
+    "conflict_details": "",
+    "independent_acceptor_required": null,
+    "independent_acceptor": null
+  },
+  "case_decisions": [
+    {
+      "case_id": "",
+      "decision": "ACCEPT | CORRECT | QUARANTINE",
+      "reason": "",
+      "source_or_policy_reference": ""
+    }
+  ],
+  "question_answers": [
+    {
+      "question_number": 1,
+      "answer": "",
+      "evidence_paths": []
+    }
+  ],
+  "negative_results_retained": [],
+  "limitations": [],
+  "final_decision": "ACCEPT_FOR_FINAL_EVIDENCE | ACCEPT_WITH_LIMITATIONS | REJECT_RERUN",
+  "final_rationale": "",
+  "reviewer_attestation": "I reviewed the cited artifacts and did not infer or fabricate missing results."
+}
