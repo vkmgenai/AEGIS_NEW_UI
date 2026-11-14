@@ -2,6 +2,18 @@
 
 The ledger keeps every experiment in a unique directory under `reports/capstone_runs/RUN_ID/`. It never overwrites an earlier run.
 
+## View retained runs in the UI
+
+1. Start or restart the project with `bash scripts/start_unix.sh`.
+2. Open `http://127.0.0.1:8501`.
+3. In **Workspace**, select **Capstone Evaluation**.
+4. Click **Refresh capstone run ledger**.
+5. Select a run from **Retained experiment run**.
+6. Inspect its status, exit code, report-row count, result summary, lifecycle events, configuration, hashes and retained files.
+7. Click **Download complete experiment report** to save the full JSON evidence bundle.
+
+The viewer is read-only and makes zero model calls. Its replay command is shown for terminal use, but replay is deliberately not executed from the UI because paid runs require fresh consent and validated labels.
+
 Each run retains:
 
 - `manifest.json`: status, configuration, timestamps, process ID, authorization flag, input and result hashes, exact command and replay hint;

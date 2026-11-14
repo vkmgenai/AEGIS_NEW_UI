@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import timedelta,date
 import pandas as pd
 from fastapi import FastAPI,HTTPException,Header
-from fastapi.responses import StreamingResponse,HTMLResponse
+from fastapi.responses import StreamingResponse,HTMLResponse,FileResponse
 from pydantic import BaseModel,Field
 from prometheus_client import Counter,Histogram,generate_latest,CONTENT_TYPE_LATEST
 from starlette.responses import Response
@@ -245,7 +245,29 @@ def health():
             'ui_llm_max_cases':3,'agent_model':model_name(),'c0_routes':['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT'],
             'c2_routes':['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT','SMC'],'c2_research_candidates_default':3,
             'c2_required_before_order':True,'company_research_required':True,'company_decision_cutoff':'15:30 Asia/Kolkata on signal date',
-            'c2_architecture':'supervisor + market/strategy/critic specialists','max_calls_per_agent_case':8}
+            'c2_architecture':'supervisor + market/strategy/critic specialists','max_calls_per_agent_case':8,
+            'capstone_evaluation_viewer_supported':True}
+
+@app.get('/evaluation/capstone/runs')
+def capstone_evaluation_runs():
+    from app.capstone_ledger import list_runs
+    return {'runs':list_runs(),'read_only':True,
+            'note':'Retained results are evidence artifacts. Viewing them does not independently validate their labels or conclusions.'}
+
+@app.get('/evaluation/capstone/runs/{run_id}')
+def capstone_evaluation_run(run_id:str):
+    from app.capstone_ledger import run_detail
+    try:return run_detail(run_id)
+    except FileNotFoundError:raise HTTPException(404,'Capstone experiment run not found') from None
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+@app.get('/evaluation/capstone/runs/{run_id}/report')
+def capstone_evaluation_report(run_id:str):
+    from app.capstone_ledger import report_path
+    try:path=report_path(run_id)
+    except FileNotFoundError:raise HTTPException(404,'Capstone experiment report not found') from None
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+    return FileResponse(path,media_type='application/json',filename=f'aegistrade_capstone_{run_id}.json')
 
 @app.get('/market/universe')
 def universe():

@@ -43,6 +43,7 @@ PAGES = (
     "Overview",
     "Strategy Backtests",
     "AI Agent Experiments",
+    "Capstone Evaluation",
     "Supervised Trading",
     "Policy Knowledge",
     "Learning & Lessons",
@@ -921,6 +922,69 @@ elif page == "AI Agent Experiments":
         st.download_button("Download research results JSON",json.dumps(experiment,indent=2),file_name=f"aegistrade_agents_{experiment['run_id'][:8]}.json",mime="application/json")
     with st.expander("What these experiments demonstrate",expanded=True):
         st.markdown("**C0:** fixed deterministic approved routing, zero LLM calls. **C1:** one agent has all read tools. **C2:** a deterministic LangGraph supervisor coordinates three LLM specialists: market, strategy and compliance critic. Each selects its own MCP tools and returns a typed hand-off. Both configurations share the same model, available tools and eight-call budget. Expand the full results to inspect its tool trace. ALL runs C0, C1 and C2 on identical cases. **Policy guard:** all proposals must match code-approved routing and cite retrieved policy IDs. **Research scope:** these agents never submit orders. Record success counts, model errors, latency, call totals and provider token usage. For the final capstone, you still need held-out cases, a different-family judge, three repeats and fair-budget comparisons.")
+
+elif page == "Capstone Evaluation":
+    heading("Capstone experiment ledger", "View retained deterministic and E1–E4 evaluation runs, lifecycle events, metrics and downloadable reports. This workspace is read-only and makes no model calls.")
+    if st.button("Refresh capstone run ledger"):
+        st.rerun()
+    try:
+        ledger=get('/evaluation/capstone/runs')
+    except Exception as exc:
+        fail('Could not read the capstone experiment ledger.',exc);st.stop()
+    runs=ledger.get('runs',[])
+    if not runs:
+        st.info('No retained capstone experiment runs were found. Launch one with evaluation/experiment_ledger.py, then refresh this workspace.')
+        st.code('.venv/bin/python evaluation/experiment_ledger.py list',language='bash')
+    else:
+        render_table(runs,'Newest retained run first. A completed process is not automatically independently reviewed evidence.',height=260)
+        labels={f"{r.get('created_at_utc','unknown')[:19]} | {r.get('experiment','UNKNOWN')} | {r.get('status','UNKNOWN')} | {r['run_id']}":r['run_id'] for r in runs}
+        chosen_label=st.selectbox('Retained experiment run',list(labels),key='capstone_ledger_run')
+        run_id=labels[chosen_label]
+        try:detail=get('/evaluation/capstone/runs/'+quote(run_id,safe=''))
+        except Exception as exc:fail('Could not load the selected experiment.',exc);st.stop()
+        manifest=detail.get('manifest',{});cfg=manifest.get('configuration',{})
+        a,b,c,d=st.columns(4)
+        a.metric('Experiment',cfg.get('experiment','UNKNOWN'))
+        b.metric('Status',manifest.get('status','UNKNOWN'))
+        c.metric('Exit code',metric_value(manifest.get('exit_code')))
+        c.caption('0 means the background process completed successfully.')
+        d.metric('Report rows',metric_value((detail.get('report_preview') or {}).get('row_count')))
+        if manifest.get('status')=='COMPLETED':st.success('Background process completed and the retained report hash is available.')
+        elif manifest.get('status')=='FAILED':st.error('The run failed. Keep its logs and failure evidence; do not delete an unfavourable run.')
+        else:st.info('Current ledger state: '+str(manifest.get('status','UNKNOWN'))+'. Refresh to read the latest persisted status.')
+        if cfg.get('experiment') in {'DETERMINISTIC','E4'}:
+            st.warning('This is a zero-generation or synthetic reference result. It is not a measured C1/C2 model comparison or proof of profitability.')
+        if not manifest.get('paid_inference_authorized'):
+            st.caption('No paid/external inference was authorized for this run.')
+        preview=detail.get('report_preview')
+        if preview:
+            st.markdown('#### Result summary')
+            if isinstance(preview.get('summary'),dict):
+                summary_rows=[]
+                for variant,values in preview['summary'].items():
+                    summary_rows.append({'variant':variant,**(values if isinstance(values,dict) else {'value':values})})
+                render_table(summary_rows,height=260)
+            elif isinstance(preview.get('case_results'),dict):
+                result=preview['case_results'];x,y,z=st.columns(3)
+                x.metric('Cases',metric_value(result.get('count')));y.metric('Correct',metric_value(result.get('correct')));z.metric('Accuracy',metric_value(result.get('accuracy')))
+                if result.get('errors'):render_table(result['errors'],'Mismatches are retained for review.',height=220)
+            with st.expander('Complete report preview',expanded=False):st.json(preview)
+        events=detail.get('events',[])
+        if events:
+            st.markdown('#### Background-run lifecycle')
+            render_table(events,'Queued, started and finished events retained by the experiment ledger.',height=220)
+        with st.expander('Manifest, configuration, hashes and retained files'):
+            st.json(manifest);st.write('**Retained files:** '+', '.join(detail.get('files',[])))
+        if detail.get('report_download_available'):
+            try:
+                response=requests.get(API+'/evaluation/capstone/runs/'+quote(run_id,safe='')+'/report',timeout=90)
+                if not response.ok:raise APIError.from_response(response)
+                st.download_button('Download complete experiment report',response.content,
+                    file_name=f'aegistrade_capstone_{run_id}.json',mime='application/json')
+            except Exception as exc:fail('The report exists but could not be prepared for download.',exc)
+        st.markdown('#### Terminal inspection and replay')
+        st.code(f'.venv/bin/python evaluation/experiment_ledger.py show {run_id}\n.venv/bin/python evaluation/experiment_ledger.py replay {run_id}',language='bash')
+        st.caption('Replay creates a new run directory and never overwrites this evidence. Paid experiments require fresh explicit consent and all label/evidence preconditions.')
 
 elif page == "Supervised Trading":
     heading("Supervised trade workflow", "Generate a simulated BUY proposal, inspect the exact payload and demonstrate approve / edit / reject.")

@@ -137,3 +137,10 @@ This is a dashboard-only change; refresh the browser once to load it. No API res
 ## 0.20.0 — 12 November 2026: three retained universes
 
 Added Market Data universe selection, public-data preparation/progress, protected validated activation, separate folders and original-data resume resolution. Existing top-20 data and saved runs remain retained. Nifty 100 and the custom frozen 30 have disclosed current-member/curated selection bias, verified symbol-change metadata and shorter-history coverage. See AegisTrade_Universe_Selection_and_Data_Preparation_Guide.docx. 215 tests pass; no inference started.
+# Capstone Evaluation ledger viewer — 14 November 2026
+
+- Added a read-only **Capstone Evaluation** workspace.
+- Lists retained deterministic and E1–E4 background runs from `reports/capstone_runs`.
+- Shows status, exit code, configuration, hashes, summary metrics, failures and lifecycle events.
+- Provides the complete JSON report as a download and displays safe terminal inspection/replay commands.
+- Viewing and downloading make zero model calls; paid replay remains a separately consented terminal operation.
