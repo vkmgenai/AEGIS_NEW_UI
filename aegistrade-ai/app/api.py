@@ -25,7 +25,7 @@ from aegistrade.research_service import ResearchSettings,execute_research,needs_
 
 DATA=Path(os.getenv('AEGIS_DATA_DIR','data'))
 DATA.mkdir(parents=True,exist_ok=True)
-app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.26.0',docs_url='/docs')
+app=FastAPI(title='AegisTrade AI - Simulation Only',version='0.27.0',docs_url='/docs')
 requests_total=Counter('aegis_http_requests_total','Requests', ['route'])
 workflow_seconds=Histogram('aegis_workflow_duration_seconds','Workflow duration')
 blocked=Counter('aegis_trade_blocked_total','Blocked trade decisions',['reason'])
@@ -234,15 +234,16 @@ def health():
             'dated_web_search_supported':True,'dated_web_search_enabled':os.getenv('AEGIS_DATED_WEB_SEARCH','true').lower()=='true',
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],
-            'smc_reentry_supported':True,'c1_smc_portfolio_supported':True,'portfolio_flows':['C2','C1','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
-            'optional_stop_loss_supported':True,'single_stock_c0_c1_c2_comparison_supported':True,
+            'smc_reentry_supported':True,'c1_smc_portfolio_supported':True,'c1_portfolio_legacy_readable':True,'portfolio_flows':['C2','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
+            'optional_stop_loss_supported':True,'single_stock_c0_c2_comparison_supported':True,
             'portfolio_memory_supported':True,'max_portfolio_lessons_per_case':3,'company_evidence_view':'company-view-v5-substantive-body','breakout_source_quote_required':True,'structural_action_quarantine_supported':True,'signal_specific_evidence_supported':True,'adverse_news_exit_supported':True,
             'fresh_adverse_profit_policy_supported':True,'take_profit_default_percent':8.0,'friday_entry_review':'Next trading close; fill no earlier than the following eligible open',
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,
             'live_broker_enabled':False,'openrouter_opt_in':bool(os.getenv('OPENROUTER_API_KEY')),
             'llm_experiments_enabled':backend_info()['ready'] and os.getenv('AEGIS_ENABLE_LLM_EXPERIMENTS','false').lower()=='true',
             'inference':backend_info(),
-            'ui_llm_max_cases':3,'agent_model':model_name(),
+            'ui_llm_max_cases':3,'agent_model':model_name(),'c0_routes':['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT'],
+            'c2_routes':['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT','SMC'],'c2_research_candidates_default':3,
             'c2_required_before_order':True,'company_research_required':True,'company_decision_cutoff':'15:30 Asia/Kolkata on signal date',
             'c2_architecture':'supervisor + market/strategy/critic specialists','max_calls_per_agent_case':8}
 
@@ -716,13 +717,7 @@ def c2_portfolio_start(body:C2PortfolioSettings,x_reviewer_token:str|None=Header
 
 @app.post('/simulation/c1/run')
 def c1_portfolio_start(body:C1PortfolioSettings,x_reviewer_token:str|None=Header(default=None)):
-    _paid_c2_portfolio_auth(x_reviewer_token,body.consent_to_paid_calls)
-    from aegistrade.c2_portfolio import create_run,launch,status
-    try:
-        run_frame,source,provenance=market_snapshot_context()
-        rid=create_run(run_frame,body,source=source,provenance=provenance)
-        launch(rid,run_frame);return status(rid)
-    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+    raise HTTPException(410,'C1 portfolio creation was retired. Use C2 portfolio; C1 remains only as the same-case single-agent baseline in AI Experiment. Existing C1 saved runs remain readable.')
 
 @app.get('/simulation/c2/recent')
 def c2_portfolio_recent():

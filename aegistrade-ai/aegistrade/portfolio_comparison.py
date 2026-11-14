@@ -1,8 +1,8 @@
-"""Coordinated single-stock C0/C1/C2 historical comparison.
+"""Coordinated single-stock C0/C2 historical comparison.
 
-C0 is deterministic ROUTER, C1 is evidence-first SMC, and C2 is the
-multi-specialist ROUTER. The distinct C1 strategy is recorded so returns are
-never presented as a pure orchestration ablation.
+C0 is the deterministic four-strategy ROUTER. C2 uses the same technical
+bars plus dated research, the specialist team and the additional SMC route.
+The case experiment—not this P&L view—owns the fair C0/C1/C2 E1 ablation.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ import uuid
 import pandas as pd
 from pydantic import BaseModel, Field, model_validator
 
-from .c2_portfolio import C1PortfolioSettings, C2PortfolioSettings, create_run, launch, status as child_status
+from .c2_portfolio import C2PortfolioSettings, create_run, launch, status as child_status
 from .simulation_service import SimulationSettings, execute_simulation, normalize
 
 
@@ -69,23 +69,19 @@ def create(frame:pd.DataFrame,settings:ComparisonSettings,*,source='synthetic',p
         slippage_bps=settings.slippage_bps,trailing_stop_enabled=False,breakout_reentry_enabled=False,
         smc_reentry_enabled=False,review_after_gap=True)
     c0_settings=SimulationSettings(**common,mode='ROUTER',automatic_stock_selection=False)
-    c1_settings=C1PortfolioSettings(**common,mode='SMC',automatic_stock_selection=True,target_symbol=symbol,
-        consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=settings.max_model_calls_per_flow,
-        holding_review_sessions=settings.holding_review_sessions,screening_candidates_per_session=1)
     c2_settings=C2PortfolioSettings(**common,mode='ROUTER',automatic_stock_selection=True,target_symbol=symbol,
         consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=settings.max_model_calls_per_flow,
         holding_review_sessions=settings.holding_review_sessions)
     provenance=provenance or {}
     c0=execute_simulation(one,c0_settings,source=source,provenance=provenance)
-    c1=create_run(frame,c1_settings,source=source,provenance=provenance)
     c2=create_run(frame,c2_settings,source=source,provenance=provenance)
     run={'run_id':uuid.uuid4().hex,'created_utc':datetime.now(timezone.utc).isoformat(),'settings':settings.model_dump(mode='json'),
-         'data_source':source,'data_provenance':provenance,'children':{'C1':c1,'C2':c2},'c0':c0,
-         'comparison_design':{'C0':'Deterministic technical ROUTER; zero LLM calls','C1':'Single evidence-first agent with SMC strategy',
-             'C2':'Supervisor with market, strategy and critic specialists using ROUTER signals',
-             'interpretation':'C0 and C2 share ROUTER signals. C1 uses SMC, so three-way P&L is a system comparison, not a pure agent-architecture ablation.'}}
+         'data_source':source,'data_provenance':provenance,'children':{'C2':c2},'c0':c0,
+         'comparison_design':{'C0':'Deterministic four-strategy technical ROUTER; zero LLM calls',
+             'C2':'Supervisor with market, strategy and critic specialists; four shared technical routes plus SMC',
+             'interpretation':'Portfolio P&L is a system outcome. Use the same-case C0/C1/C2 AI Experiment for the fair architecture comparison.'}}
     _save(run)
-    launch(c1,frame);launch(c2,frame)
+    launch(c2,frame)
     return result(run)
 
 
@@ -101,12 +97,15 @@ def _flow_view(name,value):
 
 def result(saved):
     flows={'C0':_flow_view('C0',saved['c0'])}
+    # Older saved comparison records can still expose their C1 child; new
+    # comparisons create C2 only.
     for name in ('C1','C2'):
+        if name not in saved['children']:continue
         flows[name]=_flow_view(name,child_status(saved['children'][name]))
-    states=[flows[x]['status'] for x in ('C1','C2')]
+    ai_names=[x for x in ('C1','C2') if x in flows];states=[flows[x]['status'] for x in ai_names]
     overall=('COMPLETED' if all(x.startswith('COMPLETED') for x in states) else
              'PAUSED' if any(x.startswith('PAUSED') for x in states) else
-             'RUNNING' if any(flows[x].get('worker_active') for x in ('C1','C2')) else 'INTERRUPTED')
+             'RUNNING' if any(flows[x].get('worker_active') for x in ai_names) else 'INTERRUPTED')
     return normalize({k:saved[k] for k in ('run_id','created_utc','settings','data_source','data_provenance','comparison_design')}|
                      {'status':overall,'flows':flows})
 

@@ -309,7 +309,7 @@ elif page == "Overview":
 
 elif page == "Strategy Backtests":
     heading("Portfolio simulation", "Choose your capital, historical date range and risk. This is a reproducible DAILY-BAR backtest, not real-time paper trading.")
-    simulation_engine=st.radio('Simulation engine',['C2 historical portfolio','C1 SMC portfolio','Technical-only baseline'],horizontal=True,key='simulation_engine')
+    simulation_engine=st.radio('Simulation engine',['C2 historical portfolio','Technical-only baseline'],horizontal=True,key='simulation_engine')
     is_c1=simulation_engine=='C1 SMC portfolio'
     is_c2=simulation_engine=='C2 historical portfolio'
     is_ai=is_c1 or is_c2
@@ -454,7 +454,8 @@ elif page == "Strategy Backtests":
             development_memory=st.checkbox('Mark as development replay if lesson training overlaps these dates',value=False,disabled=selected_book is None)
             if selected_book:st.caption('Pinned version: '+selected_book['sha256']+' · Lessons are conditional reminders; they cannot alter risk limits or force trades. Later-period evaluation must start after '+selected_book['trained_through']+'.')
             max_calls=st.number_input('Total inference allowance (requests or CLI invocations)',min_value=8,max_value=2400,value=48,step=8)
-            if is_c1:screen_count=st.number_input('Company screens per session before checking SMC',min_value=1,max_value=10,value=3,step=1)
+            screen_count=st.number_input('Evidence-research candidates per session',min_value=1,max_value=10,value=3,step=1,
+                help='C2 researches this bounded top-ranked pool so an evidence-blocked first candidate can fall through to the next eligible stock.')
             review_every=st.number_input('Review each holding every N market sessions',min_value=1,max_value=60,value=5,step=1)
             if health.get('adverse_news_exit_supported'):st.caption('For NSE portfolios, dated issuer disclosures are also checked between scheduled reviews. A new candidate triggers AI review; an empty check makes no generation call. This is a bounded source check, not a complete news feed.')
             c2_consent=st.checkbox('I authorize external inference for this historical portfolio, up to the displayed allowance',value=False)
@@ -479,7 +480,7 @@ elif page == "Strategy Backtests":
             try:
                 if is_ai:
                     payload.update(consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=int(max_calls),holding_review_sessions=int(review_every),portfolio_playbook_id=selected_book['id'] if selected_book else None,memory_allow_development_replay=bool(development_memory))
-                    if is_c1:payload['screening_candidates_per_session']=int(screen_count)
+                    if is_ai:payload['screening_candidates_per_session']=int(screen_count)
                     with st.spinner('Creating checkpointed '+flow_label+' portfolio job...'):
                         st.session_state['simulation_result']=post('/simulation/'+flow_label.lower()+'/run',payload,reviewer_token,timeout=120)
                     remember_result(st.session_state,st.session_state['simulation_result'])
@@ -650,7 +651,7 @@ elif page == "Strategy Backtests":
 
 elif page == "AI Agent Experiments":
     heading("GenAI and agentic AI experiments", "Compare strategy-routing research on the SAME scenarios. C0 uses no LLM; C1 is one tool-using agent; C2 coordinates market, strategy and critic specialists. Both share an eight-call ceiling per case. NO TRADES ARE PLACED.")
-    st.info("Use the case experiment for the fair C0/C1/C2 agent ablation. The optional single-stock portfolio comparison below adds P&L evidence, but C1 uses SMC while C0/C2 use ROUTER, so its three-way returns are not a pure architecture comparison.")
+    st.info("Use the case experiment for the guideline-required fair C0/C1/C2 agent ablation. The optional single-stock portfolio comparison below is C0 versus C2 and adds secondary P&L evidence; it is a system comparison because C2 also adds evidence gates, holding reviews and SMC.")
     with st.container(border=True):
         a,b=st.columns(2)
         inference=health.get("inference",{})
@@ -679,8 +680,8 @@ elif page == "AI Agent Experiments":
         render_table(rubric_rows,'Passing software tests supports implementation quality; it does not replace independent held-out evaluation.',height=420)
         st.info('For the viva, lead with E1 case quality, grounding, policy violations, cost, latency and failures. Treat portfolio return as a secondary domain outcome, not the proof that multiple agents are better.')
     with st.container(border=True):
-        st.markdown('### Single-stock C0 / C1 / C2 portfolio comparison')
-        st.caption('Runs one stock over one historical window. C0 is deterministic ROUTER; C1 is the evidence-first SMC agent; C2 is the market/strategy/critic team using ROUTER. All share capital, costs, target and stop setting.')
+        st.markdown('### Single-stock C0 / C2 portfolio comparison')
+        st.caption('Runs one stock over one historical window. C0 is the deterministic four-strategy ROUTER; C2 adds dated research, the market/strategy/critic team and SMC. Both share capital, costs, target and stop settings.')
         comparison=st.session_state.get('portfolio_comparison_result')
         top1,top2=st.columns(2)
         if top1.button('Start a new comparison session'):
@@ -688,7 +689,7 @@ elif page == "AI Agent Experiments":
         if top2.button('Refresh comparison progress',disabled=not bool(comparison)):
             try:
                 run_id=comparison['run_id'];st.session_state['portfolio_comparison_result']=get('/research/portfolio-comparison/status/'+run_id,timeout=90);st.rerun()
-            except Exception as exc:fail('Could not refresh the C0/C1/C2 comparison.',exc)
+            except Exception as exc:fail('Could not refresh the C0/C2 comparison.',exc)
         comp_first=date.fromisoformat(universe.get('provenance',{}).get('requested_start') or universe['first_date'])
         comp_last=date.fromisoformat(universe['last_date'])
         with st.form('single_stock_comparison_form'):
@@ -708,12 +709,12 @@ elif page == "AI Agent Experiments":
             comparison_slippage=st.number_input('Comparison slippage (basis points per transaction)',min_value=0.,max_value=100.,value=10.,step=5.)
             comparison_review=st.number_input('AI holding review interval (sessions)',min_value=1,max_value=60,value=5,step=1)
             comparison_approve=st.checkbox('I approve automatic historical fills under these shared rules')
-            comparison_consent=st.checkbox('I authorize C1 and C2 inference up to the displayed allowance')
-            run_comparison=st.form_submit_button('Run single-stock C0 / C1 / C2 comparison',type='primary',use_container_width=True)
+            comparison_consent=st.checkbox('I authorize C2 inference up to the displayed allowance')
+            run_comparison=st.form_submit_button('Run single-stock C0 / C2 comparison',type='primary',use_container_width=True)
         if run_comparison:
             if comparison_start>comparison_end:st.error('Comparison start must be on or before its end.')
             elif not comparison_approve:st.error('Approve the shared historical rules before starting.')
-            elif not comparison_consent or not reviewer_token:st.error('Reviewer token and explicit C1/C2 inference consent are required.')
+            elif not comparison_consent or not reviewer_token:st.error('Reviewer token and explicit C2 inference consent are required.')
             elif not health.get('llm_experiments_enabled'):st.error('The selected inference backend is not enabled and ready.')
             else:
                 payload={'symbol':comparison_symbol,'start_date':comparison_start.isoformat(),'end_date':comparison_end.isoformat(),
@@ -722,7 +723,7 @@ elif page == "AI Agent Experiments":
                     'holding_review_sessions':int(comparison_review),'max_model_calls_per_flow':int(comparison_calls),
                     'consent_to_paid_calls':True,'approve_historical_rules':True}
                 try:
-                    with st.spinner('Creating C0 and checkpointed C1/C2 runs...'):
+                    with st.spinner('Creating C0 and checkpointed C2 runs...'):
                         comparison=post('/research/portfolio-comparison/run',payload,reviewer_token,timeout=240)
                     st.session_state['portfolio_comparison_result']=comparison;st.session_state['portfolio_comparison_id']=comparison['run_id'];st.rerun()
                 except Exception as exc:fail('Could not start the single-stock comparison.',exc)
@@ -731,7 +732,7 @@ elif page == "AI Agent Experiments":
                 saved_comparisons=get('/research/portfolio-comparison/recent').get('runs',[])
                 if saved_comparisons:
                     labels={f"{x['created_utc'][:19]} | {x['settings']['symbol']} | {x['settings']['start_date']}–{x['settings']['end_date']} | {x['run_id'][:8]}":x['run_id'] for x in saved_comparisons}
-                    selected_comparison=st.selectbox('Saved C0/C1/C2 comparison',list(labels),key='saved_portfolio_comparison')
+                    selected_comparison=st.selectbox('Saved C0/C2 comparison',list(labels),key='saved_portfolio_comparison')
                     if st.button('Open saved comparison'):
                         st.session_state['portfolio_comparison_result']=get('/research/portfolio-comparison/status/'+labels[selected_comparison],timeout=90);st.rerun()
                 else:st.caption('No saved single-stock comparisons yet.')
@@ -745,7 +746,7 @@ elif page == "AI Agent Experiments":
                 progress_rows.append({'Flow':name,'Status':flow['status'],'Sessions':f"{progress.get('completed_sessions','all')}/{progress.get('total_sessions','all')}",
                     'Ending equity':metric.get('ending_equity'),'Total return %':metric.get('total_return_pct'),'Max drawdown %':metric.get('max_drawdown_pct'),
                     'Completed trades':metric.get('completed_trades'),'Inference units':flow.get('model_usage',{}).get('attempted_calls',0)})
-            render_table(progress_rows,'Partial C1/C2 figures cover processed sessions only. Compare final returns after both AI flows complete.',height=210)
+            render_table(progress_rows,'Partial C2 figures cover processed sessions only. Compare final returns after C2 completes.',height=210)
             curve_rows=[];ledger_rows=[]
             for name,flow in comparison['flows'].items():
                 curve_rows.extend({'Date':r['date'],'Flow':name,'Equity':r['equity']} for r in flow.get('curve',[]))
@@ -753,10 +754,10 @@ elif page == "AI Agent Experiments":
             if curve_rows:
                 chart=pd.DataFrame(curve_rows);chart['Date']=pd.to_datetime(chart['Date'])
                 st.line_chart(chart.pivot_table(index='Date',columns='Flow',values='Equity',aggfunc='last'),use_container_width=True)
-            with st.expander('Combined C0 / C1 / C2 trade ledger',expanded=True):
+            with st.expander('Combined C0 / C2 trade ledger',expanded=True):
                 render_table(ledger_rows,'Open holdings are marked to the latest processed close; there is no forced terminal sale.',height=340)
-                if ledger_rows:st.download_button('Download comparison ledger CSV',pd.DataFrame(ledger_rows).to_csv(index=False),file_name='aegistrade_c0_c1_c2_'+comparison['run_id'][:8]+'.csv',mime='text/csv')
-            st.download_button('Download complete comparison JSON',json.dumps(comparison,indent=2),file_name='aegistrade_c0_c1_c2_'+comparison['run_id'][:8]+'.json',mime='application/json')
+                if ledger_rows:st.download_button('Download comparison ledger CSV',pd.DataFrame(ledger_rows).to_csv(index=False),file_name='aegistrade_c0_c2_'+comparison['run_id'][:8]+'.csv',mime='text/csv')
+            st.download_button('Download complete comparison JSON',json.dumps(comparison,indent=2),file_name='aegistrade_c0_c2_'+comparison['run_id'][:8]+'.json',mime='application/json')
             st.caption(comparison['comparison_design']['interpretation']+' Use the case experiment below for the fair same-case, same-budget multi-agent evaluation.')
     selection_settings=st.session_state.get('selection_research_settings',{})
     st.info("C2 checks dated company evidence with a 15:30 IST cutoff. Strong trend and RSI-reversion entries may follow the technical signal with explicitly incomplete coverage after attempted research, provided no concrete adverse event remains unresolved. Breakouts require dated corroboration. A supported adverse finding blocks entry and requires an EXIT for a holding after critic validation. Independent press coverage is not assumed.")

@@ -37,7 +37,7 @@ def test_disabled_stop_still_allows_a_technical_entry():
     assert list(events.Event)==['BUY'] and events.iloc[0].InitialStop==0
 
 
-def test_comparison_aggregates_c0_c1_c2_without_claiming_pure_ablation(monkeypatch,tmp_path):
+def test_comparison_aggregates_c0_c2_and_points_to_fair_case_ablation(monkeypatch,tmp_path):
     import aegistrade.portfolio_comparison as comparison
     from tests.test_c1_smc_portfolio import smc_history
     monkeypatch.setenv('AEGIS_DATA_DIR',str(tmp_path))
@@ -45,7 +45,7 @@ def test_comparison_aggregates_c0_c1_c2_without_claiming_pure_ablation(monkeypat
     monkeypatch.setattr(comparison,'launch',lambda run_id,frame:launched.append(run_id))
     children={}
     def fake_create(frame,settings,**kwargs):
-        run_id=('1' if settings.research_flow=='C1' else '2')*32;children[run_id]=settings.research_flow;return run_id
+        run_id='2'*32;children[run_id]=settings.research_flow;return run_id
     monkeypatch.setattr(comparison,'create_run',fake_create)
     monkeypatch.setattr(comparison,'child_status',lambda run_id:{'run_id':run_id,'research_flow':children[run_id],
         'status':'QUEUED','metrics':[{'ending_equity':200000,'total_return_pct':0}],
@@ -54,10 +54,10 @@ def test_comparison_aggregates_c0_c1_c2_without_claiming_pure_ablation(monkeypat
     settings=comparison.ComparisonSettings(symbol='DEMO',start_date=start,end_date=end,
         consent_to_paid_calls=True,approve_historical_rules=True)
     result=comparison.create(frame,settings)
-    assert set(result['flows'])=={'C0','C1','C2'} and result['status']=='RUNNING'
+    assert set(result['flows'])=={'C0','C2'} and result['status']=='RUNNING'
     assert result['flows']['C0']['model_usage']['attempted_calls']==0
-    assert 'not a pure agent-architecture ablation' in result['comparison_design']['interpretation']
-    assert len(launched)==2
+    assert 'AI Experiment' in result['comparison_design']['interpretation']
+    assert len(launched)==1
 
 
 def test_comparison_api_requires_auth_and_returns_coordinated_result(monkeypatch):
@@ -67,7 +67,7 @@ def test_comparison_api_requires_auth_and_returns_coordinated_result(monkeypatch
     monkeypatch.setenv('AEGIS_ENABLE_LLM_EXPERIMENTS','true')
     monkeypatch.setattr(api,'require_backend_ready',lambda:None)
     monkeypatch.setattr(api,'market_snapshot_context',lambda:('FRAME','test',{}))
-    expected={'run_id':'a'*32,'status':'RUNNING','flows':{'C0':{},'C1':{},'C2':{}}}
+    expected={'run_id':'a'*32,'status':'RUNNING','flows':{'C0':{},'C2':{}}}
     import aegistrade.portfolio_comparison as comparison
     monkeypatch.setattr(comparison,'create',lambda *args,**kwargs:expected)
     body={'symbol':'RELIANCE','start_date':'2024-01-01','end_date':'2024-06-30',
@@ -75,4 +75,4 @@ def test_comparison_api_requires_auth_and_returns_coordinated_result(monkeypatch
     client=TestClient(api.app)
     assert client.post('/research/portfolio-comparison/run',json=body).status_code==403
     response=client.post('/research/portfolio-comparison/run',json=body,headers={'x-reviewer-token':'comparison-reviewer-token'})
-    assert response.status_code==200 and set(response.json()['flows'])=={'C0','C1','C2'}
+    assert response.status_code==200 and set(response.json()['flows'])=={'C0','C2'}

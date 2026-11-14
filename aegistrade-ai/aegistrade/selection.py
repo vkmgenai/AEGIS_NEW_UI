@@ -52,6 +52,11 @@ def rank_candidates(daily,mode='ROUTER',*,equity,cash,trade_policy=None,selectio
             if strategy in {'EMA_TREND','EMA_PULLBACK'}:
                 strength=.6*min(bar.ADX14/40,1)+.4*min(max(bar.Momentum20,0)/.10,1)
             elif strategy=='RSI_REVERSION':strength=min(max((42-bar.RSI14)/22,0),1)
+            elif strategy=='SMC':
+                # SMC eligibility already requires the completed sweep → break
+                # → retest sequence. Rank confirmed cases by trend quality and
+                # participation without asking an LLM to calculate a score.
+                strength=.6*min(bar.ADX14/40,1)+.4*min(bar.RelativeVolume20/2,1)
             else:strength=.6*min(max(bar.Close/bar.Prior20High-1,0)/.03,1)+.4*min(bar.RelativeVolume20/2,1)
             score=100*(.7*strength+.2*liquidity_rank[index]+.1*(1-min(bar.ATR14/bar.Close/s.max_atr_fraction,1)))
         rows.append({'symbol':str(bar.Symbol),'date':bar.Date.date().isoformat(),'strategy':strategy,

@@ -3,7 +3,7 @@ from copy import deepcopy
 import json
 import pandas as pd
 import pytest
-from aegistrade.smc import prepare_smc,screening_candidates
+from aegistrade.smc import prepare_smc,screening_candidates,add_smc_to_router,c0_router_view
 from aegistrade.c2_portfolio import C1PortfolioSettings,C2PortfolioSettings,create_run,execute_run,load,save,state_path,frame_for
 from aegistrade.c1_gate import validate_completed_c1
 from tests.test_c2_portfolio import history,prepare
@@ -62,6 +62,31 @@ def test_smc_pattern_is_later_retest_and_prefix_causal():
         pd.testing.assert_frame_equal(out.iloc[:end].reset_index(drop=True),prepare_smc(f.iloc[:end]).reset_index(drop=True))
     f.loc[63,'Close']=96 # invalidate before retest
     assert not prepare_smc(f).loc[64,'SMCSignal']
+
+
+def test_c2_router_adds_smc_without_changing_c0_four_strategy_view():
+    f=smc_history()
+    augmented=add_smc_to_router(f)
+    assert augmented.loc[64,'SMCSignal']
+    assert augmented.loc[64,'Regime']=='SMC'
+    assert augmented.loc[64,'RoutedStrategy']=='SMC'
+    baseline=c0_router_view(augmented)
+    assert baseline.loc[64,'Regime']==f.loc[64,'Regime']
+    assert baseline.loc[64,'RoutedStrategy']==f.loc[64,'RoutedStrategy']
+
+
+def test_c2_five_route_portfolio_can_research_and_queue_smc(completed_c2):
+    f=smc_history()
+    settings=C2PortfolioSettings(start_date=f.Date.iloc[60].date(),end_date=f.Date.iloc[-1].date(),
+        consent_to_paid_calls=True,approve_historical_rules=True,review_after_gap=False,
+        max_model_calls=160,holding_review_sessions=60,take_profit_percent=4,
+        trailing_stop_enabled=False,breakout_reentry_enabled=False,smc_reentry_enabled=False)
+    rid=create_run(f,settings)
+    result=execute_run(rid,f,researcher=lambda snapshot,config,**kw:completed_c2(snapshot),preparer=prepare)
+    buys=[row for row in result['ledgers']['C2'] if row['event']=='BUY']
+    assert any(row['strategy']=='SMC' for row in buys)
+    assert any(d.get('entry_setup')=='SMC' and d['action']=='ENTER' for d in result['decisions'])
+    assert all(row['strategy']!='SMC' for row in result['ledgers']['ROUTER'])
 
 
 def test_evidence_first_screen_does_not_select_using_smc():

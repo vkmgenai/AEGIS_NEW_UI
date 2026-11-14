@@ -21,15 +21,8 @@ dist/
 htmlcov/
 .ruff_cache/
 *.log
+~$*
 
 # Private configuration backups must never be packaged.
 .env.*
 !.env.example
-
-# Generated local research outputs are not published.
-reports/*
-!reports/.gitkeep
-.ipynb_checkpoints/
-
-# Microsoft Office temporary lock files
-~$*

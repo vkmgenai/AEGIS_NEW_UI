@@ -53,6 +53,32 @@ def prepare_smc(frame):
     return pd.concat(parts,ignore_index=True).sort_values(['Date','Symbol']).reset_index(drop=True)
 
 
+def add_smc_to_router(frame):
+    """Add completed-bar SMC signals as a fifth agentic ROUTER route.
+
+    The original four-strategy regime and route are retained in BaseRegime and
+    BaseRoutedStrategy so the zero-LLM C0 reference can use the identical bars
+    without inheriting C2's additional SMC capability.
+    """
+    base=frame.copy()
+    base['BaseRegime']=base['Regime']
+    base['BaseRoutedStrategy']=base['RoutedStrategy']
+    smc=prepare_smc(frame)[['Date','Symbol','SMCSignal','SMCContext','SMCStage']]
+    out=base.merge(smc,on=['Date','Symbol'],how='left',validate='one_to_one')
+    out['SMCSignal']=out['SMCSignal'].fillna(False).astype(bool)
+    out.loc[out.SMCSignal,'Regime']='SMC'
+    out.loc[out.SMCSignal,'RoutedStrategy']='SMC'
+    return out.sort_values(['Date','Symbol']).reset_index(drop=True)
+
+
+def c0_router_view(frame):
+    """Return the four-strategy C0 view of a frame augmented for C2 SMC."""
+    out=frame.copy()
+    if 'BaseRegime' in out:out['Regime']=out['BaseRegime']
+    if 'BaseRoutedStrategy' in out:out['RoutedStrategy']=out['BaseRoutedStrategy']
+    return out
+
+
 def screening_candidates(daily,held,index,limit=3,*,priority_symbols=()):
     """Liquidity/history screen only: do not inspect SMC signals or future returns."""
     eligible=[];audit=[]

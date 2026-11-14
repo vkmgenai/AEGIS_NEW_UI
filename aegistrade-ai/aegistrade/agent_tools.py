@@ -8,7 +8,9 @@ class HoldingContext(BaseModel):
     model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
     quantity:int=Field(gt=0)
     entry_price:float=Field(gt=0)
-    stop_price:float=Field(gt=0)
+    # Zero is the simulator sentinel when the user explicitly disables stops.
+    # Such a position must remain eligible for scheduled holding research.
+    stop_price:float=Field(ge=0)
     strategy:Literal['EMA_TREND','EMA_PULLBACK','RSI_REVERSION','BREAKOUT','SMC']
     holding_sessions:int=Field(ge=0)
     review_trigger:str=Field(max_length=120)

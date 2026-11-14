@@ -13,6 +13,14 @@ SNAPSHOT={'symbol':'DEMO','date':'2024-01-01','regime':'TREND','approved_candida
           'Close':100.,'RSI14':55.,'ADX14':25.,'EMA20':99.,'EMA50':95.,'ATR14':2.,'future_price':200}
 
 
+def test_holding_review_accepts_disabled_stop_sentinel():
+    snapshot={**SNAPSHOT,'research_purpose':'HOLDING_REVIEW','holding_context':{
+        'quantity':2,'entry_price':98.,'stop_price':0.,'strategy':'EMA_TREND',
+        'holding_sessions':5,'review_trigger':'Scheduled review'}}
+    evidence=CaseEvidence.from_snapshot(snapshot)
+    assert evidence.holding_context.stop_price==0
+
+
 def call(name,args=None):
     return {'id':name,'type':'function','function':{'name':name,'arguments':json.dumps(args or {})}}
 

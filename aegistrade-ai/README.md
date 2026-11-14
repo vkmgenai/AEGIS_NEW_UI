@@ -1,5 +1,17 @@
 # 🛡️ AegisTrade AI
 
+**Current final-review source: v0.27.0 — C0/C2 portfolio design with C1 retained as the required evaluation-only baseline.**
+
+Final submission navigation:
+
+- [Final project report](docs/FINAL_PROJECT_REPORT.md)
+- [Final detailed architecture and numbered walkthrough](docs/FINAL_ARCHITECTURE.md)
+- [Final presentation and UI demo guide](FINAL_PRESENTATION_README.md)
+- [Capstone completion checklist](docs/FINAL_CAPSTONE_COMPLETION_CHECKLIST.md)
+- [Threat model](docs/THREAT_MODEL.md) and [memory policy](docs/MEMORY_POLICY.md)
+
+One-command local start on macOS/Linux: `bash scripts/start_unix.sh`. Windows: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_windows.ps1`.
+
 **GitHub-ready local capstone research application**  
 **SIMULATION ONLY — no broker connection, real-money order placement, leverage, or intraday execution.**
 
@@ -19,9 +31,9 @@ External inference is **disabled by default**. Select `AEGIS_LLM_BACKEND=codex_c
 For update instructions see [docs/CAPITAL_AND_AGENT_UI_UPDATE.md](docs/CAPITAL_AND_AGENT_UI_UPDATE.md).
 
 
-### End-to-end C2 historical portfolio (0.16.0)
+### End-to-end C2 historical portfolio (v0.27)
 
-In **Strategy Backtests**, select **C2 historical portfolio**, dates/capital, total inference allowance and holding-review interval. Supply the reviewer token, paid consent and upfront replay-rule approval. Every prospective entry requires completed dated C2; scheduled holding reviews return HOLD/EXIT. Code applies stops/strategy exits, next-open sizing/fills and portfolio accounting. New runs default to a2×entry-signal ATR14 trailing stop, following the highest completed close and effective next session. Inspect stop adjustments and SELL_TRAILING_STOP in results; see [Trailing-stop policy](docs/TRAILING_STOP_POLICY.md). Jobs pause/resume at the call allowance and retain durable phases/research traces. **The end date does not force a sale**: open holdings remain marked with unrealized P&L. Provider charges are separate from INR trading returns. See [C2 historical portfolio guide](docs/C2_HISTORICAL_PORTFOLIO.md). The separate **Technical-only baseline** makes no generation calls.
+In **Strategy Backtests**, select **C2 historical portfolio**, dates/capital, total inference allowance and holding-review interval. Supply the reviewer token, inference consent and upfront replay-rule approval. C2 uses five routes: EMA Trend, EMA Pullback, RSI Reversion, Breakout and SMC. A bounded ranked pool (default three) lets C2 consider the next technical candidate when a higher-ranked candidate is evidence-blocked; missing evidence is never labelled fundamental strength. Every prospective entry requires completed dated C2; scheduled holding reviews return HOLD/EXIT. Code applies stops/strategy exits, next-open sizing/fills and portfolio accounting. Jobs pause/resume at bounded checkpoints and retain research traces. **The end date does not force a sale**: open holdings remain marked with unrealized P&L. The separate C0 **Technical-only baseline** uses the four non-SMC routes and makes no generation calls. C1 is no longer a new portfolio flow; it remains in AI Agent Experiments to satisfy the fair single-agent comparison.
 
 ## Quick start: local computer
 
