@@ -5,6 +5,8 @@
 Final submission navigation:
 
 - [Final project report](docs/FINAL_PROJECT_REPORT.md)
+- [Current detailed design and code guide](docs/AegisTrade_Current_Detailed_Design.docx)
+- [Editable current detailed design](docs/AegisTrade_Current_Detailed_Design.md)
 - [Final detailed architecture and numbered walkthrough](docs/FINAL_ARCHITECTURE.md)
 - [Team experiment-review questionnaires](docs/TEAM_EXPERIMENT_REVIEW_QUESTIONNAIRES.md)
 - [Evidence and LLM-assistance guide for answering team questionnaires](docs/TEAM_REVIEW_EVIDENCE_AND_LLM_ASSISTANCE_GUIDE.md)
@@ -234,6 +236,14 @@ Rebuild: `python -m scripts.build_rag_index --mode neural --activate`. Evaluate:
 Current detailed RAG/viva documentation: [RAG Word guide](docs/RAG_IMPLEMENTATION_GUIDE.docx), [RAG source corpus](knowledge/corpus.jsonl), and [current full viva handbook](docs/AegisTrade_Capstone_Review_and_Viva_Guide.docx). The Policy Knowledge screen shows actual active mode, source links and historical cutoff; every C2 result must bind to the current knowledge-corpus fingerprint.
 
 Research preflight fix (0.15.1): lesson memory is disabled until a nonempty reviewed playbook is frozen. Unavailable memory is rejected before archive/model work; the UI displays the actual API cause and next action. Screening previews use the submitted case date.
+
+### Relative materiality for routine penalties (prompt v16)
+
+Earlier prompts told the agents to flag any cited penalty as an adverse event, and an adverse event blocks an entry. Large issuers disclose small penalties almost every month under Regulation 30, so C2 refused every entry in such stocks: on INFY, October to December 2023, C2 blocked all 11 researched entries over notices such as MUR 5,000 and USD 1,101.96 while C0 traded seven times.
+
+The four role prompts (`config/agents.json`, version `2026-11-15-relative-materiality-v16`) and policy passage `POL-MAT-01` now say a penalty, fine, tax demand or similar routine notice is an adverse event only when the cited sources show it is significant relative to the issuer's reported profit, revenue or net worth, or it restricts the business, or it alleges fraud or misconduct, or the issuer reports a material impact. The comparison uses the issuer's own reported figures, never a fixed rupee threshold. A notice that meets none of these is recorded as a limitation with its document cited and does not block an entry or force an exit. An amount whose scale cannot be read stays UNKNOWN and still blocks. Code-owned checks are unchanged: an adverse finding still blocks entry and still requires an exit in a holding review.
+
+Saved C1/C2 runs made with the earlier prompt cannot be resumed. The corpus now has 87 passages (78 project policies, 9 external references).
 
 ### Claude CLI transport and provider dropdown (0.28.0)
 

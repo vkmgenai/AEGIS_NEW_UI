@@ -18,7 +18,7 @@ def architecture():
 
     # User, API and model-facing guardrail boundary.
     b.box(ax,.25,11.75,2.0,.72,'Reviewer','C0/C2 • dates • capital\nconsent • approve','#e9f2e8')
-    b.box(ax,2.55,11.75,4.9,.72,'Simplified Streamlit UI + FastAPI','fixed risk policy • auth • allowance • progress • resume')
+    b.box(ax,2.55,11.75,4.9,.72,'Streamlit tiles + bell → FastAPI','fixed risk • auth • allowance • progress • resume • review deep-link')
     b.box(ax,7.75,11.75,2.0,.72,'Input / output guards','typed requests • cutoff\ninjection scan • scrub','#fde8e5')
     line((2.25,12.1),(2.55,12.1));line((7.45,12.1),(7.75,12.1));number(.42,12.42,1)
 
@@ -63,12 +63,12 @@ def architecture():
 
     b.box(ax,.25,1.15,9.5,.72,'Simulated broker / historical fill engine → immutable audit ledger','cash • holdings • decisions • linked override outcome • citations • model/tool usage • failures • checkpoints • P&L','#edf4fa')
     line((2.48,2.45),(3.4,1.87));line((7.52,2.45),(6.6,1.87))
-    b.box(ax,.25,.12,2.9,.55,'E1–E4 evaluation','C0/C1/C2 • security • memory')
+    b.box(ax,.25,.12,2.9,.55,'Capability + E1–E4 evaluation','grounding • risk • coverage • failures')
     b.box(ax,3.55,.12,2.9,.55,'Prometheus + Grafana','latency • calls • errors • outcomes')
     b.box(ax,6.85,.12,2.9,.55,'CI + Docker','evaluation gate • reproducible demo')
     for x in (1.7,5,8.3):line((5,1.15),(x,.67))
     number(.42,.78,9)
-    return b.save(fig,'final_architecture_v027')
+    return b.save(fig,'final_architecture_v032')
 
 
 def main():

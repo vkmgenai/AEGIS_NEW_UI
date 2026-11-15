@@ -11,6 +11,7 @@
 - Open override positions are explicitly inconclusive. Only a closed lifecycle is labelled supported/not-supported and becomes eligible for later human lesson review.
 - Added a 15-second read-only notification bell in the top-right application header and a one-time toast to both dashboards. Alerts deep-link to the exact paused C2 run; approval remains on Strategy Backtests and requires the reviewer token.
 - Replaced the combined Strategy Backtests page with two large landing tiles: universe-wide C0/C2 Portfolio Backtests and Single-stock C0/C2 Comparison. Each detail view has a back button and retains current run state.
+- Replaced the prominent mixed task-success chart with a capability-oriented C0/C1/C2 matrix. C0 is marked as the deterministic reference; evidence abstentions and hard failures are separated. Raw task-success/error/call/latency metrics remain in a collapsed technical audit.
 
 ## 14 November 2026 — Strategy Backtests cleanup
 

@@ -1,6 +1,6 @@
 # AegisTrade AI — final capstone project report
 
-Version 0.30 · 14 November 2026 · Team size: three, approved by faculty
+Version 0.32 · 15 November 2026 · Team size: three, approved by faculty
 
 ## Executive summary
 
@@ -116,7 +116,9 @@ Repeat the final held-out comparison three times. Preserve failures and timeouts
 
 ## Current measured development evidence
 
-- Full local test suite: **361 passed** on 14 November 2026 after the final UI consolidation, including the three-adapter provider contract, C0/C2 UI payload checks and authenticated human C2 review audit.
+This section is a dated evidence snapshot, not part of the fixed system design. Additional inference runs are currently being collected. Their retained run IDs, failures and independently reviewed labels should replace or extend this section only after completion; the architecture, controls and evaluation definitions above must not be rewritten to make a later score look favorable.
+
+- Full local test suite: **370 passed** on 15 November 2026 after the two-tile Strategy Backtests navigation, capability-oriented experiment view, notification inbox and linked human-override lifecycle, including the three-adapter provider contract, C0/C2 UI payload checks and authenticated human C2 review audit.
 - Golden development checker: 20/20 seeded development cases in `reports/capstone_review_dev.json`; the report itself states that labels require independent review.
 - Fresh v0.27 offline development evidence is saved in `reports/final_dev_offline_v027.json` and `reports/final_rag_offline_v027.json`. On the current expanded corpus, the 36 legacy queries improved from 0.6944 to 0.7500 Recall@5 with rewriting; the 101 authored development queries scored 0.9010. The original 16-passage/36-query setup scored 0.9444, so corpus expansion regressed the old labels even though rewriting improved the current configuration. These labels are not independently reviewed and this is not a held-out claim.
 - The deterministic scanner detected 93.8% of 32 authored attack strings with zero false blocks on ten clean strings. This is a scanner proxy only; model-level E2 remains required.
