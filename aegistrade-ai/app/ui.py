@@ -28,6 +28,8 @@ st.markdown(
     .block-container {max-width: 1280px; padding-top: 1.2rem; padding-bottom: 3rem;}
     h1 {letter-spacing: -.025em;}
     div[data-testid="stHorizontalBlock"] {gap: 0.85rem;}
+    div[class*="st-key-strategy_tile_"] button {min-height:170px; padding:24px; text-align:left; justify-content:flex-start; align-items:flex-start;}
+    div[class*="st-key-strategy_tile_"] button p {font-size:1.08rem; line-height:1.65; text-align:left;}
     </style>""",
     unsafe_allow_html=True,
 )
@@ -103,6 +105,31 @@ def selection_table(rows,caption='',height=320):
     render_table(display,caption,height)
 
 
+def architecture_capability_rows(summary,outputs):
+    """Separate reference agreement, evidence work and genuine failures."""
+    rows=[]
+    for metric in summary.to_dict('records'):
+        config=metric.get('config');cases=int(metric.get('cases') or 0)
+        items=[x for x in outputs if x.get('config')==config]
+        if config=='C0':
+            rows.append({'Architecture':'C0','Role':'Deterministic routing reference',
+                'Route validation':'Reference by construction','Grounded company evidence':'N/A',
+                'Adverse-risk flags':'N/A','Decision coverage':f'{cases}/{cases} routed',
+                'Safe evidence abstentions':'N/A','Hard model/policy failures':0})
+            continue
+        grounded=sum(bool((x.get('company_assessment') or {}).get('citations')) for x in items)
+        adverse=sum((x.get('company_assessment') or {}).get('adverse_risk') in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE','CONFIRMED_ADVERSE'} for x in items)
+        decisions=sum((x.get('portfolio_action') or x.get('handoffs',{}).get('strategy',{}).get('payload',{}).get('portfolio_action')) in {'ENTER','EXIT','HOLD'} for x in items)
+        abstain=sum((x.get('failure') or {}).get('category')=='EVIDENCE' for x in items)
+        hard=sum(bool(x.get('model_errors')) and (x.get('failure') or {}).get('category')!='EVIDENCE' for x in items)
+        rows.append({'Architecture':config,'Role':'Single tool-using agent' if config=='C1' else 'Market + strategy + independent critic',
+            'Route validation':f"{int(metric.get('guard_pass_count') or 0)}/{cases-abstain} decided cases passed"+(f", {abstain} abstained" if abstain else ''),
+            'Grounded company evidence':f'{grounded}/{cases}','Adverse-risk flags':adverse,
+            'Decision coverage':f'{decisions}/{cases}','Safe evidence abstentions':abstain,
+            'Hard model/policy failures':hard})
+    return rows
+
+
 def heading(name: str, description: str):
     st.subheader(name)
     st.caption(description)
@@ -115,6 +142,33 @@ def metric_value(value, suffix: str = "") -> str:
         return f"{float(value):,.2f}{suffix}"
     except (ValueError, TypeError):
         return str(value)
+
+
+@st.fragment(run_every="15s")
+def notification_bell(workspace_key: str):
+    """Read-only local alert inbox; approvals remain on Strategy Backtests."""
+    try:inbox=get('/simulation/c2/notifications',timeout=8)
+    except Exception:return
+    alerts=inbox.get('notifications',[]);ids={x['notification_id'] for x in alerts}
+    seen=set(st.session_state.get('seen_human_override_notifications',[]));new=ids-seen
+    if new:
+        st.toast('🔔 C2 requires human review for '+str(len(new))+' decision'+('s' if len(new)!=1 else '')+'.')
+        st.session_state['seen_human_override_notifications']=sorted(seen|new)
+    with st.popover('🔔 '+str(len(alerts)) if alerts else '🔔',help='C2 human-review notifications'):
+        st.markdown('**Human-review inbox**')
+        if not alerts:st.caption('No C2 run is waiting for human intervention.')
+        for alert in alerts:
+            label=str(alert.get('symbol'))+' · '+str(alert.get('proposed_action'))+' · '+str(alert.get('signal_date'))
+            st.write('**'+label+'**')
+            st.caption(('Linked exit confirmation' if alert.get('review_trigger')=='LINKED_POSITION_EXIT' else 'Evidence-block review')+' · Run '+alert['run_id'][:12])
+            if st.button('Open review',key='open_override_'+alert['notification_id'],use_container_width=True):
+                result=get('/simulation/c2/status/'+alert['run_id'],timeout=60)
+                remember_result(st.session_state,result)
+                st.session_state['portfolio_job_C2_next']=alert['run_id']
+                st.session_state['portfolio_new_session_C2']=False
+                st.session_state['strategy_backtest_view']='portfolio'
+                st.session_state[workspace_key]='Strategy Backtests'
+                st.rerun()
 
 
 # Navigation is in the main content area so it remains accessible even when the
@@ -131,8 +185,14 @@ with st.sidebar:
     st.code(API, language="text")
     st.caption("If controls are hidden, widen the browser, use 100% zoom, or expand the sidebar with the arrow at the top left.")
 
-st.title("AegisTrade AI")
-st.caption("Automatic stock screening · C2 evidence research · Human-governed simulated actions")
+title_column,bell_column=st.columns([12,1],vertical_alignment='top')
+with title_column:
+    st.title("AegisTrade AI")
+    st.caption("Automatic stock screening · C2 evidence research · Human-governed simulated actions")
+with bell_column:
+    st.write('')
+    with st.container(key='notification_anchor'):
+        notification_bell('aegis_workspace')
 if st.session_state.pop('open_research_workspace',False):
     st.session_state['aegis_workspace']='AI Agent Experiments'
     params=st.session_state.get('selection_research_settings',{})
@@ -415,6 +475,26 @@ elif page == "Overview":
         st.info("Next: run Strategy Backtests, inspect the stock-selection audit, then send selected candidates through C2. Only grounded, critic-accepted C2 BUY/SELL recommendations can be presented for human review in AI Agent Experiments.")
 
 elif page == "Strategy Backtests":
+    strategy_view=st.session_state.get('strategy_backtest_view','landing')
+    if strategy_view=='landing':
+        heading('Strategy Backtests','Choose a portfolio-wide C0/C2 replay or a focused same-stock comparison. Only the selected workflow is shown.')
+        left,right=st.columns(2)
+        with left:
+            if st.button('### 📊 C0/C2 Portfolio Backtests\n\nRun automatic stock selection across the active universe. Compare the deterministic C0 baseline with the evidence-grounded, multi-agent C2 portfolio.',key='strategy_tile_portfolio',use_container_width=True):
+                st.session_state['strategy_backtest_view']='portfolio';st.rerun()
+        with right:
+            if st.button('### 🔎 Single-stock C0/C2 Comparison\n\nChoose one stock and run the same dates, capital and execution policy through C0 and C2 for a focused ledger and P&L comparison.',key='strategy_tile_single',use_container_width=True):
+                st.session_state['strategy_backtest_view']='single';st.rerun()
+        st.caption('Both workflows are historical simulations only. No live exchange or broker order is created.')
+        st.stop()
+    if st.button('← Back to Strategy Backtests',key='strategy_backtests_back'):
+        st.session_state['strategy_backtest_view']='landing';st.rerun()
+    if strategy_view=='single':
+        heading('Single-stock C0/C2 comparison','Run one selected stock through the deterministic C0 and checkpointed C2 engines under shared assumptions.')
+        render_single_stock_comparison(universe,reviewer_token,health)
+        with st.expander('How should I interpret this comparison?',expanded=True):
+            st.markdown('Compare ledgers, equity curves, return and drawdown under the same stock/window. C2 adds dated evidence and specialist/critic calls; this does not guarantee that C2 will outperform C0.')
+        st.stop()
     heading("C0/C2 portfolio backtests", "Choose the deterministic C0 baseline or the agentic C2 workflow. Both use the same capital, dates and fixed financial policy.")
     simulation_engine=st.radio('Backtest workflow',['C2 historical portfolio','C0 Technical baseline'],horizontal=True,key='simulation_engine')
     is_c2=simulation_engine=='C2 historical portfolio'
@@ -482,14 +562,18 @@ elif page == "Strategy Backtests":
     first = date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"])
     last = date.fromisoformat(universe["last_date"])
     selected_book=None
-    if is_c2 and health.get('portfolio_memory_supported'):
+    human_override_mode=False
+    if is_c2:
         with st.expander('Optional evaluation controls',expanded=False):
-            try:
-                books=get('/portfolio-lessons').get('versions',[])
-                choices={'No reviewed lesson memory':None,**{f"{b['created_at'][:19]} | {b['lesson_count']} lessons | trained through {b['trained_through']} | {b['id'][:8]}":b for b in books}}
-                selected_book=choices[st.selectbox('Frozen portfolio lesson version',list(choices))]
-                st.caption('Leave this off for the standard demo. Select a frozen version only for the documented memory-on evaluation.')
-            except Exception as exc:fail('Could not load portfolio lesson versions.',exc)
+            if health.get('portfolio_memory_supported'):
+                try:
+                    books=get('/portfolio-lessons').get('versions',[])
+                    choices={'No reviewed lesson memory':None,**{f"{b['created_at'][:19]} | {b['lesson_count']} lessons | trained through {b['trained_through']} | {b['id'][:8]}":b for b in books}}
+                    selected_book=choices[st.selectbox('Frozen portfolio lesson version',list(choices))]
+                    st.caption('Leave this off for the standard demo. Select a frozen version only for the documented memory-on evaluation.')
+                except Exception as exc:fail('Could not load portfolio lesson versions.',exc)
+            human_override_mode=st.checkbox('Enable HUMAN_EVIDENCE_OVERRIDE study',value=False,
+                help='Pauses only evidence-insufficient technical BUY/SELL blocks. Stops, targets and hard safety blocks cannot be overridden.')
     # Fixed capstone policy: these constants remain in the submitted payload and
     # saved ledger, but are deliberately not tunable in the demonstration UI.
     risk_pct=1.0; automatic_selection=True; sim_mode='ROUTER'; slippage_bps=10.0
@@ -542,7 +626,7 @@ elif page == "Strategy Backtests":
                      "stop_loss_mode":"ATR" if stop_method=="ATR distance" else "PERCENT","initial_stop_atr_multiple":float(initial_atr),"stop_loss_percent":float(initial_percent),"take_profit_percent":float(take_profit),"review_after_gap":True,"trailing_stop_enabled":bool(stop_enabled and trailing_enabled),"trailing_atr_multiple":float(trailing_multiple)}
             try:
                 if is_ai:
-                    payload.update(consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=int(max_calls),holding_review_sessions=int(review_every),portfolio_playbook_id=selected_book['id'] if selected_book else None,memory_allow_development_replay=bool(development_memory))
+                    payload.update(consent_to_paid_calls=True,approve_historical_rules=True,max_model_calls=int(max_calls),holding_review_sessions=int(review_every),portfolio_playbook_id=selected_book['id'] if selected_book else None,memory_allow_development_replay=bool(development_memory),human_override_mode=bool(human_override_mode))
                     if is_ai:payload['screening_candidates_per_session']=int(screen_count)
                     with st.spinner('Creating checkpointed '+flow_label+' portfolio job...'):
                         st.session_state['simulation_result']=post('/simulation/'+flow_label.lower()+'/run',payload,reviewer_token,timeout=120)
@@ -587,6 +671,28 @@ elif page == "Strategy Backtests":
         st.markdown('#### Results — '+result_flow+' historical portfolio' if c2_result else '#### Results — C0 Technical baseline')
         if c2_result and result_flow=='C1':st.caption('Evidence-first single-agent research, followed by code SMC checks. No independent LLM critic. NO_SMC_SIGNAL means evidence passed but price structure did not qualify.')
         if c2_result:
+            pending_override=result.get('pending_human_override')
+            if pending_override:
+                if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT':
+                    st.warning('C2 recommends SELL for a position opened through HUMAN_EVIDENCE_OVERRIDE. Confirm the linked exit or keep holding; protective code exits never wait.')
+                else:
+                    st.warning('C2 blocked a technically positive '+pending_override['proposed_action']+' because evidence is insufficient. The original C2 decision remains BLOCKED.')
+                with st.container(border=True):
+                    st.markdown('#### HUMAN_EVIDENCE_OVERRIDE review')
+                    st.write('**'+pending_override['symbol']+' · '+pending_override['proposed_action']+' · '+str(pending_override.get('technical_strategy'))+'**')
+                    st.write(pending_override['blocking_reason'])
+                    override_choices=['KEEP_HOLDING','APPROVE_EXIT'] if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT' else ['KEEP_BLOCKED','APPROVE_OVERRIDE']
+                    override_display=st.radio('Human intervention',override_choices,horizontal=True,key='portfolio_override_decision')
+                    override_decision={'KEEP_HOLDING':'KEEP_BLOCKED','APPROVE_EXIT':'APPROVE_OVERRIDE'}.get(override_display,override_display)
+                    override_reviewer=st.text_input('Reviewer name or initials',key='portfolio_override_reviewer')
+                    override_reason=st.text_input('Override rationale',key='portfolio_override_reason')
+                    st.caption('Protective stop, trailing stop and take-profit exits remain automatic. An approved BUY is linked to all later reviews and its eventual exit.')
+                    if st.button('Record HUMAN_EVIDENCE_OVERRIDE decision',type='primary',disabled=not bool(reviewer_token and len(override_reviewer.strip())>=2 and len(override_reason.strip())>=3)):
+                        try:
+                            updated=post('/simulation/c2/human-override/'+result['run_id'],{'override_id':pending_override['override_id'],'decision':override_decision,
+                                'reviewer':override_reviewer,'rationale':override_reason},reviewer_token)
+                            remember_result(st.session_state,updated);st.rerun()
+                        except Exception as exc:fail('Human evidence override could not be recorded.',exc)
             if result.get('portfolio_memory'):
                 with st.expander('Pinned portfolio lesson memory'):st.json(result['portfolio_memory'])
             if result_flow=='C1':
@@ -657,6 +763,10 @@ elif page == "Strategy Backtests":
                     if st.button('Load AI portfolio research trace'):
                         try:st.json(get('/simulation/c2/research/'+result['run_id']+'/'+choices[decision_choice]))
                         except Exception as exc:fail('Unable to read research trace.',exc)
+            if result.get('human_override_ledger'):
+                with st.expander('HUMAN_EVIDENCE_OVERRIDE lifecycle ledger',expanded=True):
+                    render_table(result['human_override_ledger'],'Entry, human decisions, automatic risk exits and later SELL overrides share an immutable override/position ID.',height=300)
+                    render_table(result.get('human_override_outcomes',[]),'Only closed positions become eligible for human lesson review. Open positions remain inconclusive.',height=220)
         st.caption(f"Run ID: {result['run_id']} | Sessions: {result['sessions']} | Actual selected period: {result['period']['start']} to {result['period']['end']}")
         metrics=pd.DataFrame(result.get("metrics",[]))
         render_table(metrics, "AI entries require completed dated research; code risk/target exits and holding reviews govern holdings." if c2_result else "C0 uses zero model calls; results include modeled fees and slippage.",height=250)
@@ -709,8 +819,6 @@ elif page == "Strategy Backtests":
             render_table(ledger,"BUY, SELL_SIGNAL, SELL_STOP are synthetic/historical fills; protective stops may gap through their levels.",height=320)
             if ledger: st.download_button("Download trade ledger CSV",pd.DataFrame(ledger).to_csv(index=False),file_name=f"aegistrade_{selected}_trades.csv",mime="text/csv")
             st.download_button("Download complete simulation JSON",json.dumps(result,indent=2),file_name=f"aegistrade_simulation_{result['run_id'][:8]}.json",mime="application/json")
-    st.divider()
-    render_single_stock_comparison(universe,reviewer_token,health)
     with st.expander("How should I interpret the backtest?",expanded=True):
         st.markdown("**Ending portfolio:** cash plus marked-to-market shares. **Total return:** percent change from starting capital. **Maximum drawdown:** worst peak-to-trough portfolio fall. **Sharpe:** ratio based on historical daily returns. **Fees/slippage:** reduce simulated outcomes. **Limitations:** no real fills, no live broker, no forecast of future profits. Use out-of-sample real data before making academic performance claims.")
 
@@ -855,15 +963,16 @@ elif page == "AI Agent Experiments":
         if experiment.get('status')=='WAITING_HUMAN':st.warning('C2 research is complete and checkpointed. The experiment is waiting for human review; approving or rejecting makes no additional model call.')
         st.caption(f"Run {experiment['run_id']} | Status: {experiment.get('status','COMPLETED')} | Model: {experiment['model']} | Call budget: {experiment['max_possible_paid_calls']}")
         summary=pd.DataFrame(experiment.get("summary",[]))
-        render_table(summary,"Guard pass means agreement with the deterministic routing reference and acceptable citations; not profitable performance.",height=210)
-        if not summary.empty and {'config','task_success_pct','policy_violation_count','model_error_count'}.issubset(summary.columns):
-            st.write('**Quality and reliability by architecture**')
-            st.bar_chart(summary.set_index('config')[['task_success_pct','policy_violation_count','model_error_count']],use_container_width=True)
-        if not summary.empty and {'config','model_calls','median_latency_s','p95_latency_s'}.issubset(summary.columns):
-            st.write('**Cost and latency by architecture**')
-            st.bar_chart(summary.set_index('config')[['model_calls','median_latency_s','p95_latency_s']],use_container_width=True)
-            st.caption('These quantities use different units; inspect the table for exact values. Provider cost remains unknown unless every call reports it.')
         outputs=experiment.get("outputs",[])
+        st.write('**Capability-oriented architecture comparison**')
+        render_table(architecture_capability_rows(summary,outputs),
+            'C0 is the reference by construction. Evidence abstention reduces decision coverage but is not automatically a hard model failure or a profitability result.',height=230)
+        with st.expander('Technical audit metrics: agreement, errors, calls and latency',expanded=False):
+            render_table(summary,'Task success combines route/guard agreement and validation. It is not financial performance and C0 is self-consistent by construction.',height=210)
+            if not summary.empty and {'config','model_calls','median_latency_s','p95_latency_s'}.issubset(summary.columns):
+                st.write('**Cost and latency by architecture**')
+                st.bar_chart(summary.set_index('config')[['model_calls','median_latency_s','p95_latency_s']],use_container_width=True)
+                st.caption('These quantities use different units; inspect the table for exact values. Provider cost remains unknown unless every call reports it.')
         render_table([{k:v for k,v in item.items() if k in ("case_id","config","market_regime","expected_strategy","selected_strategy","guard_pass","critic_accept","llm_calls","latency_s")} for item in outputs],height=250)
         provider_failures=[u for output in outputs for u in output.get('usage',[]) if u.get('error') or (u.get('http_status') or 0)>=400]
         if provider_failures:
@@ -898,35 +1007,12 @@ elif page == "AI Agent Experiments":
                         st.json(draft)
                         st.info('Review and accept/reject this pending lesson in Learning & Lessons before it can be retrieved.')
                     except Exception as exc:fail('Reflection could not create a lesson.',exc)
-        reviewed_cases={x.get('case_id') for x in experiment.get('human_decisions',[])}
-        eligible_ai=[x for x in outputs if x.get('case_id') not in reviewed_cases and x.get('config')=='C2' and x.get('guard_pass') and x.get('critic_accept') is True and set(x.get('handoffs',{}))=={'market','strategy','critic'} and x.get('snapshot') and x.get('company_assessment',{}).get('status') in {'SUFFICIENT','LIMITED','REVIEW_REQUIRED'} and x.get('portfolio_action') in {'ENTER','EXIT'}]
-        if eligible_ai:
-            st.markdown('#### Human review of a grounded C2 BUY / SELL decision')
-            chosen_ai=st.selectbox('C2 recommendation to review',[x['case_id'] for x in eligible_ai])
-            selected_ai=next(x for x in eligible_ai if x['case_id']==chosen_ai)
-            portfolio_action=selected_ai.get('portfolio_action') or selected_ai.get('handoffs',{}).get('strategy',{}).get('payload',{}).get('portfolio_action','ENTER')
-            trade_action={'ENTER':'BUY','EXIT':'SELL'}.get(portfolio_action,'NO ACTION')
-            st.info(trade_action+' · '+str(selected_ai.get('selected_strategy','NONE'))+' · '+chosen_ai)
-            st.write(selected_ai.get('handoffs',{}).get('strategy',{}).get('payload',{}).get('explanation',''))
-            with st.expander('RAG-grounded evidence supporting the recommendation',expanded=True):
-                st.write('Policy citations: '+', '.join(selected_ai.get('citations',[])))
-                st.json(selected_ai.get('company_assessment',{}))
-                for doc in selected_ai.get('company_research',{}).get('documents',[]):
-                    if doc.get('id') in set(selected_ai.get('company_assessment',{}).get('citations',[])):
-                        st.caption(doc['id']+' | Available '+doc['available_at']);st.link_button(doc['title'],doc['source_url'],key='human_source_'+chosen_ai+'_'+doc['id'])
-            human_decision=st.radio('Final human decision',['REJECT','APPROVE'],horizontal=True,key='c2_human_decision')
-            reviewer_name=st.text_input('Reviewer name or initials',key='c2_human_reviewer')
-            human_reason=st.text_input('Human review rationale',key='c2_human_reason',placeholder='State why the grounded recommendation is accepted or rejected')
-            if st.button('Record final human decision',type='primary',disabled=not bool(reviewer_token and len(reviewer_name.strip())>=2 and len(human_reason.strip())>=3)):
-                try:
-                    receipt=post('/research/experiments/review',{'run_id':experiment['run_id'],'case_id':chosen_ai,
-                        'decision':human_decision,'rationale':human_reason,'reviewer':reviewer_name},reviewer_token)
-                    st.session_state['human_review_receipt']=receipt
-                    st.session_state['agent_experiment_result']=get('/research/experiments/result/'+experiment['run_id'])
-                    st.success(human_decision+' recorded in the separate decision ledger. No research call was repeated.');st.rerun()
-                except Exception as exc:fail('The C2 recommendation could not be reviewed.',exc)
-        else:st.caption('Human approval appears only for grounded, critic-accepted C2 BUY or SELL recommendations. HOLD, blocked and failed cases require no approval.')
-        if st.session_state.get('human_review_receipt'):st.json(st.session_state['human_review_receipt'])
+        review_gate_failures=[x for x in outputs if x.get('human_review_gate_error')]
+        if review_gate_failures:
+            with st.expander('C2 evidence-gate diagnostics',expanded=False):
+                render_table([{'case_id':x.get('case_id'),'reason':x.get('human_review_gate_error')} for x in review_gate_failures],
+                             'These diagnostics explain model/evidence exclusions; they do not create a second approval workflow.',height=180)
+        st.caption('Human intervention is tested only inside Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE. It reuses the completed C2 research and pauses eligible evidence-blocked BUY/SELL cases without making another research call.')
         st.download_button("Download research results JSON",json.dumps(experiment,indent=2),file_name=f"aegistrade_agents_{experiment['run_id'][:8]}.json",mime="application/json")
     with st.expander('Human C2 decisions and simulated-action audit',expanded=False):
         try:

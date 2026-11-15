@@ -21,7 +21,13 @@ def test_c1_portfolio_is_hidden_from_new_run_ui_but_evaluation_baseline_remains(
     monkeypatch.setattr(requests,'get',get)
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30).run()
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
+    assert at.button(key='strategy_tile_portfolio') and at.button(key='strategy_tile_single')
+    at.button(key='strategy_tile_portfolio').click().run()
     assert at.radio(key='simulation_engine').options==['C2 historical portfolio','C0 Technical baseline']
+    at.button(key='strategy_backtests_back').click().run()
+    at.button(key='strategy_tile_single').click().run()
+    assert any(x.label=='Stock to compare' for x in at.selectbox)
+    at.button(key='strategy_backtests_back').click().run()
     at.selectbox(key='aegis_workspace').select('AI Agent Experiments').run()
     experiment=next(x for x in at.selectbox if x.label=='Experiment configuration')
     assert set(experiment.options)=={'C0','C1','C2','ALL'}
@@ -77,6 +83,7 @@ def test_hidden_legacy_c1_does_not_replace_c2_or_technical_ui_state(monkeypatch,
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30)
     at.session_state['simulation_result']=technical;at.run()
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
+    at.button(key='strategy_tile_portfolio').click().run()
     assert not at.exception and at.session_state['simulation_result']['run_id']==c2
     at.radio(key='simulation_engine').set_value('C0 Technical baseline').run()
     assert not at.exception and at.session_state['simulation_result']['run_id']==technical['run_id']

@@ -1,5 +1,17 @@
 # UI visibility and usability update — 6 November 2026
 
+## 15 November 2026 — HUMAN_EVIDENCE_OVERRIDE lifecycle
+
+- Added an optional checkpointed C2 portfolio intervention study for evidence-insufficient technical BUY and holding SELL blocks.
+- Hard adverse, provider, schema, policy, route and risk failures cannot be overridden.
+- `KEEP_BLOCKED` and `APPROVE_OVERRIDE` preserve the original C2 block in a separate immutable lifecycle ledger.
+- Approved BUYs carry a linked override/position ID through later reviews and exit; automatic stops, trailing stops and targets remain mandatory.
+- Added a paused-state review UI, API endpoint, realized/unrealized linkage and BUY/SELL lifecycle tests.
+- Removed the duplicate general BUY/SELL approval form from AI Agent Experiments. Human intervention now has one location and reuses the saved C2 trace.
+- Open override positions are explicitly inconclusive. Only a closed lifecycle is labelled supported/not-supported and becomes eligible for later human lesson review.
+- Added a 15-second read-only notification bell in the top-right application header and a one-time toast to both dashboards. Alerts deep-link to the exact paused C2 run; approval remains on Strategy Backtests and requires the reviewer token.
+- Replaced the combined Strategy Backtests page with two large landing tiles: universe-wide C0/C2 Portfolio Backtests and Single-stock C0/C2 Comparison. Each detail view has a back button and retains current run state.
+
 ## 14 November 2026 — Strategy Backtests cleanup
 
 - Renamed the user-facing technical workflow to **C0 Technical baseline** while retaining compatible API and saved-run identifiers.
@@ -13,11 +25,11 @@
 - Removed the minimum-bar evidence canvas from AI Agent Experiments; the evidence remains in Capstone Evaluation and the report.
 - Removed the visible BUY/holding-review scenario selector, manual company-pack preparation, shortlist preview, token-budget tuning and memory toggle from the primary experiment form.
 - AI Agent Experiments now asks only for configuration, case count, date range and inference consent; stock ranking, evidence preparation and the balanced 3,600-token budget are automatic.
-- Retained saved runs, full traces, the C2 human interrupt, separate decision audit and all three inference adapters.
+- Retained saved runs, full traces, evidence-gate diagnostics and all three inference adapters. The C2 human interrupt now lives in Strategy Backtests.
 
-## 14 November 2026 — C2 human interrupt without duplicate inference
+## 14 November 2026 — superseded C2 human-interrupt prototype
 
-- Actionable, grounded C2 BUY/SELL experiments enter `WAITING_HUMAN`; HOLD, blocked and failed cases do not interrupt.
+- The earlier general grounded BUY/SELL interrupt was replaced on 15 November by the narrower evidence-block override lifecycle above.
 - Approve/reject reuses completed C2 research and makes zero additional research calls.
 - Reviewer, rationale, research digest and decision are stored in a separate JSONL ledger and audit event.
 - A fixed 10-session outcome is displayed in Learning & Lessons as review evidence and is never learned automatically.

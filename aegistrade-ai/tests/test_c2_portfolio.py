@@ -3,7 +3,7 @@ import json
 from datetime import date
 import pandas as pd
 import pytest
-from aegistrade.c2_portfolio import C2PortfolioSettings,create_run,execute_run,load,save,state_path,result_for
+from aegistrade.c2_portfolio import C2PortfolioSettings,create_run,execute_run,load,save,state_path,result_for,resolve_human_override
 from tests.company_fixtures import FakeArchive
 from aegistrade.company_research import prepare_company_research
 
@@ -107,6 +107,89 @@ def test_insufficient_evidence_never_calls_model_or_buys(completed_c2,monkeypatc
                   researcher=lambda *a,**kw:pytest.fail('No call without evidence'))
     assert r['status']=='COMPLETED_WITH_GAPS' and not r['ledgers']['C2']
     assert r['model_usage']['attempted_calls']==0 and not r['open_holdings']
+
+
+def test_human_evidence_override_opens_linked_position_without_overwriting_c2_block(completed_c2,monkeypatch):
+    import aegistrade.c2_portfolio as portfolio
+    f=history(66);cfg=settings(f,review=60);cfg=cfg.model_copy(update={'human_override_mode':True})
+    def blocked(snapshot,*a,**kw):
+        out=completed_c2(snapshot);out['guard_pass']=False
+        out['model_errors']=['COMPANY_ASSESSMENT_BLOCKED: evidence coverage is INSUFFICIENT_EVIDENCE; no concrete adverse event identified.']
+        out['usage']=[{'total_tokens':10,'cost':.001}];return out
+    rid=create_run(f,cfg);paused=execute_run(rid,f,researcher=blocked,preparer=prepare)
+    assert paused['status']=='PAUSED_HUMAN_OVERRIDE'
+    pending=paused['pending_human_override'];assert pending['marker']=='HUMAN_EVIDENCE_OVERRIDE' and pending['proposed_action']=='BUY'
+    assert next(d for d in paused['decisions'] if d['symbol']=='DEMO')['action']=='BLOCKED'
+    monkeypatch.setattr(portfolio,'launch',lambda *a,**kw:None)
+    resolve_human_override(rid,f,pending['override_id'],'APPROVE_OVERRIDE','KK','Positive technical signal; accept evidence uncertainty for the study.')
+    resumed=execute_run(rid,f,researcher=runner(completed_c2),preparer=prepare)
+    buy=next(x for x in resumed['ledgers']['C2'] if x['event']=='BUY')
+    assert buy['marker']=='HUMAN_EVIDENCE_OVERRIDE' and buy['human_override_id']==pending['override_id']
+    assert any(x['event']=='HUMAN_DECISION' and x['decision']=='APPROVE_OVERRIDE' for x in resumed['human_override_ledger'])
+    assert any(x['event']=='POSITION_OPENED' for x in resumed['human_override_ledger'])
+    outcome=next(x for x in resumed['human_override_outcomes'] if x['override_id']==pending['override_id'])
+    assert outcome['outcome']=='INCONCLUSIVE_OPEN' and outcome['lesson_status']=='WAIT_FOR_EXIT'
+
+
+def test_human_evidence_override_can_close_existing_holding_and_link_exit(completed_c2,monkeypatch):
+    import aegistrade.c2_portfolio as portfolio
+    f=history(68);cfg=settings(f,review=1);cfg=cfg.model_copy(update={'human_override_mode':True})
+    def entry_then_blocked_sell(snapshot,*a,**kw):
+        out=completed_c2(snapshot);out['usage']=[{'total_tokens':10,'cost':.001}]
+        if snapshot['research_purpose']=='ENTRY':
+            out['portfolio_action']='ENTER';out['handoffs']['strategy']['payload']['portfolio_action']='ENTER'
+        else:
+            out['guard_pass']=False;out['portfolio_action']='HOLD'
+            out['handoffs']['strategy']['payload']['portfolio_action']='HOLD'
+            out['model_errors']=['COMPANY_ASSESSMENT_BLOCKED: holding evidence is REVIEW_REQUIRED; no concrete adverse event identified.']
+        return out
+    rid=create_run(f,cfg);paused=execute_run(rid,f,researcher=entry_then_blocked_sell,preparer=prepare)
+    assert paused['status']=='PAUSED_HUMAN_OVERRIDE' and paused['pending_human_override']['proposed_action']=='SELL'
+    pending=paused['pending_human_override'];monkeypatch.setattr(portfolio,'launch',lambda *a,**kw:None)
+    resolve_human_override(rid,f,pending['override_id'],'APPROVE_OVERRIDE','KK','Exit the holding under evidence uncertainty.')
+    finished=execute_run(rid,f,researcher=runner(completed_c2),preparer=prepare)
+    sold=next(x for x in finished['ledgers']['C2'] if x['event']=='SELL_HUMAN_OVERRIDE')
+    assert sold['marker']=='HUMAN_EVIDENCE_OVERRIDE' and sold['human_override_id']==pending['override_id']
+    assert any(x['event']=='POSITION_CLOSED' and x['exit_reason']=='SELL_HUMAN_OVERRIDE' for x in finished['human_override_ledger'])
+    outcome=next(x for x in finished['human_override_outcomes'] if x['override_id']==pending['override_id'])
+    assert outcome['outcome'] in {'SUPPORTED','NOT_SUPPORTED'} and outcome['lesson_status']=='ELIGIBLE_FOR_HUMAN_REVIEW'
+
+
+def test_override_bought_position_requires_human_confirmation_for_c2_exit(completed_c2,monkeypatch):
+    import aegistrade.c2_portfolio as portfolio
+    f=history(70);cfg=settings(f,review=1).model_copy(update={'human_override_mode':True})
+    def blocked_entry_then_exit(snapshot,*a,**kw):
+        out=completed_c2(snapshot);out['usage']=[{'total_tokens':10,'cost':.001}]
+        if snapshot['research_purpose']=='ENTRY':
+            out['guard_pass']=False
+            out['model_errors']=['COMPANY_ASSESSMENT_BLOCKED: evidence coverage is INSUFFICIENT_EVIDENCE; no adverse event.']
+        else:
+            out['portfolio_action']='EXIT';out['handoffs']['strategy']['payload']['portfolio_action']='EXIT'
+        return out
+    rid=create_run(f,cfg);first=execute_run(rid,f,researcher=blocked_entry_then_exit,preparer=prepare)
+    entry_id=first['pending_human_override']['override_id'];monkeypatch.setattr(portfolio,'launch',lambda *a,**kw:None)
+    resolve_human_override(rid,f,entry_id,'APPROVE_OVERRIDE','KK','Approve the governed entry study.')
+    exit_pause=execute_run(rid,f,researcher=blocked_entry_then_exit,preparer=prepare)
+    assert exit_pause['status']=='PAUSED_HUMAN_OVERRIDE'
+    assert exit_pause['pending_human_override']['override_id']==entry_id
+    assert exit_pause['pending_human_override']['review_trigger']=='LINKED_POSITION_EXIT'
+    resolve_human_override(rid,f,entry_id,'APPROVE_OVERRIDE','KK','Approve the linked C2 exit.')
+    after_exit=execute_run(rid,f,researcher=blocked_entry_then_exit,preparer=prepare)
+    assert any(x['event']=='SELL_HUMAN_APPROVED_C2' and x['human_override_id']==entry_id for x in after_exit['ledgers']['C2'])
+
+
+def test_notification_inbox_lists_only_pending_human_overrides():
+    from fastapi.testclient import TestClient
+    import app.api as api
+    f=history(65);rid=create_run(f,settings(f).model_copy(update={'human_override_mode':True}))
+    state=load(rid);state['status']='PAUSED_HUMAN_OVERRIDE';state['pending_human_override']={
+        'override_id':'b'*32,'symbol':'DEMO','proposed_action':'BUY','signal_date':'2024-03-01',
+        'review_trigger':'EVIDENCE_BLOCK','technical_strategy':'EMA_TREND','blocking_reason':'Insufficient dated evidence.'}
+    save(state_path(rid),state)
+    inbox=TestClient(api.app).get('/simulation/c2/notifications')
+    assert inbox.status_code==200 and inbox.json()['count']==1
+    alert=inbox.json()['notifications'][0]
+    assert alert['run_id']==rid and alert['notification_id']=='b'*32 and alert['symbol']=='DEMO'
 
 
 def test_changed_input_blocks_resume_without_model_calls(completed_c2):

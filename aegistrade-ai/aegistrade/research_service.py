@@ -196,11 +196,6 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                         "cost_reporting_complete":bool(usages) and len(reported_cost)==len(usages),
                         "mean_latency_s": round(sum(latencies)/len(rows),3),"median_latency_s":round(latencies[len(latencies)//2],3),
                         "p95_latency_s":round(p95,3)})
-    actionable=[{'case_id':x['case_id'],'portfolio_action':x.get('portfolio_action'),
-                 'action':'BUY' if x.get('portfolio_action')=='ENTER' else 'SELL'}
-                for x in outputs if x.get('config')=='C2' and x.get('guard_pass') is True
-                and x.get('critic_accept') is True and not x.get('model_errors')
-                and x.get('portfolio_action') in {'ENTER','EXIT'}]
     result = normalize({"run_id": uuid.uuid4().hex,
                         "created_utc": datetime.now(timezone.utc).isoformat(),
                         "model": model if needs_llm(s) else "not_used",
@@ -211,8 +206,8 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                         "knowledge_corpus":__import__("aegistrade.corpus",fromlist=["corpus_info"]).corpus_info(),
                         "max_possible_paid_calls": required_call_budget(s),
                         "summary":summary, "outputs":outputs,
-                        "status":"WAITING_HUMAN" if actionable else "COMPLETED",
-                        "human_review_required":actionable,"human_decisions":[],
+                        "status":"COMPLETED",
+                        "human_review_required":[],"human_decisions":[],
                         "disclaimer":"Research-only route audit. Not portfolio backtesting, investment advice, or order execution. Actual costs depend on provider usage."})
     if save_dir is not None:
         save_dir.mkdir(parents=True, exist_ok=True)

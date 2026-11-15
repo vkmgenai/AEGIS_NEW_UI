@@ -235,7 +235,7 @@ def health():
             'dated_web_search_provider':'duckduckgo_html','dated_web_max_queries':2,'dated_web_max_pages':4,
             'universe_switching_supported':True,'universe_profiles':['nifty20','nifty100','research30'],
             'smc_reentry_supported':True,'c1_smc_portfolio_supported':True,'c1_portfolio_legacy_readable':True,'portfolio_flows':['C2','TECHNICAL'],'c1_research_order':'EVIDENCE_BEFORE_SIGNAL','breakout_reentry_supported':True,'configurable_stop_loss_supported':True,'initial_stop_methods':['ATR','PERCENT'],
-            'optional_stop_loss_supported':True,'single_stock_c0_c2_comparison_supported':True,
+            'optional_stop_loss_supported':True,'single_stock_c0_c2_comparison_supported':True,'human_evidence_override_supported':True,
             'portfolio_memory_supported':True,'max_portfolio_lessons_per_case':3,'company_evidence_view':'company-view-v5-substantive-body','breakout_source_quote_required':True,'structural_action_quarantine_supported':True,'signal_specific_evidence_supported':True,'adverse_news_exit_supported':True,
             'fresh_adverse_profit_policy_supported':True,'take_profit_default_percent':8.0,'friday_entry_review':'Next trading close; fill no earlier than the following eligible open',
             'trailing_stop_supported':True,'trailing_stop_scope':'historical_portfolios','default_trailing_atr_multiple':2.0,
@@ -528,7 +528,16 @@ def research_experiments_result(run_id:str):
         raise HTTPException(422,'Invalid run ID')
     path=DATA/'research_runs'/f'{run_id}.json'
     if not path.exists():raise HTTPException(404,'Research run not found')
-    return json.loads(path.read_text(encoding='utf-8'))
+    return _refresh_human_review_state(json.loads(path.read_text(encoding='utf-8')))
+
+
+def _refresh_human_review_state(run:dict) -> dict:
+    """Keep legacy review records readable; new intervention lives in portfolio C2."""
+    from aegistrade.research_gate import human_review_candidates
+    human_review_candidates(run.get('outputs',[]))
+    run['human_review_required']=[]
+    run['status']='COMPLETED'
+    return run
 
 
 class ResearchDecisionReview(BaseModel):
@@ -585,8 +594,7 @@ def review_c2_decision(body:ResearchDecisionReview,x_reviewer_token:str|None=Hea
     experiment_status='COMPLETED'
     if run_path.exists():
         saved=json.loads(run_path.read_text(encoding='utf-8'));decisions=saved.setdefault('human_decisions',[])
-        decisions.append(row);required={x['case_id'] for x in saved.get('human_review_required',[])}
-        reviewed={x['case_id'] for x in decisions};saved['status']='COMPLETED' if required.issubset(reviewed) else 'WAITING_HUMAN'
+        decisions.append(row);saved=_refresh_human_review_state(saved)
         temp=run_path.with_name(run_path.name+'.'+uuid.uuid4().hex+'.tmp');temp.write_text(json.dumps(saved,indent=2,allow_nan=False));temp.replace(run_path)
         experiment_status=saved['status']
     return {**row,'experiment_status':experiment_status}
@@ -844,6 +852,25 @@ def c2_portfolio_recent():
         except (OSError,ValueError,KeyError):continue
     return {'runs':runs}
 
+
+@app.get('/simulation/c2/notifications')
+def c2_portfolio_notifications():
+    """Small read-only inbox for runs paused at a human override checkpoint."""
+    from aegistrade.c2_portfolio import root
+    alerts=[]
+    for path in sorted(root().glob('*/state.json'),key=lambda p:p.stat().st_mtime,reverse=True):
+        try:
+            state=json.loads(path.read_text());pending=state.get('pending_human_override')
+            if state.get('status')!='PAUSED_HUMAN_OVERRIDE' or not pending:continue
+            alerts.append({'notification_id':pending.get('notification_id',pending['override_id']),'override_id':pending['override_id'],'run_id':state['run_id'],
+                'created_utc':pending.get('created_utc'),'symbol':pending.get('symbol'),
+                'proposed_action':pending.get('proposed_action'),'signal_date':pending.get('signal_date'),
+                'review_trigger':pending.get('review_trigger','EVIDENCE_BLOCK'),
+                'technical_strategy':pending.get('technical_strategy'),
+                'message':pending.get('blocking_reason','Human review required')[:240]})
+        except (OSError,ValueError,KeyError,TypeError):continue
+    return {'count':len(alerts),'notifications':alerts[:20]}
+
 @app.get('/simulation/c2/status/{run_id}')
 def c2_portfolio_status(run_id:str):
     from aegistrade.c2_portfolio import status
@@ -854,6 +881,12 @@ def c2_portfolio_status(run_id:str):
 class C2PortfolioResume(BaseModel):
     additional_model_calls:int=Field(default=48,ge=0,le=2400)
     consent_to_paid_calls:bool=False
+
+class HumanEvidenceOverrideReview(BaseModel):
+    override_id:str=Field(pattern=r'^[0-9a-f]{32}$')
+    decision:str
+    reviewer:str=Field(min_length=2,max_length=80)
+    rationale:str=Field(min_length=3,max_length=500)
 
 def frame_for_saved_portfolio(run_id):
     """Resolve original NSE data by checksum, not whichever universe is active now."""
@@ -889,6 +922,16 @@ def c2_portfolio_pause(run_id:str,x_reviewer_token:str|None=Header(default=None)
         if not path.exists():raise HTTPException(404,'C2 portfolio run not found')
         (path.parent/'cancel').touch();return {'pause_requested':True,'note':'Stops at the next safe boundary; an active provider request may finish.'}
     except ValueError:raise HTTPException(422,'Invalid run ID') from None
+
+@app.post('/simulation/c2/human-override/{run_id}')
+def c2_human_evidence_override(run_id:str,body:HumanEvidenceOverrideReview,x_reviewer_token:str|None=Header(default=None)):
+    auth(x_reviewer_token)
+    from aegistrade.c2_portfolio import resolve_human_override,status
+    try:
+        resolve_human_override(run_id,frame_for_saved_portfolio(run_id),body.override_id,body.decision.upper(),body.reviewer,body.rationale)
+        return status(run_id)
+    except FileNotFoundError:raise HTTPException(404,'C2 portfolio run not found') from None
+    except ValueError as exc:raise HTTPException(409,str(exc)) from None
 
 @app.get('/simulation/c2/research/{run_id}/{decision_id}')
 def c2_portfolio_research(run_id:str,decision_id:str):

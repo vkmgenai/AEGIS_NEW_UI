@@ -26,6 +26,7 @@ def test_ui_dataset_backtest_and_research_handoff(monkeypatch,tmp_path):
     assert not at.exception
     assert at.selectbox(key='aegis_workspace').value=='Market Data'
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
+    at.button(key='strategy_tile_portfolio').click().run()
     assert not at.exception
     at.radio(key='simulation_engine').set_value('C0 Technical baseline').run()
     next(x for x in at.checkbox if x.label.startswith('I approve these')).check()
@@ -101,6 +102,7 @@ def test_ui_c2_portfolio_requires_and_sends_paid_rule_consent(monkeypatch,tmp_pa
     monkeypatch.setattr(requests,'get',get);monkeypatch.setattr(requests,'post',post)
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30).run()
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
+    at.button(key='strategy_tile_portfolio').click().run()
     assert at.radio(key='simulation_engine').value=='C2 historical portfolio'
     assert not any(x.label=='Initial stop loss (% below signal close)' for x in at.number_input)
     assert not any(x.label=='Slippage (basis points per transaction)' for x in at.number_input)

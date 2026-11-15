@@ -76,3 +76,26 @@ def validate_completed_c2(output:dict,*,purpose='ENTRY') -> dict:
             'portfolio_action':action,'research_purpose':purpose,
             'company_pack_sha256':company['pack_sha256'],'decision_at':company['decision_at'],
             'company_sources':sources}
+
+
+def human_review_candidates(outputs:list[dict]) -> list[dict]:
+    """Return only C2 actions that pass the same authoritative gate used at review time.
+
+    The annotations let the UI explain why a superficially successful result is
+    not reviewable, without changing model-error accounting or making a model call.
+    """
+    candidates=[]
+    for output in outputs:
+        output.pop('human_review_gate_error',None)
+        output['human_review_eligible']=False
+        if output.get('config')!='C2' or output.get('portfolio_action') not in {'ENTER','EXIT'}:
+            continue
+        purpose=output.get('research_purpose') or output.get('snapshot',{}).get('research_purpose','ENTRY')
+        try:validated=validate_completed_c2(output,purpose=purpose)
+        except (ValueError,KeyError,TypeError) as exc:
+            output['human_review_gate_error']=str(exc)
+            continue
+        output['human_review_eligible']=True
+        candidates.append({'case_id':output['case_id'],'portfolio_action':validated['portfolio_action'],
+                           'action':'BUY' if validated['portfolio_action']=='ENTER' else 'SELL'})
+    return candidates

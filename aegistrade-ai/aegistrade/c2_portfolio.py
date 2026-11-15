@@ -31,7 +31,7 @@ from .dated_web import eligible as web_eligible
 from .breakout_reentry import register_breakout_stop,reentry_candidates,reentry_context
 from . import smc_reentry
 
-VERSION='portfolio-v9-c2-five-route-fixed-delivery-fees-v1'
+VERSION='portfolio-v10-human-evidence-override-v1'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
@@ -47,6 +47,7 @@ class C2PortfolioSettings(SimulationSettings):
     holding_review_sessions:int=Field(default=5,ge=1,le=60)
     screening_candidates_per_session:int=Field(default=3,ge=1,le=10)
     target_symbol:str|None=Field(default=None,pattern=r'^[A-Z0-9][A-Z0-9_&-]{1,29}$')
+    human_override_mode:bool=False
 
     @model_validator(mode='after')
     def c2_rules(self):
@@ -120,6 +121,7 @@ def create_run(frame,settings,*,source='synthetic',provenance=None,model=None):
         'decisions':[],'processed_close_keys':[],'model_calls':0,'budget_charged':0,'uncertain_model_calls':0,
         'call_limit':settings.max_model_calls,'inflight':None,'usage':[],'last_error':None,
         'research_attempts':{},'breakout_reentry_watches':{},'smc_reentry_watches':{},
+        'pending_human_override':None,'human_override_ledger':[],
         'consents':[{'at':now(),'call_limit':settings.max_model_calls,'historical_rules':True}],
         'execution_policy':'Automatic historical fills under upfront approved rules; no live writes or per-fill human pause.'}
     # The reference uses identical data, capital, costs and risk; it has no C2 filters/reviews.
@@ -168,12 +170,29 @@ def validate_memory_state(state,settings):
 class PauseBudget(Exception):pass
 class Cancelled(Exception):pass
 class PauseProvider(Exception):pass
+class PauseHumanOverride(Exception):pass
+
+
+def evidence_override_eligible(rec,snapshot,*,holding=False):
+    """Only uncertainty blocks may be overridden; hard safety/policy failures may not."""
+    category=rec.get('failure_category')
+    if rec.get('action')!='BLOCKED' or category not in {None,'EVIDENCE'}:return False
+    adverse=(rec.get('company_assessment') or {}).get('adverse_risk')
+    if adverse in {'ADVERSE_EVENT_FOUND','MATERIAL_ADVERSE','CONFIRMED_ADVERSE'}:return False
+    if holding:
+        if snapshot.get('research_purpose')!='HOLDING_REVIEW' or not snapshot.get('holding_context'):return False
+    elif snapshot.get('approved_candidate') in {None,'NONE'}:return False
+    text=' '.join(rec.get('errors',[])).upper()
+    markers=('INSUFFICIENT_EVIDENCE','REVIEW_REQUIRED','COMPANY_ASSESSMENT_BLOCKED','INSUFFICIENT COMPANY EVIDENCE','EVIDENCE COVERAGE')
+    return category=='EVIDENCE' or any(marker in text for marker in markers)
 
 
 def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None,news_monitor=None):
     """Resume exact day/phase. Dependency injection is for explicit contract tests only."""
     state=load(run_id);settings=settings_for_state(state)
     if state['status'].startswith('COMPLETED'):return result_for(state)
+    if state.get('pending_human_override'):
+        state['status']='PAUSED_HUMAN_OVERRIDE';save(state_path(run_id),state);return result_for(state)
     validate_memory_state(state,settings)
     f=frame_for(frame,settings,state['data_provenance'])
     if state['version']!=VERSION or state['prompt_version']!=CONFIG['version'] or state['corpus_sha256']!=corpus_info()['sha256'] or fingerprint(f)!=state['input_sha256']:
@@ -189,6 +208,19 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     p=policy_from_settings(settings)
     path=state_path(run_id);folder=path.parent;groups={str(d.date()):g for d,g in f.groupby('Date',sort=True)}
     def checkpoint():state['updated_utc']=now();save(path,state)
+    def pause_for_override(rec,snapshot,key,proposed_order,override_id=None):
+        override_id=override_id or uuid.uuid4().hex
+        pending={'override_id':override_id,'notification_id':uuid.uuid4().hex,'marker':'HUMAN_EVIDENCE_OVERRIDE','case_key':key,
+                 'research_id':rec.get('id'),'symbol':snapshot['symbol'],'signal_date':snapshot['date'],
+                 'purpose':snapshot['research_purpose'],'proposed_action':'SELL' if snapshot['research_purpose']=='HOLDING_REVIEW' else 'BUY',
+                 'review_trigger':'EVIDENCE_BLOCK' if rec.get('action')=='BLOCKED' else 'LINKED_POSITION_EXIT',
+                 'technical_strategy':(snapshot.get('holding_context') or {}).get('strategy') or snapshot.get('approved_candidate'),
+                 'blocking_reason':'; '.join(rec.get('errors',[])) or rec.get('explanation','Insufficient evidence'),
+                 'company_assessment':rec.get('company_assessment'),'proposed_order':proposed_order,
+                 'created_utc':now()}
+        state['pending_human_override']=pending
+        state['human_override_ledger'].append({k:v for k,v in pending.items() if k!='proposed_order'}|{'event':'REVIEW_REQUESTED'})
+        checkpoint();raise PauseHumanOverride()
     def activity(stage,snapshot=None,**details):
         # Separate bounded sidecar: a tool event never rewrites the financial checkpoint.
         value={'run_id':run_id,'stage':stage,'updated_utc':now(),
@@ -283,7 +315,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         if not validated and not rec['errors']:rec['errors']=['Completed C2 validation failed']
         return rec
 
-    def sell(sym,bar,when,reason,reference,research_id=None):
+    def sell(sym,bar,when,reason,reference,research_id=None,human_override_id=None):
         pos=state['positions'].pop(sym);price=reference*(1-p.slippage_bps/10000);smc_watch_id=None
         if reason in {'SELL_STOP','SELL_TRAILING_STOP'}:
             register_breakout_stop(state.setdefault('breakout_reentry_watches',{}),{**pos,'symbol':sym},when,state['day_index'],p.breakout_reentry_enabled)
@@ -297,6 +329,12 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
             'initial_stop':pos.get('initial_stop',pos['stop']),'stop_price':pos['stop'],'take_profit_reference':take_profit_reference(pos,p),
             'entry_research_id':pos['entry_research_id'],'research_id':research_id,'entry_date':pos['entry_date'],
             'stop_watch_id':smc_watch_id,'smc_context':pos.get('smc_context'),'smc_reentry_count':pos.get('smc_reentry_count',0)})
+        linked_override=human_override_id or pos.get('human_override_id')
+        if linked_override:
+            state['ledger'][-1]['human_override_id']=linked_override;state['ledger'][-1]['marker']='HUMAN_EVIDENCE_OVERRIDE'
+            state['human_override_ledger'].append({'override_id':linked_override,'position_id':pos.get('human_override_id') or linked_override,
+                'marker':'HUMAN_EVIDENCE_OVERRIDE','event':'POSITION_CLOSED','symbol':sym,'date':when,'exit_reason':reason,
+                'exit_price':price,'realized_pnl':state['ledger'][-1]['realized_pnl'],'research_id':research_id})
 
     try:
         for index in range(state['day_index'],len(state['dates'])):
@@ -329,14 +367,18 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                                 except (ValueError,KeyError,TypeError,OSError):
                                     state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['C2 exit research changed before fill']});continue
                             reason=stop_exit_reason(pos) if stop_gap else ('SELL_TAKE_PROFIT' if take_profit_reference(pos,p) is not None and float(bar.Open)>=take_profit_reference(pos,p) else order['reason'])
-                            sell(sym,bar,when,reason,float(bar.Open),order.get('research_id'))
+                            sell(sym,bar,when,reason,float(bar.Open),order.get('research_id'),order.get('human_override_id'))
                     elif sym not in state['positions'] and len(state['positions'])<p.max_positions:
                         buy=float(bar.Open)*(1+p.slippage_bps/10000);eq=equity(True)
                         # Durable research is revalidated before a simulated fill; a changed pack blocks it.
                         try:
-                            out=json.loads((folder/'research'/f"{order['research_id']}.json").read_text())
-                            if flow=='C1':validate_smc_order(order,out,f,p,state=state)
-                            else:validator(out,purpose='ENTRY')
+                            if order.get('human_override_id') and not order.get('research_id'):
+                                out={'snapshot':{'ATR14':order['entry_signal_atr']}}
+                            else:
+                                out=json.loads((folder/'research'/f"{order['research_id']}.json").read_text())
+                            if not order.get('human_override_id'):
+                                if flow=='C1':validate_smc_order(order,out,f,p,state=state)
+                                else:validator(out,purpose='ENTRY')
                         except (ValueError,KeyError,TypeError,OSError):
                             state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Entry research changed before next eligible open']});continue
                         active_policy=policy_for_strategy(p,order['strategy'])
@@ -349,6 +391,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                                 'strategy':order['strategy'],'entry_date':when,'entry_index':index,'last_review_index':index,
                                 'last_news_date':order['signal_date'],
                                 'entry_research_id':order['research_id']}
+                            if order.get('human_override_id'):state['positions'][sym]['human_override_id']=order['human_override_id']
                             state['positions'][sym]['smc_context']=order.get('smc_context')
                             state['positions'][sym]['smc_reentry_count']=int(bool(order.get('smc_reentry')))
                             if order.get('smc_reentry'):state['smc_reentry_watches'].pop(sym,None)
@@ -358,6 +401,11 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                             state['ledger'].append({'date':when,'symbol':sym,'event':'BUY','quantity':qty,'price':buy,'fee':fee,
                                 'initial_stop':order['stop'],'strategy':order['strategy'],'realized_pnl':None,'research_id':order['research_id'],'signal_date':order['signal_date'],'original_signal_date':order.get('original_signal_date',order['signal_date']),
                                 'risk_percent_used':active_policy.risk_per_trade*100,'trailing_activation_r':active_policy.trailing_activation_r})
+                            if order.get('human_override_id'):
+                                state['ledger'][-1].update(human_override_id=order['human_override_id'],marker='HUMAN_EVIDENCE_OVERRIDE')
+                                state['human_override_ledger'].append({'override_id':order['human_override_id'],'position_id':order['human_override_id'],
+                                    'marker':'HUMAN_EVIDENCE_OVERRIDE','event':'POSITION_OPENED','symbol':sym,'date':when,
+                                    'entry_price':buy,'quantity':qty,'strategy':order['strategy'],'research_id':order['research_id']})
                             state['ledger'][-1]['entry_setup']='SMC_RECOVERY' if order.get('smc_reentry') else 'SMC_EVIDENCE_FIRST' if flow=='C1' else 'BREAKOUT_BOUNCE' if order.get('breakout_reentry') else 'REGULAR'
                             if flow=='C1':state['ledger'][-1].update(smc_context=order['smc_context'],smc_reentry=order.get('smc_reentry'))
                         else:state['decisions'].append({'date':when,'symbol':sym,'action':'FILL_BLOCKED','errors':['Next-open gap, risk, cash or daily-loss check failed']})
@@ -407,6 +455,14 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                 if news_trigger:snapshot['holding_context']['review_trigger']='New dated issuer disclosure candidate; assess actual adverse content'
                 rec=decide(snapshot,key)
                 pos['last_review_index']=index
+                if settings.human_override_mode and evidence_override_eligible(rec,snapshot,holding=True):
+                    state['decisions'].append(rec);state['processed_close_keys'].append(key)
+                    pause_for_override(rec,snapshot,key,{'side':'SELL','symbol':sym,'reason':'SELL_HUMAN_OVERRIDE',
+                        'signal_date':when,'research_id':rec.get('id')})
+                if settings.human_override_mode and pos.get('human_override_id') and rec['action']=='EXIT':
+                    state['decisions'].append(rec);state['processed_close_keys'].append(key)
+                    pause_for_override(rec,snapshot,key,{'side':'SELL','symbol':sym,'reason':'SELL_HUMAN_APPROVED_C2',
+                        'signal_date':when,'research_id':rec.get('id')},override_id=pos['human_override_id'])
                 if rec['action']=='EXIT':state['queued'].append({'side':'SELL','symbol':sym,'reason':'SELL_'+flow,'signal_date':when,'research_id':rec['id']})
                 state['decisions'].append(rec);state['processed_close_keys'].append(key)
                 checkpoint()
@@ -476,6 +532,14 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
                         if signal:
                             rec['smc_context']=watch['smc_context'] if watched else bar.SMCContext
                             if watched:rec['smc_reentry']=smc_reentry.context(watch)
+                    if flow=='C2' and settings.human_override_mode and evidence_override_eligible(rec,snapshot):
+                        strategy=chosen_strategy(bar);stop=initial_stop_price(bar.Close,bar.ATR14,policy_for_strategy(p,strategy))
+                        proposed={'side':'BUY','symbol':sym,'strategy':strategy,'stop':stop,'signal_date':when,
+                            'original_signal_date':origins.get(sym,when),'research_id':rec.get('id'),
+                            'entry_signal_atr':float(bar.ATR14),
+                            'breakout_reentry':bar.Regime=='BREAKOUT_BOUNCE'}
+                        state['decisions'].append(rec);state['processed_close_keys'].append(key)
+                        pause_for_override(rec,snapshot,key,proposed)
                     if rec['action']=='ENTER' and entry_slots<=0:
                         rec.update(action='QUALIFIED_NOT_SELECTED',explanation='Research passed, but higher-ranked evidence-qualified candidates filled the available portfolio slots. '+rec.get('explanation',''))
                     if rec['action']=='ENTER':
@@ -502,12 +566,43 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         completed_total.inc()
     except PauseBudget:state['status']='PAUSED_BUDGET'
     except PauseProvider:state['status']='PAUSED_PROVIDER'
+    except PauseHumanOverride:state['status']='PAUSED_HUMAN_OVERRIDE'
     except Cancelled:state['status']='PAUSED_USER'
     except Exception as exc:
         state=load(run_id)  # rollback any uncheckpointed partial phase mutations
         state['status']='INTERRUPTED';state['last_error']=type(exc).__name__
     activity(state['status'])
     checkpoint();return result_for(state)
+
+
+def human_override_outcomes(state,holdings):
+    """Describe lifecycle maturity without automatically converting outcomes into lessons."""
+    events=state.get('human_override_ledger',[]);by_id={}
+    holding_by_id={h.get('human_override_id'):h for h in holdings if h.get('human_override_id')}
+    for event in events:
+        oid=event.get('override_id')
+        if oid:by_id.setdefault(oid,[]).append(event)
+    rows=[]
+    for oid,items in by_id.items():
+        request=next((x for x in items if x.get('event')=='REVIEW_REQUESTED'),items[0])
+        decision=next((x for x in reversed(items) if x.get('event')=='HUMAN_DECISION'),None)
+        closed=next((x for x in reversed(items) if x.get('event')=='POSITION_CLOSED'),None)
+        opened=next((x for x in reversed(items) if x.get('event')=='POSITION_OPENED'),None)
+        row={'override_id':oid,'symbol':request.get('symbol'),'proposed_action':request.get('proposed_action'),
+             'human_decision':decision.get('decision') if decision else 'PENDING','reviewer':decision.get('reviewer') if decision else None,
+             'position_id':(opened or {}).get('position_id')}
+        if closed:
+            pnl=float(closed.get('realized_pnl') or 0);row.update(outcome='SUPPORTED' if pnl>0 else 'NOT_SUPPORTED',
+                realized_pnl=pnl,exit_reason=closed.get('exit_reason'),lesson_status='ELIGIBLE_FOR_HUMAN_REVIEW')
+        elif opened and oid in holding_by_id:
+            row.update(outcome='INCONCLUSIVE_OPEN',unrealized_pnl=holding_by_id[oid].get('unrealized_pnl'),lesson_status='WAIT_FOR_EXIT')
+        elif decision and decision.get('decision')=='KEEP_BLOCKED':
+            row.update(outcome='INCONCLUSIVE_NOT_EXECUTED',lesson_status='COUNTERFACTUAL_REVIEW_REQUIRED')
+        elif decision:
+            row.update(outcome='APPROVED_AWAITING_FILL',lesson_status='WAIT_FOR_FILL')
+        else:row.update(outcome='PENDING_HUMAN_DECISION',lesson_status='NOT_ELIGIBLE')
+        rows.append(row)
+    return rows
 
 
 def result_for(state):
@@ -588,6 +683,8 @@ def result_for(state):
         'curves':{flow:rows,reference_mode:reference_curve},'ledgers':{flow:state['ledger'],reference_mode:state['reference'].get('ledger',[]) if terminal else []},
         'news_checks':list(state.get('news_checks',{}).values()),
         'benchmark':benchmark,'open_holdings':holdings,'pending_orders':state['queued'],'decisions':decisions,
+        'pending_human_override':state.get('pending_human_override'),'human_override_ledger':state.get('human_override_ledger',[]),
+        'human_override_outcomes':human_override_outcomes(state,holdings),
         'initial_stop_loss':initial_stop_settings(exit_settings),'stop_updates':state.get('stop_updates',[]),'deferred_entries':state.get('deferred_entries',[]),
         'exit_policy':{'take_profit_percent':state['settings'].get('take_profit_percent',0),'take_profit_basis':'Net of modeled entry/exit fees; execution includes slippage; ambiguous daily bars use stop first',
             'review_after_gap':state['settings'].get('review_after_gap',False),'trailing_stop_enabled':state['settings'].get('trailing_stop_enabled',False),
@@ -627,11 +724,32 @@ def status(run_id):
     if state['status'] in {'RUNNING','QUEUED'} and not result['worker_active']:result['status']='INTERRUPTED'
     return result
 
+def resolve_human_override(run_id,frame,override_id,decision,reviewer,rationale):
+    """Resolve one evidence-uncertainty pause and continue the same checkpointed run."""
+    with _lock:
+        if active(run_id):raise ValueError('Run is still active')
+        state=load(run_id);pending=state.get('pending_human_override')
+        if not pending or state.get('status')!='PAUSED_HUMAN_OVERRIDE':raise ValueError('No human evidence override is awaiting review')
+        if pending.get('override_id')!=override_id:raise ValueError('Override ID does not match the pending decision')
+        if decision not in {'APPROVE_OVERRIDE','KEEP_BLOCKED'}:raise ValueError('Decision must be APPROVE_OVERRIDE or KEEP_BLOCKED')
+        if len(reviewer.strip())<2 or len(rationale.strip())<3:raise ValueError('Reviewer and rationale are required')
+        event={k:v for k,v in pending.items() if k!='proposed_order'}
+        event.update(event='HUMAN_DECISION',decision=decision,reviewer=reviewer.strip(),rationale=rationale.strip(),decided_utc=now())
+        state.setdefault('human_override_ledger',[]).append(event)
+        if decision=='APPROVE_OVERRIDE':
+            order=dict(pending['proposed_order']);order['human_override_id']=override_id
+            state['queued'].append(order)
+        state['pending_human_override']=None;state['status']='QUEUED'
+        state.setdefault('consents',[]).append({'at':now(),'human_override_id':override_id,'decision':decision})
+        save(state_path(run_id),state);launch(run_id,frame)
+        return result_for(state)
+
 def resume(run_id,frame,additional_calls):
     with _lock:
         if active(run_id):raise ValueError('Run already active')
         state=load(run_id)
         if state['status'].startswith('COMPLETED'):raise ValueError('Completed run cannot be resumed')
+        if state.get('pending_human_override'):raise ValueError('Resolve the pending human evidence override before resuming')
         if not 0<=additional_calls<=2400:raise ValueError('Additional call allowance must be between 0 and 2400')
         settings=settings_for_state(state)
         validate_memory_state(state,settings)
