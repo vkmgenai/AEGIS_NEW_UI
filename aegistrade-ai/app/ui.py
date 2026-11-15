@@ -472,7 +472,7 @@ elif page == "Overview":
         st.caption("These are preapproved routing candidates, not automatic authorizations to trade.")
     with st.expander("How the AegisTrade workflow connects these parts", expanded=True):
         st.markdown("**Daily market data** → **Automatic stock ranking** → **Completed C2 research + critic/code checks** → **Code-sized order** → **Human approval** → **Final freshness/risk checks** → **Simulated broker + audit**")
-        st.info("Next: run Strategy Backtests, inspect the stock-selection audit, then send selected candidates through C2. Only grounded, critic-accepted C2 BUY/SELL recommendations can be presented for human review in AI Agent Experiments.")
+        st.info("Next: run Strategy Backtests, inspect the stock-selection audit, then send selected candidates through C2. AI Agent Experiments run to completion without pausing. Human intervention is available only in a C2 portfolio run in Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE enabled.")
 
 elif page == "Strategy Backtests":
     strategy_view=st.session_state.get('strategy_backtest_view','landing')
@@ -824,7 +824,7 @@ elif page == "Strategy Backtests":
 
 elif page == "AI Agent Experiments":
     heading("GenAI and agentic AI experiments", "Compare strategy-routing research on the SAME scenarios. C0 uses no LLM; C1 is one tool-using agent; C2 coordinates market, strategy and critic specialists. Both share an eight-call ceiling per case. NO TRADES ARE PLACED.")
-    st.info("Use this workspace for the guideline-required fair C0/C1/C2 agent ablation and human review of grounded C2 recommendations. The single-stock C0/C2 P&L comparison is now in Strategy Backtests.")
+    st.info("Use this workspace for the guideline-required fair C0/C1/C2 agent ablation. An experiment runs to completion and does not pause for human approval. The single-stock C0/C2 P&L comparison is now in Strategy Backtests.")
     with st.container(border=True):
         a,b=st.columns(2)
         inference=health.get("inference",{})
@@ -915,7 +915,7 @@ elif page == "AI Agent Experiments":
             st.download_button('Download complete comparison JSON',json.dumps(comparison,indent=2),file_name='aegistrade_c0_c2_'+comparison['run_id'][:8]+'.json',mime='application/json')
             st.caption(comparison['comparison_design']['interpretation']+' Use the case experiment below for the fair same-case, same-budget multi-agent evaluation.')
     selection_settings=st.session_state.get('selection_research_settings',{})
-    st.caption("The experiment automatically ranks eligible stocks and retrieves dated evidence. C2 pauses only when a grounded recommendation requires human review; detailed evidence remains available in the saved trace.")
+    st.caption("The experiment automatically ranks eligible stocks and retrieves dated evidence. The experiment does not pause for human approval; to test human intervention, run a C2 portfolio in Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE enabled. Detailed evidence remains available in the saved trace.")
     screening_capital=float(selection_settings.get('capital',200000.))
     with st.form("agent_comparison_form"):
         s1,s2=st.columns(2)
@@ -960,7 +960,6 @@ elif page == "AI Agent Experiments":
     experiment=st.session_state.get("agent_experiment_result")
     if experiment:
         st.markdown("#### Research experiment results")
-        if experiment.get('status')=='WAITING_HUMAN':st.warning('C2 research is complete and checkpointed. The experiment is waiting for human review; approving or rejecting makes no additional model call.')
         st.caption(f"Run {experiment['run_id']} | Status: {experiment.get('status','COMPLETED')} | Model: {experiment['model']} | Call budget: {experiment['max_possible_paid_calls']}")
         summary=pd.DataFrame(experiment.get("summary",[]))
         outputs=experiment.get("outputs",[])
