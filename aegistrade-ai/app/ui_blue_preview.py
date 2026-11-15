@@ -307,18 +307,25 @@ def provider_selector(place):
     names=[n for n in PROVIDER_LABELS if n in options]
     if not names:return active
     active=listing.get('selected',active)
-    a,b=st.columns([3,1])
-    chosen=a.selectbox('Run AI agents using',names,index=names.index(active) if active in names else 0,key='provider_'+place,
-        format_func=lambda n:PROVIDER_LABELS[n]+(' — ready' if options[n].get('ready') else ' — not ready'),
-        help='Claude and ChatGPT use the login of their command-line tool on this computer. OpenRouter uses the API key in .env. No key or password is entered here.')
-    picked=options[chosen]
-    b.write('');b.write('')
-    if b.button('Use this provider',key='provider_apply_'+place,disabled=chosen==active or not reviewer_token):
+    key='provider_'+place
+    def apply_choice():
+        # Runs only when the person changes the dropdown, so a run can never start on the previous provider by mistake.
+        wanted=st.session_state.get(key)
+        if not reviewer_token:
+            st.session_state['provider_notice']='The provider has NOT changed: reviewer authorization is not configured.';return
         try:
-            post('/inference/backend',{'backend':chosen},reviewer_token,timeout=40);st.rerun()
-        except Exception as exc:fail('The provider could not be changed.',exc)
-    if chosen!=active:
-        st.caption('Selected: '+PROVIDER_LABELS[chosen]+'. '+('Configure AEGIS_REVIEWER_TOKEN in .env and restart the app.' if not reviewer_token else 'Press "Use this provider" to switch.')+' Currently active: '+PROVIDER_LABELS.get(active,active)+'.')
+            post('/inference/backend',{'backend':wanted},reviewer_token,timeout=40)
+            st.session_state['provider_notice']='Provider changed to '+PROVIDER_LABELS.get(wanted,str(wanted))+'. New runs use it.'
+        except Exception as exc:st.session_state['provider_notice']='The provider could NOT be changed: '+str(exc)[:200]
+    st.session_state[key]=active if active in names else names[0]
+    a,b=st.columns([3,1])
+    chosen=a.selectbox('Run AI agents using',names,key=key,on_change=apply_choice,
+        format_func=lambda n:PROVIDER_LABELS[n]+(' — ready' if options[n].get('ready') else ' — not ready'),
+        help='The choice applies as soon as you pick it. Claude and ChatGPT use the login of their command-line tool on this computer. OpenRouter uses the API key in .env. No key or password is entered here.')
+    picked=options[chosen]
+    b.write('');b.write('');b.success('Active')
+    notice=st.session_state.pop('provider_notice',None)
+    if notice:(st.error if 'NOT' in notice else st.success)(notice)
     st.caption(('Ready. ' if picked.get('ready') else 'Not ready. ')+str(picked.get('reason',''))+' Model: '+str(picked.get('model','unknown'))+'.')
     st.caption(PROVIDER_NOTES[chosen]+' A saved C1 or C2 run stays tied to the provider it started on: switch back to resume it, or start a new run.')
     return active

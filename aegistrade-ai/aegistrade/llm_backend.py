@@ -383,10 +383,23 @@ class CodexClient:
 # ---------------------------------------------------------------------------
 def claude_error_code(text):
     text=text.lower()
-    if any(s in text for s in ('usage limit','rate limit','quota','limit reached','overloaded','429')):return 'CLAUDE_QUOTA'
+    if any(s in text for s in ('usage limit','rate limit','rate_limit','quota','limit reached','overloaded','too many requests','status 429','status: 429','"api_error_status": 429')):return 'CLAUDE_QUOTA'
     if any(s in text for s in ('not logged','authentication','please log','login','/login','invalid api key','oauth')):return 'CLAUDE_AUTH_REQUIRED'
     if 'model' in text and any(s in text for s in ('not supported','not available','not found','invalid')):return 'CLAUDE_MODEL_UNAVAILABLE'
     return 'CLAUDE_EXEC_FAILED'
+
+
+def claude_failure_text(result):
+    """Only the fields that describe a failure. Token counts, costs and ids are left out so a stray number is never read as a status."""
+    return json.dumps({k:result.get(k) for k in ('subtype','result','error','api_error_status','errors') if result.get(k) is not None})[:4000]
+
+
+def claude_retry_waits():
+    """Seconds to wait before each retry of a temporary Claude rate limit. Blank disables retries."""
+    raw=os.getenv('AEGIS_CLAUDE_RETRY_WAITS','20,60')
+    waits=[float(x) for x in raw.split(',') if x.strip()]
+    if len(waits)>4 or any(not 0<=w<=300 for w in waits):raise ValueError('AEGIS_CLAUDE_RETRY_WAITS allows at most four waits of 0–300 seconds')
+    return waits
 
 
 def claude_command(binary,folder,model,schema):
@@ -458,16 +471,24 @@ class ClaudeCliClient:
                 schema=envelope_schema(names,tool_choice,final_schema)
                 prompt=json.dumps({'conversation':messages,'allowed_virtual_tools':tools or [],'tool_choice':tool_choice,
                     'response_guidance':f'Keep the final content concise, approximately within {max_tokens} tokens. No native tools.'},ensure_ascii=True)
-                code,stdout,stderr=_execute(claude_command(binary,folder,self.model,schema),prompt,env=claude_environment(),cwd=folder,timeout=timeout_seconds('claude_cli'))
-                if len(stdout)>2_000_000 or len(stderr)>200_000:raise ValueError('CLI output exceeds adapter bounds')
-                stage='result_object'
-                try:result=json.loads(stdout)
-                except json.JSONDecodeError:
-                    if code!=0:record['error_code']=claude_error_code(stdout+'\n'+stderr);raise RuntimeError('Claude rejected or could not finish the invocation') from None
-                    raise
-                if not isinstance(result,dict):raise ValueError('Invalid response envelope')
-                if code!=0 or result.get('is_error') or result.get('subtype','success')!='success':
-                    record['error_code']=claude_error_code(json.dumps(result)[:4000]+'\n'+stderr)
+                waits=claude_retry_waits();attempt=0
+                while True:
+                    stage='invocation';failure=None
+                    code,stdout,stderr=_execute(claude_command(binary,folder,self.model,schema),prompt,env=claude_environment(),cwd=folder,timeout=timeout_seconds('claude_cli'))
+                    if len(stdout)>2_000_000 or len(stderr)>200_000:raise ValueError('CLI output exceeds adapter bounds')
+                    stage='result_object'
+                    try:result=json.loads(stdout)
+                    except json.JSONDecodeError:
+                        if code==0:raise
+                        result=None;failure=claude_error_code(stdout[:4000]+'\n'+stderr)
+                    if result is not None and not isinstance(result,dict):raise ValueError('Invalid response envelope')
+                    if result is not None and (code!=0 or result.get('is_error') or result.get('subtype','success')!='success'):
+                        failure=claude_error_code(claude_failure_text(result)+'\n'+stderr)
+                    if failure is None:break
+                    # A temporary rate limit or overload usually clears within a minute; wait and retry before pausing the whole run.
+                    if failure=='CLAUDE_QUOTA' and attempt<len(waits):
+                        time.sleep(waits[attempt]);attempt+=1;record['transient_limit_retries']=attempt;continue
+                    record['error_code']=failure
                     raise RuntimeError('Claude rejected or could not finish the invocation')
                 if result.get('permission_denials'):
                     record['error_code']='CLAUDE_TOOL_VIOLATION';raise ValueError('Unexpected native CLI tool event')

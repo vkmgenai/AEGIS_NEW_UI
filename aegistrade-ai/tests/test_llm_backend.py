@@ -296,3 +296,27 @@ def test_api_switches_provider_only_with_reviewer_token(monkeypatch):
     assert health['inference']['backend']=='claude_cli' and health['inference_backend_switch_supported'] and health['agent_model']=='claude-default'
     listing=client.get('/inference/backends').json()
     assert listing['selected']=='claude_cli' and all('binary' not in o for o in listing['options'])
+
+
+def test_claude_temporary_limit_is_retried_before_the_run_pauses(monkeypatch):
+    monkeypatch.setenv('AEGIS_CLAUDE_RETRY_WAITS','0,0')
+    monkeypatch.setattr(b,'claude_binary',lambda:'/test/claude')
+    monkeypatch.setattr(b,'backend_info',lambda **kw:{'ready':True,'cli_version':'test-claude'})
+    limited={'type':'result','subtype':'success','is_error':True,'result':'API Error: Rate limit reached','usage':{}}
+    replies=[limited,limited,ok({'kind':'final','content':'{"accept":true}','tool_calls':[]})]
+    def execute(command,prompt,*,env,cwd,timeout):return 0,json.dumps(replies.pop(0)),''
+    monkeypatch.setattr(b,'_execute',execute)
+    c=b.ClaudeCliClient()
+    assert json.loads(c.complete('x'))=={'accept':True}
+    assert c.calls==1 and c.usage[0]['transient_limit_retries']==2 and 'error_code' not in c.usage[0]
+    # Still limited after every retry: the attempt fails closed as before.
+    replies[:]=[limited,limited,limited]
+    with pytest.raises(RuntimeError,match='CLAUDE_QUOTA'):c.complete('x')
+    assert c.usage[1]['error_code']=='CLAUDE_QUOTA' and c.usage[1]['transient_limit_retries']==2
+
+
+def test_claude_token_counts_are_not_mistaken_for_a_rate_limit(monkeypatch):
+    fake_claude(monkeypatch,{'type':'result','subtype':'error_during_execution','is_error':True,'result':'Unexpected failure',
+                             'usage':{'input_tokens':1429,'output_tokens':4290},'session_id':'a429b'})
+    c=b.ClaudeCliClient()
+    with pytest.raises(RuntimeError,match='CLAUDE_EXEC_FAILED'):c.complete('x')

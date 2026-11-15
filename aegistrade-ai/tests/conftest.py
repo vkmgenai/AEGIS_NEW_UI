@@ -44,6 +44,7 @@ def isolate_runtime_market_configuration(monkeypatch,tmp_path):
     monkeypatch.setenv('AEGIS_DATA_DIR',str(tmp_path))
     monkeypatch.setenv('AEGIS_LLM_BACKEND','openrouter')
     monkeypatch.delenv('AEGIS_LLM_MODEL',raising=False)
+    monkeypatch.setenv('AEGIS_CLAUDE_RETRY_WAITS','')
     monkeypatch.setenv('AEGIS_DATA_SOURCE','synthetic')
     monkeypatch.setenv('AEGIS_RETRIEVAL_MODE','offline')
     monkeypatch.setenv('AEGIS_NSE_DATASET_DIR',str(tmp_path/'nse_nifty20'))
