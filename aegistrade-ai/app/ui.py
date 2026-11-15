@@ -491,6 +491,7 @@ elif page == "Strategy Backtests":
         st.session_state['strategy_backtest_view']='landing';st.rerun()
     if strategy_view=='single':
         heading('Single-stock C0/C2 comparison','Run one selected stock through the deterministic C0 and checkpointed C2 engines under shared assumptions.')
+        with st.container(border=True):provider_selector('single')
         render_single_stock_comparison(universe,reviewer_token,health)
         with st.expander('How should I interpret this comparison?',expanded=True):
             st.markdown('Compare ledgers, equity curves, return and drawdown under the same stock/window. C2 adds dated evidence and specialist/critic calls; this does not guarantee that C2 will outperform C0.')
@@ -499,6 +500,8 @@ elif page == "Strategy Backtests":
     simulation_engine=st.radio('Backtest workflow',['C2 historical portfolio','C0 Technical baseline'],horizontal=True,key='simulation_engine')
     is_c2=simulation_engine=='C2 historical portfolio'
     is_ai=is_c2
+    if is_ai:
+        with st.container(border=True):provider_selector('backtest')
     flow_label='C2'
     view_flow=flow_label if is_ai else 'TECHNICAL'
     new_session_key='portfolio_new_session_'+view_flow
@@ -556,7 +559,6 @@ elif page == "Strategy Backtests":
     st.caption('C0 uses deterministic technical rules and zero LLM calls. C2 adds dated evidence, specialist research and an independent critic. Neither workflow places live orders.')
     if is_ai:
         inf=health.get('inference',{})
-        with st.container(border=True):provider_selector('backtest')
         st.caption('Long C2 periods consume provider allowance. Start with a short window; paused runs can be resumed from the progress panel.')
     from datetime import date, timedelta
     first = date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"])
