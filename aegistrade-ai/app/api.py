@@ -865,6 +865,9 @@ def c2_portfolio_notifications():
             alerts.append({'notification_id':pending.get('notification_id',pending['override_id']),'override_id':pending['override_id'],'run_id':state['run_id'],
                 'created_utc':pending.get('created_utc'),'symbol':pending.get('symbol'),
                 'proposed_action':pending.get('proposed_action'),'signal_date':pending.get('signal_date'),
+                'signal_close_price':pending.get('signal_close_price'),'entry_price':pending.get('entry_price'),
+                'quantity':pending.get('quantity'),'gross_position_pnl_at_signal':pending.get('gross_position_pnl_at_signal'),
+                'gross_position_return_pct_at_signal':pending.get('gross_position_return_pct_at_signal'),
                 'review_trigger':pending.get('review_trigger','EVIDENCE_BLOCK'),
                 'technical_strategy':pending.get('technical_strategy'),
                 'message':pending.get('blocking_reason','Human review required')[:240]})

@@ -210,11 +210,19 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     def checkpoint():state['updated_utc']=now();save(path,state)
     def pause_for_override(rec,snapshot,key,proposed_order,override_id=None):
         override_id=override_id or uuid.uuid4().hex
+        current_price=float(snapshot['Close'])
+        holding=snapshot.get('holding_context') or {}
+        entry_price=float(holding['entry_price']) if holding.get('entry_price') is not None else None
+        quantity=int(holding['quantity']) if holding.get('quantity') is not None else None
+        gross_pnl=(current_price-entry_price)*quantity if entry_price is not None and quantity is not None else None
+        gross_return_pct=100*(current_price/entry_price-1) if entry_price else None
         pending={'override_id':override_id,'notification_id':uuid.uuid4().hex,'marker':'HUMAN_EVIDENCE_OVERRIDE','case_key':key,
                  'research_id':rec.get('id'),'symbol':snapshot['symbol'],'signal_date':snapshot['date'],
                  'purpose':snapshot['research_purpose'],'proposed_action':'SELL' if snapshot['research_purpose']=='HOLDING_REVIEW' else 'BUY',
                  'review_trigger':'EVIDENCE_BLOCK' if rec.get('action')=='BLOCKED' else 'LINKED_POSITION_EXIT',
                  'technical_strategy':(snapshot.get('holding_context') or {}).get('strategy') or snapshot.get('approved_candidate'),
+                 'signal_close_price':current_price,'entry_price':entry_price,'quantity':quantity,
+                 'gross_position_pnl_at_signal':gross_pnl,'gross_position_return_pct_at_signal':gross_return_pct,
                  'blocking_reason':'; '.join(rec.get('errors',[])) or rec.get('explanation','Insufficient evidence'),
                  'company_assessment':rec.get('company_assessment'),'proposed_order':proposed_order,
                  'created_utc':now()}
@@ -605,6 +613,43 @@ def human_override_outcomes(state,holdings):
     return rows
 
 
+def human_override_metrics(state, holdings):
+    """Attribute P&L to BUY positions opened through a human evidence override.
+
+    A later blocked SELL can receive its own override ID, so attribution follows
+    the original approved BUY by symbol and chronology instead of relying on the
+    exit row's override ID.  These figures are a subset of C2 portfolio P&L and
+    must not be added to the C2 totals a second time.
+    """
+    approved_entry_ids={
+        event.get('override_id') for event in state.get('human_override_ledger',[])
+        if event.get('event')=='HUMAN_DECISION'
+        and event.get('purpose')=='ENTRY'
+        and event.get('proposed_action')=='BUY'
+        and event.get('decision')=='APPROVE_OVERRIDE'
+    }
+    approved_entry_ids.discard(None)
+    ledger=state.get('ledger',[])
+    buys=[(index,row) for index,row in enumerate(ledger)
+          if row.get('event')=='BUY' and row.get('human_override_id') in approved_entry_ids]
+    realized=0.0;closed=0
+    for buy_index,buy in buys:
+        sell=next((row for row in ledger[buy_index+1:]
+                   if row.get('symbol')==buy.get('symbol')
+                   and str(row.get('event','')).startswith('SELL')
+                   and row.get('realized_pnl') is not None),None)
+        if sell:
+            realized+=float(sell.get('realized_pnl') or 0);closed+=1
+    holding_by_id={h.get('human_override_id'):h for h in holdings if h.get('human_override_id')}
+    open_rows=[holding_by_id[oid] for oid in approved_entry_ids if oid in holding_by_id]
+    unrealized=sum(float(row.get('unrealized_pnl') or 0) for row in open_rows)
+    initial=float(state['settings']['initial_capital'])
+    total=realized+unrealized
+    return {'human_override_realized_pnl':realized,'human_override_unrealized_pnl':unrealized,
+            'human_override_total_pnl':total,'human_override_return_pct':100*total/initial,
+            'human_override_closed_positions':closed,'human_override_open_positions':len(open_rows)}
+
+
 def result_for(state):
     flow=state.get('research_flow','C2');reference_mode='SMC_REFERENCE' if flow=='C1' else 'ROUTER'
     decisions=[]
@@ -635,8 +680,10 @@ def result_for(state):
     realized=sum(x['realized_pnl'] or 0 for x in state['ledger']);unrealized=sum(h['unrealized_pnl'] for h in holdings)
     usage=state['usage'];costs=[u.get('cost') for u in usage]
     cost_complete=bool(usage) and all(isinstance(x,(int,float)) for x in costs) and not state['uncertain_model_calls']
+    override_metrics=human_override_metrics(state,holdings)
     metrics={'mode':flow,'initial_capital':initial,'ending_equity':eq,'ending_cash':state['cash'],
-        'total_return_pct':100*(eq/initial-1),'realized_pnl':realized,'unrealized_pnl':unrealized,'open_positions':len(holdings)}
+        'total_return_pct':100*(eq/initial-1),'realized_pnl':realized,'unrealized_pnl':unrealized,
+        **override_metrics,'open_positions':len(holdings)}
     if rows:
         curve=pd.DataFrame([{'Date':r['date'],'Equity':r['equity']} for r in rows])
         ev=pd.DataFrame([{'Event':r['event'],'PnL':r['realized_pnl']} for r in state['ledger']],columns=['Event','PnL'])

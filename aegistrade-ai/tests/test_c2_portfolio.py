@@ -3,7 +3,7 @@ import json
 from datetime import date
 import pandas as pd
 import pytest
-from aegistrade.c2_portfolio import C2PortfolioSettings,create_run,execute_run,load,save,state_path,result_for,resolve_human_override
+from aegistrade.c2_portfolio import C2PortfolioSettings,create_run,execute_run,human_override_metrics,load,save,state_path,result_for,resolve_human_override
 from tests.company_fixtures import FakeArchive
 from aegistrade.company_research import prepare_company_research
 
@@ -119,6 +119,7 @@ def test_human_evidence_override_opens_linked_position_without_overwriting_c2_bl
     rid=create_run(f,cfg);paused=execute_run(rid,f,researcher=blocked,preparer=prepare)
     assert paused['status']=='PAUSED_HUMAN_OVERRIDE'
     pending=paused['pending_human_override'];assert pending['marker']=='HUMAN_EVIDENCE_OVERRIDE' and pending['proposed_action']=='BUY'
+    assert pending['signal_close_price']>0 and pending['entry_price'] is None and pending['quantity'] is None
     assert next(d for d in paused['decisions'] if d['symbol']=='DEMO')['action']=='BLOCKED'
     monkeypatch.setattr(portfolio,'launch',lambda *a,**kw:None)
     resolve_human_override(rid,f,pending['override_id'],'APPROVE_OVERRIDE','KK','Positive technical signal; accept evidence uncertainty for the study.')
@@ -129,6 +130,20 @@ def test_human_evidence_override_opens_linked_position_without_overwriting_c2_bl
     assert any(x['event']=='POSITION_OPENED' for x in resumed['human_override_ledger'])
     outcome=next(x for x in resumed['human_override_outcomes'] if x['override_id']==pending['override_id'])
     assert outcome['outcome']=='INCONCLUSIVE_OPEN' and outcome['lesson_status']=='WAIT_FOR_EXIT'
+
+
+def test_human_override_metrics_follow_entry_when_sell_has_separate_override_id():
+    state={'settings':{'initial_capital':100000},'human_override_ledger':[
+        {'event':'HUMAN_DECISION','purpose':'ENTRY','proposed_action':'BUY','decision':'APPROVE_OVERRIDE','override_id':'entry-1'},
+        {'event':'HUMAN_DECISION','purpose':'HOLDING_REVIEW','proposed_action':'SELL','decision':'APPROVE_OVERRIDE','override_id':'exit-1'},
+        {'event':'HUMAN_DECISION','purpose':'ENTRY','proposed_action':'BUY','decision':'KEEP_BLOCKED','override_id':'blocked-1'}],
+        'ledger':[{'event':'BUY','symbol':'DEMO','human_override_id':'entry-1'},
+                  {'event':'SELL_HUMAN_OVERRIDE','symbol':'DEMO','human_override_id':'exit-1','realized_pnl':1250}]}
+    metrics=human_override_metrics(state,[])
+    assert metrics['human_override_realized_pnl']==1250
+    assert metrics['human_override_total_pnl']==1250
+    assert metrics['human_override_return_pct']==pytest.approx(1.25)
+    assert metrics['human_override_closed_positions']==1
 
 
 def test_human_evidence_override_can_close_existing_holding_and_link_exit(completed_c2,monkeypatch):
@@ -145,7 +160,10 @@ def test_human_evidence_override_can_close_existing_holding_and_link_exit(comple
         return out
     rid=create_run(f,cfg);paused=execute_run(rid,f,researcher=entry_then_blocked_sell,preparer=prepare)
     assert paused['status']=='PAUSED_HUMAN_OVERRIDE' and paused['pending_human_override']['proposed_action']=='SELL'
-    pending=paused['pending_human_override'];monkeypatch.setattr(portfolio,'launch',lambda *a,**kw:None)
+    pending=paused['pending_human_override']
+    assert pending['signal_close_price']>0 and pending['entry_price']>0 and pending['quantity']>0
+    assert pending['gross_position_return_pct_at_signal']==pytest.approx(100*(pending['signal_close_price']/pending['entry_price']-1))
+    monkeypatch.setattr(portfolio,'launch',lambda *a,**kw:None)
     resolve_human_override(rid,f,pending['override_id'],'APPROVE_OVERRIDE','KK','Exit the holding under evidence uncertainty.')
     finished=execute_run(rid,f,researcher=runner(completed_c2),preparer=prepare)
     sold=next(x for x in finished['ledgers']['C2'] if x['event']=='SELL_HUMAN_OVERRIDE')
@@ -184,12 +202,14 @@ def test_notification_inbox_lists_only_pending_human_overrides():
     f=history(65);rid=create_run(f,settings(f).model_copy(update={'human_override_mode':True}))
     state=load(rid);state['status']='PAUSED_HUMAN_OVERRIDE';state['pending_human_override']={
         'override_id':'b'*32,'symbol':'DEMO','proposed_action':'BUY','signal_date':'2024-03-01',
+        'signal_close_price':123.45,'entry_price':None,'quantity':None,
         'review_trigger':'EVIDENCE_BLOCK','technical_strategy':'EMA_TREND','blocking_reason':'Insufficient dated evidence.'}
     save(state_path(rid),state)
     inbox=TestClient(api.app).get('/simulation/c2/notifications')
     assert inbox.status_code==200 and inbox.json()['count']==1
     alert=inbox.json()['notifications'][0]
     assert alert['run_id']==rid and alert['notification_id']=='b'*32 and alert['symbol']=='DEMO'
+    assert alert['signal_close_price']==123.45 and alert['entry_price'] is None
 
 
 def test_changed_input_blocks_resume_without_model_calls(completed_c2):

@@ -160,6 +160,10 @@ def notification_bell(workspace_key: str):
         for alert in alerts:
             label=str(alert.get('symbol'))+' · '+str(alert.get('proposed_action'))+' · '+str(alert.get('signal_date'))
             st.write('**'+label+'**')
+            if alert.get('signal_close_price') is not None:
+                price_note='Signal close ₹'+f"{float(alert['signal_close_price']):,.2f}"
+                if alert.get('entry_price') is not None:price_note+=' · Entry ₹'+f"{float(alert['entry_price']):,.2f}"
+                st.caption(price_note)
             st.caption(('Linked exit confirmation' if alert.get('review_trigger')=='LINKED_POSITION_EXIT' else 'Evidence-block review')+' · Run '+alert['run_id'][:12])
             if st.button('Open review',key='open_override_'+alert['notification_id'],use_container_width=True):
                 result=get('/simulation/c2/status/'+alert['run_id'],timeout=60)
@@ -689,6 +693,17 @@ elif page == "Strategy Backtests":
                 with st.container(border=True):
                     st.markdown('#### HUMAN_EVIDENCE_OVERRIDE review')
                     st.write('**'+pending_override['symbol']+' · '+pending_override['proposed_action']+' · '+str(pending_override.get('technical_strategy'))+'**')
+                    price_columns=st.columns(3 if pending_override.get('entry_price') is not None else 1)
+                    signal_price=pending_override.get('signal_close_price')
+                    price_columns[0].metric('Signal-date close',f"₹{float(signal_price):,.2f}" if signal_price is not None else 'Not recorded')
+                    if pending_override.get('entry_price') is not None:
+                        price_columns[1].metric('Position entry price',f"₹{float(pending_override['entry_price']):,.2f}")
+                        change=pending_override.get('gross_position_return_pct_at_signal')
+                        price_columns[2].metric('Change since entry',f"{float(change):+.2f}%" if change is not None else 'Not recorded')
+                        gross=pending_override.get('gross_position_pnl_at_signal')
+                        st.caption('Held quantity: '+str(pending_override.get('quantity'))+' · Gross mark-to-market at signal close: '+(f"₹{float(gross):+,.2f}" if gross is not None else 'not recorded')+'. Actual later-open execution, fees and slippage can change realized P&L.')
+                    else:
+                        st.caption('This is the completed signal-date close, not the later-open simulated BUY fill price.')
                     st.write(pending_override['blocking_reason'])
                     override_choices=['KEEP_HOLDING','APPROVE_EXIT'] if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT' else ['KEEP_BLOCKED','APPROVE_OVERRIDE']
                     override_display=st.radio('Human intervention',override_choices,horizontal=True,key='portfolio_override_decision')
@@ -779,6 +794,8 @@ elif page == "Strategy Backtests":
         st.caption(f"Run ID: {result['run_id']} | Sessions: {result['sessions']} | Actual selected period: {result['period']['start']} to {result['period']['end']}")
         metrics=pd.DataFrame(result.get("metrics",[]))
         render_table(metrics, "AI entries require completed dated research; code risk/target exits and holding reviews govern holdings." if c2_result else "C0 uses zero model calls; results include modeled fees and slippage.",height=250)
+        if c2_result and 'human_override_total_pnl' in metrics.columns:
+            st.caption('Human-override P&L is the contribution of positions opened after HUMAN_EVIDENCE_OVERRIDE approval. It is already included in C2 P&L and must not be added again.')
         if not metrics.empty:
             mode_list=list(metrics["mode"])
             selected=st.selectbox("Inspect portfolio / trading ledger for",mode_list,key="simulation_curve_pick")
