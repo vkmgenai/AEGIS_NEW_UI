@@ -1,0 +1,265 @@
+{
+  "source_version": "0.16.2",
+  "generation": "GENUINE Codex CLI; no mocked generation, MCP, fills or validators",
+  "archive_policy": "Existing prepared actual dated evidence only; missing sources block",
+  "run_id": "64263380f155412ea95a4deca6355a1f",
+  "status": "COMPLETED_WITH_GAPS",
+  "settings": {
+    "initial_capital": 200000.0,
+    "start_date": "2023-12-01",
+    "end_date": "2023-12-04",
+    "risk_percent": 1.0,
+    "mode": "ROUTER",
+    "fee_bps": 5.0,
+    "automatic_stock_selection": true,
+    "slippage_bps": 5.0,
+    "consent_to_paid_calls": true,
+    "approve_historical_rules": true,
+    "max_model_calls": 32,
+    "holding_review_sessions": 5
+  },
+  "inference": {
+    "backend": "codex_cli",
+    "model": "codex-default",
+    "budget_unit": "cli_invocations",
+    "adapter_version": "codex-intent-v1"
+  },
+  "model_usage": {
+    "budget_unit": "cli_invocations",
+    "provider_requests_counted": false,
+    "attempted_calls": 23,
+    "budget_charged_calls": 23,
+    "uncertain_calls_reserved": 0,
+    "call_limit": 32,
+    "total_tokens_reported": 211391,
+    "provider_cost_usd": null,
+    "cost_reporting_complete": false
+  },
+  "progress": {
+    "completed_sessions": 2,
+    "total_sessions": 2,
+    "phase": "OPEN",
+    "current_date": "2023-12-04"
+  },
+  "metrics": [
+    {
+      "mode": "C2",
+      "initial_capital": 200000.0,
+      "ending_equity": 199842.82215800002,
+      "ending_cash": 160592.622158,
+      "total_return_pct": -0.08,
+      "realized_pnl": 0,
+      "unrealized_pnl": -157.17784199999764,
+      "open_positions": 1,
+      "cagr_pct": -9.43,
+      "sharpe": null,
+      "max_drawdown_pct": -0.07858892099998904,
+      "completed_trades": 0,
+      "win_rate_pct": null
+    },
+    {
+      "mode": "ROUTER",
+      "initial_capital": 200000.0,
+      "total_return_pct": -0.48,
+      "cagr_pct": -45.58,
+      "sharpe": null,
+      "max_drawdown_pct": -0.48,
+      "completed_trades": 0,
+      "win_rate_pct": null,
+      "ending_equity": 199036.69
+    }
+  ],
+  "ledger": [
+    {
+      "date": "2023-12-04",
+      "symbol": "BHARTIARTL",
+      "event": "BUY",
+      "quantity": 38,
+      "price": 1036.518,
+      "fee": 19.693842,
+      "strategy": "EMA_TREND",
+      "realized_pnl": null,
+      "research_id": "0fd7affca7b7cf7e8cc7cb4e7e54d69f",
+      "signal_date": "2023-12-01"
+    }
+  ],
+  "open_holdings": [
+    {
+      "symbol": "BHARTIARTL",
+      "quantity": 38,
+      "entry_price": 1036.518,
+      "entry_fee": 19.693842,
+      "stop": 986.1646826269049,
+      "strategy": "EMA_TREND",
+      "entry_date": "2023-12-04",
+      "entry_index": 1,
+      "last_review_index": 1,
+      "entry_research_id": "0fd7affca7b7cf7e8cc7cb4e7e54d69f",
+      "mark_price": 1032.9,
+      "mark_date": "2023-12-04",
+      "market_value": 39250.200000000004,
+      "unrealized_pnl": -157.17784199999764,
+      "last_review_date": "2023-12-04"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "5408422edf863cb9e8debc2626b6cca6",
+      "key": "2023-12-01:TMPV:ENTRY",
+      "date": "2023-12-01",
+      "symbol": "TMPV",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": {
+        "status": "SUFFICIENT",
+        "summary": "The November 2 filing reports consolidated Q2 FY24 revenue of INR 105.1K crore and net profit of INR 3.8K crore. December 1 issuer news reports November CV sales down 4% YoY and PV sales down 1% YoY, indicating softer volumes despite the reported quarterly performance. TPEM and JLR announced an EMA platform-licensing MoU on November 2; this does not establish future commercial outcomes.",
+        "citations": [
+          "CMP-3869e0b3019e0844",
+          "CMP-9146916ed19d8e85",
+          "CMP-b2481b29f9abe827"
+        ],
+        "event_risks": [
+          "November CV and PV sales declined year over year; subsequent demand performance is unknown."
+        ],
+        "limitations": [
+          "Selected official filings and issuer releases; not comprehensive press coverage.",
+          "Annual-report attachment was unreadable; readable quarterly results support this bounded assessment.",
+          "PDF extraction is limited to 35 pages; financial figures are not independently normalized.",
+          "Historical availability relies on exchange timestamps, not a certified content-version chain."
+        ]
+      },
+      "citations": [],
+      "errors": [
+        "CONTEXT_BUDGET_EXCEEDED: Context budget exceeded; evidence was not silently removed"
+      ],
+      "llm_calls": 7,
+      "failure": {
+        "code": "CONTEXT_BUDGET_EXCEEDED",
+        "category": "BUDGET",
+        "agent": "critic",
+        "message": "Context budget exceeded; evidence was not silently removed"
+      },
+      "failure_category": "BUDGET"
+    },
+    {
+      "id": "0fd7affca7b7cf7e8cc7cb4e7e54d69f",
+      "key": "2023-12-01:BHARTIARTL:ENTRY",
+      "date": "2023-12-01",
+      "symbol": "BHARTIARTL",
+      "purpose": "ENTRY",
+      "action": "ENTER",
+      "guard_pass": true,
+      "explanation": "Code permits EMA_TREND: ADX14 35.31 supports TREND, and close 1014.7 > EMA20 967.56 > EMA50 942.07 meets price conditions. Company assessment remains SUFFICIENT: Q2 consolidated EBITDA was Rs 19,665 crore; post-exceptional net income fell 37.5% YoY to Rs 1,341 crore, with exceptional items unexplained. The 5G launch and promoter transaction provide context, not proof of financial health. RSI14 79.39 flags overextension. ENTER is a bounded research classification, not a fundamental buy recommendation or order authorization; readiness, risk checks and later-session fill eligibility remain separate.",
+      "company_assessment": {
+        "status": "SUFFICIENT",
+        "summary": "The October 31 Q2 FY24 consolidated release reports EBITDA of Rs 19,665 crore and net income after exceptional items of Rs 1,341 crore, down 37.5% YoY despite pre-exceptional income growth. November 27 news describes a Zanskar 5G launch. December 1 disclosure reports Bharti Telecom's completed acquisition of approximately 1.35% of Airtel from a fellow promoter-group entity. These establish results and event context, not financial health.",
+        "citations": [
+          "CMP-c0da5149b12722be",
+          "CMP-876aa35da87d9509",
+          "CMP-16e923ae1ab28691",
+          "CMP-8e0e4410e7ebdaec"
+        ],
+        "event_risks": [
+          "Reported post-exceptional net income declined; the supplied excerpt does not explain the exceptional items."
+        ],
+        "limitations": [
+          "Selected official filings and issuer releases; not comprehensive press coverage.",
+          "Financial extraction is partial and not independently normalized; numerical statements use explicit consolidated quarterly context.",
+          "Archive retrieval is retrospective; exchange timestamps establish availability, not a certified historical content-version chain."
+        ]
+      },
+      "citations": [
+        "POL-21",
+        "POL-25"
+      ],
+      "errors": [],
+      "llm_calls": 7
+    },
+    {
+      "id": "4946a7c12a33facb8eb1d7390a694264",
+      "key": "2023-12-01:AXISBANK:ENTRY",
+      "date": "2023-12-01",
+      "symbol": "AXISBANK",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": {
+        "status": "SUFFICIENT",
+        "summary": "The October 25 filing contains unaudited standalone results for the quarter and half-year ended September 30, 2023, including profit, capital adequacy and asset-quality disclosures. The June 7 issuer release reports its first onshore INR non-deliverable derivative trade with a domestic corporate client following RBI guidelines. These provide dated financial and business-event context for this bounded assessment.",
+        "citations": [
+          "CMP-3cd028d76f954086",
+          "CMP-7ae4d419e8f5e984"
+        ],
+        "event_risks": [],
+        "limitations": [
+          "Selected official filings and issuer releases; not comprehensive press coverage.",
+          "Financial numerical analysis is unavailable: the substantive results excerpt does not explicitly establish monetary units.",
+          "The annual-report attachment was unreadable; readable quarterly financial evidence was available.",
+          "Extraction is limited to selected excerpts; historical availability relies on exchange timestamps, not certified content-version history."
+        ]
+      },
+      "citations": [],
+      "errors": [
+        "CONTEXT_BUDGET_EXCEEDED: Context budget exceeded; evidence was not silently removed"
+      ],
+      "llm_calls": 7,
+      "failure": {
+        "code": "CONTEXT_BUDGET_EXCEEDED",
+        "category": "BUDGET",
+        "agent": "critic",
+        "message": "Context budget exceeded; evidence was not silently removed"
+      },
+      "failure_category": "BUDGET"
+    },
+    {
+      "id": "af7d3d916e9e702e796f7c955533b563",
+      "key": "2023-12-01:HINDALCO:ENTRY",
+      "date": "2023-12-01",
+      "symbol": "HINDALCO",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "summary": "The November 10 filing identifies consolidated unaudited results for the quarter and six months ended September 30, 2023, but the excerpt contains review scope rather than results or conclusions. Issuer releases show cover letters only. December 1 disclosure concerns duplicate share certificates. Substantive financial performance and results-event assessment remain unavailable.",
+        "citations": [
+          "CMP-771c61abeabcfea7",
+          "CMP-6a40daeb84fb0828",
+          "CMP-6be2541fd8777304",
+          "CMP-c456d41e66770879"
+        ],
+        "event_risks": [],
+        "limitations": [
+          "Selected official filings and issuer releases; not comprehensive press coverage.",
+          "Observed excerpts lack substantive results tables, narrative and event bodies; numerical analysis is unavailable.",
+          "The August financial attachment is unreadable; PDF extraction is limited to the first 35 pages.",
+          "Archive disclosure timestamps establish availability, not a certified historical content-version chain."
+        ]
+      },
+      "citations": [],
+      "errors": [
+        "COMPANY_ASSESSMENT_BLOCKED: Market company assessment is INSUFFICIENT_EVIDENCE; ENTRY is not eligible. No further specialists were called."
+      ],
+      "llm_calls": 2,
+      "failure": {
+        "code": "COMPANY_ASSESSMENT_BLOCKED",
+        "category": "EVIDENCE",
+        "agent": "market",
+        "message": "Market company assessment is INSUFFICIENT_EVIDENCE; ENTRY is not eligible. No further specialists were called."
+      },
+      "failure_category": "EVIDENCE"
+    }
+  ],
+  "accounting": {
+    "realized_pnl": 0,
+    "unrealized_pnl": -157.17784199999764,
+    "equity_identity_error": 2.2140511646284722e-11,
+    "forced_end_liquidation": false,
+    "model_cost_in_trading_returns": false
+  },
+  "last_error": null
+}

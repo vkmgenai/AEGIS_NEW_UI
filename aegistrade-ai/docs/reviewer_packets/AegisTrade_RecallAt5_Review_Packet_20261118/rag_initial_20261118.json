@@ -1,0 +1,6252 @@
+{
+  "executed_at_utc": "2026-11-18T00:33:55.542313+00:00",
+  "corpus": {
+    "passages": 87,
+    "sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+    "project_policy_passages": 78,
+    "external_reference_passages": 9,
+    "source_count": 52,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "results": {
+    "legacy_16_offline_legacy_queries": {
+      "queries": 36,
+      "recall_at_5": 0.9444,
+      "hit_at_5": 0.9444,
+      "mrr_at_5": 0.7694,
+      "ndcg_at_5": 0.814,
+      "elapsed_seconds": 0.01,
+      "rows": [
+        {
+          "id": "RET-001-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-02",
+            "POL-12",
+            "POL-03",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-01",
+            "POL-11",
+            "POL-10",
+            "POL-14"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-12",
+            "POL-11",
+            "POL-15",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-002-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-02",
+            "POL-03",
+            "POL-10",
+            "POL-05",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-02",
+            "POL-01",
+            "POL-03",
+            "POL-04",
+            "POL-05"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-02",
+            "POL-16",
+            "POL-10",
+            "POL-01",
+            "POL-03"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-003-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-03",
+            "POL-14",
+            "POL-05",
+            "POL-04",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-03",
+            "POL-05",
+            "POL-14",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-03",
+            "POL-05",
+            "POL-14",
+            "POL-07",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-004-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-03",
+            "POL-05",
+            "POL-10",
+            "POL-01",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-06",
+            "POL-14",
+            "POL-01",
+            "POL-09"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-14",
+            "POL-03",
+            "POL-10",
+            "POL-01"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-005-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-03",
+            "POL-02",
+            "POL-04",
+            "POL-14"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-03",
+            "POL-04",
+            "POL-08",
+            "POL-14"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-02",
+            "POL-03",
+            "POL-09",
+            "POL-01"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-006-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-06",
+            "POL-09",
+            "POL-15",
+            "POL-01"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-13",
+            "POL-06",
+            "POL-01",
+            "POL-03",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-12",
+            "POL-09",
+            "POL-04",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-007-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-15",
+            "POL-07",
+            "POL-14",
+            "POL-06",
+            "POL-01"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-06",
+            "POL-15",
+            "POL-09",
+            "POL-01"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-15",
+            "POL-06",
+            "POL-07",
+            "POL-09",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-008-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-02",
+            "POL-15",
+            "POL-03",
+            "POL-04",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-15",
+            "POL-01",
+            "POL-02",
+            "POL-03"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-15",
+            "POL-08",
+            "POL-12",
+            "POL-07"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-009-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-15",
+            "POL-12",
+            "POL-01",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-06",
+            "POL-07",
+            "POL-15",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-06",
+            "POL-01",
+            "POL-02",
+            "POL-03"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-010-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-01",
+            "POL-02",
+            "POL-03",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-01",
+            "POL-02",
+            "POL-03",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-01",
+            "POL-02",
+            "POL-03",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-011-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-11",
+            "POL-10",
+            "POL-12",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-11",
+            "POL-01",
+            "POL-02",
+            "POL-03"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-01",
+            "POL-02",
+            "POL-03",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-012-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-03",
+            "POL-01",
+            "POL-10",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-09",
+            "POL-12",
+            "POL-01",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-13",
+            "POL-01",
+            "POL-04",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        }
+      ]
+    },
+    "expanded_offline_legacy_queries": {
+      "queries": 36,
+      "recall_at_5": 0.75,
+      "hit_at_5": 0.75,
+      "mrr_at_5": 0.5319,
+      "ndcg_at_5": 0.5867,
+      "elapsed_seconds": 0.023,
+      "rows": [
+        {
+          "id": "RET-001-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-02",
+            "POL-12",
+            "POL-17"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-68",
+            "POL-37",
+            "POL-01",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-61",
+            "POL-60",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-002-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-39",
+            "POL-29",
+            "POL-25",
+            "POL-72",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-32",
+            "POL-29",
+            "POL-73",
+            "POL-46",
+            "POL-43"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-43",
+            "POL-02",
+            "POL-29",
+            "POL-25",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-003-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-14",
+            "POL-77",
+            "POL-03",
+            "POL-37",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-03",
+            "POL-52",
+            "POL-35",
+            "POL-39"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-77",
+            "POL-03",
+            "POL-75",
+            "POL-05",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-004-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-77",
+            "POL-23",
+            "POL-37",
+            "POL-75",
+            "POL-34"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-63",
+            "POL-71",
+            "POL-60",
+            "REF-NSE50-02"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-45",
+            "POL-38",
+            "POL-60",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-005-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-30",
+            "POL-42",
+            "REF-OHLCV-01"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-60",
+            "POL-40",
+            "POL-75",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-75",
+            "POL-32",
+            "POL-03",
+            "POL-48"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-006-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-17",
+            "POL-07",
+            "POL-21",
+            "POL-64",
+            "POL-68"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-68",
+            "POL-62",
+            "POL-13",
+            "POL-48",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P03",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-12",
+            "REF-NSEPY-01",
+            "POL-09"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-007-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-15",
+            "POL-07",
+            "POL-67",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-68",
+            "POL-06",
+            "POL-17",
+            "POL-49"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-15",
+            "POL-06",
+            "POL-07",
+            "POL-68",
+            "POL-67"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-008-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-72",
+            "POL-76",
+            "POL-65",
+            "POL-61",
+            "POL-66"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-44",
+            "POL-15",
+            "REF-MEMBER-01"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P03",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-09",
+            "POL-41",
+            "POL-72",
+            "POL-15",
+            "POL-12"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-009-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-43",
+            "POL-15",
+            "POL-12",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-75",
+            "POL-68",
+            "POL-06",
+            "POL-70"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-06",
+            "POL-17",
+            "POL-23",
+            "POL-20"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-010-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-75",
+            "POL-10",
+            "POL-64",
+            "POL-46",
+            "POL-42"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-10",
+            "POL-21",
+            "POL-20",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-74",
+            "POL-72",
+            "REF-OHLCV-01",
+            "POL-45"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-011-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-72",
+            "POL-60",
+            "POL-71",
+            "POL-01",
+            "POL-10"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-10",
+            "POL-18",
+            "POL-50",
+            "POL-57"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-48",
+            "POL-51",
+            "POL-50",
+            "POL-47",
+            "POL-11"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-012-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-72",
+            "POL-12",
+            "POL-65",
+            "POL-63",
+            "REF-ALIAS-01"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-35",
+            "POL-75",
+            "REF-ALIAS-02",
+            "POL-MAT-01",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-13",
+            "POL-01",
+            "POL-25",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        }
+      ]
+    },
+    "expanded_offline_dev_queries": {
+      "queries": 101,
+      "recall_at_5": 0.901,
+      "hit_at_5": 0.901,
+      "mrr_at_5": 0.7815,
+      "ndcg_at_5": 0.8107,
+      "elapsed_seconds": 0.08,
+      "rows": [
+        {
+          "id": "RET-001-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-02",
+            "POL-12",
+            "POL-17"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-68",
+            "POL-37",
+            "POL-01",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-61",
+            "POL-60",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-002-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-39",
+            "POL-29",
+            "POL-25",
+            "POL-72",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-32",
+            "POL-29",
+            "POL-73",
+            "POL-46",
+            "POL-43"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-43",
+            "POL-02",
+            "POL-29",
+            "POL-25",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-003-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-14",
+            "POL-77",
+            "POL-03",
+            "POL-37",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-03",
+            "POL-52",
+            "POL-35",
+            "POL-39"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-77",
+            "POL-03",
+            "POL-75",
+            "POL-05",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-004-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-77",
+            "POL-23",
+            "POL-37",
+            "POL-75",
+            "POL-34"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-63",
+            "POL-71",
+            "POL-60",
+            "REF-NSE50-02"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-45",
+            "POL-38",
+            "POL-60",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-005-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-30",
+            "POL-42",
+            "REF-OHLCV-01"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-60",
+            "POL-40",
+            "POL-75",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-75",
+            "POL-32",
+            "POL-03",
+            "POL-48"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-006-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-17",
+            "POL-07",
+            "POL-21",
+            "POL-64",
+            "POL-68"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-68",
+            "POL-62",
+            "POL-13",
+            "POL-48",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P03",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-12",
+            "REF-NSEPY-01",
+            "POL-09"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-007-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-15",
+            "POL-07",
+            "POL-67",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-68",
+            "POL-06",
+            "POL-17",
+            "POL-49"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-15",
+            "POL-06",
+            "POL-07",
+            "POL-68",
+            "POL-67"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-008-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-72",
+            "POL-76",
+            "POL-65",
+            "POL-61",
+            "POL-66"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-44",
+            "POL-15",
+            "REF-MEMBER-01"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P03",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-09",
+            "POL-41",
+            "POL-72",
+            "POL-15",
+            "POL-12"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-009-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-43",
+            "POL-15",
+            "POL-12",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-75",
+            "POL-68",
+            "POL-06",
+            "POL-70"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-06",
+            "POL-17",
+            "POL-23",
+            "POL-20"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-010-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-75",
+            "POL-10",
+            "POL-64",
+            "POL-46",
+            "POL-42"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-10",
+            "POL-21",
+            "POL-20",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-74",
+            "POL-72",
+            "REF-OHLCV-01",
+            "POL-45"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-011-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-72",
+            "POL-60",
+            "POL-71",
+            "POL-01",
+            "POL-10"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-10",
+            "POL-18",
+            "POL-50",
+            "POL-57"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-48",
+            "POL-51",
+            "POL-50",
+            "POL-47",
+            "POL-11"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-012-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-72",
+            "POL-12",
+            "POL-65",
+            "POL-63",
+            "REF-ALIAS-01"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-35",
+            "POL-75",
+            "REF-ALIAS-02",
+            "POL-MAT-01",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-13",
+            "POL-01",
+            "POL-25",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RAG-DEV-001",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-17",
+            "POL-49",
+            "POL-52",
+            "POL-53",
+            "POL-19"
+          ],
+          "relevant": [
+            "POL-17"
+          ]
+        },
+        {
+          "id": "RAG-DEV-002",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-18",
+            "POL-17",
+            "POL-77",
+            "POL-50",
+            "POL-62"
+          ],
+          "relevant": [
+            "POL-18"
+          ]
+        },
+        {
+          "id": "RAG-DEV-003",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-64",
+            "POL-19",
+            "POL-67",
+            "POL-72",
+            "POL-76"
+          ],
+          "relevant": [
+            "POL-19"
+          ]
+        },
+        {
+          "id": "RAG-DEV-004",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-20",
+            "POL-23",
+            "POL-21",
+            "POL-53",
+            "POL-32"
+          ],
+          "relevant": [
+            "POL-20"
+          ]
+        },
+        {
+          "id": "RAG-DEV-005",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-26",
+            "POL-25",
+            "POL-MAT-01",
+            "POL-21",
+            "POL-22"
+          ],
+          "relevant": [
+            "POL-21"
+          ]
+        },
+        {
+          "id": "RAG-DEV-006",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-75",
+            "POL-76",
+            "POL-22",
+            "POL-53",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-22"
+          ]
+        },
+        {
+          "id": "RAG-DEV-007",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-23",
+            "POL-21",
+            "POL-29",
+            "POL-34",
+            "POL-25"
+          ],
+          "relevant": [
+            "POL-23"
+          ]
+        },
+        {
+          "id": "RAG-DEV-008",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-24",
+            "POL-60",
+            "POL-32",
+            "POL-31",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-24"
+          ]
+        },
+        {
+          "id": "RAG-DEV-009",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-25",
+            "POL-72",
+            "POL-21",
+            "POL-73",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-25"
+          ]
+        },
+        {
+          "id": "RAG-DEV-010",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-26",
+            "POL-73",
+            "POL-77",
+            "POL-25",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-26"
+          ]
+        },
+        {
+          "id": "RAG-DEV-011",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-27",
+            "POL-35",
+            "POL-72",
+            "POL-MAT-01",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-27"
+          ]
+        },
+        {
+          "id": "RAG-DEV-012",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-28",
+            "POL-73",
+            "POL-43",
+            "POL-72",
+            "POL-27"
+          ],
+          "relevant": [
+            "POL-28"
+          ]
+        },
+        {
+          "id": "RAG-DEV-013",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-29",
+            "POL-75",
+            "POL-23",
+            "POL-21",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-23",
+            "POL-29"
+          ]
+        },
+        {
+          "id": "RAG-DEV-014",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-30",
+            "POL-43",
+            "POL-29",
+            "POL-64",
+            "POL-42"
+          ],
+          "relevant": [
+            "POL-30"
+          ]
+        },
+        {
+          "id": "RAG-DEV-015",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-31",
+            "POL-16",
+            "POL-62",
+            "POL-37",
+            "POL-24"
+          ],
+          "relevant": [
+            "POL-31"
+          ]
+        },
+        {
+          "id": "RAG-DEV-016",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-35",
+            "REF-OHLCV-01",
+            "POL-60",
+            "POL-38",
+            "POL-32"
+          ],
+          "relevant": [
+            "POL-32"
+          ]
+        },
+        {
+          "id": "RAG-DEV-017",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-33",
+            "POL-34",
+            "POL-24",
+            "POL-58",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-33"
+          ]
+        },
+        {
+          "id": "RAG-DEV-018",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-34",
+            "POL-36",
+            "POL-02",
+            "POL-35",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-34"
+          ]
+        },
+        {
+          "id": "RAG-DEV-019",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-35",
+            "POL-34",
+            "POL-31",
+            "POL-33",
+            "POL-22"
+          ],
+          "relevant": [
+            "POL-35"
+          ]
+        },
+        {
+          "id": "RAG-DEV-020",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-36",
+            "POL-30",
+            "POL-29",
+            "POL-23",
+            "POL-35"
+          ],
+          "relevant": [
+            "POL-36"
+          ]
+        },
+        {
+          "id": "RAG-DEV-021",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-37",
+            "POL-57",
+            "POL-58",
+            "POL-45",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-37"
+          ]
+        },
+        {
+          "id": "RAG-DEV-022",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-38",
+            "POL-39",
+            "REF-OHLCV-01",
+            "POL-60",
+            "POL-77"
+          ],
+          "relevant": [
+            "POL-38",
+            "POL-39"
+          ]
+        },
+        {
+          "id": "RAG-DEV-023",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-39",
+            "POL-37",
+            "POL-60",
+            "POL-75",
+            "POL-MAT-01"
+          ],
+          "relevant": [
+            "POL-39"
+          ]
+        },
+        {
+          "id": "RAG-DEV-024",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-60",
+            "POL-03",
+            "POL-36"
+          ],
+          "relevant": [
+            "POL-40"
+          ]
+        },
+        {
+          "id": "RAG-DEV-025",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-41",
+            "POL-43",
+            "POL-30",
+            "POL-46",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-41"
+          ]
+        },
+        {
+          "id": "RAG-DEV-026",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-42",
+            "POL-75",
+            "POL-43",
+            "POL-72",
+            "POL-30"
+          ],
+          "relevant": [
+            "POL-42"
+          ]
+        },
+        {
+          "id": "RAG-DEV-027",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-43",
+            "POL-30",
+            "POL-72",
+            "POL-75",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-43"
+          ]
+        },
+        {
+          "id": "RAG-DEV-028",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-60",
+            "POL-44",
+            "POL-35",
+            "POL-73",
+            "POL-42"
+          ],
+          "relevant": [
+            "POL-44"
+          ]
+        },
+        {
+          "id": "RAG-DEV-029",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-45",
+            "POL-30",
+            "POL-24",
+            "POL-43",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-45"
+          ]
+        },
+        {
+          "id": "RAG-DEV-030",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-46",
+            "POL-43",
+            "POL-30",
+            "POL-73",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-46"
+          ]
+        },
+        {
+          "id": "RAG-DEV-031",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-47",
+            "POL-74",
+            "POL-31",
+            "POL-77",
+            "POL-17"
+          ],
+          "relevant": [
+            "POL-47"
+          ]
+        },
+        {
+          "id": "RAG-DEV-032",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-48",
+            "POL-46",
+            "POL-75",
+            "POL-38",
+            "POL-41"
+          ],
+          "relevant": [
+            "POL-48"
+          ]
+        },
+        {
+          "id": "RAG-DEV-033",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-49",
+            "POL-74",
+            "POL-53",
+            "POL-17",
+            "POL-19"
+          ],
+          "relevant": [
+            "POL-49"
+          ]
+        },
+        {
+          "id": "RAG-DEV-034",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-50",
+            "POL-17",
+            "POL-48",
+            "POL-18",
+            "POL-47"
+          ],
+          "relevant": [
+            "POL-50"
+          ]
+        },
+        {
+          "id": "RAG-DEV-035",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-35",
+            "POL-51",
+            "POL-03",
+            "REF-ALIAS-01",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-51"
+          ]
+        },
+        {
+          "id": "RAG-DEV-036",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-52",
+            "POL-17",
+            "POL-54",
+            "POL-62",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-52"
+          ]
+        },
+        {
+          "id": "RAG-DEV-037",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-53",
+            "POL-52",
+            "POL-17",
+            "POL-49",
+            "POL-62"
+          ],
+          "relevant": [
+            "POL-53"
+          ]
+        },
+        {
+          "id": "RAG-DEV-038",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-54",
+            "POL-62",
+            "POL-58",
+            "POL-35",
+            "POL-24"
+          ],
+          "relevant": [
+            "POL-54"
+          ]
+        },
+        {
+          "id": "RAG-DEV-039",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-55",
+            "POL-58",
+            "POL-56",
+            "POL-61",
+            "REF-NSE50-02"
+          ],
+          "relevant": [
+            "POL-55"
+          ]
+        },
+        {
+          "id": "RAG-DEV-040",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-56",
+            "POL-70",
+            "POL-30",
+            "POL-35",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-56"
+          ]
+        },
+        {
+          "id": "RAG-DEV-041",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-57",
+            "REF-MEMBER-01",
+            "POL-76",
+            "POL-61",
+            "POL-71"
+          ],
+          "relevant": [
+            "POL-57"
+          ]
+        },
+        {
+          "id": "RAG-DEV-042",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-58",
+            "POL-31",
+            "REF-MEMBER-01",
+            "REF-NSE50-02",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-58"
+          ]
+        },
+        {
+          "id": "RAG-DEV-043",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-59",
+            "POL-24",
+            "POL-31",
+            "POL-37",
+            "POL-20"
+          ],
+          "relevant": [
+            "POL-59"
+          ]
+        },
+        {
+          "id": "RAG-DEV-044",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-60",
+            "POL-44",
+            "POL-61",
+            "POL-75",
+            "POL-42"
+          ],
+          "relevant": [
+            "POL-60"
+          ]
+        },
+        {
+          "id": "RAG-DEV-045",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-61",
+            "REF-ALIAS-02",
+            "POL-60",
+            "POL-76",
+            "POL-66"
+          ],
+          "relevant": [
+            "POL-61"
+          ]
+        },
+        {
+          "id": "RAG-DEV-046",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-62",
+            "POL-75",
+            "POL-48",
+            "POL-54",
+            "POL-17"
+          ],
+          "relevant": [
+            "POL-62"
+          ]
+        },
+        {
+          "id": "RAG-DEV-047",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-63",
+            "POL-03",
+            "POL-17",
+            "POL-64",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-63"
+          ]
+        },
+        {
+          "id": "RAG-DEV-048",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-64",
+            "POL-17",
+            "POL-25",
+            "POL-47",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-64"
+          ]
+        },
+        {
+          "id": "RAG-DEV-049",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-65",
+            "POL-03",
+            "POL-05",
+            "POL-71",
+            "POL-50"
+          ],
+          "relevant": [
+            "POL-65"
+          ]
+        },
+        {
+          "id": "RAG-DEV-050",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-66",
+            "POL-64",
+            "POL-54",
+            "POL-74",
+            "POL-19"
+          ],
+          "relevant": [
+            "POL-66"
+          ]
+        },
+        {
+          "id": "RAG-DEV-051",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-67",
+            "POL-64",
+            "POL-01",
+            "POL-17",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-67"
+          ]
+        },
+        {
+          "id": "RAG-DEV-052",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-68",
+            "POL-19",
+            "POL-07",
+            "POL-63",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-68"
+          ]
+        },
+        {
+          "id": "RAG-DEV-053",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-69",
+            "POL-21",
+            "POL-49",
+            "POL-44",
+            "POL-77"
+          ],
+          "relevant": [
+            "POL-69"
+          ]
+        },
+        {
+          "id": "RAG-DEV-054",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-70",
+            "POL-69",
+            "POL-30",
+            "POL-72",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-70"
+          ]
+        },
+        {
+          "id": "RAG-DEV-055",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-71",
+            "POL-72",
+            "POL-76",
+            "POL-58",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-71"
+          ]
+        },
+        {
+          "id": "RAG-DEV-056",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-63",
+            "POL-66",
+            "POL-62",
+            "POL-19",
+            "POL-03"
+          ],
+          "relevant": [
+            "POL-72"
+          ]
+        },
+        {
+          "id": "RAG-DEV-057",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-01",
+            "POL-58",
+            "POL-60",
+            "POL-32",
+            "REF-NSE50-02"
+          ],
+          "relevant": [
+            "REF-NSE50-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-058",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-02",
+            "POL-33",
+            "POL-46",
+            "POL-18",
+            "POL-58"
+          ],
+          "relevant": [
+            "REF-NSE50-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-059",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-01",
+            "REF-MEMBER-01",
+            "POL-58",
+            "REF-OHLCV-01",
+            "POL-32"
+          ],
+          "relevant": [
+            "REF-MEMBER-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-060",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-OHLCV-01",
+            "POL-73",
+            "POL-25",
+            "POL-32",
+            "POL-44"
+          ],
+          "relevant": [
+            "REF-OHLCV-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-061",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-OHLCV-02",
+            "REF-OHLCV-01",
+            "REF-NSEPY-01",
+            "REF-ALIAS-03",
+            "REF-MEMBER-01"
+          ],
+          "relevant": [
+            "REF-OHLCV-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-062",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-01",
+            "REF-ALIAS-02",
+            "REF-ALIAS-03",
+            "POL-70",
+            "REF-OHLCV-01"
+          ],
+          "relevant": [
+            "REF-ALIAS-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-063",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-02",
+            "POL-51",
+            "REF-ALIAS-01",
+            "POL-35",
+            "POL-03"
+          ],
+          "relevant": [
+            "REF-ALIAS-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-064",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-03",
+            "REF-ALIAS-02",
+            "REF-ALIAS-01",
+            "POL-09",
+            "POL-07"
+          ],
+          "relevant": [
+            "REF-ALIAS-03"
+          ]
+        },
+        {
+          "id": "RAG-DEV-065",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSEPY-01",
+            "REF-OHLCV-01",
+            "REF-NSE50-01",
+            "POL-41",
+            "POL-72"
+          ],
+          "relevant": [
+            "REF-NSEPY-01"
+          ]
+        }
+      ]
+    },
+    "expanded_neural_before_rewrite": {
+      "queries": 101,
+      "recall_at_5": 0.9406,
+      "hit_at_5": 0.9406,
+      "mrr_at_5": 0.8667,
+      "ndcg_at_5": 0.8852,
+      "elapsed_seconds": 14.713,
+      "rows": [
+        {
+          "id": "RET-001-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-57",
+            "POL-28",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-37",
+            "POL-63",
+            "POL-38",
+            "POL-01",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-75",
+            "POL-74",
+            "POL-39",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-002-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-39",
+            "POL-02",
+            "POL-43",
+            "POL-25",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-29",
+            "POL-43",
+            "POL-16",
+            "POL-73",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-02",
+            "POL-43",
+            "POL-29",
+            "POL-25",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-003-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-14",
+            "POL-77",
+            "POL-03",
+            "POL-40",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-03",
+            "POL-10",
+            "POL-29",
+            "POL-43",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-77",
+            "POL-75",
+            "POL-03",
+            "POL-43",
+            "POL-30"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-004-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-37",
+            "POL-33",
+            "POL-38",
+            "REF-NSE50-01",
+            "POL-48"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-45",
+            "POL-63",
+            "POL-39",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P03",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-43",
+            "POL-45",
+            "POL-10",
+            "POL-03",
+            "POL-36"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-005-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-43",
+            "POL-75",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-40",
+            "POL-75",
+            "POL-60",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-40",
+            "POL-75",
+            "POL-03",
+            "POL-77"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-006-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-06",
+            "POL-07",
+            "POL-17",
+            "POL-15",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-66",
+            "POL-06",
+            "POL-75",
+            "POL-10",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-50",
+            "POL-06",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-007-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-07",
+            "POL-67",
+            "POL-15",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-68",
+            "POL-15",
+            "POL-66",
+            "POL-67"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P03",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-15",
+            "POL-17",
+            "POL-68",
+            "POL-09",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-008-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-65",
+            "POL-76",
+            "POL-15",
+            "POL-58",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-65",
+            "POL-44",
+            "POL-08",
+            "POL-15",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-41",
+            "POL-43",
+            "POL-08",
+            "POL-09",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-009-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-43",
+            "POL-72",
+            "POL-29",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-75",
+            "POL-17",
+            "POL-68",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-72",
+            "POL-60",
+            "POL-74",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-010-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-29",
+            "POL-77",
+            "POL-23",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-10",
+            "POL-20",
+            "POL-23",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-74",
+            "POL-24",
+            "POL-72",
+            "POL-44"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-011-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-72",
+            "POL-12",
+            "POL-10",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-72",
+            "POL-10",
+            "POL-18",
+            "POL-57"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-48",
+            "POL-76",
+            "POL-51",
+            "POL-50"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-012-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-16",
+            "POL-65",
+            "POL-37",
+            "POL-63"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-09",
+            "POL-50",
+            "POL-41",
+            "POL-75",
+            "REF-ALIAS-01"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-69",
+            "POL-37",
+            "POL-74",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RAG-DEV-001",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-17",
+            "POL-64",
+            "POL-52",
+            "POL-06",
+            "POL-49"
+          ],
+          "relevant": [
+            "POL-17"
+          ]
+        },
+        {
+          "id": "RAG-DEV-002",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-18",
+            "POL-50",
+            "POL-17",
+            "POL-64",
+            "POL-47"
+          ],
+          "relevant": [
+            "POL-18"
+          ]
+        },
+        {
+          "id": "RAG-DEV-003",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-67",
+            "POL-07",
+            "POL-66",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-19"
+          ]
+        },
+        {
+          "id": "RAG-DEV-004",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-20",
+            "POL-23",
+            "POL-21",
+            "POL-29",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-20"
+          ]
+        },
+        {
+          "id": "RAG-DEV-005",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-21",
+            "POL-25",
+            "POL-26",
+            "POL-34",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-21"
+          ]
+        },
+        {
+          "id": "RAG-DEV-006",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-03",
+            "POL-38",
+            "POL-43",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-22"
+          ]
+        },
+        {
+          "id": "RAG-DEV-007",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-23",
+            "POL-21",
+            "POL-29",
+            "POL-36",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-23"
+          ]
+        },
+        {
+          "id": "RAG-DEV-008",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-24",
+            "POL-32",
+            "POL-60",
+            "POL-31",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-24"
+          ]
+        },
+        {
+          "id": "RAG-DEV-009",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-25",
+            "POL-21",
+            "POL-72",
+            "POL-26",
+            "POL-27"
+          ],
+          "relevant": [
+            "POL-25"
+          ]
+        },
+        {
+          "id": "RAG-DEV-010",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-26",
+            "POL-25",
+            "POL-29",
+            "POL-72",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-26"
+          ]
+        },
+        {
+          "id": "RAG-DEV-011",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-27",
+            "POL-35",
+            "POL-28",
+            "POL-72",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-27"
+          ]
+        },
+        {
+          "id": "RAG-DEV-012",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-28",
+            "POL-27",
+            "POL-35",
+            "POL-22",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-28"
+          ]
+        },
+        {
+          "id": "RAG-DEV-013",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-29",
+            "POL-23",
+            "POL-36",
+            "POL-21",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-23",
+            "POL-29"
+          ]
+        },
+        {
+          "id": "RAG-DEV-014",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-30",
+            "POL-43",
+            "POL-42",
+            "POL-77",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-30"
+          ]
+        },
+        {
+          "id": "RAG-DEV-015",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-31",
+            "POL-62",
+            "POL-37",
+            "POL-16",
+            "POL-74"
+          ],
+          "relevant": [
+            "POL-31"
+          ]
+        },
+        {
+          "id": "RAG-DEV-016",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-32",
+            "POL-60",
+            "POL-35",
+            "REF-OHLCV-01",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-32"
+          ]
+        },
+        {
+          "id": "RAG-DEV-017",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-33",
+            "POL-34",
+            "POL-36",
+            "POL-35",
+            "POL-31"
+          ],
+          "relevant": [
+            "POL-33"
+          ]
+        },
+        {
+          "id": "RAG-DEV-018",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-34",
+            "POL-36",
+            "POL-25",
+            "POL-23",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-34"
+          ]
+        },
+        {
+          "id": "RAG-DEV-019",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-35",
+            "POL-33",
+            "POL-28",
+            "POL-34",
+            "POL-36"
+          ],
+          "relevant": [
+            "POL-35"
+          ]
+        },
+        {
+          "id": "RAG-DEV-020",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-36",
+            "POL-23",
+            "POL-29",
+            "POL-30",
+            "POL-31"
+          ],
+          "relevant": [
+            "POL-36"
+          ]
+        },
+        {
+          "id": "RAG-DEV-021",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-37",
+            "POL-04",
+            "POL-60",
+            "REF-NSE50-01",
+            "POL-31"
+          ],
+          "relevant": [
+            "POL-37"
+          ]
+        },
+        {
+          "id": "RAG-DEV-022",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-38",
+            "POL-39",
+            "POL-68",
+            "POL-14",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-38",
+            "POL-39"
+          ]
+        },
+        {
+          "id": "RAG-DEV-023",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-39",
+            "POL-37",
+            "POL-05",
+            "POL-10",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-39"
+          ]
+        },
+        {
+          "id": "RAG-DEV-024",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-03",
+            "POL-30",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-40"
+          ]
+        },
+        {
+          "id": "RAG-DEV-025",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-41",
+            "POL-43",
+            "POL-46",
+            "POL-16",
+            "POL-30"
+          ],
+          "relevant": [
+            "POL-41"
+          ]
+        },
+        {
+          "id": "RAG-DEV-026",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-42",
+            "POL-43",
+            "POL-30",
+            "POL-75",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-42"
+          ]
+        },
+        {
+          "id": "RAG-DEV-027",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-43",
+            "POL-72",
+            "POL-16",
+            "POL-42",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-43"
+          ]
+        },
+        {
+          "id": "RAG-DEV-028",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-44",
+            "POL-60",
+            "POL-37",
+            "POL-42",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-44"
+          ]
+        },
+        {
+          "id": "RAG-DEV-029",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-45",
+            "POL-16",
+            "REF-OHLCV-01",
+            "POL-10",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-45"
+          ]
+        },
+        {
+          "id": "RAG-DEV-030",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-46",
+            "POL-77",
+            "POL-30",
+            "POL-43",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-46"
+          ]
+        },
+        {
+          "id": "RAG-DEV-031",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-47",
+            "POL-17",
+            "POL-49",
+            "POL-77",
+            "POL-74"
+          ],
+          "relevant": [
+            "POL-47"
+          ]
+        },
+        {
+          "id": "RAG-DEV-032",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-48",
+            "POL-41",
+            "POL-46",
+            "POL-75",
+            "POL-43"
+          ],
+          "relevant": [
+            "POL-48"
+          ]
+        },
+        {
+          "id": "RAG-DEV-033",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-49",
+            "POL-74",
+            "POL-17",
+            "POL-53",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-49"
+          ]
+        },
+        {
+          "id": "RAG-DEV-034",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-50",
+            "POL-47",
+            "POL-18",
+            "POL-74",
+            "REF-NSEPY-01"
+          ],
+          "relevant": [
+            "POL-50"
+          ]
+        },
+        {
+          "id": "RAG-DEV-035",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-51",
+            "POL-03",
+            "POL-35",
+            "POL-52",
+            "POL-68"
+          ],
+          "relevant": [
+            "POL-51"
+          ]
+        },
+        {
+          "id": "RAG-DEV-036",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-52",
+            "POL-54",
+            "POL-13",
+            "POL-17",
+            "POL-53"
+          ],
+          "relevant": [
+            "POL-52"
+          ]
+        },
+        {
+          "id": "RAG-DEV-037",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-53",
+            "POL-49",
+            "POL-72",
+            "POL-52",
+            "POL-76"
+          ],
+          "relevant": [
+            "POL-53"
+          ]
+        },
+        {
+          "id": "RAG-DEV-038",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-54",
+            "POL-62",
+            "POL-24",
+            "POL-75",
+            "POL-43"
+          ],
+          "relevant": [
+            "POL-54"
+          ]
+        },
+        {
+          "id": "RAG-DEV-039",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-55",
+            "POL-58",
+            "POL-56",
+            "POL-70",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-55"
+          ]
+        },
+        {
+          "id": "RAG-DEV-040",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-56",
+            "POL-70",
+            "POL-29",
+            "POL-72",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-56"
+          ]
+        },
+        {
+          "id": "RAG-DEV-041",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-57",
+            "POL-61",
+            "REF-MEMBER-01",
+            "REF-OHLCV-01",
+            "REF-ALIAS-02"
+          ],
+          "relevant": [
+            "POL-57"
+          ]
+        },
+        {
+          "id": "RAG-DEV-042",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-58",
+            "POL-31",
+            "POL-16",
+            "REF-NSE50-02",
+            "REF-MEMBER-01"
+          ],
+          "relevant": [
+            "POL-58"
+          ]
+        },
+        {
+          "id": "RAG-DEV-043",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-59",
+            "POL-24",
+            "POL-31",
+            "POL-20",
+            "POL-58"
+          ],
+          "relevant": [
+            "POL-59"
+          ]
+        },
+        {
+          "id": "RAG-DEV-044",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-60",
+            "POL-44",
+            "REF-ALIAS-03",
+            "POL-75",
+            "POL-61"
+          ],
+          "relevant": [
+            "POL-60"
+          ]
+        },
+        {
+          "id": "RAG-DEV-045",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-61",
+            "REF-ALIAS-02",
+            "POL-60",
+            "POL-76",
+            "POL-44"
+          ],
+          "relevant": [
+            "POL-61"
+          ]
+        },
+        {
+          "id": "RAG-DEV-046",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-62",
+            "POL-48",
+            "POL-54",
+            "POL-53",
+            "POL-24"
+          ],
+          "relevant": [
+            "POL-62"
+          ]
+        },
+        {
+          "id": "RAG-DEV-047",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-63",
+            "POL-03",
+            "POL-62",
+            "POL-17",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-63"
+          ]
+        },
+        {
+          "id": "RAG-DEV-048",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-64",
+            "POL-47",
+            "POL-17",
+            "POL-18",
+            "POL-25"
+          ],
+          "relevant": [
+            "POL-64"
+          ]
+        },
+        {
+          "id": "RAG-DEV-049",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-65",
+            "POL-08",
+            "POL-03",
+            "POL-59",
+            "POL-71"
+          ],
+          "relevant": [
+            "POL-65"
+          ]
+        },
+        {
+          "id": "RAG-DEV-050",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-66",
+            "POL-54",
+            "POL-15",
+            "POL-07",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-66"
+          ]
+        },
+        {
+          "id": "RAG-DEV-051",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-67",
+            "POL-15",
+            "POL-07",
+            "POL-06",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-67"
+          ]
+        },
+        {
+          "id": "RAG-DEV-052",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-68",
+            "POL-19",
+            "POL-63",
+            "POL-52",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-68"
+          ]
+        },
+        {
+          "id": "RAG-DEV-053",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-69",
+            "POL-77",
+            "POL-17",
+            "POL-74",
+            "POL-49"
+          ],
+          "relevant": [
+            "POL-69"
+          ]
+        },
+        {
+          "id": "RAG-DEV-054",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-70",
+            "POL-51",
+            "POL-72",
+            "POL-69",
+            "POL-76"
+          ],
+          "relevant": [
+            "POL-70"
+          ]
+        },
+        {
+          "id": "RAG-DEV-055",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-71",
+            "POL-72",
+            "POL-76",
+            "POL-58",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "POL-71"
+          ]
+        },
+        {
+          "id": "RAG-DEV-056",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-43",
+            "POL-16",
+            "POL-63",
+            "POL-62",
+            "POL-17"
+          ],
+          "relevant": [
+            "POL-72"
+          ]
+        },
+        {
+          "id": "RAG-DEV-057",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-01",
+            "REF-NSE50-02",
+            "POL-58",
+            "POL-31",
+            "REF-NSEPY-01"
+          ],
+          "relevant": [
+            "REF-NSE50-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-058",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-02",
+            "POL-33",
+            "POL-31",
+            "POL-58",
+            "POL-46"
+          ],
+          "relevant": [
+            "REF-NSE50-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-059",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-MEMBER-01",
+            "REF-NSE50-01",
+            "POL-58",
+            "REF-OHLCV-01",
+            "POL-76"
+          ],
+          "relevant": [
+            "REF-MEMBER-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-060",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-OHLCV-01",
+            "POL-73",
+            "POL-42",
+            "POL-16",
+            "POL-02"
+          ],
+          "relevant": [
+            "REF-OHLCV-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-061",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-OHLCV-02",
+            "REF-OHLCV-01",
+            "REF-ALIAS-02",
+            "REF-ALIAS-01",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "REF-OHLCV-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-062",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-01",
+            "REF-ALIAS-02",
+            "REF-ALIAS-03",
+            "POL-76",
+            "REF-NSEPY-01"
+          ],
+          "relevant": [
+            "REF-ALIAS-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-063",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-02",
+            "REF-ALIAS-03",
+            "REF-ALIAS-01",
+            "POL-28",
+            "POL-35"
+          ],
+          "relevant": [
+            "REF-ALIAS-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-064",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-03",
+            "REF-ALIAS-02",
+            "REF-ALIAS-01",
+            "POL-29",
+            "POL-73"
+          ],
+          "relevant": [
+            "REF-ALIAS-03"
+          ]
+        },
+        {
+          "id": "RAG-DEV-065",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSEPY-01",
+            "POL-57",
+            "REF-OHLCV-01",
+            "POL-76",
+            "POL-65"
+          ],
+          "relevant": [
+            "REF-NSEPY-01"
+          ]
+        }
+      ]
+    },
+    "expanded_neural_after_rewrite": {
+      "queries": 101,
+      "recall_at_5": 0.9604,
+      "hit_at_5": 0.9604,
+      "mrr_at_5": 0.8815,
+      "ndcg_at_5": 0.9013,
+      "elapsed_seconds": 14.361,
+      "rows": [
+        {
+          "id": "RET-001-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-57",
+            "POL-28",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-37",
+            "POL-63",
+            "POL-38",
+            "POL-01",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-75",
+            "POL-74",
+            "POL-39",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-002-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-39",
+            "POL-02",
+            "POL-43",
+            "POL-25",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-29",
+            "POL-43",
+            "POL-16",
+            "POL-73",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-02",
+            "POL-43",
+            "POL-29",
+            "POL-25",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-003-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-14",
+            "POL-77",
+            "POL-03",
+            "POL-40",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-03",
+            "POL-10",
+            "POL-29",
+            "POL-43",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-77",
+            "POL-75",
+            "POL-03",
+            "POL-43",
+            "POL-30"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-004-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-37",
+            "POL-33",
+            "POL-38",
+            "REF-NSE50-01",
+            "POL-48"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-45",
+            "POL-63",
+            "POL-39",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-38",
+            "POL-45",
+            "POL-46",
+            "POL-63"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-005-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-43",
+            "POL-75",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-40",
+            "POL-75",
+            "POL-60",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-40",
+            "POL-75",
+            "POL-03",
+            "POL-77"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-006-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-06",
+            "POL-07",
+            "POL-17",
+            "POL-15",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-66",
+            "POL-06",
+            "POL-75",
+            "POL-10",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-50",
+            "POL-06",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-007-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-07",
+            "POL-67",
+            "POL-15",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-68",
+            "POL-15",
+            "POL-66",
+            "POL-67"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-15",
+            "POL-07",
+            "POL-67",
+            "POL-06",
+            "POL-68"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-008-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-65",
+            "POL-76",
+            "POL-15",
+            "POL-58",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-65",
+            "POL-44",
+            "POL-08",
+            "POL-15",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-41",
+            "POL-43",
+            "POL-08",
+            "POL-09",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-009-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-43",
+            "POL-72",
+            "POL-29",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-75",
+            "POL-68",
+            "POL-06",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-72",
+            "POL-60",
+            "POL-74",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-010-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-29",
+            "POL-77",
+            "POL-23",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-10",
+            "POL-20",
+            "POL-23",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-74",
+            "POL-24",
+            "POL-72",
+            "POL-44"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-011-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-72",
+            "POL-12",
+            "POL-10",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-72",
+            "POL-10",
+            "POL-18",
+            "POL-57"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-48",
+            "POL-76",
+            "POL-51",
+            "POL-50"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-012-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-16",
+            "POL-65",
+            "POL-37",
+            "POL-63"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-09",
+            "POL-50",
+            "POL-41",
+            "POL-75",
+            "REF-ALIAS-01"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-69",
+            "POL-37",
+            "POL-74",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RAG-DEV-001",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-17",
+            "POL-64",
+            "POL-52",
+            "POL-06",
+            "POL-49"
+          ],
+          "relevant": [
+            "POL-17"
+          ]
+        },
+        {
+          "id": "RAG-DEV-002",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-18",
+            "POL-50",
+            "POL-17",
+            "POL-64",
+            "POL-47"
+          ],
+          "relevant": [
+            "POL-18"
+          ]
+        },
+        {
+          "id": "RAG-DEV-003",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-67",
+            "POL-07",
+            "POL-66",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-19"
+          ]
+        },
+        {
+          "id": "RAG-DEV-004",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-20",
+            "POL-23",
+            "POL-21",
+            "POL-29",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-20"
+          ]
+        },
+        {
+          "id": "RAG-DEV-005",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-21",
+            "POL-25",
+            "POL-26",
+            "POL-34",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-21"
+          ]
+        },
+        {
+          "id": "RAG-DEV-006",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-03",
+            "POL-38",
+            "POL-43",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-22"
+          ]
+        },
+        {
+          "id": "RAG-DEV-007",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-23",
+            "POL-21",
+            "POL-29",
+            "POL-36",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-23"
+          ]
+        },
+        {
+          "id": "RAG-DEV-008",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-24",
+            "POL-32",
+            "POL-60",
+            "POL-31",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-24"
+          ]
+        },
+        {
+          "id": "RAG-DEV-009",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-25",
+            "POL-21",
+            "POL-72",
+            "POL-26",
+            "POL-27"
+          ],
+          "relevant": [
+            "POL-25"
+          ]
+        },
+        {
+          "id": "RAG-DEV-010",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-26",
+            "POL-25",
+            "POL-29",
+            "POL-72",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-26"
+          ]
+        },
+        {
+          "id": "RAG-DEV-011",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-27",
+            "POL-35",
+            "POL-28",
+            "POL-72",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-27"
+          ]
+        },
+        {
+          "id": "RAG-DEV-012",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-28",
+            "POL-27",
+            "POL-35",
+            "POL-22",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-28"
+          ]
+        },
+        {
+          "id": "RAG-DEV-013",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-29",
+            "POL-23",
+            "POL-36",
+            "POL-21",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-23",
+            "POL-29"
+          ]
+        },
+        {
+          "id": "RAG-DEV-014",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-30",
+            "POL-43",
+            "POL-42",
+            "POL-77",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-30"
+          ]
+        },
+        {
+          "id": "RAG-DEV-015",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-31",
+            "POL-62",
+            "POL-37",
+            "POL-16",
+            "POL-74"
+          ],
+          "relevant": [
+            "POL-31"
+          ]
+        },
+        {
+          "id": "RAG-DEV-016",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-32",
+            "POL-60",
+            "POL-35",
+            "REF-OHLCV-01",
+            "POL-40"
+          ],
+          "relevant": [
+            "POL-32"
+          ]
+        },
+        {
+          "id": "RAG-DEV-017",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-33",
+            "POL-34",
+            "POL-36",
+            "POL-35",
+            "POL-31"
+          ],
+          "relevant": [
+            "POL-33"
+          ]
+        },
+        {
+          "id": "RAG-DEV-018",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-34",
+            "POL-36",
+            "POL-25",
+            "POL-23",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-34"
+          ]
+        },
+        {
+          "id": "RAG-DEV-019",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-35",
+            "POL-33",
+            "POL-28",
+            "POL-34",
+            "POL-36"
+          ],
+          "relevant": [
+            "POL-35"
+          ]
+        },
+        {
+          "id": "RAG-DEV-020",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-36",
+            "POL-23",
+            "POL-29",
+            "POL-30",
+            "POL-31"
+          ],
+          "relevant": [
+            "POL-36"
+          ]
+        },
+        {
+          "id": "RAG-DEV-021",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-37",
+            "POL-04",
+            "POL-60",
+            "REF-NSE50-01",
+            "POL-31"
+          ],
+          "relevant": [
+            "POL-37"
+          ]
+        },
+        {
+          "id": "RAG-DEV-022",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-38",
+            "POL-39",
+            "POL-68",
+            "POL-14",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-38",
+            "POL-39"
+          ]
+        },
+        {
+          "id": "RAG-DEV-023",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-39",
+            "POL-37",
+            "POL-05",
+            "POL-10",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-39"
+          ]
+        },
+        {
+          "id": "RAG-DEV-024",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-03",
+            "POL-30",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-40"
+          ]
+        },
+        {
+          "id": "RAG-DEV-025",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-41",
+            "POL-43",
+            "POL-46",
+            "POL-16",
+            "POL-30"
+          ],
+          "relevant": [
+            "POL-41"
+          ]
+        },
+        {
+          "id": "RAG-DEV-026",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-42",
+            "POL-43",
+            "POL-30",
+            "POL-75",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-42"
+          ]
+        },
+        {
+          "id": "RAG-DEV-027",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-43",
+            "POL-72",
+            "POL-16",
+            "POL-42",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-43"
+          ]
+        },
+        {
+          "id": "RAG-DEV-028",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-44",
+            "POL-60",
+            "POL-37",
+            "POL-42",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-44"
+          ]
+        },
+        {
+          "id": "RAG-DEV-029",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-45",
+            "POL-16",
+            "REF-OHLCV-01",
+            "POL-10",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-45"
+          ]
+        },
+        {
+          "id": "RAG-DEV-030",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-46",
+            "POL-77",
+            "POL-30",
+            "POL-43",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-46"
+          ]
+        },
+        {
+          "id": "RAG-DEV-031",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-47",
+            "POL-17",
+            "POL-49",
+            "POL-77",
+            "POL-74"
+          ],
+          "relevant": [
+            "POL-47"
+          ]
+        },
+        {
+          "id": "RAG-DEV-032",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-48",
+            "POL-41",
+            "POL-46",
+            "POL-75",
+            "POL-43"
+          ],
+          "relevant": [
+            "POL-48"
+          ]
+        },
+        {
+          "id": "RAG-DEV-033",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-49",
+            "POL-74",
+            "POL-17",
+            "POL-53",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-49"
+          ]
+        },
+        {
+          "id": "RAG-DEV-034",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-50",
+            "POL-47",
+            "POL-18",
+            "POL-74",
+            "REF-NSEPY-01"
+          ],
+          "relevant": [
+            "POL-50"
+          ]
+        },
+        {
+          "id": "RAG-DEV-035",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-51",
+            "POL-03",
+            "POL-35",
+            "POL-52",
+            "POL-68"
+          ],
+          "relevant": [
+            "POL-51"
+          ]
+        },
+        {
+          "id": "RAG-DEV-036",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-52",
+            "POL-54",
+            "POL-13",
+            "POL-17",
+            "POL-53"
+          ],
+          "relevant": [
+            "POL-52"
+          ]
+        },
+        {
+          "id": "RAG-DEV-037",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-53",
+            "POL-49",
+            "POL-72",
+            "POL-52",
+            "POL-76"
+          ],
+          "relevant": [
+            "POL-53"
+          ]
+        },
+        {
+          "id": "RAG-DEV-038",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-54",
+            "POL-62",
+            "POL-24",
+            "POL-75",
+            "POL-43"
+          ],
+          "relevant": [
+            "POL-54"
+          ]
+        },
+        {
+          "id": "RAG-DEV-039",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-55",
+            "POL-58",
+            "POL-56",
+            "POL-70",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-55"
+          ]
+        },
+        {
+          "id": "RAG-DEV-040",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-56",
+            "POL-70",
+            "POL-29",
+            "POL-72",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-56"
+          ]
+        },
+        {
+          "id": "RAG-DEV-041",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-57",
+            "POL-61",
+            "REF-MEMBER-01",
+            "REF-OHLCV-01",
+            "REF-ALIAS-02"
+          ],
+          "relevant": [
+            "POL-57"
+          ]
+        },
+        {
+          "id": "RAG-DEV-042",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-58",
+            "POL-31",
+            "POL-16",
+            "REF-NSE50-02",
+            "REF-MEMBER-01"
+          ],
+          "relevant": [
+            "POL-58"
+          ]
+        },
+        {
+          "id": "RAG-DEV-043",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-59",
+            "POL-24",
+            "POL-31",
+            "POL-20",
+            "POL-58"
+          ],
+          "relevant": [
+            "POL-59"
+          ]
+        },
+        {
+          "id": "RAG-DEV-044",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-60",
+            "POL-44",
+            "REF-ALIAS-03",
+            "POL-75",
+            "POL-61"
+          ],
+          "relevant": [
+            "POL-60"
+          ]
+        },
+        {
+          "id": "RAG-DEV-045",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-61",
+            "REF-ALIAS-02",
+            "POL-60",
+            "POL-76",
+            "POL-44"
+          ],
+          "relevant": [
+            "POL-61"
+          ]
+        },
+        {
+          "id": "RAG-DEV-046",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-62",
+            "POL-48",
+            "POL-54",
+            "POL-53",
+            "POL-24"
+          ],
+          "relevant": [
+            "POL-62"
+          ]
+        },
+        {
+          "id": "RAG-DEV-047",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-63",
+            "POL-03",
+            "POL-62",
+            "POL-17",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-63"
+          ]
+        },
+        {
+          "id": "RAG-DEV-048",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-64",
+            "POL-47",
+            "POL-17",
+            "POL-18",
+            "POL-25"
+          ],
+          "relevant": [
+            "POL-64"
+          ]
+        },
+        {
+          "id": "RAG-DEV-049",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-65",
+            "POL-08",
+            "POL-03",
+            "POL-59",
+            "POL-71"
+          ],
+          "relevant": [
+            "POL-65"
+          ]
+        },
+        {
+          "id": "RAG-DEV-050",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-66",
+            "POL-54",
+            "POL-15",
+            "POL-07",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-66"
+          ]
+        },
+        {
+          "id": "RAG-DEV-051",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-67",
+            "POL-15",
+            "POL-07",
+            "POL-06",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-67"
+          ]
+        },
+        {
+          "id": "RAG-DEV-052",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-68",
+            "POL-19",
+            "POL-63",
+            "POL-52",
+            "POL-06"
+          ],
+          "relevant": [
+            "POL-68"
+          ]
+        },
+        {
+          "id": "RAG-DEV-053",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-69",
+            "POL-77",
+            "POL-17",
+            "POL-74",
+            "POL-49"
+          ],
+          "relevant": [
+            "POL-69"
+          ]
+        },
+        {
+          "id": "RAG-DEV-054",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-70",
+            "POL-51",
+            "POL-72",
+            "POL-69",
+            "POL-76"
+          ],
+          "relevant": [
+            "POL-70"
+          ]
+        },
+        {
+          "id": "RAG-DEV-055",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-71",
+            "POL-72",
+            "POL-76",
+            "POL-58",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "POL-71"
+          ]
+        },
+        {
+          "id": "RAG-DEV-056",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-43",
+            "POL-16",
+            "POL-63",
+            "POL-62",
+            "POL-17"
+          ],
+          "relevant": [
+            "POL-72"
+          ]
+        },
+        {
+          "id": "RAG-DEV-057",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-01",
+            "REF-NSE50-02",
+            "POL-58",
+            "POL-31",
+            "REF-NSEPY-01"
+          ],
+          "relevant": [
+            "REF-NSE50-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-058",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSE50-02",
+            "POL-33",
+            "POL-31",
+            "POL-58",
+            "POL-46"
+          ],
+          "relevant": [
+            "REF-NSE50-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-059",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-MEMBER-01",
+            "REF-NSE50-01",
+            "POL-58",
+            "REF-OHLCV-01",
+            "POL-76"
+          ],
+          "relevant": [
+            "REF-MEMBER-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-060",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-OHLCV-01",
+            "POL-73",
+            "POL-42",
+            "POL-16",
+            "POL-02"
+          ],
+          "relevant": [
+            "REF-OHLCV-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-061",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-OHLCV-02",
+            "REF-OHLCV-01",
+            "REF-ALIAS-02",
+            "REF-ALIAS-01",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "REF-OHLCV-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-062",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-01",
+            "REF-ALIAS-02",
+            "REF-ALIAS-03",
+            "POL-76",
+            "REF-NSEPY-01"
+          ],
+          "relevant": [
+            "REF-ALIAS-01"
+          ]
+        },
+        {
+          "id": "RAG-DEV-063",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-02",
+            "REF-ALIAS-03",
+            "REF-ALIAS-01",
+            "POL-28",
+            "POL-35"
+          ],
+          "relevant": [
+            "REF-ALIAS-02"
+          ]
+        },
+        {
+          "id": "RAG-DEV-064",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-ALIAS-03",
+            "REF-ALIAS-02",
+            "REF-ALIAS-01",
+            "POL-29",
+            "POL-73"
+          ],
+          "relevant": [
+            "REF-ALIAS-03"
+          ]
+        },
+        {
+          "id": "RAG-DEV-065",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "REF-NSEPY-01",
+            "POL-57",
+            "REF-OHLCV-01",
+            "POL-76",
+            "POL-65"
+          ],
+          "relevant": [
+            "REF-NSEPY-01"
+          ]
+        }
+      ]
+    },
+    "expanded_neural_legacy_queries": {
+      "queries": 36,
+      "recall_at_5": 0.9167,
+      "hit_at_5": 0.9167,
+      "mrr_at_5": 0.6954,
+      "ndcg_at_5": 0.7509,
+      "elapsed_seconds": 4.691,
+      "rows": [
+        {
+          "id": "RET-001-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-42",
+            "POL-57",
+            "POL-28",
+            "REF-ALIAS-03"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-37",
+            "POL-63",
+            "POL-38",
+            "POL-01",
+            "POL-04"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-001-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-01",
+            "POL-75",
+            "POL-74",
+            "POL-39",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-01"
+          ]
+        },
+        {
+          "id": "RET-002-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-39",
+            "POL-02",
+            "POL-43",
+            "POL-25",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-29",
+            "POL-43",
+            "POL-16",
+            "POL-73",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-002-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-02",
+            "POL-43",
+            "POL-29",
+            "POL-25",
+            "POL-23"
+          ],
+          "relevant": [
+            "POL-02"
+          ]
+        },
+        {
+          "id": "RET-003-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-14",
+            "POL-77",
+            "POL-03",
+            "POL-40",
+            "POL-37"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-03",
+            "POL-10",
+            "POL-29",
+            "POL-43",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-003-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-77",
+            "POL-75",
+            "POL-03",
+            "POL-43",
+            "POL-30"
+          ],
+          "relevant": [
+            "POL-03"
+          ]
+        },
+        {
+          "id": "RET-004-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-37",
+            "POL-33",
+            "POL-38",
+            "REF-NSE50-01",
+            "POL-48"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-45",
+            "POL-63",
+            "POL-39",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-004-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-04",
+            "POL-38",
+            "POL-45",
+            "POL-46",
+            "POL-63"
+          ],
+          "relevant": [
+            "POL-04"
+          ]
+        },
+        {
+          "id": "RET-005-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-40",
+            "POL-05",
+            "POL-43",
+            "POL-75",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-40",
+            "POL-75",
+            "POL-60",
+            "POL-73"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-005-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-05",
+            "POL-40",
+            "POL-75",
+            "POL-03",
+            "POL-77"
+          ],
+          "relevant": [
+            "POL-05"
+          ]
+        },
+        {
+          "id": "RET-006-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-06",
+            "POL-07",
+            "POL-17",
+            "POL-15",
+            "POL-64"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-66",
+            "POL-06",
+            "POL-75",
+            "POL-10",
+            "POL-29"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-006-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-08",
+            "POL-65",
+            "POL-50",
+            "POL-06",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-06"
+          ]
+        },
+        {
+          "id": "RET-007-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-19",
+            "POL-07",
+            "POL-67",
+            "POL-15",
+            "POL-38"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-07",
+            "POL-68",
+            "POL-15",
+            "POL-66",
+            "POL-67"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-007-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-15",
+            "POL-07",
+            "POL-67",
+            "POL-06",
+            "POL-68"
+          ],
+          "relevant": [
+            "POL-07"
+          ]
+        },
+        {
+          "id": "RET-008-P01",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-65",
+            "POL-76",
+            "POL-15",
+            "POL-58",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-65",
+            "POL-44",
+            "POL-08",
+            "POL-15",
+            "POL-72"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-008-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-41",
+            "POL-43",
+            "POL-08",
+            "POL-09",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-08"
+          ]
+        },
+        {
+          "id": "RET-009-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-43",
+            "POL-72",
+            "POL-29",
+            "POL-15"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-75",
+            "POL-68",
+            "POL-06",
+            "POL-02"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-009-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-09",
+            "POL-72",
+            "POL-60",
+            "POL-74",
+            "POL-16"
+          ],
+          "relevant": [
+            "POL-09"
+          ]
+        },
+        {
+          "id": "RET-010-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-29",
+            "POL-77",
+            "POL-23",
+            "POL-75"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-22",
+            "POL-10",
+            "POL-20",
+            "POL-23",
+            "POL-21"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-010-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-10",
+            "POL-74",
+            "POL-24",
+            "POL-72",
+            "POL-44"
+          ],
+          "relevant": [
+            "POL-10"
+          ]
+        },
+        {
+          "id": "RET-011-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-72",
+            "POL-12",
+            "POL-10",
+            "POL-60"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P02",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-72",
+            "POL-10",
+            "POL-18",
+            "POL-57"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-011-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-11",
+            "POL-48",
+            "POL-76",
+            "POL-51",
+            "POL-50"
+          ],
+          "relevant": [
+            "POL-11"
+          ]
+        },
+        {
+          "id": "RET-012-P01",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-16",
+            "POL-65",
+            "POL-37",
+            "POL-63"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P02",
+          "hit": false,
+          "recall": 0.0,
+          "returned": [
+            "POL-09",
+            "POL-50",
+            "POL-41",
+            "POL-75",
+            "REF-ALIAS-01"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        },
+        {
+          "id": "RET-012-P03",
+          "hit": true,
+          "recall": 1.0,
+          "returned": [
+            "POL-12",
+            "POL-69",
+            "POL-37",
+            "POL-74",
+            "POL-52"
+          ],
+          "relevant": [
+            "POL-12"
+          ]
+        }
+      ]
+    }
+  },
+  "paid_llm_calls": 0,
+  "label_status": "Authored development candidates; independent human relevance review and held-out evaluation remain outstanding.",
+  "limitations": [
+    "No claim of LLM explanation faithfulness or judge calibration from retrieval scores.",
+    "Legacy relevance labels are not exhaustive across the expanded corpus.",
+    "Rewriting comparison holds corpus, models, reranker and store fixed; the query-side technique is the changed component."
+  ]
+}

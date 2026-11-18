@@ -1,0 +1,2 @@
+# Verified historical schema against nsepython 2.101. No OpenRouter calls.
+nsepython>=2.101,<3

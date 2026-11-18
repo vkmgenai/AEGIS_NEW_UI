@@ -1,6 +1,6 @@
 # AegisTrade retrieval corpus
 
-`corpus.jsonl` contains 81 deliberately short passages: 72 project policies/code-derived specifications and nine source-linked background references. `manifest.json` records scope and review status. The existing 16 passage IDs are retained; strategy, selection, data-quality, research-gate, execution and evaluation details are now covered.
+`corpus.jsonl` contains 87 deliberately short passages: 78 project policies/code-derived specifications and nine source-linked background references. `manifest.json` records scope and review status. The existing 16 passage IDs are retained; strategy, selection, data-quality, research-gate, execution and evaluation details are now covered.
 
 The project material is experimental configuration, not NSE regulation. External material is a paraphrased primary/upstream-source summary and cannot override project policy. Original publication dates are stored only where verified; retrieval dates are not presented as publication dates. Unknown-date external references are conservatively unavailable to a historical case before their first retrieval date. Code-derived policies remain the declared rules of the experiment.
 

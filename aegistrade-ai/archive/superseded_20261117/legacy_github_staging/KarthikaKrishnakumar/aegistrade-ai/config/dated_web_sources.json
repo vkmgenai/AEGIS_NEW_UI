@@ -1,0 +1,14 @@
+{
+  "primary_domains": ["nseindia.com", "bseindia.com", "sebi.gov.in", "rbi.org.in"],
+  "secondary_domains": ["reuters.com", "economictimes.indiatimes.com", "business-standard.com", "livemint.com", "financialexpress.com", "thehindubusinessline.com", "cnbctv18.com"],
+  "issuers": {
+    "HDFCBANK": ["hdfcbank.com"], "ICICIBANK": ["icicibank.com"], "SBIN": ["sbi.co.in", "bank.sbi"], "BAJFINANCE": ["bajajfinserv.in"],
+    "TCS": ["tcs.com"], "INFY": ["infosys.com"], "HCLTECH": ["hcltech.com"],
+    "HINDUNILVR": ["hul.co.in"], "ITC": ["itcportal.com"], "DABUR": ["dabur.com"], "TITAN": ["titancompany.in"],
+    "SUNPHARMA": ["sunpharma.com"], "CIPLA": ["cipla.com"], "DRREDDY": ["drreddys.com"], "LT": ["larsentoubro.com"],
+    "BHARTIARTL": ["airtel.in", "bharti.com"], "RELIANCE": ["ril.com"], "MARUTI": ["marutisuzuki.com"], "M&M": ["mahindra.com"],
+    "NTPC": ["ntpc.co.in"], "POWERGRID": ["powergrid.in"], "TATASTEEL": ["tatasteel.com"], "HINDALCO": ["hindalco.com"],
+    "JSWSTEEL": ["jswsteel.in"], "ONGC": ["ongcindia.com"], "COALINDIA": ["coalindia.in"], "INDIGO": ["goindigo.in"],
+    "YESBANK": ["yesbank.in", "yes.bank.in"], "IDEA": ["myvi.in"], "ZEEL": ["zee.com"]
+  }
+}

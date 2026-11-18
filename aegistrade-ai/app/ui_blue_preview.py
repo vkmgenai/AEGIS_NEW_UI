@@ -145,7 +145,7 @@ def architecture_capability_rows(summary,outputs):
         config=metric.get('config');cases=int(metric.get('cases') or 0)
         items=[x for x in outputs if x.get('config')==config]
         if config=='C0':
-            rows.append({'Architecture':'C0','Role':'Deterministic routing reference',
+            rows.append({'Architecture':'C0 — deterministic reference','Role':'No LLM; secondary reference',
                 'Route validation':'Reference by construction','Grounded company evidence':'N/A',
                 'Adverse-risk flags':'N/A','Decision coverage':f'{cases}/{cases} routed',
                 'Safe evidence abstentions':'N/A','Hard model/policy failures':0})
@@ -155,7 +155,8 @@ def architecture_capability_rows(summary,outputs):
         decisions=sum((x.get('portfolio_action') or x.get('handoffs',{}).get('strategy',{}).get('payload',{}).get('portfolio_action')) in {'ENTER','EXIT','HOLD'} for x in items)
         abstain=sum((x.get('failure') or {}).get('category')=='EVIDENCE' for x in items)
         hard=sum(bool(x.get('model_errors')) and (x.get('failure') or {}).get('category')!='EVIDENCE' for x in items)
-        rows.append({'Architecture':config,'Role':'Single tool-using agent' if config=='C1' else 'Market + strategy + independent critic',
+        rows.append({'Architecture':('C1 — single-agent baseline' if config=='C1' else 'C2 — multi-agent team'),
+            'Role':'One agent with the complete shared tool set' if config=='C1' else 'Supervisor + market, strategy and critic specialists',
             'Route validation':f"{int(metric.get('guard_pass_count') or 0)}/{cases-abstain} decided cases passed"+(f", {abstain} abstained" if abstain else ''),
             'Grounded company evidence':f'{grounded}/{cases}','Adverse-risk flags':adverse,
             'Decision coverage':f'{decisions}/{cases}','Safe evidence abstentions':abstain,
@@ -256,8 +257,8 @@ if page=='Home':
             descriptions={
                 'Market Data':'Universe, coverage and provenance',
                 'Overview':'Price history, indicators and current snapshot',
-                'Strategy Backtests':'C0 and C2 portfolio simulations',
-                'AI Agent Experiments':'Fair C0/C1/C2 agent comparison',
+                'Strategy Backtests':'End-to-end C2 portfolio and human overrides',
+                'AI Agent Experiments':'C1 single agent versus C2 multi-agent',
                 'Capstone Evaluation':'Saved experimental evidence',
                 'Policy Knowledge':'RAG passages, sources and dates',
                 'Learning & Lessons':'Reviewed outcomes and governed memory'}
@@ -337,7 +338,7 @@ def provider_selector(place):
 
 def render_single_stock_comparison(universe, reviewer_token, health):
     """Single-stock system comparison beside the portfolio workflows."""
-    from datetime import date
+    from datetime import date, timedelta
     st.markdown('### Single-stock C0 / C2 portfolio comparison')
     st.caption('Runs the same stock and historical window through the deterministic C0 ROUTER and the checkpointed C2 portfolio engine. This is secondary P&L evidence; use Agent Experiments for the fair C0/C1/C2 architecture comparison.')
     comparison=st.session_state.get('portfolio_comparison_result')
@@ -551,31 +552,9 @@ elif page == "Overview":
         st.info("Next: run Strategy Backtests, inspect the stock-selection audit, then send selected candidates through C2. AI Agent Experiments run to completion without pausing. Human intervention is available only in a C2 portfolio run in Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE enabled.")
 
 elif page == "Strategy Backtests":
-    strategy_view=st.session_state.get('strategy_backtest_view','landing')
-    if strategy_view=='landing':
-        heading('Strategy Backtests','Choose a portfolio-wide C0/C2 replay or a focused same-stock comparison. Only the selected workflow is shown.')
-        left,right=st.columns(2)
-        with left:
-            if st.button('### 📊 C0/C2 Portfolio Backtests\n\nRun automatic stock selection across the active universe. Compare the deterministic C0 baseline with the evidence-grounded, multi-agent C2 portfolio.',key='strategy_tile_portfolio',use_container_width=True):
-                st.session_state['strategy_backtest_view']='portfolio';st.rerun()
-        with right:
-            if st.button('### 🔎 Single-stock C0/C2 Comparison\n\nChoose one stock and run the same dates, capital and execution policy through C0 and C2 for a focused ledger and P&L comparison.',key='strategy_tile_single',use_container_width=True):
-                st.session_state['strategy_backtest_view']='single';st.rerun()
-        st.caption('Both workflows are historical simulations only. No live exchange or broker order is created.')
-        st.stop()
-    if st.button('← Back to Strategy Backtests',key='strategy_backtests_back'):
-        st.session_state['strategy_backtest_view']='landing';st.rerun()
-    if strategy_view=='single':
-        heading('Single-stock C0/C2 comparison','Run one selected stock through the deterministic C0 and checkpointed C2 engines under shared assumptions.')
-        with st.container(border=True):provider_selector('single')
-        render_single_stock_comparison(universe,reviewer_token,health)
-        with st.expander('How should I interpret this comparison?',expanded=True):
-            st.markdown('Compare ledgers, equity curves, return and drawdown under the same stock/window. C2 adds dated evidence and specialist/critic calls; this does not guarantee that C2 will outperform C0.')
-        st.stop()
-    heading("C0/C2 portfolio backtests", "Choose the deterministic C0 baseline or the agentic C2 workflow. Both use the same capital, dates and fixed financial policy.")
-    simulation_engine=st.radio('Backtest workflow',['C2 historical portfolio','C0 Technical baseline'],horizontal=True,key='simulation_engine')
-    is_c2=simulation_engine=='C2 historical portfolio'
-    is_ai=is_c2
+    heading("C2 historical portfolio", "Run the end-to-end multi-agent portfolio simulation with dated evidence, deterministic financial controls and optional human evidence overrides.")
+    is_c2=True
+    is_ai=True
     if is_ai:
         with st.container(border=True):provider_selector('backtest')
     flow_label='C2'
@@ -632,7 +611,7 @@ elif page == "Strategy Backtests":
                 if c_pause.button('Pause '+flow_label+' portfolio',disabled=not bool(job_id and reviewer_token)):
                     try:load_ai_job(job_id);post(prefix+'/pause/'+job_id,{},reviewer_token);st.info('Pause requested at the next safe boundary.')
                     except Exception as exc:fail('Pause request failed.',exc)
-    st.caption('C0 uses deterministic technical rules and zero LLM calls. C2 adds dated evidence, specialist research and an independent critic. Neither workflow places live orders.')
+    st.caption('This page is the end-to-end C2 portfolio demonstration. The controlled C0/C1/C2 architecture comparison belongs only in AI Agent Experiments. No live order is placed.')
     if is_ai:
         inf=health.get('inference',{})
         st.caption('Long C2 periods consume provider allowance. Start with a short window; paused runs can be resumed from the progress panel.')
@@ -671,7 +650,7 @@ elif page == "Strategy Backtests":
 - Slippage: **10 bps per transaction** plus fixed modeled NSE delivery charges.
 - C2 screens up to **3 candidates per session** and reviews holdings every **5 sessions**.
 ''')
-        st.caption('These assumptions are recorded in every result. They are fixed to prevent post-hoc tuning during the C0 versus C2 capstone comparison.')
+        st.caption('These assumptions are recorded in every result and fixed to prevent post-hoc tuning of the C2 portfolio demonstration.')
     with st.form("capital_simulation_form"):
         st.markdown("#### Run settings")
         c1,c2=st.columns(2)
@@ -914,8 +893,8 @@ elif page == "Strategy Backtests":
         st.markdown("**Ending portfolio:** cash plus marked-to-market shares. **Total return:** percent change from starting capital. **Maximum drawdown:** worst peak-to-trough portfolio fall. **Sharpe:** ratio based on historical daily returns. **Fees/slippage:** reduce simulated outcomes. **Limitations:** no real fills, no live broker, no forecast of future profits. Use out-of-sample real data before making academic performance claims.")
 
 elif page == "AI Agent Experiments":
-    heading("GenAI and agentic AI experiments", "Compare strategy-routing research on the SAME scenarios. C0 uses no LLM; C1 is one tool-using agent; C2 coordinates market, strategy and critic specialists. Both share an eight-call ceiling per case. NO TRADES ARE PLACED.")
-    st.info("Use this workspace for the guideline-required fair C0/C1/C2 agent ablation. An experiment runs to completion and does not pause for human approval. The single-stock C0/C2 P&L comparison is now in Strategy Backtests.")
+    heading("Single-agent versus multi-agent experiments", "C1 is one agent with the complete shared tool set. C2 is a supervisor coordinating market, strategy and critic specialists through typed hand-offs. C0 is a secondary deterministic reference. No live trades are placed.")
+    st.info("This is the guideline-required C1 single-agent versus C2 multi-agent comparison. Both receive identical cases, model, dated evidence, available read tools and case-level budget. Human-in-the-loop remains in the C2 portfolio workspace.")
     with st.container(border=True):
         a,b=st.columns(2)
         inference=health.get("inference",{})
@@ -924,7 +903,7 @@ elif page == "AI Agent Experiments":
         provider_selector('experiments')
         if not health.get("llm_experiments_enabled"):
             st.caption("To activate C1/C2: choose a provider above that shows ready (Claude: run claude auth login in Terminal; ChatGPT: run codex login; OpenRouter: set OPENROUTER_API_KEY in .env), set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
-    from datetime import date
+    from datetime import date, timedelta
     if False:  # Legacy single-stock widgets are hidden; the live comparison is in Strategy Backtests.
         st.markdown('### Single-stock C0 / C2 portfolio comparison')
         st.caption('Runs one stock over one historical window. C0 is the deterministic four-strategy ROUTER; C2 adds dated research, the market/strategy/critic team and SMC. Both share capital, costs, target and stop settings.')
@@ -1006,18 +985,24 @@ elif page == "AI Agent Experiments":
             st.download_button('Download complete comparison JSON',json.dumps(comparison,indent=2),file_name='aegistrade_c0_c2_'+comparison['run_id'][:8]+'.json',mime='application/json')
             st.caption(comparison['comparison_design']['interpretation']+' Use the case experiment below for the fair same-case, same-budget multi-agent evaluation.')
     selection_settings=st.session_state.get('selection_research_settings',{})
-    st.caption("The experiment automatically ranks eligible stocks and retrieves dated evidence. The experiment does not pause for human approval; to test human intervention, run a C2 portfolio in Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE enabled. Detailed evidence remains available in the saved trace.")
+    st.caption("The experiment automatically ranks eligible stocks and retrieves dated evidence. It runs to completion without approval pauses; use the C2 portfolio for HUMAN_EVIDENCE_OVERRIDE. Detailed traces remain in the saved result.")
     screening_capital=float(selection_settings.get('capital',200000.))
     with st.form("agent_comparison_form"):
         s1,s2=st.columns(2)
         with s1:
-            cfg=st.selectbox("Experiment configuration",["C2","C0","C1","ALL"],help="ALL runs the same cases through all three configurations (up to 16 total cloud calls per case).")
+            cfg=st.selectbox("Experiment configuration",["ALL","C1","C2","C0"],
+                format_func=lambda x:{'ALL':'All: C0 reference + C1 single agent + C2 multi-agent','C1':'C1 — single-agent baseline','C2':'C2 — multi-agent team','C0':'C0 — deterministic reference'}[x],
+                help="The primary comparison is C1 versus C2. ALL also includes C0 as a zero-LLM reference.")
             count=st.number_input("Research cases to test",min_value=1,max_value=3,value=1,step=1,
                                    help="UI budget cap: at most 3 cases. Use CLI for larger controlled experiments.")
         with s2:
             first=date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"]);last=date.fromisoformat(universe["last_date"])
-            eval_start=st.date_input("Earliest case date",value=date.fromisoformat(selection_settings.get("end")) if selection_settings.get("end") else first,min_value=first,max_value=last,key="ai_eval_start")
-            eval_end=st.date_input("Latest case date",value=date.fromisoformat(selection_settings.get("end")) if selection_settings.get("end") else last,min_value=first,max_value=last,key="ai_eval_end")
+            latest_outcome_case=max(first,last-timedelta(days=35))
+            configured_case=date.fromisoformat(selection_settings.get("end")) if selection_settings.get("end") else latest_outcome_case
+            default_case=min(configured_case,latest_outcome_case)
+            eval_start=st.date_input("Earliest case date",value=default_case,min_value=first,max_value=last,key="ai_eval_start")
+            eval_end=st.date_input("Latest case date",value=default_case,min_value=first,max_value=last,key="ai_eval_end")
+            st.caption('Choose a case at least 20 trading sessions before the dataset ends to receive the standardized forward P&L outcome.')
         is_paid=cfg!="C0"
         consent=st.checkbox("I authorize this run to use the selected inference backend, subject to the displayed allowance",value=False,disabled=not is_paid)
         run_agent=st.form_submit_button("Run AI experiment",type="primary",use_container_width=True)
@@ -1054,16 +1039,33 @@ elif page == "AI Agent Experiments":
         st.caption(f"Run {experiment['run_id']} | Status: {experiment.get('status','COMPLETED')} | Model: {experiment['model']} | Call budget: {experiment['max_possible_paid_calls']}")
         summary=pd.DataFrame(experiment.get("summary",[]))
         outputs=experiment.get("outputs",[])
-        st.write('**Capability-oriented architecture comparison**')
-        render_table(architecture_capability_rows(summary,outputs),
-            'C0 is the reference by construction. Evidence abstention reduces decision coverage but is not automatically a hard model failure or a profitability result.',height=230)
+        st.write('**Primary comparison — C1 single agent versus C2 multi-agent team**')
+        capability=architecture_capability_rows(summary,outputs)
+        render_table([r for r in capability if not r['Architecture'].startswith('C0')],
+            'C1 and C2 receive identical cases, model, evidence, available read tools and case-level budget. Safe evidence abstentions are separated from hard failures.',height=190)
+        c0_rows=[r for r in capability if r['Architecture'].startswith('C0')]
+        if c0_rows:
+            with st.expander('C0 deterministic reference',expanded=False):
+                render_table(c0_rows,'C0 uses no LLM and is not the single-agent baseline.',height=120)
+        outcome_rows=[]
+        for item in outputs:
+            outcome=item.get('forward_outcome',{})
+            outcome_rows.append({'Case':item.get('case_id'),'Architecture':item.get('config'),
+                'Research decision':'ENTER' if outcome.get('participated') else 'STAY_CASH',
+                'Outcome available':outcome.get('available',False),'Entry date':outcome.get('entry_date'),
+                'Exit date':outcome.get('exit_date'),'Net P&L (₹)':outcome.get('pnl'),
+                'Return on ₹100k (%)':outcome.get('return_pct')})
+        if any(r['Outcome available'] for r in outcome_rows):
+            st.write('**Secondary forward outcome — fixed 20-session paper measurement**')
+            render_table(outcome_rows,'Calculated after research using ₹100,000 independently per case, next-open entry, the 20th-session close, 10 bps slippage and modeled NSE delivery charges. Blocked or failed entries remain cash. This is not a persistent portfolio and is not the architecture-quality score.',height=230)
         with st.expander('Technical audit metrics: agreement, errors, calls and latency',expanded=False):
-            render_table(summary,'Task success combines route/guard agreement and validation. It is not financial performance and C0 is self-consistent by construction.',height=210)
+            render_table(summary,'The primary comparison is C1 versus C2. Forward P&L is a fixed secondary outcome; task success, grounding and safety remain the architecture measures.',height=230)
             if not summary.empty and {'config','model_calls','median_latency_s','p95_latency_s'}.issubset(summary.columns):
                 st.write('**Cost and latency by architecture**')
                 st.bar_chart(summary.set_index('config')[['model_calls','median_latency_s','p95_latency_s']],use_container_width=True)
                 st.caption('These quantities use different units; inspect the table for exact values. Provider cost remains unknown unless every call reports it.')
-        render_table([{k:v for k,v in item.items() if k in ("case_id","config","market_regime","expected_strategy","selected_strategy","guard_pass","critic_accept","llm_calls","latency_s")} for item in outputs],height=250)
+        render_table([{**{k:v for k,v in item.items() if k in ("case_id","config","market_regime","expected_strategy","selected_strategy","guard_pass","critic_accept","llm_calls","latency_s")},
+            'forward_pnl':item.get('forward_outcome',{}).get('pnl'),'forward_return_pct':item.get('forward_outcome',{}).get('return_pct')} for item in outputs],height=250)
         provider_failures=[u for output in outputs for u in output.get('usage',[]) if u.get('error') or (u.get('http_status') or 0)>=400]
         if provider_failures:
             statuses=sorted({str(u.get('error_code') or u.get('http_status') or 'network/timeout') for u in provider_failures})
@@ -1112,7 +1114,7 @@ elif page == "AI Agent Experiments":
             render_table(list(reversed(events[-25:])),'Latest internal approval and simulated-action events.',height=240)
             if reviews:st.download_button('Export human C2 decisions',pd.DataFrame(reviews).to_csv(index=False),file_name='aegistrade_human_c2_decisions.csv',mime='text/csv')
         except Exception as exc:fail('Could not load the human decision audit.',exc)
-    st.caption("C0 is deterministic and uses zero LLM calls; C1 is one tool-using agent; C2 uses market, strategy and critic specialists. Capstone proof and outstanding evaluation work are kept in Capstone Evaluation.")
+    st.caption("C1 is the capstone single-agent baseline; C2 is the supervisor-led three-specialist system. C0 is only a deterministic zero-LLM reference. Human-in-the-loop evidence overrides remain in the C2 portfolio.")
 
 elif page == "Capstone Evaluation":
     heading("Capstone experiment ledger", "View retained deterministic and E1–E4 evaluation runs, lifecycle events, metrics and downloadable reports. This workspace is read-only and makes no model calls.")
@@ -1134,6 +1136,7 @@ elif page == "Capstone Evaluation":
         try:detail=get('/evaluation/capstone/runs/'+quote(run_id,safe=''))
         except Exception as exc:fail('Could not load the selected experiment.',exc);st.stop()
         manifest=detail.get('manifest',{});cfg=manifest.get('configuration',{})
+        provenance=manifest.get('provenance',{})
         a,b,c,d=st.columns(4)
         a.metric('Experiment',cfg.get('experiment','UNKNOWN'))
         b.metric('Status',manifest.get('status','UNKNOWN'))
@@ -1147,6 +1150,12 @@ elif page == "Capstone Evaluation":
             st.warning('This is a zero-generation or synthetic reference result. It is not a measured C1/C2 model comparison or proof of profitability.')
         if not manifest.get('paid_inference_authorized'):
             st.caption('No paid/external inference was authorized for this run.')
+        if provenance:
+            st.markdown('#### Contribution and review provenance')
+            st.write('**Requested/authorized by:** '+str(provenance.get('requested_by','Unspecified')))
+            if provenance.get('request_note'):st.write('**Purpose:** '+str(provenance['request_note']))
+            st.caption(str(provenance.get('execution_assistance',''))+' · Human review: '+str(provenance.get('human_review_status','PENDING'))+' · Independent validation: '+str(provenance.get('independent_validation_status','PENDING')))
+            st.info(str(provenance.get('statement','Automated execution is separate from human review and sign-off.')))
         preview=detail.get('report_preview')
         if preview:
             st.markdown('#### Result summary')

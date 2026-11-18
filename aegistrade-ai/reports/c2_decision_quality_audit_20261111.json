@@ -1,0 +1,279 @@
+{
+  "created_utc": "2026-11-11T11:55:50.595040+00:00",
+  "run_id": "5f0551162e0040289fe86524c5c60f55",
+  "version": "c2-portfolio-v3-fresh-adverse-profit",
+  "period": [
+    "2023-12-01",
+    "2023-12-29"
+  ],
+  "status": "COMPLETED_WITH_GAPS",
+  "blocked_total": 46,
+  "breakdown": [
+    {
+      "code": "COMPANY_ASSESSMENT_BLOCKED",
+      "adverse_risk": "UNKNOWN",
+      "scan_ready": true,
+      "count": 2
+    },
+    {
+      "code": "ADVERSE_RISK_BLOCKED",
+      "adverse_risk": "UNKNOWN",
+      "scan_ready": true,
+      "count": 27
+    },
+    {
+      "code": "CONTEXT_BUDGET_EXCEEDED",
+      "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+      "scan_ready": true,
+      "count": 3
+    },
+    {
+      "code": "CONTEXT_BUDGET_EXCEEDED",
+      "adverse_risk": null,
+      "scan_ready": null,
+      "count": 4
+    },
+    {
+      "code": "ADVERSE_RISK_BLOCKED",
+      "adverse_risk": "MATERIAL_ADVERSE",
+      "scan_ready": true,
+      "count": 8
+    },
+    {
+      "code": "CRITIC_REJECTED",
+      "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+      "scan_ready": true,
+      "count": 2
+    }
+  ],
+  "interpretation": "7 context failures are engineering failures,29 UNKNOWN assessments require review,8 model material-adverse assessments require evidence audit,2 critic rejections require citation review. Counts do not establish that all blocks were incorrect.",
+  "context_failures": [
+    {
+      "date": "2023-12-04",
+      "symbol": "HINDALCO",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "critic",
+          "turn": 1,
+          "characters": 5982,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "critic",
+          "turn": 2,
+          "characters": 31398,
+          "limit": 26000
+        }
+      ]
+    },
+    {
+      "date": "2023-12-05",
+      "symbol": "BHARTIARTL",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 1,
+          "characters": 3854,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 2,
+          "characters": 27004,
+          "limit": 26000
+        }
+      ]
+    },
+    {
+      "date": "2023-12-06",
+      "symbol": "BHARTIARTL",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 1,
+          "characters": 3854,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 2,
+          "characters": 26853,
+          "limit": 26000
+        }
+      ]
+    },
+    {
+      "date": "2023-12-07",
+      "symbol": "BHARTIARTL",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 2,
+          "characters": 25232,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 3,
+          "characters": 27899,
+          "limit": 26000
+        }
+      ]
+    },
+    {
+      "date": "2023-12-11",
+      "symbol": "BHARTIARTL",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 2,
+          "characters": 25262,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "market",
+          "turn": 3,
+          "characters": 27951,
+          "limit": 26000
+        }
+      ]
+    },
+    {
+      "date": "2023-12-26",
+      "symbol": "RELIANCE",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "critic",
+          "turn": 1,
+          "characters": 6009,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "critic",
+          "turn": 2,
+          "characters": 30575,
+          "limit": 26000
+        }
+      ]
+    },
+    {
+      "date": "2023-12-27",
+      "symbol": "RELIANCE",
+      "context_events": [
+        {
+          "event": "context_usage",
+          "agent": "critic",
+          "turn": 1,
+          "characters": 5948,
+          "limit": 26000
+        },
+        {
+          "event": "context_usage",
+          "agent": "critic",
+          "turn": 2,
+          "characters": 30513,
+          "limit": 26000
+        }
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "date": "2023-12-04",
+      "symbol": "HDFCBANK",
+      "assessment": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "adverse_risk": "UNKNOWN",
+        "summary": "The November 30, 2023 disclosure reports an aggregate RBI penalty of INR 10,000 for contraventions of RBI directions under FEMA Section 11(3). This is a known regulatory adverse fact; broader implications and materiality are not established. No readable substantive financial results were supplied. Adverse risk remains UNKNOWN, not cleared by the bounded scan.",
+        "citations": [
+          "CMP-905b03356d53b29d",
+          "SCAN-092f9bec378d6347"
+        ],
+        "event_risks": [
+          "Known RBI regulatory penalty; materiality and any wider restrictions remain unestablished.",
+          "The observed scan does not separately establish the absence of defaults, fraud, insolvency, litigation, disruption, downgrades or other material negative disclosures."
+        ],
+        "limitations": [
+          "No readable substantive financial filing within 180 days; financial health and valuation cannot be assessed.",
+          "Bounded official disclosures only; not comprehensive independent news coverage or proof of safety.",
+          "PDF extraction is limited to the first 35 pages; financial figures are not independently normalized.",
+          "Archive retrieval does not certify historical content versions."
+        ]
+      },
+      "scan": {
+        "ready": true,
+        "version": "adverse-scan-v1",
+        "citation_id": "SCAN-092f9bec378d6347",
+        "candidate_count": 1,
+        "window_start": "2023-06-07",
+        "decision_at": "2023-12-04T15:30:00+05:30",
+        "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+        "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+      },
+      "source": {
+        "id": "CMP-905b03356d53b29d",
+        "kind": "announcement",
+        "title": "Updates \u2014 HDFC Bank Limited has informed the Exchange regarding 'Intimation under Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015'.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_30112023175027_penaltybyRBI30nov2023.pdf",
+        "published_at": "2023-11-30T17:50:27+05:30",
+        "available_at": "2023-11-30T17:50:35+05:30",
+        "extraction_status": "readable",
+        "financial_content_detected": false,
+        "excerpt": "November 30, 2023\nBSE Limited National Stock Exchange of India Limited\nDept of Corporate Services The Listing Department\nMumbai 400 001 Mumbai 400 051\nDear Sir/Madam,\nSub: Intimation under Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements)\nRegulations, 2015 (\u201cSEBI LODR Regulations\u201d)\nPursuant to Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015, a\npenalty of Rs. 10,000 is imposed on the Bank for contraventions of the directions issued by the Reserve Bank of\nIndia (\u201cRBI\u201d) in exercise of the powers conferred to RBI under Section 11(3) of FEMA, 199 9\nThe details as required to be p rovided as per sub -para 20 of Para A of Part A of Schedule III of SEBI LODR\nRegulations is as follows:\nSr.\nNo\nParticulars Details\n1 Name of the authority Reserve Bank of India\n2 Nature and details of the action(s) taken,\ninitiated or order(s) passed:\nAn aggregate penalty of INR 10,000 (Rupees Ten\nThousand Only) on HDFC Bank in exercise of the\npowers conferred to RBI under Section 11(3) of\nFEMA, 1999\n3 Date of receipt of direction or order,\nincluding any ad -interim or interim\norders, or any other communication from\nthe authority\nNovember 30, 2023"
+      },
+      "review_status": "NEEDS_BLINDED_HUMAN_MATERIALITY_REVIEW; later price movement is not a correctness label"
+    }
+  ],
+  "candidate_lessons": [
+    {
+      "id": "CAND-MATERIALITY",
+      "status": "DRAFT_NOT_ACCEPTED_OR_ACTIVE",
+      "topic": "regime",
+      "lesson": "Assess an adverse disclosure using stated or bounded financial/operational impact, severity, recency and continuing consequences. A penalty or resignation keyword alone does not establish material downside. Do not invent undisclosed restrictions or assume that any old negative event is newly material.",
+      "applies_when": "A research decision encounters regulatory, litigation or management-change disclosures.",
+      "boundary": "Retain UNKNOWN or a material-risk block when observed evidence leaves a genuinely material exposure unresolved; never ignore serious events to obtain more trades."
+    },
+    {
+      "id": "CAND-SCOPED-UNCERTAINTY",
+      "status": "DRAFT_NOT_ACCEPTED_OR_ACTIVE",
+      "topic": "grounding",
+      "lesson": "Distinguish incomplete financial/independent-press coverage from the results of the required completed bounded adverse scan. Missing proof of every imaginable risk is not itself an observed adverse event. Use LIMITED with explicit scope only when the available evidence supports it.",
+      "applies_when": "A completed risk scan accompanies limited financial context in a strategy decision.",
+      "boundary": "Do not turn missing required risk evidence, unreadable matched attachments or unsupported facts into clearance."
+    },
+    {
+      "id": "CAND-CONTEXT-FAILURE",
+      "status": "ENGINEERING_REPAIR_CANDIDATE_NOT_A_TRADING_RULE",
+      "topic": "execution",
+      "lesson": "Classify context overflow as a system failure. Improve bounded evidence packing and preserve full source audit outside the prompt; do not count it as a validated adverse-company rejection.",
+      "applies_when": "Evidence serialization exceeds the application context limit.",
+      "boundary": "Do not silently remove material adverse evidence, increase trade risk or bypass the critic."
+    }
+  ],
+  "memory_current_scope": "Frozen reviewed memory can be used in AI Agent Experiments; portfolio engine does not pass lessons to researcher. No automatic portfolio-P&L-to-memory pipeline exists.",
+  "all_observed_development_results_through": "2024-02-29",
+  "proposed_validity": "Development-derived lessons must not be presented as independently validated on already inspected earlier dates. Reserve genuinely uninspected evaluation windows.",
+  "new_model_calls": 0,
+  "trading_or_memory_changes": false,
+  "run_unchanged": true,
+  "verified_excerpt_omission": {
+    "case": "HDFCBANK-2023-12-04",
+    "document_id": "CMP-905b03356d53b29d",
+    "source_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_30112023175027_penaltybyRBI30nov2023.pdf",
+    "source_characters": 2493,
+    "fact": "Full attachment reports issuer-assessed financial/operational impact as Nil; the model excerpt ends before that impact section.",
+    "interpretation": "Evidence-view defect can cause an overcautious materiality assessment; issuer statement must be attributed and is not independent proof of safety. This does not label every block incorrect."
+  }
+}

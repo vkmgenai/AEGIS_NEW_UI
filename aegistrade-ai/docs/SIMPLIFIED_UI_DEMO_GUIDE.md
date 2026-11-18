@@ -1,12 +1,24 @@
 # AegisTrade AI — simplified UI demonstration guide
 
-Version 0.31 · 14 November 2026 · simulation only
+Version 0.35 · 17 November 2026 · simulation only
 
 ## What to demonstrate
 
 AegisTrade compares a zero-generation technical baseline (C0), a controlled single-agent baseline (C1), and the specialist/critic agent workflow (C2). It grounds research in evidence available by the historical decision date, validates typed outputs, keeps financial arithmetic in Python, and records decisions and failures. It never connects to a live broker.
 
 The portfolio screen fixes risk settings so that C0 and C2 use the same reproducible policy rather than hand-tuned settings.
+
+## Which interface to open
+
+- **Current full UI:** `http://127.0.0.1:8501`
+- **Redesign proposal for review:** `http://127.0.0.1:8504`
+- **Preview API:** `http://127.0.0.1:8002`
+
+Start the redesign later with `bash scripts/start_redesign_preview.sh`. It is a separate question-led demo shell and does not replace the current UI until explicitly approved.
+
+The redesign uses a permanently expanded navy sidebar with high-contrast white navigation and solid blue workspace tiles. If a browser retains an older Streamlit stylesheet, hard-refresh the page once after restarting the preview.
+
+In the redesign, demonstrate only four primary tiles in this order: **Data & Stock → C2 Portfolio → Agent Comparison → Evaluation Evidence**. Use **Knowledge & Lessons** only when asked about RAG or memory. The home attention cards show pending human intervention, paused portfolios and current architecture evidence.
 
 ## Before the demo
 
@@ -29,35 +41,31 @@ Open **Overview**, select a stock, and show OHLCV, EMA/RSI indicators, regime an
 
 Open **Policy Knowledge** and show the corpus fingerprint, dated passages and source IDs. Evidence after a historical cutoff is excluded and missing evidence is reported rather than invented.
 
-### 2. C0 technical portfolio
+### 2. C2 agentic portfolio
 
-Open **Strategy Backtests**, choose **C0 Technical baseline**, use capital `₹200,000`, and choose a covered three-month window with at least 45 market sessions. Check the rule approval, expand **Fixed, reproducible simulation policy**, and run.
+Open **Strategy Backtests**. In **Run AI agents using**, select ChatGPT, OpenRouter or Claude and press **Use this provider**. All three use the same typed AegisTrade contract; there is no automatic provider fallback.
 
-Show the equity curve, return, drawdown, benchmark, selection audit, trading ledger, open holdings and zero model calls. This is C0: deterministic routing and portfolio mechanics without GenAI.
-
-### 3. C2 agentic portfolio
-
-Choose **C2 historical portfolio**. In **Run AI agents using**, select ChatGPT, OpenRouter or Claude and press **Use this provider**. All three use the same typed AegisTrade contract; there is no automatic provider fallback.
-
-Use the same capital and dates as C0. Use inference allowance `48` for a small rehearsal, choose **No portfolio lessons** for a clean memory-off comparison, and check inference consent and replay-rule approval.
+Use capital `₹300,000` and a covered three-month window with at least 45 market sessions. Use inference allowance `48` for a small rehearsal, choose **No portfolio lessons** for a clean memory-off run, and check inference consent and replay-rule approval.
 
 Start the run. Show live progress, current date/stage, saved run ID, and refresh/pause/resume controls. After completion, open one trace and show the shortlist, dated RAG/web evidence, market specialist, strategy specialist, independent critic, deterministic validation, later-open fill, and holding-review/exit reason.
 
-Compare C2 with C0. Do not claim that a short-window return proves profitability; the capstone claim concerns grounding, auditability, policy compliance and safety versus inference cost.
+Inspect C2 return, drawdown, research ledger and human checkpoints. Do not claim that a short-window return proves profitability; the capstone claim concerns grounding, auditability, policy compliance and safety versus inference cost.
 
-### 4. Fair C0/C1/C2 experiment
+### 3. Fair C1/C2 agent experiment
 
-Open **AI Agent Experiments**. Pick one stock and locked historical period. Use the same provider, case, tools and bounded budget for C1 and C2. Run **ALL** or open a retained experiment. Show C0 zero-call output, C1 single-agent trace, C2 specialist/critic trace, aligned ledgers/equity, latency, calls, failures and citations. C1 is an evaluation baseline, not another portfolio workflow.
+Open **AI Agent Experiments**. Pick a locked historical period with at least 20 later sessions. Use the same provider, cases, evidence, available tool capabilities and bounded budget for C1 and C2. Run **ALL** or open a retained experiment. Show the C1 single-agent trace, C2 specialist/critic trace, latency, calls, failures and citations. Expand C0 only to explain the deterministic reference.
 
-The primary UI automatically selects eligible entry cases; there is no separate BUY/HOLD/SELL scenario control. C2 determines whether a grounded actionable recommendation exists, and only then displays the human review interrupt. Historical holding reviews and exits remain part of the C2 portfolio engine and saved trace rather than a duplicate experiment form.
+For the prepared demonstration, open any repeat ID: `1eac0a24d4e04453ab9bbab9e7c935da`, `e26275b0e9f34b22b7a7315cbbea0475`, or `51ab85a7df0b4abf94fed845595adc4f`. Explain that all three used identical IDEA/LT/HINDALCO cases. C2 selected LT consistently; C1 selected it in two of three repeats. These are development results, not held-out proof.
 
-**Reading the results.** The first table is the capability-oriented architecture comparison. C0 is the reference by construction, so its research columns read N/A. For C1 and C2, point out three things: how many cases have grounded company evidence, whether a block is a *safe evidence abstention* (the agents found a cited adverse item and stopped) or a *hard model/policy failure* (for example a route that conflicts with the code), and that Route validation counts only decided cases, with abstentions shown beside it. Open **Technical audit metrics** to show the raw task-success, error, call and latency figures. None of these columns is a profit result.
+Do not start a new final held-out experiment merely because the preview changed. First approve and freeze the UI/code, generate the new versioned review set, complete its independent review, and then run the resumable E1–E4 plan. The old 102 templates remain retained but are not the new final review set.
 
-### 5. Human evidence override, memory and evaluation
+The experiment automatically selects eligible entry cases; there is no separate BUY/HOLD/SELL scenario control. It runs to completion without approval pauses. Human evidence override belongs only to the checkpointed C2 portfolio, so research calls are not duplicated.
+
+**Reading the results.** The first table compares C1 and C2. Point out grounded company evidence, safe evidence abstentions, hard model/policy failures and decision coverage. Open **Technical audit metrics** for raw calls, latency and errors. Then show **Secondary standardized forward outcome**: fixed ₹100,000 notional, next-session open to the 20th later-session close, modeled fees/slippage, and cash for non-entry. Explain that it is a financial interpretation of each decision, not the primary architecture score or a portfolio backtest.
+
+### 4. Human evidence override, memory and evaluation
 
 For the optional intervention study, open **Strategy Backtests → Optional evaluation controls** and enable **HUMAN_EVIDENCE_OVERRIDE study** before starting a fresh C2 run. The run pauses only for an evidence-insufficient positive technical BUY or holding SELL with no hard adverse/safety failure. Record `KEEP_BLOCKED` or `APPROVE_OVERRIDE` with reviewer and rationale. Approved BUYs are linked through later reviews and exit; stop, trailing-stop and target exits remain automatic. Show the separate lifecycle ledger and explain that the original C2 block is preserved.
-
-Strategy Backtests first shows two large tiles. Choose **C0/C2 Portfolio Backtests** for the active-universe simulation and human-override demonstration. Choose **Single-stock C0/C2 Comparison** for a focused same-stock ledger, equity curve and P&L comparison. Use **← Back to Strategy Backtests** to return to the tile page; this navigation does not delete or restart a run.
 
 An approved BUY is not immediately a successful lesson. Its outcome remains `INCONCLUSIVE_OPEN` until the linked position exits. A later discretionary C2 SELL recommendation pauses for `KEEP_HOLDING` or `APPROVE_EXIT`; an evidence-blocked SELL can also pause for review. Deterministic stop, trailing-stop and take-profit exits do not wait for approval. After exit, the ledger reports `SUPPORTED` only when realized P&L is positive and `NOT_SUPPORTED` otherwise; either label is merely eligible for later human lesson review. It is never accepted into memory automatically. The reviewer token is local authorization for writing this audit decision; it is not sent to an LLM.
 
@@ -88,8 +96,8 @@ The API and saved-run schema retain these values for reproducibility and backwar
 |---|---|
 | Market Data | frozen universe, coverage and provenance |
 | Overview | technical features and code-approved candidates |
-| Strategy Backtests | C0/C2 replay, progress, ledger and P&L |
-| AI Agent Experiments | fair C0/C1/C2 architecture comparison |
+| Strategy Backtests | end-to-end C2 portfolio, progress, human override, ledger and P&L |
+| AI Agent Experiments | fair C1 single-agent versus C2 multi-agent comparison; C0 reference |
 | Capstone Evaluation | retained E1–E4 evidence and human review status |
 | Policy Knowledge | RAG sources, dates, IDs and fingerprints |
 | Learning & Lessons | reviewed/frozen memory governance |

@@ -1,0 +1,169 @@
+{
+  "review_id": "DRAFT-LLM-karthika-20261114",
+  "reviewer": "Karthika",
+  "role_from_proposal": "agents_intelligence",
+  "reviewed_at_utc": null,
+  "experiment_run_ids": [
+    "20261114T154041-1dd60bf8",
+    "20261114T153948-3dfe8a63"
+  ],
+  "artifact_sha256": {
+    "reports/capstone_runs/20261114T154041-1dd60bf8/report.json": "93b54ff73e3fce8948c32bc5672961f922e23c841c6f3e6f89e640c9558f13ac",
+    "reports/capstone_runs/20261114T153948-3dfe8a63/report.json": "952e0dd94b58613c082f42351f7d0ebe5c3b467997e8585ce59165a0f365c357",
+    "evaluation/golden/development.jsonl": "c3ae84fd01427e54c8f3ac1b5adffe8b45451ef7a230aa0b66f20862e8c658d8",
+    "evaluation/golden/heldout/heldout.jsonl": "2d7856767edce8343a6a123cc0a0ac0e87bcc966e2baa78352d96b3273deb246",
+    "evaluation/redteam/attacks_32.jsonl": "af25825a0c41fcd2d0e8f0e522e7bd72f4a7636c585b5eda9a0565bf8a6fbd91",
+    "evaluation/redteam/clean_10.jsonl": "5ad6a9a8a5a857feb0d6c3c482c1a8aa5e0d0333b7cf634ed95cdab8cc26cfb5",
+    "evaluation/retrieval/queries_36.jsonl": "e7830f9778c71ce044f61b8963c98408693e444f5160a4513be520d748c2d329"
+  },
+  "independence": {
+    "authored_or_tuned_reviewed_component": true,
+    "conflict_details": "LLM DRAFT. Not signed. Reviewer must confirm authorship and conflicts.",
+    "independent_acceptor_required": true,
+    "independent_acceptor": null
+  },
+  "case_decisions": [],
+  "question_answers": [
+    {
+      "question_number": 1,
+      "status": "PENDING",
+      "answer": "No E1/E3 run exists, so there is no actual-provider prompt version, corpus hash, model ID or lesson version to inspect. Preflight reported backend Codex CLI, model pinned.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "Record exact IDs once E1/E3 run.",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 2,
+      "status": "PENDING",
+      "answer": "No C1/C2 trajectories retained.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 3,
+      "status": "PENDING",
+      "answer": "No final-run citations to check. Development traces exist from earlier work.",
+      "method": "PENDING: required experiment has not been run. Development traces can be used as examples but not as final evidence.",
+      "exceptions": "Citation-to-passage mapping requires observed passages with source/date.",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "reports/c2_decision_quality_audit_20261111.json (development only)"
+      ]
+    },
+    {
+      "question_number": 4,
+      "status": "PENDING",
+      "answer": "No typed hand-offs in a retained final run.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 5,
+      "status": "PENDING",
+      "answer": "No critic traces retained in a final run.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 6,
+      "status": "PENDING",
+      "answer": "A final contradiction/replan trace is not retained. Check development artifacts (e.g. reports/c2_*.json) for a candidate, then re-capture in E1.",
+      "method": "Not verified; I did not open the candidate traces in this draft.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "reports/c2_materiality_context_verification_20261111.json (candidate only)"
+      ]
+    },
+    {
+      "question_number": 7,
+      "status": "PENDING",
+      "answer": "No final E1 failure records.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "Development files show past provider/context issues; classify after E1.",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "reports/context_budget_fix_20261112.json, reports/codex_timeout_diagnosis_20261111.json (development)"
+      ]
+    },
+    {
+      "question_number": 8,
+      "status": "PENDING",
+      "answer": "Feature and tests exist (reports/dated_web_fallback_verification_20261112.json), but no held-out result.",
+      "method": "Not reviewed in this draft.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "reports/dated_web_fallback_verification_20261112.json"
+      ]
+    },
+    {
+      "question_number": 9,
+      "status": "PENDING",
+      "answer": "No E3 run, no lesson IDs.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 10,
+      "status": "PENDING",
+      "answer": "Cannot confirm. The workflow exists but no frozen lesson manifest with timestamp is retained.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 11,
+      "status": "PENDING",
+      "answer": "Cannot state what C2 improves over C1: no E1 run. Do not infer from architecture.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 12,
+      "status": "PARTIALLY SUPPORTED",
+      "answer": "Proven by code/tests: the 348-test suite passed on commit a636e56 (per earlier session report). Supported by actual runs: only the two deterministic/synthetic runs. Unmeasured: all C1/C2 quality, memory (E3), critic/retrieval agent ablation (E4 agent-level), model security (E2).",
+      "method": "Compared claims to retained run IDs.",
+      "exceptions": "Test pass count is from the earlier session, not re-run here.",
+      "independent_acceptance_required": "Yes: Veneet or Mathangi",
+      "evidence_paths": [
+        "tests/; reports/capstone_runs/20261114T154041-1dd60bf8/report.json; reports/capstone_runs/20261114T153948-3dfe8a63/report.json"
+      ]
+    }
+  ],
+  "negative_results_retained": [],
+  "limitations": [
+    "LLM draft only; the named reviewer has not verified it.",
+    "No E1, E2 or E3 run exists; only deterministic and synthetic runs are retained.",
+    "All labels remain seeded or author-mapped."
+  ],
+  "final_decision": "REJECT_RERUN",
+  "final_rationale": "Provisional: required experiments and independent labels do not yet exist. Reviewer to confirm or change.",
+  "reviewer_attestation": "NOT SIGNED. Reviewer must personally inspect the cited artifacts before attesting."
+}

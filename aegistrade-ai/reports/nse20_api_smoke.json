@@ -1,0 +1,14 @@
+{
+  "source": "nsepython",
+  "stocks": 20,
+  "selection_date": "2026-11-08",
+  "selected": [
+    "BHARTIARTL",
+    "ICICIBANK",
+    "TCS",
+    "RELIANCE"
+  ],
+  "api_checks_passed": 6,
+  "C2_missing_order_status": 422,
+  "paid_model_calls": 0
+}

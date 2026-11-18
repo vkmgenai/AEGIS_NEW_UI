@@ -4,7 +4,7 @@ from urllib.parse import urlsplit
 import pytest
 
 
-def test_ui_dataset_backtest_and_research_handoff(monkeypatch,tmp_path):
+def test_ui_keeps_c2_portfolio_and_agent_comparison_separate(monkeypatch,tmp_path):
     from streamlit.testing.v1 import AppTest
     from fastapi.testclient import TestClient
     from aegistrade.market import synthetic_market
@@ -26,15 +26,11 @@ def test_ui_dataset_backtest_and_research_handoff(monkeypatch,tmp_path):
     assert not at.exception
     assert at.selectbox(key='aegis_workspace').value=='Market Data'
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
-    at.button(key='strategy_tile_portfolio').click().run()
     assert not at.exception
-    at.radio(key='simulation_engine').set_value('C0 Technical baseline').run()
-    next(x for x in at.checkbox if x.label.startswith('I approve these')).check()
-    next(x for x in at.button if x.label=='Run C0 backtest').click().run()
-    assert not at.exception
-    assert any(path=='/simulation/run' and body['automatic_stock_selection'] for path,body in sent)
-    next(x for x in at.button if x.label=='Research automatically selected stocks with C2').click().run()
-    assert not at.exception
+    assert not any(x.key=='simulation_engine' for x in at.radio)
+    assert any(x.label=='Run C2 backtest' for x in at.button)
+    assert not any(x.label=='Run C0 backtest' for x in at.button)
+    at.selectbox(key='aegis_workspace').select('AI Agent Experiments').run()
     assert at.selectbox(key='aegis_workspace').value=='AI Agent Experiments'
     assert not any(x.label=='Research automatically ranked eligible stocks' for x in at.checkbox)
     assert not any(x.label=='C2 decision scenario' for x in at.radio)
@@ -102,8 +98,7 @@ def test_ui_c2_portfolio_requires_and_sends_paid_rule_consent(monkeypatch,tmp_pa
     monkeypatch.setattr(requests,'get',get);monkeypatch.setattr(requests,'post',post)
     at=AppTest.from_file(Path(__file__).resolve().parents[1]/'app'/'ui.py',default_timeout=30).run()
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
-    at.button(key='strategy_tile_portfolio').click().run()
-    assert at.radio(key='simulation_engine').value=='C2 historical portfolio'
+    assert not any(x.key=='simulation_engine' for x in at.radio)
     assert not any(x.label=='Initial stop loss (% below signal close)' for x in at.number_input)
     assert not any(x.label=='Slippage (basis points per transaction)' for x in at.number_input)
     assert not any(x.label=='Breakout risk per trade (%)' for x in at.number_input)

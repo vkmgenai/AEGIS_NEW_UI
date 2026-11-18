@@ -1,0 +1,84 @@
+{
+  "source_version": "0.16.1",
+  "generation": "GENUINE selected backend; no mocked inference",
+  "run_id": "a63dfb2759a0468396b133fc2d811e63",
+  "case_id": "BHARTIARTL-2023-08-01",
+  "inference": {
+    "backend": "codex_cli",
+    "model": "codex-default",
+    "budget_unit": "cli_invocations",
+    "adapter_version": "codex-intent-v1"
+  },
+  "prompt_version": "2026-11-10-field-validation-v2",
+  "guard_pass": false,
+  "research_gate_pass": false,
+  "llm_calls": 2,
+  "tool_calls": 2,
+  "model_errors": [
+    "COMPANY_ASSESSMENT_BLOCKED: Market company assessment is INSUFFICIENT_EVIDENCE; ENTRY is not eligible. No further specialists were called."
+  ],
+  "failure": {
+    "code": "COMPANY_ASSESSMENT_BLOCKED",
+    "category": "EVIDENCE",
+    "agent": "market",
+    "message": "Market company assessment is INSUFFICIENT_EVIDENCE; ENTRY is not eligible. No further specialists were called."
+  },
+  "company_assessment": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "summary": "The May 16 issuer results release reports Q4 ended March 31, 2023 consolidated EBITDA of Rs 18,807 crore. On July 31, Airtel announced Rs 8,024 crore of spectrum-liability prepayment. A July 28 filing records equity issuance upon convertible-bond conversion. These are reported facts; the underlying financial-results submission is unreadable, limiting assessment.",
+    "citations": [
+      "CMP-8d0ce621e7005b06",
+      "CMP-e83114ca9840384e",
+      "CMP-9b1dd04ee95e4949"
+    ],
+    "event_risks": [
+      "Convertible-bond conversion involves equity dilution; its proportional impact is not established by the supplied excerpt."
+    ],
+    "limitations": [
+      "Selected official filings and issuer releases; not comprehensive press coverage.",
+      "Underlying financial-results submission is unreadable; no independently normalized financial comparison is available.",
+      "PDF extraction covers only the first 35 pages.",
+      "Archive retrieved later; exchange timestamps support availability, not a certified historical content-version chain."
+    ]
+  },
+  "validation_events": [],
+  "usage": [
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 7711,
+      "output_tokens": 44,
+      "total_tokens": 7755,
+      "resolved_models": [],
+      "latency_s": 5.847
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 10095,
+      "output_tokens": 408,
+      "total_tokens": 10503,
+      "resolved_models": [],
+      "latency_s": 14.452
+    }
+  ],
+  "original_portfolio_modified": false
+}

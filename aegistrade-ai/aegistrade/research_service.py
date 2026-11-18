@@ -4,6 +4,7 @@ from .company_research import company_pack_researchable
 from datetime import date, datetime, timezone
 from pathlib import Path
 import json
+import math
 import os
 import sqlite3
 from contextlib import closing
@@ -12,6 +13,53 @@ import pandas as pd
 from pydantic import BaseModel, Field, model_validator
 from .llm_research import run_research_case
 from .simulation_service import normalize
+from .fees import charge_breakdown, FEE_MODEL
+
+
+FORWARD_OUTCOME_SESSIONS = 20
+FORWARD_OUTCOME_NOTIONAL = 100_000.0
+FORWARD_OUTCOME_SLIPPAGE_BPS = 10.0
+
+
+def attach_forward_outcomes(outputs: list[dict], frame: pd.DataFrame) -> dict:
+    """Attach a fixed post-decision paper outcome without leaking it into research.
+
+    Every case/config receives the same independent notional and price window.
+    This is a secondary outcome metric, not a persistent portfolio backtest.
+    """
+    for item in outputs:
+        snapshot=item['snapshot'];symbol=snapshot['symbol'];signal=pd.Timestamp(snapshot['date'])
+        future=frame[(frame.Symbol==symbol)&(pd.to_datetime(frame.Date)>signal)].sort_values('Date').head(FORWARD_OUTCOME_SESSIONS)
+        outcome={'method':'FIXED_20_SESSION_NEXT_OPEN','notional':FORWARD_OUTCOME_NOTIONAL,
+                 'required_sessions':FORWARD_OUTCOME_SESSIONS,'available_sessions':int(len(future)),
+                 'fee_model':FEE_MODEL,'slippage_bps':FORWARD_OUTCOME_SLIPPAGE_BPS}
+        if len(future)<FORWARD_OUTCOME_SESSIONS:
+            item['forward_outcome']={**outcome,'available':False,'reason':'A complete post-decision window is unavailable'}
+            continue
+        config=item['config'];action=item.get('portfolio_action') or ('ENTER' if config=='C0' else None)
+        participates=bool(item.get('guard_pass')) and item.get('selected_strategy') not in {None,'NONE'} and action=='ENTER'
+        entry_bar=future.iloc[0];exit_bar=future.iloc[-1]
+        entry=float(entry_bar.Open)*(1+FORWARD_OUTCOME_SLIPPAGE_BPS/10000)
+        exit_price=float(exit_bar.Close)*(1-FORWARD_OUTCOME_SLIPPAGE_BPS/10000)
+        if participates:
+            # Include the buy charge in affordability so the case never spends
+            # more than its fixed reference allocation.
+            unit_cost=entry+charge_breakdown(entry,'BUY')['total']
+            quantity=max(0,math.floor(FORWARD_OUTCOME_NOTIONAL/unit_cost))
+            buy_turnover=quantity*entry; sell_turnover=quantity*exit_price
+            buy_fee=charge_breakdown(buy_turnover,'BUY')['total'];sell_fee=charge_breakdown(sell_turnover,'SELL')['total']
+            pnl=sell_turnover-sell_fee-buy_turnover-buy_fee
+        else:
+            quantity=0;buy_fee=0.;sell_fee=0.;pnl=0.
+        item['forward_outcome']={**outcome,'available':True,'participated':participates,
+            'decision':'ENTER' if participates else 'STAY_CASH','entry_date':entry_bar.Date.date().isoformat(),
+            'exit_date':exit_bar.Date.date().isoformat(),'entry_price':round(entry,4),
+            'exit_price':round(exit_price,4),'quantity':quantity,'fees':round(buy_fee+sell_fee,4),
+            'pnl':round(pnl,2),'return_pct':round(100*pnl/FORWARD_OUTCOME_NOTIONAL,4),
+            'reason':None if participates else 'Research did not produce an eligible ENTER decision'}
+    return {'method':'FIXED_20_SESSION_NEXT_OPEN','sessions':FORWARD_OUTCOME_SESSIONS,
+            'notional_per_case':FORWARD_OUTCOME_NOTIONAL,'slippage_bps':FORWARD_OUTCOME_SLIPPAGE_BPS,
+            'fee_model':FEE_MODEL,'interpretation':'Secondary, independent case outcome calculated after research; not a persistent portfolio or architecture-quality score.'}
 
 
 class ResearchPreflightError(ValueError):
@@ -175,6 +223,8 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                                        max_calls=8, max_output_tokens=s.max_output_tokens_per_case,
                                        **({"lessons": approved_lessons} if s.use_memory else {}))
             outputs.append({"snapshot":normalize(snapshot),"case_id": f"{snapshot['symbol']}-{snapshot['date']}", **normalize(output)})
+    forward_policy=attach_forward_outcomes(outputs,frame) if s.research_purpose=='ENTRY' else {
+        'method':'NOT_APPLICABLE','interpretation':'Forward entry P&L is not computed for holding-review experiments.'}
     summary=[]
     for config in modes:
         rows = [x for x in outputs if x["config"] == config]
@@ -194,6 +244,10 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                         "model_calls": calls, "budget_unit":identity(model=model)["budget_unit"] if config!="C0" else "none", "total_tokens_reported": tokens,
                         "reported_cost_usd": round(sum(reported_cost), 8) if usages and len(reported_cost)==len(usages) else None,
                         "cost_reporting_complete":bool(usages) and len(reported_cost)==len(usages),
+                        "forward_outcomes_available":sum(bool(x.get('forward_outcome',{}).get('available')) for x in rows),
+                        "forward_entries":sum(bool(x.get('forward_outcome',{}).get('participated')) for x in rows),
+                        "forward_pnl":round(sum(float(x.get('forward_outcome',{}).get('pnl') or 0) for x in rows if x.get('forward_outcome',{}).get('available')),2),
+                        "forward_return_pct_on_case_notional":round(100*sum(float(x.get('forward_outcome',{}).get('pnl') or 0) for x in rows if x.get('forward_outcome',{}).get('available'))/(FORWARD_OUTCOME_NOTIONAL*max(1,sum(bool(x.get('forward_outcome',{}).get('available')) for x in rows))),4),
                         "mean_latency_s": round(sum(latencies)/len(rows),3),"median_latency_s":round(latencies[len(latencies)//2],3),
                         "p95_latency_s":round(p95,3)})
     result = normalize({"run_id": uuid.uuid4().hex,
@@ -204,6 +258,17 @@ def execute_research(frame: pd.DataFrame, s: ResearchSettings, *, model: str|Non
                         "prompt_version": __import__("aegistrade.agentic",fromlist=["CONFIG"]).CONFIG["version"],
                         "memory_manifest":memory_manifest,
                         "knowledge_corpus":__import__("aegistrade.corpus",fromlist=["corpus_info"]).corpus_info(),
+                        "architecture_comparison_contract":{
+                            "primary_comparison":["C1_SINGLE_AGENT","C2_MULTI_AGENT"],
+                            "secondary_reference":"C0_DETERMINISTIC_NO_LLM",
+                            "same_cases":True,"same_model":True,"same_evidence":True,
+                            "same_available_read_tools":True,"same_case_call_ceiling":8,
+                            "same_case_output_token_budget":s.max_output_tokens_per_case,
+                            "c1_tools":["market_snapshot","company_evidence","search_policy","check_strategy","search_dated_web"],
+                            "c2_tool_union":["market_snapshot","company_evidence","search_policy","check_strategy","search_dated_web"],
+                            "interpretation":"C1 versus C2 tests architecture quality and cost. C0 is not the single-agent baseline."
+                        },
+                        "forward_outcome_policy":forward_policy,
                         "max_possible_paid_calls": required_call_budget(s),
                         "summary":summary, "outputs":outputs,
                         "status":"COMPLETED",

@@ -1,0 +1,11 @@
+{
+  "index": "Nifty 100",
+  "snapshot_date": "2026-11-12",
+  "symbols": 100,
+  "sha256": "0a53ad14c15e9ec258dc72117a8c0699546ec25f2d283c47d53412e2de8a06fc",
+  "sources": [
+    "https://archives.nseindia.com/content/indices/ind_nifty100list.csv",
+    "https://www.niftyindices.com/IndexConstituent/ind_nifty100list.csv"
+  ],
+  "scope": "Current official snapshot frozen for this project; not verified historical constituents"
+}

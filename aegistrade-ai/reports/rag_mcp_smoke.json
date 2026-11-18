@@ -1,0 +1,14 @@
+{
+  "transport": "stdio MCP",
+  "mode": "neural",
+  "corpus_sha256": "b389a449d555e5ff566b192ea18aa8addf26cd84218468e6ec4c1a838fab6aad",
+  "retrieved_ids": [
+    "POL-27",
+    "POL-28",
+    "POL-35",
+    "POL-22",
+    "POL-40"
+  ],
+  "paid_llm_calls": 0,
+  "LLM_answer_quality": "not measured"
+}

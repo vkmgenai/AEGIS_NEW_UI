@@ -1,0 +1,118 @@
+{
+  "uid": "aegis-overview",
+  "title": "AegisTrade AI - Operations",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "refresh": "15s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Request volume",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(aegis_http_requests_total[5m]))",
+          "legendFormat": "requests/sec"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Blocked trade events",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum by (reason) (increase(aegis_trade_blocked_total[10m]))",
+          "legendFormat": "{{reason}}"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "stat",
+      "title": "API health",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"aegis-api\"}"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "stat",
+      "title": "Approved proposals",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "aegis_trade_approved_total"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "stat",
+      "title": "Completed portfolio simulations",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "aegis_simulations_total",
+          "legendFormat": "simulations"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Inference units: case research and C2 portfolios",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum by (configuration) (aegis_research_model_calls_total)",
+          "legendFormat": "case {{configuration}}"
+        },
+        {
+          "expr": "aegis_c2_portfolio_model_calls_total",
+          "legendFormat": "historical C2 known attempts"
+        },
+        {
+          "expr": "aegis_c2_portfolio_uncertain_calls_total",
+          "legendFormat": "historical C2 uncertain reservations"
+        }
+      ],
+      "datasource": "Prometheus"
+    }
+  ],
+  "version": 2
+}

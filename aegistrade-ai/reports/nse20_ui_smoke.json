@@ -1,0 +1,12 @@
+{
+  "actual_nse_cache": true,
+  "source": "nsepython",
+  "stocks": 20,
+  "checks": [
+    "Market Data render",
+    "CSV export",
+    "AI research screen",
+    "No-spend stock screening"
+  ],
+  "paid_model_calls": 0
+}

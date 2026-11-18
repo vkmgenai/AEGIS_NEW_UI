@@ -1,0 +1,73 @@
+{
+  "version": "0.17.0",
+  "data": "SYNTHETIC controlled price path; not investment performance",
+  "generation": "MOCKED C2 responses",
+  "actual_model_calls": 0,
+  "status": "COMPLETED",
+  "stop_updates": [
+    {
+      "symbol": "DEMO",
+      "date": "2024-03-26",
+      "old_stop": 103.0,
+      "new_stop": 116.0,
+      "highest_close": 120.0,
+      "entry_signal_atr": 2.0,
+      "distance": 4.0,
+      "effective_after_close": "2024-03-26"
+    },
+    {
+      "symbol": "DEMO",
+      "date": "2024-03-27",
+      "old_stop": 116.0,
+      "new_stop": 119.0,
+      "highest_close": 123.0,
+      "entry_signal_atr": 2.0,
+      "distance": 4.0,
+      "effective_after_close": "2024-03-27"
+    }
+  ],
+  "ledger": [
+    {
+      "date": "2024-03-26",
+      "symbol": "DEMO",
+      "event": "BUY",
+      "quantity": 281,
+      "price": 110.10999999999999,
+      "fee": 30.94091,
+      "strategy": "EMA_TREND",
+      "realized_pnl": null,
+      "research_id": "a152fb2edb5108cb5c9b7d0c45afca9a",
+      "signal_date": "2024-03-25"
+    },
+    {
+      "date": "2024-03-28",
+      "symbol": "DEMO",
+      "event": "SELL_TRAILING_STOP",
+      "quantity": 281,
+      "price": 117.882,
+      "fee": 33.124842,
+      "strategy": "EMA_TREND",
+      "realized_pnl": 2119.8662480000107,
+      "initial_stop": 103.0,
+      "stop_price": 119.0,
+      "entry_research_id": "a152fb2edb5108cb5c9b7d0c45afca9a",
+      "research_id": null,
+      "entry_date": "2024-03-26"
+    }
+  ],
+  "accounting": {
+    "realized_pnl": 2119.8662480000107,
+    "unrealized_pnl": 0,
+    "equity_identity_error": -5.002220859751105e-12,
+    "forced_end_liquidation": false,
+    "model_cost_in_trading_returns": false
+  },
+  "trailing_signal_atr": 2.0,
+  "applies_next_session": true,
+  "initial_stop": 103.0,
+  "first_raised_stop": 116.0,
+  "second_raised_stop": 119.0,
+  "gap_open": 118.0,
+  "no_forced_end_sale": true,
+  "notes": "Fill-day low108 did not trigger the116 stop computed later at its close. A later gap filled below119 with slippage."
+}

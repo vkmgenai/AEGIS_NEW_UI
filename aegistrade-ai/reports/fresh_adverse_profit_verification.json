@@ -1,0 +1,126 @@
+{
+  "version": "0.18.0",
+  "generation": "MOCKED C2; synthetic market paths; no genuine inference",
+  "actual_model_calls": 0,
+  "pytest_passed": 172,
+  "Friday_example": {
+    "decisions": [
+      {
+        "date": "2024-04-05",
+        "symbol": "DEMO",
+        "purpose": "ENTRY",
+        "action": "DEFERRED_REVIEW",
+        "llm_calls": 0,
+        "explanation": "Friday/non-trading gap: recheck next trading close before researching an entry for a later open."
+      },
+      {
+        "id": "e2cb580b170e5e7d2a2629c5a848fd2d",
+        "key": "2024-04-08:DEMO:ENTRY",
+        "date": "2024-04-08",
+        "symbol": "DEMO",
+        "purpose": "ENTRY",
+        "action": "ENTER",
+        "guard_pass": true,
+        "explanation": "Contract-test research explanation; no provider request.",
+        "company_assessment": {
+          "status": "SUFFICIENT",
+          "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+          "summary": "Synthetic test evidence interpretation only.",
+          "citations": [
+            "CMP-f80b43b02206378f"
+          ],
+          "event_risks": [],
+          "limitations": [
+            "Synthetic contract evidence, not a real provider run."
+          ]
+        },
+        "citations": [
+          "POL-06"
+        ],
+        "errors": [],
+        "llm_calls": 6
+      }
+    ],
+    "buy": {
+      "date": "2024-04-09",
+      "symbol": "DEMO",
+      "event": "BUY",
+      "quantity": 374,
+      "price": 106.70659999999998,
+      "fee": 39.9082684,
+      "strategy": "EMA_TREND",
+      "realized_pnl": null,
+      "research_id": "e2cb580b170e5e7d2a2629c5a848fd2d",
+      "signal_date": "2024-04-08",
+      "original_signal_date": "2024-04-05"
+    },
+    "research_dates": [
+      "2024-04-08"
+    ]
+  },
+  "profit_example": {
+    "ledger": [
+      {
+        "date": "2024-03-26",
+        "symbol": "DEMO",
+        "event": "BUY",
+        "quantity": 281,
+        "price": 110.10999999999999,
+        "fee": 30.94091,
+        "strategy": "EMA_TREND",
+        "realized_pnl": null,
+        "research_id": "e56842eac774789ef5f0b55ea046224b",
+        "signal_date": "2024-03-25",
+        "original_signal_date": "2024-03-25"
+      },
+      {
+        "date": "2024-03-26",
+        "symbol": "DEMO",
+        "event": "SELL_TAKE_PROFIT",
+        "quantity": 281,
+        "price": 119.15687567567568,
+        "fee": 33.48308206486487,
+        "strategy": "EMA_TREND",
+        "realized_pnl": 2477.748072800006,
+        "initial_stop": 103.0,
+        "stop_price": 103.0,
+        "take_profit_reference": 119.27615182750318,
+        "entry_research_id": "e56842eac774789ef5f0b55ea046224b",
+        "research_id": null,
+        "entry_date": "2024-03-26"
+      }
+    ],
+    "net_return_percent": 8.00000000000002,
+    "accounting": {
+      "realized_pnl": 2477.748072800006,
+      "unrealized_pnl": 0,
+      "equity_identity_error": -1.2278178473934531e-11,
+      "forced_end_liquidation": false,
+      "model_cost_in_trading_returns": false
+    }
+  },
+  "policy_corpus_sha256": "604027e9ed9e58495fe5ecc434b724544dc5232854d999fd7a2f6cc5149e7332",
+  "original_completed_run_sha256": "1b9858569dc9f839423b9069fea14c5eee46fa74047edbf794986fc0ec0f3cb0",
+  "original_completed_run_unchanged": true,
+  "normal_C2_invocations": 6,
+  "per_case_limit": 8,
+  "neural_index_matches_corpus": true,
+  "trading_data_refreshed": false,
+  "existing_jobs_automatically_resumed": false,
+  "live_UI_API": {
+    "version": "0.18.0",
+    "feature_supported": true,
+    "net_profit_default": 8.0,
+    "fresh_post_gap_review_default": true,
+    "old_run_unchanged_and_readable": true,
+    "old_run_uses_original_zero_take_profit": true,
+    "UI_exceptions": 0,
+    "GET_only_requests": 10,
+    "real_model_calls": 0,
+    "new_user_simulations": 0
+  },
+  "extra_regressions": [
+    "A partial Monday budget pause never cancels an already accepted queued entry",
+    "A missing Friday bar cannot carry an older Thursday BUY into Monday open without a fresh close review"
+  ]
+}

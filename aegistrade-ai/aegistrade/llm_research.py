@@ -54,7 +54,7 @@ class StrategyJudgement(BaseModel):
 class CriticJudgement(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     accept:bool
-    reason:str=Field(max_length=800)
+    reason:str=Field(max_length=1200)
     breakout_evidence:BreakoutEvidence|None=None
 
 class SingleJudgement(StrategyJudgement):
@@ -91,6 +91,10 @@ class RouterClient:
         started=time.perf_counter()
         payload={'model':self.model,'messages':messages,'temperature':0,'max_tokens':max_tokens,
                  'usage':{'include':True}}
+        if tool_choice=='none':
+            # The provider still receives the typed contract in the prompt; JSON
+            # mode prevents truncated commentary/fences and unmatched braces.
+            payload['response_format']={'type':'json_object'}
         if tools:
             payload.update(tools=tools,tool_choice=tool_choice,
                            provider={'require_parameters':True})

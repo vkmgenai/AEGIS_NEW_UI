@@ -1,0 +1,5 @@
+{
+  "ETERNAL": {"previous_symbols": ["ZOMATO"], "source": "https://nsearchives.nseindia.com/content/circulars/CML67420.pdf", "note": "Identifier normalization only; no price adjustment."},
+  "SHRIRAMFIN": {"previous_symbols": ["SRTRANSFIN"], "source": "https://archives.nseindia.com/corporate/SRTRANSFIN_15122022090742_CML54812.pdf", "note": "Identifier normalization only; merger effects are not adjusted."},
+  "TMPV": {"previous_symbols": ["TATAMOTORS"], "source": "https://nsearchives.nseindia.com/content/circulars/CML70875.pdf", "note": "Continuing symbol; demerger effects and distributed shares are not reconstructed."}
+}

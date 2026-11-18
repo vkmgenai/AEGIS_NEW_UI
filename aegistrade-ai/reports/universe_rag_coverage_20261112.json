@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-12",
+  "policy_rag": {
+    "passages": 81,
+    "updated_passages": [
+      "POL-37",
+      "POL-58"
+    ],
+    "neural_index_current": true,
+    "corpus_sha256": "5a484c3cc57cfaa8b13d425868a004f60118dbd0db702eee9aacdef18bd61342"
+  },
+  "company_archive_snapshot": {
+    "research30": {
+      "symbols_with_any_cached_pack": 14,
+      "total_symbols": 30
+    },
+    "nifty100": {
+      "symbols_with_any_cached_pack": 20,
+      "total_symbols": 100
+    },
+    "qualification": "Any pack on any date; not full-period, readable-financial or complete adverse coverage."
+  },
+  "on_demand": "Selected symbol/date company packs are prepared before C2 generation; missing or incomplete required evidence can still block.",
+  "generation_calls_started": 0,
+  "targeted_tests_passed": 27,
+  "saved_run_effect": "Prior results retained; corrected corpus is for new C2 research/runs. Existing fingerprint mismatch guards remain in force."
+}

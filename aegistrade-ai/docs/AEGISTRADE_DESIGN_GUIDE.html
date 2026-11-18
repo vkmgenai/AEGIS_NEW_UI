@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AegisTrade Design Guide</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column, wide blocks (diagram, tables) break out and scroll on their own. */
+:root{
+  --bg:#f6f8f9; --surface:#ffffff; --fg:#17242b; --muted:#566871; --line:#d5dde1;
+  --accent:#0b6b6f; --accent-soft:#dcefee;
+  --l-user:#e6ecf7; --l-api:#e3f0ea; --l-data:#f4eedc; --l-flow:#dcefee; --l-tool:#ece6f5; --l-ctrl:#f6e3df; --l-rec:#e8ecee;
+  --ok:#1f7a48; --warn:#9a5b00;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10181c; --surface:#18232a; --fg:#e4ecef; --muted:#9fb0b8; --line:#2f3f48;
+  --accent:#5fc7c4; --accent-soft:#17383a;
+  --l-user:#1d2a44; --l-api:#19342a; --l-data:#3a321a; --l-flow:#17383a; --l-tool:#2b2440; --l-ctrl:#40231f; --l-rec:#232e34;
+  --ok:#6fd39b; --warn:#e6b560; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#10181c; --surface:#18232a; --fg:#e4ecef; --muted:#9fb0b8; --line:#2f3f48;
+  --accent:#5fc7c4; --accent-soft:#17383a;
+  --l-user:#1d2a44; --l-api:#19342a; --l-data:#3a321a; --l-flow:#17383a; --l-tool:#2b2440; --l-ctrl:#40231f; --l-rec:#232e34;
+  --ok:#6fd39b; --warn:#e6b560; color-scheme:dark }
+
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6}
+.page{max-width:1040px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:44px}
+.col{max-width:70ch}
+h1{font-size:2.1rem;line-height:1.15;margin:0;font-weight:700;text-wrap:balance}
+h2{font-size:1.4rem;line-height:1.25;margin:0 0 12px;font-weight:600;text-wrap:balance}
+h3{font-size:1.02rem;margin:0 0 6px;font-weight:600}
+p{margin:0 0 12px} p:last-child{margin-bottom:0}
+ul,ol{margin:0 0 12px;padding-left:1.25em} li{margin-bottom:6px}
+code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.eyebrow{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
+.lede{font-size:1.1rem;color:var(--muted)}
+.note{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;border-radius:0 6px 6px 0}
+section{display:flex;flex-direction:column;gap:14px;min-width:0}
+nav{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.92rem}
+nav a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+nav a:hover,nav a:focus-visible{border-bottom-color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* layered diagram */
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:stretch;border-radius:8px;padding:12px}
+.layer>.name{font-weight:600;font-size:.92rem;display:flex;flex-direction:column;gap:2px}
+.layer>.name span{font-weight:400;font-size:.8rem;color:var(--muted)}
+.boxes{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:.86rem;line-height:1.35;flex:1 1 150px;min-width:0}
+.box b{display:block;font-weight:600}
+.box small{color:var(--muted);font-size:.78rem}
+.num{display:inline-block;min-width:1.5em;height:1.5em;line-height:1.5em;text-align:center;border-radius:50%;background:var(--accent);color:var(--bg);font-size:.75rem;font-weight:600;margin-right:6px}
+.down{text-align:center;color:var(--muted);font-size:.8rem;line-height:1.2}
+.u{background:var(--l-user)} .a{background:var(--l-api)} .d{background:var(--l-data)} .f{background:var(--l-flow)} .t{background:var(--l-tool)} .c{background:var(--l-ctrl)} .r{background:var(--l-rec)}
+@media (max-width:640px){ .layer{grid-template-columns:1fr} h1{font-size:1.65rem} }
+
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.scroll.pad{padding:14px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:640px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600}
+td .file{display:block;font-family:var(--mono);font-weight:400;font-size:.76rem;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+tr.group td{background:var(--accent-soft);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card p{font-size:.93rem}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:.9rem;min-width:0}
+.step b{display:block;margin-bottom:4px}
+.step .when{font-family:var(--mono);font-size:.76rem;color:var(--accent)}
+pre.mermaid{margin:0;min-width:620px}
+footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:16px}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+<div class="page">
+
+<header class="col">
+  <div class="eyebrow">Learning guide · version 0.35 · simulation only</div>
+  <h1>AegisTrade AI: how the project is designed and why</h1>
+  <p class="lede" style="margin-top:14px">AegisTrade is a research platform that tests one capstone question: does a supervisor-led team of specialists produce better grounded decisions than one agent given the same historical case, read tools, model family and call ceiling? A deterministic C0 flow remains the no-model reference. The project replays past NSE daily prices, never connects to a broker, and records every decision so it can be checked afterwards.</p>
+  <nav aria-label="Sections">
+    <a href="#picture">Design diagram</a><a href="#flows">C0, C1 and C2</a><a href="#decision">One C2 decision</a><a href="#trade">One simulated trade</a><a href="#components">Every component</a><a href="#evaluation">Evaluation</a><a href="#owners">Who decides what</a><a href="#ideas">Ideas to learn</a><a href="#read">Reading order</a><a href="#limits">Limits</a>
+  </nav>
+</header>
+
+<section class="col">
+  <h2>The idea in four sentences</h2>
+  <ol>
+    <li><b>Code finds the trade signal.</b> Indicators such as moving averages and RSI are calculated in Python on completed daily bars.</li>
+    <li><b>Agents check the evidence.</b> In the AI flows, language-model agents read dated company disclosures and the project's policy passages, then say whether the signal should go ahead and cite what they read.</li>
+    <li><b>Code controls the money.</b> Quantity, fees, stops, profit targets and portfolio limits are always calculated by tested Python, never by a model.</li>
+    <li><b>Everything is recorded.</b> Each decision, tool call and fill is saved, so a reviewer can compare the AI flows with the no-AI baseline on the same data.</li>
+  </ol>
+  <p class="note">The most useful thing to keep in mind while reading the code: the language model is allowed to <em>interpret evidence and explain</em>. It is never allowed to do arithmetic, size a position or place an order.</p>
+</section>
+
+<section id="picture">
+  <div class="col">
+    <h2>Detailed design diagram</h2>
+    <p>Read it top to bottom. A request starts with the reviewer in the dashboard and moves down through the layers. The numbers match the walkthrough under the diagram.</p>
+  </div>
+  <div class="diagram" role="img" aria-label="Layered architecture of AegisTrade from dashboard to records">
+    <div class="layer u"><div class="name"><div><span class="num">1</span>People and screen</div><span>Streamlit, port 8501</span></div>
+      <div class="boxes">
+        <div class="box"><b>Reviewer</b><small>chooses universe, dates, capital and inference provider; gives paid-call consent; reviews eligible evidence overrides</small></div>
+        <div class="box"><b>Dashboard</b><small><code>app/ui.py</code> · official UI on port 8501; seven workspaces and an upper-right notification bell for pending human review</small></div>
+      </div></div>
+    <div class="down">▼ HTTP requests with reviewer token</div>
+    <div class="layer a"><div class="name"><div><span class="num">2</span>Service layer</div><span>FastAPI, port 8000</span></div>
+      <div class="boxes">
+        <div class="box"><b>REST API</b><small><code>app/api.py</code> · validates inputs, checks the token and consent, starts background runs, reports progress</small></div>
+        <div class="box"><b>Input guardrails</b><small><code>security.py</code> · typed schemas, scope checks, prompt-injection scan</small></div>
+        <div class="box"><b>Budget and resume</b><small><code>budget.py</code> · the same per-case inference ceiling for C1 and C2; portfolio jobs checkpoint and explicitly resume after allowance is restored</small></div>
+      </div></div>
+    <div class="down">▼ builds a locked historical case</div>
+    <div class="layer d"><div class="name"><div><span class="num">3</span>Point-in-time data</div><span>only what was known on the day</span></div>
+      <div class="boxes">
+        <div class="box"><b>Price data</b><small><code>market.py</code> <code>nse_data.py</code> <code>universes.py</code> · daily OHLCV for Nifty 20, Nifty 100 or a 30-stock research set</small></div>
+        <div class="box"><b>Indicators and signals</b><small><code>strategies.py</code> <code>smc.py</code> · EMA, RSI, ADX, ATR, breakout and SMC patterns</small></div>
+        <div class="box"><b>Stock screening</b><small><code>selection.py</code> · ranks eligible stocks each session</small></div>
+        <div class="box"><b>Company evidence</b><small><code>company_research.py</code> <code>evidence_library.py</code> <code>dated_web.py</code> · dated filings, issuer releases, reviewed news</small></div>
+        <div class="box"><b>Policy corpus (RAG)</b><small><code>knowledge/corpus.jsonl</code> <code>knowledge.py</code> · 87 passages, hybrid search</small></div>
+      </div></div>
+    <div class="down">▼ the same case goes to one of three flows</div>
+    <div class="layer f"><div class="name"><div><span class="num">4</span>Decision flows</div><span>the experiment itself</span></div>
+      <div class="boxes">
+        <div class="box"><b>C0 · deterministic reference</b><small>EMA trend, EMA pullback, RSI reversion and breakout router; zero model calls</small></div>
+        <div class="box"><b>C1 · single-agent baseline</b><small><code>agentic.py</code> · one tool-using agent performs the same evidence-review task as C2; AI experiments only</small></div>
+        <div class="box"><b>C2 · multi-agent team</b><small><code>agentic.py</code> · supervisor plan → market specialist → strategy specialist → independent critic; portfolio route also supports SMC</small></div>
+      </div></div>
+    <div class="down">▼ agents may only read, through tools &nbsp;·&nbsp; ▼ text generation goes to the chosen provider</div>
+    <div class="layer t"><div class="name"><div><span class="num">5</span>Tools and model</div><span>what agents can reach</span></div>
+      <div class="boxes">
+        <div class="box"><b>MCP tool servers</b><small><code>mcp_servers/</code> · market, knowledge, strategy, risk, records (read only); action server is kept away from agents</small></div>
+        <div class="box"><b>Inference provider</b><small><code>llm_backend.py</code> · OpenRouter (default), ChatGPT (Codex CLI) or Claude CLI; one is active at a time, with no silent fallback</small></div>
+        <div class="box"><b>Prompts and roles</b><small><code>config/agents.json</code> · version <code>2026-11-17-json-transport-v20</code>, typed response contracts, role instructions and call limits</small></div>
+      </div></div>
+    <div class="down">▼ agent output is checked before it can affect a trade</div>
+    <div class="layer c"><div class="name"><div><span class="num">6</span>Control</div><span>code and human</span></div>
+      <div class="boxes">
+        <div class="box"><b>Evidence gates</b><small><code>research_gate.py</code> <code>c1_gate.py</code> <code>breakout_evidence.py</code> · citations, dates, quotes and critic acceptance must check out</small></div>
+        <div class="box"><b>Risk and execution engine</b><small><code>engine.py</code> <code>execution_policy.py</code> <code>trailing_stop.py</code> <code>fees.py</code> <code>safety.py</code></small></div>
+        <div class="box"><b>Human evidence override</b><small><code>HUMAN_EVIDENCE_OVERRIDE</code> may approve or reject only an eligible evidence-insufficient BUY/SELL block; it cannot bypass hard safety or protective exits</small></div>
+        <div class="box"><b>Simulated broker</b><small><code>safety.py</code> AuditBroker · fills on paper only</small></div>
+      </div></div>
+    <div class="down">▼ everything is written down</div>
+    <div class="layer r"><div class="name"><div><span class="num">7</span>Records and proof</div><span>audit, learning, evaluation</span></div>
+      <div class="boxes">
+        <div class="box"><b>Run store and ledgers</b><small><code>c2_portfolio.py</code> checkpoints, trade ledger, decision ledger, tool traces under <code>data/</code></small></div>
+        <div class="box"><b>Reviewed lessons</b><small><code>lessons.py</code> <code>memory.py</code> <code>portfolio_memory.py</code> · a person accepts each lesson</small></div>
+        <div class="box"><b>Evaluation</b><small><code>evaluation/</code> · fresh 20-case development, 40-case held-out, 32 attacks, 10 clean controls, Recall@5, E1–E4 and CI gate</small></div>
+        <div class="box"><b>Monitoring</b><small><code>monitoring/</code> · Prometheus and Grafana</small></div>
+      </div></div>
+  </div>
+  <div class="col">
+    <h3>Walkthrough</h3>
+    <ol>
+      <li>The reviewer picks a stock universe, a date range, capital and a flow in the dashboard. For AI flows they also pick the provider and tick a consent box, because model calls use a paid allowance.</li>
+      <li>The API checks the reviewer token, validates every setting with typed models, and starts the run in the background so the screen can show progress.</li>
+      <li>For each trading day the code builds a <em>locked case</em>: the stock, its closing price, its indicators and a cutoff time. Nothing dated after the cutoff can enter the case.</li>
+      <li>The case goes to C0, C1 or C2. C0 decides with rules alone. C1 and C2 ask agents to check the evidence first.</li>
+      <li>Agents fetch facts only through MCP tools, and their text is generated by whichever provider is selected.</li>
+      <li>Code validates what the agents returned, then the risk engine sizes the trade and simulates the fill on the next session's open.</li>
+      <li>The run is checkpointed after each step, so a paused run can resume, and the ledgers feed the evaluation reports.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="flows">
+  <div class="col">
+    <h2>The three flows: C0, C1 and C2</h2>
+    <p>The formal capstone comparison is <b>C1 versus C2</b>: the same evidence-review task, case, read tools, model family and call ceiling, with orchestration as the intended difference. C0 is retained as a deterministic, zero-model reference rather than being mislabeled as the single-agent baseline.</p>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Flow</th><th>Who decides</th><th>Model calls per case</th><th>What it proves</th></tr></thead>
+    <tbody>
+      <tr><td>C0<span class="file">deterministic reference</span></td><td>A deterministic router evaluates EMA trend, EMA pullback, RSI reversion and breakout. It uses the same historical market case but performs no language-model research.</td><td>0</td><td>A reproducible no-model reference for routing and portfolio P&amp;L. It is not the capstone's single-agent baseline.</td></tr>
+      <tr><td>C1<span class="file">single-agent baseline</span></td><td>One tool-using agent performs the complete evidence-review task: company evidence, policy retrieval, route recommendation and grounded explanation. There is no independent specialist hand-off or critic.</td><td>Same configured ceiling as C2</td><td>The required single-agent baseline for measuring whether specialist decomposition and criticism add value. It appears in AI Agent Experiments, not portfolio backtests.</td></tr>
+      <tr><td>C2<span class="file">multi-agent treatment</span></td><td>A code-built supervisor plan hands the same case to the market specialist, strategy specialist and independent critic through typed messages. C2 portfolio research can evaluate the router strategies and SMC.</td><td>Same configured ceiling as C1</td><td>Whether the team improves grounding, policy compliance and task success at an acceptable latency and inference cost.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="decision">
+  <div class="col">
+    <h2>How one C2 decision is made</h2>
+    <p>This is the heart of the project. Follow one stock on one day through the agent team.</p>
+  </div>
+  <div class="scroll pad"><pre class="mermaid">
+flowchart LR
+  S[Technical signal<br/>found by code] --> P[Plan step<br/>built by code]
+  P --> M[Market specialist<br/>reads price snapshot<br/>and dated company evidence]
+  M --> ST[Strategy specialist<br/>searches policy, picks a route,<br/>cites passage IDs]
+  ST --> CR[Critic<br/>re-reads the same sources<br/>independently]
+  CR -->|accepts| V{Code validation<br/>citations, dates,<br/>quotes, route}
+  CR -->|rejects| B[Blocked<br/>reason recorded]
+  V -->|passes| R[Risk engine<br/>sizes the order]
+  V -->|fails| B
+  R --> F[Simulated fill<br/>next session open]
+  B -->|eligible evidence-insufficient<br/>BUY or SELL only| H{HUMAN_EVIDENCE_OVERRIDE}
+  H -->|approve with rationale| F
+  H -->|reject| X[Remain blocked<br/>ledger entry]
+  </pre></div>
+  <div class="cards">
+    <div class="card"><h3>Supervisor (plan step)</h3><p>A LangGraph node written in code, not a model call. It creates a typed plan and keeps the shared state. LangGraph, not the model, decides which agent runs next, so the order of work cannot be changed by a clever prompt.</p></div>
+    <div class="card"><h3>Market specialist</h3><p>Calls the market tools to get the price snapshot and the company's dated disclosures. Reports the market regime and whether any adverse event was found.</p></div>
+    <div class="card"><h3>Strategy specialist</h3><p>Searches the policy corpus, selects one approved strategy and must cite the passage IDs that support it.</p></div>
+    <div class="card"><h3>Critic</h3><p>Has its own tool access and checks the earlier answers against the sources. It is the reason C2 differs from C1.</p></div>
+    <div class="card"><h3>Code validation</h3><p>Even after the critic accepts, Python checks that cited passages exist, quotes appear in the source text, dates are before the cutoff and the route is allowed. Hard validation and safety failures cannot be overridden.</p></div>
+    <div class="card"><h3>Human evidence override</h3><p>Only an evidence-insufficient block with a positive technical BUY/SELL candidate can pause for a recorded decision. The screen shows relevant prices, the bell reports pending work, and the same completed research is reused without another model call.</p></div>
+    <div class="card"><h3>Linked lifecycle</h3><p>If a person overrides a blocked BUY, that position is tagged. Its later SELL review, fill and attributed P&amp;L remain linked in a separate ledger so the intervention can be judged as a complete outcome and considered for a reviewed lesson.</p></div>
+    <div class="card"><h3>Holding reviews</h3><p>Open positions are reviewed on a schedule and when new disclosures appear. Protective stops and hard safety exits execute by code and never wait for human approval.</p></div>
+  </div>
+</section>
+
+<section id="trade">
+  <div class="col">
+    <h2>How one trade is simulated</h2>
+    <p>The backtester is deliberately strict about time. A decision can only use information that existed when it was made.</p>
+  </div>
+  <div class="timeline">
+    <div class="step"><span class="when">Day T · after close</span><b>Signal and research</b>Indicators are calculated on the completed bar. In C1 and C2 the agents research the candidate.</div>
+    <div class="step"><span class="when">Day T · after close</span><b>Sizing</b>Whole shares only. Risk per trade is 1% of equity (0.5% for breakouts), sized from the stop distance. At most 20% of equity in one stock, 4 positions and a 3% daily-loss limit. A stop price is set, by default 2 × ATR below entry (2.5 × for breakouts).</div>
+    <div class="step"><span class="when">Day T+1 · open</span><b>Fill</b>The order fills at the next session's opening price, with slippage and the fixed NSE delivery charges (STT, stamp duty on buys, exchange and SEBI fees, GST; brokerage is zero).</div>
+    <div class="step"><span class="when">Each later day</span><b>Protection</b>The stop, an optional trailing stop and a profit target (8% by default in the backtest and comparison pages) are checked by code. Strategy exit rules and cited adverse news can also close the position.</div>
+    <div class="step"><span class="when">End of period</span><b>Mark to market</b>Open holdings are valued at the last close. They are not force-sold, so the result is not distorted by an artificial final sale.</div>
+  </div>
+</section>
+
+<section id="components">
+  <div class="col">
+    <h2>Every component and why it matters</h2>
+    <p>For each part: what it does, why the project needs it, and what would go wrong without it. File names are relative to the project folder.</p>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Component</th><th>What it does</th><th>Why it matters</th><th>Without it</th></tr></thead>
+    <tbody>
+      <tr class="group"><td colspan="4">Screen and service</td></tr>
+      <tr><td>Dashboard<span class="file">app/ui.py</span></td><td>Lets a person set up runs, watch progress, read ledgers and charts, and review decisions.</td><td>Makes the system usable and demonstrable without writing code. It only calls the API, so it holds no business logic.</td><td>Every experiment would need a script, and a reviewer could not inspect decisions.</td></tr>
+      <tr><td>REST API<span class="file">app/api.py</span></td><td>Single entry point. Validates inputs, checks the reviewer token and consent, runs long jobs in the background.</td><td>Keeps one place where rules about who may do what are enforced. The dashboard, scripts and tests all go through it.</td><td>Checks would be scattered and easy to bypass.</td></tr>
+      <tr><td>Reviewer token and consent<span class="file">app/api.py · security.py</span></td><td>A secret from <code>.env</code> is required for anything that spends allowance or changes state. AI runs need an explicit consent flag.</td><td>Prevents accidental spending and makes a person accountable for each paid run.</td><td>Anyone who could open the page could start costly runs.</td></tr>
+      <tr><td>Budget counters<span class="file">aegistrade/budget.py</span></td><td>Counts tool and inference units, enforces the configured ceiling and records the provider-specific budget unit. Portfolio jobs pause instead of silently retrying when allowance is exhausted.</td><td>An agent loop can otherwise repeat calls without limit. Fair comparison requires C1 and C2 to share the same ceiling.</td><td>Runaway cost, hidden retries and an unfair experiment.</td></tr>
+
+      <tr class="group"><td colspan="4">Data</td></tr>
+      <tr><td>Price data and universes<span class="file">market.py · nse_data.py · universes.py</span></td><td>Downloads and caches daily NSE prices for a named list of stocks. A synthetic data set is used for tests.</td><td>Frozen, named data sets make results repeatable. The same run on the same data gives the same answer.</td><td>Results could not be reproduced or compared.</td></tr>
+      <tr><td>Indicators and strategies<span class="file">strategies.py · smc.py</span></td><td>Calculates EMA 20 and 50, RSI 14, ADX 14, ATR 14 and the entry and exit rules for each strategy.</td><td>This is the source of every trade signal. Keeping it in code makes it exact and testable.</td><td>There would be nothing for agents to review.</td></tr>
+      <tr><td>Stock screening<span class="file">selection.py</span></td><td>Each session, scores eligible stocks: 70% signal strength, 20% liquidity, 10% low volatility. The top few go to research.</td><td>Limits research to the best candidates, which controls cost and avoids picking stocks by hindsight.</td><td>Either every stock is researched (expensive) or a person picks them (biased).</td></tr>
+      <tr><td>Company evidence<span class="file">company_research.py · evidence_library.py · company_excerpts.py · dated_web.py</span></td><td>Collects dated filings and announcements, stores them as unchangeable snapshots with a publication time, and serves only those available before the cutoff.</td><td>Gives agents real facts to reason about and stops them seeing the future. Missing coverage is reported as missing, never as good news.</td><td>Agents would guess, or would leak later information into past decisions.</td></tr>
+      <tr><td>Policy corpus and retrieval (RAG)<span class="file">knowledge/corpus.jsonl · knowledge.py · corpus.py · vector_store.py</span></td><td>87 versioned passages searched through hybrid lexical and semantic retrieval, rank fusion and reranking. Retrieval is evaluated separately with Recall@5 before model conclusions are scored.</td><td>Agents must ground their choice in written rules and cite passage IDs. Hybrid search finds both exact terms and similar meaning.</td><td>Answers would rest on the model's memory and could not be checked.</td></tr>
+
+      <tr class="group"><td colspan="4">Agents and tools</td></tr>
+      <tr><td>Agent orchestration<span class="file">aegistrade/agentic.py</span></td><td>Defines the C1 agent and the C2 graph of supervisor, market, strategy and critic, with typed hand-offs between them.</td><td>This is the multi-agent design the capstone evaluates. A fixed graph makes the process predictable and auditable.</td><td>No AI flow to compare with the baseline.</td></tr>
+      <tr><td>Prompts and roles<span class="file">config/agents.json</span></td><td>Holds each role's instructions, the call and tool limits, and a version label.</td><td>Prompts are configuration, not code. The version is saved with each run, so a run is tied to the exact instructions used.</td><td>A prompt change could silently alter results mid-experiment.</td></tr>
+      <tr><td>MCP tool servers<span class="file">mcp_servers/ · mcp_runtime.py · agent_tools.py</span></td><td>Small servers that expose typed tools: price snapshot, company evidence, policy search, strategy check, risk check, approved lessons.</td><td>A standard, narrow interface. Each agent gets only the tools its role needs, and all are read only. Secrets are not passed to the tool processes.</td><td>Agents would need direct access to files and code, which is far harder to secure.</td></tr>
+      <tr><td>Action server<span class="file">mcp_servers/action_server.py</span></td><td>The only tool that can submit a simulated order. It needs an approval token issued by a person.</td><td>Shows the separation of read and write. No agent is ever given this tool.</td><td>A model could place orders on its own.</td></tr>
+      <tr><td>Inference provider<span class="file">aegistrade/llm_backend.py · llm_research.py</span></td><td>One interface over three providers: OpenRouter (the default), Codex CLI for ChatGPT, and Claude CLI. The CLIs run with no tools of their own and must answer in a fixed JSON shape.</td><td>The rest of the system does not care which model answers. You can compare providers or keep working when one hits its limit.</td><td>The project would be tied to a single vendor and account.</td></tr>
+      <tr><td>Context packing<span class="file">evidence_context.py</span></td><td>Shrinks evidence to fit the 36,000-character context limit while keeping the full text in the audit.</td><td>Controls cost and avoids failures from oversized prompts, without losing the record of what was available.</td><td>Long filings would break calls or be cut unpredictably.</td></tr>
+
+      <tr class="group"><td colspan="4">Control</td></tr>
+      <tr><td>Evidence gates<span class="file">research_gate.py · c1_gate.py · breakout_evidence.py · signal_evidence.py</span></td><td>Code checks on agent output: do cited passages exist, does the quote appear in the source, is the date before the cutoff, did the critic accept.</td><td>Models can sound confident and be wrong. These checks turn "the agent said so" into "the agent said so and it checks out".</td><td>Invented citations would pass straight into trades.</td></tr>
+      <tr><td>Backtest engine<span class="file">engine.py · execution_policy.py · simulation_service.py</span></td><td>Runs the day-by-day replay with one cash portfolio: next-open fills, whole shares, stops, targets, fees and slippage.</td><td>All flows share this engine, so they are compared on identical trading mechanics.</td><td>Differences in results could come from different arithmetic, not from the agents.</td></tr>
+      <tr><td>Stops and re-entry<span class="file">trailing_stop.py · breakout_reentry.py · smc_reentry.py</span></td><td>Initial stop, optional trailing stop, and rules for re-entering after a stop when price recovers.</td><td>Limits the loss on any one trade and keeps exits rule-based.</td><td>A single bad position could dominate the result.</td></tr>
+      <tr><td>Fees<span class="file">fees.py</span></td><td>A fixed schedule of NSE delivery charges applied to every buy and sell.</td><td>Frequent trading looks profitable until costs are included. Fixed fees keep runs comparable.</td><td>Returns would be overstated.</td></tr>
+      <tr><td>Risk rules and simulated broker<span class="file">safety.py</span></td><td>Typed order object, limits on position size, number of positions and daily loss, and a paper broker that writes an audit ledger.</td><td>The final authority on whether an order is allowed. It is plain code, so it behaves the same every time.</td><td>Nothing would stand between an agent's suggestion and a fill.</td></tr>
+      <tr><td>Human evidence override<span class="file">workflow.py · c2_portfolio.py · app/ui.py</span></td><td>When enabled, pauses only an eligible evidence-insufficient BUY/SELL block. The person records approval or rejection and a reason; completed C2 research is reused, so the review creates no extra research call.</td><td>Tests accountable intervention without turning every recommendation into a manual gate. Linked entry, exit and attributed P&amp;L show whether the intervention helped.</td><td>Evidence uncertainty could only block a technically strong candidate, and human judgment could not be evaluated as a complete lifecycle.</td></tr>
+
+      <tr class="group"><td colspan="4">Records, learning and proof</td></tr>
+      <tr><td>Portfolio runner and checkpoints<span class="file">c2_portfolio.py · portfolio_comparison.py</span></td><td>Runs C2 over a historical date range, saves state after every step and can pause and resume. Strategy Backtests also provides a C0 reference and a single-stock C0/C2 comparison; C1 remains confined to the fair AI experiment.</td><td>Long runs survive provider limits and restarts. A run only resumes if data, prompts, corpus and provider are unchanged.</td><td>A usage limit halfway through would waste the whole run, or mixed settings would corrupt it.</td></tr>
+      <tr><td>Ledgers and traces<span class="file">data/ · app/capstone_ledger.py · research_diagnostics.py</span></td><td>Trade ledger, decision ledger, tool-call traces and clear failure codes.</td><td>Lets you answer "why did it buy this on that day?" from the record.</td><td>Results could be seen but not explained.</td></tr>
+      <tr><td>Reviewed lessons<span class="file">lessons.py · memory.py · reflection.py · portfolio_memory.py</span></td><td>After failures the system proposes a lesson. A person accepts or rejects it, and accepted lessons are frozen into a version that agents can retrieve.</td><td>A controlled form of learning. Nothing changes the system's behaviour without human sign-off, and lessons never override risk rules.</td><td>Either no learning, or unreviewed self-modification.</td></tr>
+      <tr><td>Evaluation harness<span class="file">evaluation/</span></td><td>Golden cases split into development and held-out sets, a red-team attack suite, retrieval tests, and C0/C1/C2 comparisons.</td><td>Turns claims into measurements. The held-out set guards against tuning to the answers.</td><td>You could only show anecdotes.</td></tr>
+      <tr><td>Monitoring and CI<span class="file">monitoring/ · .github/</span></td><td>Prometheus counters and Grafana dashboards for calls, latency and errors. GitHub Actions runs the tests.</td><td>Shows the system's health while it runs and stops broken changes from being merged.</td><td>Problems would be found late, by hand.</td></tr>
+      <tr><td>Tests<span class="file">tests/</span></td><td>377 automated tests passed in the latest full recorded run. Most use synthetic fixtures and require no paid model calls.</td><td>Protects trading arithmetic, evidence gates, override lifecycle and safety rules whenever code changes.</td><td>Every change would risk breaking a rule unnoticed.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="evaluation">
+  <div class="col">
+    <h2>How the current evaluation is organised</h2>
+    <p>The report should separate labels, retrieval quality, model behaviour and portfolio outcomes. Development cases may guide corrections; held-out cases remain untouched until the prompt, corpus and code are frozen.</p>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Evidence</th><th>Current design</th><th>What it supports</th><th>Status to report</th></tr></thead>
+    <tbody>
+      <tr><td>Development labels</td><td>20 executable <code>CaseEvidence</code> cases</td><td>Prompt, schema and retrieval debugging before freeze.</td><td>Fresh review set; reviewer sign-off must be retained.</td></tr>
+      <tr><td>Held-out labels</td><td>40 executable cases from non-overlapping families</td><td>Final C1-versus-C2 task-success and grounding comparison.</td><td>Do not tune on these answers.</td></tr>
+      <tr><td>E2 security</td><td>32 distinct attacks plus 10 clean controls</td><td>Injection resistance, false blocks and policy enforcement.</td><td>Score model behaviour, not only a scanner proxy.</td></tr>
+      <tr><td>Retrieval</td><td>36 blinded queries scored with Recall@5</td><td>Whether expected policy evidence appears in the first five results.</td><td>Initial development result improved from 0.9406 to 0.9604; freeze after independent review.</td></tr>
+      <tr><td>E1–E4 runs</td><td>Quality, security, memory and orchestration ablations stored in the run ledger</td><td>Task success, guard pass, citations, latency, inference units and failure categories.</td><td>Repeat the frozen protocol three times before final claims.</td></tr>
+      <tr><td>Portfolio outcomes</td><td>C0 reference, C2 portfolio and separately attributed human-override P&amp;L</td><td>Financial simulation under identical execution rules.</td><td>Exploratory evidence; do not present it as profitable advice.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note col">The older 102 records remain historical evidence and need not be relabelled for the corrected protocol. The new 20/40/32/10 packet is the review set for the current report.</p>
+</section>
+
+<section id="owners">
+  <div class="col"><h2>Who decides what</h2><p>This split is the main design decision in the project.</p></div>
+  <div class="scroll"><table>
+    <thead><tr><th>Decision</th><th>Owner</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td>Indicators, signal, strategy eligibility, ranking</td><td>Python code</td><td>Exact, repeatable and testable.</td></tr>
+      <tr><td>Reading filings and policy, explaining the choice</td><td>Language-model agents</td><td>Unstructured text is where models are useful.</td></tr>
+      <tr><td>Checking the interpretation</td><td>Critic agent, then code</td><td>Two independent checks before anything counts.</td></tr>
+      <tr><td>Quantity, fees, stops, targets, fills</td><td>Python code</td><td>Models are unreliable at arithmetic and must not control money.</td></tr>
+      <tr><td>Eligible evidence-insufficient override</td><td>Human reviewer</td><td>Accountability, with a written reason and linked outcome. Hard safety decisions remain code-owned.</td></tr>
+      <tr><td>Real exchange orders</td><td>Nobody. Not built.</td><td>This is a research prototype.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="ideas">
+  <div class="col"><h2>Ideas worth learning from this project</h2></div>
+  <div class="cards">
+    <div class="card"><h3>Point-in-time data</h3><p>Every fact carries the time it became available. A backtest that uses later information looks brilliant and is worthless. This is called look-ahead bias.</p></div>
+    <div class="card"><h3>Grounding and citation</h3><p>An agent's claim must point to a passage or document that code can find. This is how retrieval-augmented generation reduces invented answers.</p></div>
+    <div class="card"><h3>Hybrid retrieval</h3><p>Keyword search finds exact terms such as a rule number. Embedding search finds similar meaning. Combining and reranking both gives better passages than either alone.</p></div>
+    <div class="card"><h3>Least privilege for agents</h3><p>Each agent gets only the read tools it needs. The one write tool is held back behind human approval.</p></div>
+    <div class="card"><h3>Typed hand-offs</h3><p>Agents pass structured objects with fixed fields, not free text. A missing or wrong field is caught at once.</p></div>
+    <div class="card"><h3>Ablation</h3><p>To know whether orchestration helps, compare C1 and C2 on the same cases, tools, model family and ceiling. C0 remains a useful deterministic reference, but it does not replace the required single-agent baseline.</p></div>
+    <div class="card"><h3>Checkpoint and resume</h3><p>Long agent runs fail in the middle. Saving state after each step, and refusing to resume if settings changed, keeps results valid.</p></div>
+    <div class="card"><h3>Fail closed</h3><p>When a provider fails or evidence cannot be verified, the system blocks or pauses. It never falls back silently to another model or assumes the answer.</p></div>
+  </div>
+</section>
+
+<section id="read" class="col">
+  <h2>Suggested order for reading the code</h2>
+  <ol>
+    <li><code>aegistrade/strategies.py</code> then <code>aegistrade/engine.py</code>. Understand a C0 backtest first. No AI is involved.</li>
+    <li><code>aegistrade/safety.py</code> and <code>aegistrade/execution_policy.py</code>. See how risk limits and stops are enforced.</li>
+    <li><code>knowledge/corpus.jsonl</code> and <code>aegistrade/knowledge.py</code>. Read a few passages, then see how search works.</li>
+    <li><code>mcp_servers/market_server.py</code> and <code>knowledge_server.py</code>. These are the tools agents call.</li>
+    <li><code>config/agents.json</code> then <code>aegistrade/agentic.py</code>. Read the role instructions, then the graph that runs them.</li>
+    <li><code>aegistrade/llm_backend.py</code>. How one interface serves three providers.</li>
+    <li><code>aegistrade/research_gate.py</code>. The checks applied to agent output.</li>
+    <li><code>aegistrade/c2_portfolio.py</code>. The full loop that ties everything together over many days.</li>
+    <li><code>app/api.py</code> and <code>app/ui.py</code> last. They expose what you have already understood.</li>
+  </ol>
+  <h3>Try it yourself</h3>
+  <ul>
+    <li>In <b>Strategy Backtests</b>, open the C0 reference or C2 portfolio tile. Run a short period, follow live progress and read the trade and decision ledgers line by line.</li>
+    <li>In <b>Policy Knowledge</b>, search for "stop loss" and see which passages come back and why.</li>
+    <li>In <b>AI Agent Experiments</b>, run the fair C1 single-agent versus C2 multi-agent experiment, then open one case and trace the shared evidence, tool calls, hand-offs, citations, critic verdict and failure category.</li>
+    <li>Run <code>.venv/bin/python -m pytest -q</code> and open one test file next to the module it covers.</li>
+  </ul>
+</section>
+
+<section id="limits" class="col">
+  <h2>Limits you should know about</h2>
+  <ul>
+    <li><b>Simulation only.</b> There is no broker connection and results are not a forecast.</li>
+    <li><b>No demonstrated trading edge from the agents yet.</b> In the comparison runs done so far on the related build of this project, the AI flows did not reliably beat the technical baseline, and all versions trailed simply buying and holding. What the agents add today is a cited, checkable evidence review.</li>
+    <li><b>Daily bars and unadjusted prices.</b> Intraday moves are not modelled, and corporate actions such as splits are handled by keeping affected stocks out, not by adjusting prices.</li>
+    <li><b>Evidence coverage is uneven.</b> Some stocks and dates have few filings available, and the system reports that as incomplete coverage.</li>
+    <li><b>Survivorship bias.</b> The stock lists were chosen recently, so they contain companies that did well enough to be on the list.</li>
+    <li><b>Model output varies.</b> Two runs with the same settings can differ slightly, and each provider behaves differently.</li>
+  </ul>
+</section>
+
+<footer>Based on the source in <code>~/aegistrade-ai</code> at API version 0.35.0 and prompt version <code>2026-11-17-json-transport-v20</code>. The current corpus contains 87 passages and the latest recorded full test run passed 377 tests. Defaults are read from code and configuration rather than promised as investment advice. <code>pyproject.toml</code> still reports package version 0.26.0, so the API version is used for this design guide. Checked against the repository on 18 November 2026.</footer>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"});</script>
+</body>
+</html>

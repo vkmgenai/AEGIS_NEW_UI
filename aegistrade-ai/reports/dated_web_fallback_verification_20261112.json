@@ -1,0 +1,41 @@
+{
+  "version": "0.21.0",
+  "date": "2026-11-12",
+  "tests": {
+    "passed": 233,
+    "failed": 0,
+    "generation": "mocked"
+  },
+  "generation_calls_started_by_this_change": 0,
+  "corpus": {
+    "passages": 81,
+    "sha256": "aaddae386e8e094b84edbb94860e241272014b948a0be2647808e6f488608c40",
+    "project_policy_passages": 72,
+    "external_reference_passages": 9,
+    "source_count": 45,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "public_search_smoke": {
+    "case": "TCS 2024-01-03",
+    "cache": "isolated /tmp/aegis-dated-web-smoke-v2",
+    "queries_completed": 2,
+    "accepted_documents": 0,
+    "result": "SEARCHED_BUT_INSUFFICIENT",
+    "reasons": [
+      "Issuer page HTTP failure",
+      "PDF publication not verified",
+      "Secondary page HTTP failure"
+    ],
+    "conclusion": "Public search reachable; verified abstention on unusable sources. No live model end-to-end success claimed."
+  },
+  "saved_runs": "Preserved; existing interrupted jobs use older prompt/corpus fingerprints and need a new run for this feature.",
+  "activation": {
+    "api_version": "0.21.0",
+    "dated_web_search_enabled": true,
+    "dashboard": "healthy",
+    "active_simulation_workers_before_restart": 0,
+    "saved_runs": "preserved",
+    "inference_calls": 0
+  }
+}

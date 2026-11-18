@@ -1,0 +1,17 @@
+groups:
+- name: aegis-health
+  rules:
+  - alert: AegisAPIDown
+    expr: up{job="aegis-api"} == 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: AegisTrade API metrics not responding
+  - alert: AegisRiskBlockSpike
+    expr: increase(aegis_trade_blocked_total[10m]) > 5
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: More than five blocked trade attempts in 10 minutes

@@ -1,6 +1,7 @@
 """Compare retrieval configurations on authored development queries; no paid LLM calls."""
 from pathlib import Path
 import json,math,argparse,time
+from datetime import datetime, timezone
 from aegistrade.knowledge import PolicyRetriever,POLICIES,evaluate_retrieval
 from aegistrade.corpus import corpus_info
 
@@ -38,7 +39,7 @@ def main():
         results['expanded_neural_before_rewrite']=score(neural,queries,False)
         results['expanded_neural_after_rewrite']=score(neural,queries,True)
         results['expanded_neural_legacy_queries']=score(neural,old,True)
-    report={'date':'2026-11-09','corpus':info,'results':results,'paid_llm_calls':0,
+    report={'executed_at_utc':datetime.now(timezone.utc).isoformat(),'corpus':info,'results':results,'paid_llm_calls':0,
             'label_status':'Authored development candidates; independent human relevance review and held-out evaluation remain outstanding.',
             'limitations':['No claim of LLM explanation faithfulness or judge calibration from retrieval scores.',
                 'Legacy relevance labels are not exhaustive across the expanded corpus.',

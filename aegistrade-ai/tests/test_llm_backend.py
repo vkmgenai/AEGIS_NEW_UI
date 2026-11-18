@@ -320,3 +320,21 @@ def test_claude_token_counts_are_not_mistaken_for_a_rate_limit(monkeypatch):
                              'usage':{'input_tokens':1429,'output_tokens':4290},'session_id':'a429b'})
     c=b.ClaudeCliClient()
     with pytest.raises(RuntimeError,match='CLAUDE_EXEC_FAILED'):c.complete('x')
+
+
+def test_claude_malformed_answer_is_asked_again_before_the_run_pauses(monkeypatch):
+    monkeypatch.setenv('AEGIS_CLAUDE_INVALID_RETRIES','1')
+    monkeypatch.setattr(b,'claude_binary',lambda:'/test/claude')
+    monkeypatch.setattr(b,'backend_info',lambda **kw:{'ready':True,'cli_version':'test-claude'})
+    empty=ok({'kind':'final','content':None,'tool_calls':[]})
+    replies=[empty,ok({'kind':'final','content':'{"accept":true}','tool_calls':[]})]
+    def execute(command,prompt,*,env,cwd,timeout):return 0,json.dumps(replies.pop(0)),''
+    monkeypatch.setattr(b,'_execute',execute)
+    c=b.ClaudeCliClient()
+    assert json.loads(c.complete('x'))=={'accept':True}
+    # One budgeted call, one recorded retry, no error left on the record.
+    assert c.calls==1 and c.usage[0]['invalid_output_retries']==1 and 'error_code' not in c.usage[0]
+    # Malformed twice: fails closed with the same code as before.
+    replies[:]=[empty,empty]
+    with pytest.raises(RuntimeError,match='CLAUDE_OUTPUT_INVALID'):c.complete('x')
+    assert c.usage[1]['error_code']=='CLAUDE_OUTPUT_INVALID' and c.usage[1]['invalid_output_retries']==1 and not replies

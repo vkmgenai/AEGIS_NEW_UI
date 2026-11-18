@@ -101,6 +101,15 @@ def create_run(ns) -> tuple[str, Path]:
         "report_sha256": None,
         "exit_code": None,
         "paid_inference_authorized": bool(ns.consent_paid),
+        "provenance": {
+            "requested_by": ns.requested_by,
+            "request_note": ns.request_note,
+            "launched_via": "AegisTrade automated experiment ledger",
+            "execution_assistance": "Codex-assisted background execution" if ns.assisted_execution else "Team-operated launcher",
+            "human_review_status": "PENDING",
+            "independent_validation_status": "PENDING",
+            "statement": "Automation executes the frozen configuration; it does not replace the named person's design contribution, result review or sign-off."
+        },
         "limitations": [
             "A retained run is not independent evidence until the referenced human labels and review records are complete.",
             "Replay repeats the configuration but provider output may vary; it never overwrites the original run directory."
@@ -194,6 +203,10 @@ def replay(root: Path, run_id: str, consent_paid: bool, foreground: bool) -> int
     ns=NS();ns.ledger_root=root;ns.experiment=cfg["experiment"];ns.split=cfg["split"]
     ns.retrieval_mode=cfg.get("retrieval_mode","offline");ns.repeats=cfg.get("repeats",1)
     ns.max_paid_calls=cfg.get("max_paid_calls",24);ns.consent_paid=consent_paid
+    provenance=old.get("provenance",{})
+    ns.requested_by=provenance.get("requested_by","Unspecified")
+    ns.request_note="Replay of "+run_id
+    ns.assisted_execution=provenance.get("execution_assistance")=="Codex-assisted background execution"
     cases=resolve_run(root,run_id)/"cases.jsonl";ns.cases_file=cases if cases.exists() else None
     ns.foreground=foreground
     if old.get("paid_inference_authorized") and not consent_paid:
@@ -211,6 +224,9 @@ def parser() -> argparse.ArgumentParser:
     q.add_argument("--retrieval-mode",choices=["offline","neural"],default="offline")
     q.add_argument("--repeats",type=int,choices=[1,3],default=1);q.add_argument("--max-paid-calls",type=int,default=24)
     q.add_argument("--consent-paid",action="store_true");q.add_argument("--foreground",action="store_true")
+    q.add_argument("--requested-by",default="Unspecified",help="Person who requested/authorized the experiment; not an automatic reviewer signature")
+    q.add_argument("--request-note",default="",help="Short purpose or team decision recorded in the manifest")
+    q.add_argument("--assisted-execution",action="store_true",help="Disclose that an assistant launched the frozen background command")
     sub.add_parser("list")
     q=sub.add_parser("show");q.add_argument("run_id")
     q=sub.add_parser("replay");q.add_argument("run_id");q.add_argument("--consent-paid",action="store_true");q.add_argument("--foreground",action="store_true")

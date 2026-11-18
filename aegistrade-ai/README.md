@@ -1,6 +1,6 @@
 # 🛡️ AegisTrade AI
 
-**Current final-review source: v0.28.0 — C0/C2 portfolio design with C1 retained as the required evaluation-only baseline.**
+**Current final-review source: v0.34.0 — C2 portfolio demonstration plus a fair C1 single-agent versus C2 multi-agent evaluation.**
 
 Final submission navigation:
 
@@ -13,11 +13,15 @@ Final submission navigation:
 - [Background experiment ledger and replay guide](docs/CAPSTONE_EXPERIMENT_LEDGER_GUIDE.md)
 
 Retained capstone runs are also visible in Streamlit under **Workspace → Capstone Evaluation**. This read-only viewer shows manifests, summaries, lifecycle events and report downloads without making model calls.
+
+The current UI-visible AI Experiment is `1eac0a24d4e04453ab9bbab9e7c935da` (three cases, OpenRouter GPT-4.1 mini, 30 September 2026). Older UI AI Experiment files were moved to `data/research_runs_archive_pre_v034/`; C2 Strategy Backtest runs were not changed.
 - [Final presentation and UI demo guide](FINAL_PRESENTATION_README.md)
 - [Capstone completion checklist](docs/FINAL_CAPSTONE_COMPLETION_CHECKLIST.md)
 - [Threat model](docs/THREAT_MODEL.md) and [memory policy](docs/MEMORY_POLICY.md)
 
 One-command local start on macOS/Linux: `bash scripts/start_unix.sh`. Windows: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_windows.ps1`.
+
+Separate v0.35 UI proposal: run `bash scripts/start_redesign_preview.sh`, then open `http://127.0.0.1:8504`. It uses a dedicated preview API on port 8002 and does not replace the port-8501 application.
 
 **GitHub-ready local capstone research application**  
 **SIMULATION ONLY — no broker connection, real-money order placement, leverage, or intraday execution.**
@@ -27,11 +31,13 @@ AegisTrade is a human-governed multi-agent algorithmic trading research platform
 > **Academic status:** An integrated research prototype. Passing unit tests does **not** prove profitable trading or satisfy all final capstone evaluation requirements. The README and `docs/COMPLIANCE_AND_REMAINING_WORK.md` distinguish implemented code from missing research evidence.
 
 
-## New: configurable capital and web-based C0/C1/C2
+## Current comparison design
 
-In **Strategy Backtests → C0 Technical baseline**, enter a starting capital (e.g. ₹200,000) and historical start/end dates. The dashboard uses the fixed ROUTER risk/cost policy documented below so C0 and C2 remain directly comparable. Compare returns, drawdown, equity curves, order ledger and reopen saved simulations.
+**Strategy Backtests** presents only the end-to-end **C2 historical portfolio** demonstration: capital, dates, bounded inference, dated research, portfolio accounting and optional human evidence override. This answers a trading-system question, not the capstone's single-versus-multi-agent question.
 
-In **AI Agent Experiments**, select C0 (no key, zero LLM calls), C1 (one tool-using agent), C2 (LangGraph supervisor plus market, strategy and compliance-critic specialists; normally six inference units) or ALL. C1/C2 share an eight-inference-unit ceiling per case and the same available tools. The UI caps cases at three and requires explicit consent for inference. The reviewer credential is loaded internally from `.env`, not typed or displayed, and the system does **not** place any trading orders.
+In **AI Agent Experiments**, select C0 (deterministic reference), C1 (one tool-using agent), C2 (LangGraph supervisor plus market, strategy and compliance-critic specialists) or ALL. The primary capstone comparison is **C1 versus C2** on identical locked cases, model, evidence, available tool capabilities, token budget and eight-inference-unit ceiling. C0 is retained as a useful code reference, not mislabelled as the single-agent baseline. The reviewer credential is loaded internally from `.env`, not typed or displayed, and the system does **not** place any trading orders.
+
+Each entry experiment may also attach a secondary, look-ahead-safe outcome: next-session open to the 20th later-session close on a fixed ₹100,000 notional, including modeled delivery fees and 10 bps slippage. A blocked/non-entry decision stays in cash. This P&L is never exposed to the agents and is not the primary architecture score.
 
 External inference is **disabled by default**. Select `AEGIS_LLM_BACKEND=claude_cli` for Claude login, `codex_cli` for supported ChatGPT login or `openrouter` for a private API key, or choose the provider later from the dashboard dropdown; set `AEGIS_ENABLE_LLM_EXPERIMENTS=true` and consent to each run. The current local configuration uses Codex with ChatGPT sign-in. Plus has usage limits and does not fund OpenRouter. Never commit `.env`.
 
@@ -40,7 +46,7 @@ For update instructions see [docs/CAPITAL_AND_AGENT_UI_UPDATE.md](docs/CAPITAL_A
 
 ### End-to-end C2 historical portfolio (v0.27)
 
-In **Strategy Backtests**, select **C2 historical portfolio**, dates/capital and total inference allowance. Configure reviewer authorization in `.env`, then provide inference consent and upfront replay-rule approval. C2 uses five routes: EMA Trend, EMA Pullback, RSI Reversion, Breakout and SMC. A bounded ranked pool (fixed at three) lets C2 consider the next technical candidate when a higher-ranked candidate is evidence-blocked; missing evidence is never labelled fundamental strength. Every prospective entry requires completed dated C2; five-session holding reviews return HOLD/EXIT. Code applies fixed stops/strategy exits, next-open sizing/fills and portfolio accounting. Jobs pause/resume at bounded checkpoints and retain research traces. **The end date does not force a sale**: open holdings remain marked with unrealized P&L. The **C0 Technical baseline** runs the same ROUTER financial policy without generation. C1 is no longer a portfolio flow; it remains in AI Agent Experiments for the fair single-agent comparison.
+In **Strategy Backtests**, run **C2 historical portfolio**, dates/capital and total inference allowance. Configure reviewer authorization in `.env`, then provide inference consent and upfront replay-rule approval. C2 uses five routes: EMA Trend, EMA Pullback, RSI Reversion, Breakout and SMC. A bounded ranked pool (fixed at three) lets C2 consider the next technical candidate when a higher-ranked candidate is evidence-blocked; missing evidence is never labelled fundamental strength. Every prospective entry requires completed dated C2; five-session holding reviews return HOLD/EXIT. Code applies fixed stops/strategy exits, next-open sizing/fills and portfolio accounting. Jobs pause/resume at bounded checkpoints and retain research traces. **The end date does not force a sale**: open holdings remain marked with unrealized P&L. Legacy C0 and single-stock comparison endpoints and saved artifacts remain readable for reproducibility, but are not part of the simplified demonstration UI.
 
 ## Quick start: local computer
 
@@ -93,19 +99,11 @@ Docker builds require an internet connection on the first build.
 
 ### Updated UI and hands-on testing
 
-The Streamlit frontend uses a high-contrast native light theme and an always-visible Workspace selector. Its capstone workspaces are **Market Data**, **Overview**, **Strategy Backtests**, **AI Agent Experiments**, **Capstone Evaluation**, **Policy Knowledge**, and **Learning & Lessons**. The single-stock C0/C2 comparison sits beside the portfolio workflows. The optional human-intervention study is part of C2 Strategy Backtests, where an evidence-insufficient block can pause for an explicit `HUMAN_EVIDENCE_OVERRIDE`; the research-only AI Agent Experiment does not duplicate that approval screen. Separate Supervised Trading and Broker Audit navigation was removed. Use the [Simplified UI Demo Guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md).
+The Streamlit frontend uses a high-contrast native light theme and an always-visible Workspace selector. Its capstone workspaces are **Market Data**, **Overview**, **Strategy Backtests**, **AI Agent Experiments**, **Capstone Evaluation**, **Policy Knowledge**, and **Learning & Lessons**. Strategy Backtests contains the C2 portfolio and its optional `HUMAN_EVIDENCE_OVERRIDE`; AI Agent Experiments contains the controlled C0/C1/C2 comparison. Separate Supervised Trading, Broker Audit and duplicate comparison screens were removed. Use the [Simplified UI Demo Guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md).
 
-Strategy Backtests opens as a two-tile landing page: **C0/C2 Portfolio Backtests** for universe-wide replay and **Single-stock C0/C2 Comparison** for one-stock analysis. Each tile displays only its own workflow and includes a back button; navigating back does not clear the selected or saved run.
+AI Agent Experiment results use a capability-oriented matrix rather than presenting reference agreement as a universal quality score. The prominent table compares C1 and C2; C0 is available in a collapsed deterministic-reference section. C1/C2 report grounded-evidence coverage, adverse-risk flags, decision coverage, safe evidence abstentions and hard model/policy failures. Raw error, call and latency fields remain in the collapsed technical audit, and standardized forward P&L is shown separately as a secondary outcome.
 
-AI Agent Experiment results use a capability-oriented matrix rather than presenting reference agreement as a universal quality score. C0 is labelled the deterministic reference by construction; Route validation counts decided cases only and shows abstentions beside it; C1/C2 separately report grounded-evidence coverage, adverse-risk flags, decision coverage, safe evidence abstentions and hard model/policy failures. The original task-success, error, call and latency fields remain available in the collapsed technical audit.
-
-For your Plus account, start with the [ChatGPT Plus Full UI Demo Runbook](docs/AegisTrade_ChatGPT_Plus_Full_UI_Demo_Runbook.docx). It includes verified genuine C2 research and a tiny portfolio, all UI steps, approvals, exit behavior, quotas and reversible configuration switching. OpenRouter remains a separate option.
-
-For free OpenRouter account practice, use the [Free OpenRouter UI Demo Runbook](docs/AegisTrade_Free_OpenRouter_UI_Demo_Runbook.docx): local-only rehearsal, one bounded free-model C2 attempt and an optional tiny portfolio.
-
-Start with the [Project Summary and UI Overview](docs/AegisTrade_Project_Summary_and_UI_Overview.docx) for a plain-language introduction to the project and all eight workspaces.
-
-For the current source-reviewed documentation (11 November 2026), use the separate [Detailed Design and Demo Guide](docs/AegisTrade_Detailed_Design_and_Demo_Guide.docx) and [Viva Questions and Answers](docs/AegisTrade_Viva_Questions_and_Answers.docx). The design guide includes seven diagrams, all eight UI workspaces, demo preparation and the guideline gap matrix. The viva handbook now has 101 questions and answers. Version 0.15 retains mandatory dated company filings/issuer-news research through the existing three specialists; see [Historical Company Research](docs/HISTORICAL_COMPANY_RESEARCH.md) for source scope, cutoff rules, preparation and reviewed newsletter imports. Completed C2 research is mandatory before a supervised order proposal; technical-only replay uses no generation; C2 historical replay uses dated entry research, scheduled holding reviews and explicit exits under upfront rule approval. Earlier manuals may describe superseded behavior. For changes see [docs/UI_CHANGELOG.md](docs/UI_CHANGELOG.md). Restart both services after source or configuration updates.
+For the current project, use only the [Current Detailed Design](docs/AegisTrade_Current_Detailed_Design.docx), [Simplified UI Demo Guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md), [Final Project Report](docs/FINAL_PROJECT_REPORT.docx), and [Viva Questions and Answers](docs/AegisTrade_Viva_Questions_and_Answers.docx). Earlier workflow manuals were moved to the recoverable `archive/superseded_20261117/` folder so the demo path is unambiguous.
 
 ## Repository layout
 
@@ -168,9 +166,9 @@ python -m scripts.mcp_smoke           # Requires installed FastMCP/adapters
 ## How to demonstrate the capstone
 
 1. In **Dashboard**, inspect one synthetic symbol, closing prices, EMA20/EMA50 and the detected regime.
-2. In **Strategy Backtests**, run the comparison and plot a router/fixed-strategy equity curve.
-3. In **AI Agent Experiments**, review a grounded C2 recommendation and record APPROVE or REJECT with a rationale.
-4. Enable **stale quote injection** and verify rejection. Enable **timeout injection** and inspect reconciliation.
+2. In **Strategy Backtests**, run the C2 portfolio and inspect progress, research traces, equity, drawdown and ledger.
+3. In **AI Agent Experiments**, run ALL and compare C1 single-agent with C2 multi-agent grounding, reliability, latency/calls and standardized forward P&L; use C0 only as the deterministic reference.
+4. If a C2 portfolio reaches an eligible evidence-uncertainty block, demonstrate the separate human keep/override ledger and linked outcome.
 5. In **Policy Knowledge**, retrieve numbered, dated approval/risk policy passages.
 6. In **Learning & Lessons**, accept a valid development lesson and reject the unsafe lesson; freeze the playbook.
 7. Expand **Human C2 decisions and simulated-action audit**, then open `/docs` or Grafana for operational evidence.
@@ -222,7 +220,7 @@ The local cache now contains 26,580 OHLCV rows for 20 stocks, with an evaluation
 
 Use **Market Data** for provenance/coverage/export, **Strategy Backtests** for approved automatic historical replay and selection audits, then send ranked candidates to **AI Agent Experiments** for C2 and mandatory supervised approval. No C2 calls are made just by opening the shortlist or running the historical backtest.
 
-[Data, selection and UI guide](docs/NSE20_DATA_AND_UI_GUIDE.md). The current snapshot has survivorship bias and unadjusted corporate actions; financial return outputs remain provisional. Genuine dated membership and corporate-action handling are still needed for rigorous market-effectiveness claims.
+[Universe selection guide](docs/AegisTrade_Universe_Selection_and_Data_Preparation_Guide.md). The current snapshot has survivorship bias and unadjusted corporate actions; financial return outputs remain provisional. Genuine dated membership and corporate-action handling are still needed for rigorous market-effectiveness claims.
 
 
 ## Verified local RAG
@@ -267,7 +265,7 @@ Specialist prompts now include real schema field limits (company.summary:600 cha
 
 ### Portfolio rehearsal and interface stability (0.16.2)
 
-Use [Portfolio Simulation: Step-by-Step Demo](docs/AegisTrade_Portfolio_Simulation_Demo_Step_by_Step.docx) for exact capital/dates/risk/costs/allowance, evidence prerequisites and result interpretation. UI/API compatibility uses interface contract1 rather than an exact patch version. Company evidence now preserves financial context and announcement bodies, prioritizes bounded relevant excerpts and caches extracted public attachments up to32 MB. Full source/audit snapshots remain available; changes require fresh research.
+Use the current [Simplified UI Demo Guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.docx) for exact capital, dates, allowance, evidence prerequisites and result interpretation. UI/API compatibility uses the interface contract rather than an obsolete patch-specific manual.
 
 ### Critic policy IDs and precise provider pauses (0.16.3)
 
@@ -284,12 +282,12 @@ Version 0.19 adds lossless duplicate-window references, source-impact preservati
 
 ### Fresh documentation for version 0.19.1
 
-Use the new [design and orchestration document](docs/current_v0_19_1/AegisTrade_v0_19_1_Project_Design_and_Orchestration.docx), [72-question viva bank](docs/current_v0_19_1/AegisTrade_v0_19_1_Viva_Questions_and_Answers.docx) and [UI demo/test guide](docs/current_v0_19_1/AegisTrade_v0_19_1_UI_Demo_and_Test_Guide.docx). This set provides a consolidated current description rather than release-note appendices; earlier documents remain available.
+The v0.19.1 documentation is retained only under `archive/superseded_20261117/docs/current_v0_19_1/`. Use the current design and demo guide linked at the top of this README.
 
 
 ### Configurable initial stops (0.19.2)
 
-Strategy Backtests supports an initial ATR distance (default 2×) or percentage below the completed signal close. C2, screening/sizing and the technical reference use the same selected rule. Trailing remains a separate control. See [Initial Stop-Loss UI Guide](docs/AegisTrade_Configurable_Stop_Loss_UI_Guide.docx). Existing jobs retain their settings; finish or pause active work before restarting services to load the new API capability.
+The engine retains ATR or percentage protective-stop support for saved runs, but the final demo UI uses documented defaults rather than exposing tuning controls.
 
 
 ### Universe selector (0.20.0)
@@ -322,7 +320,7 @@ Four strategies are available, including EMA_PULLBACK; BREAKOUT is retained with
 
 ### Three portfolio flows (0.24.0)
 
-Strategy Backtests now offers C2 specialist research, C1 evidence-first SMC and technical-only simulation. C1 checks dated company RAG/filings/news/newsletters before evaluating the SMC pattern, uses one tool-using LLM agent without an independent critic, and defaults to a configurable 4% net trading profit target with protective stops. Existing C2 strategies and universes remain. See [C1 design, UI demo and viva guide](docs/AegisTrade_C1_SMC_Three_Flow_Guide.md). Start a fresh run for the new engine/policy version.
+Historical v0.24 introduced a C1 portfolio prototype; it is archived and is not part of the current product UI. C1 now exists only as the fair single-agent evaluation baseline in AI Agent Experiments.
 
 ### Live flow progress correction (0.24.1)
 
@@ -330,12 +328,12 @@ C1/C2 progress is shown above the run form, with separate per-flow saved results
 
 ### SMC stopped-position recovery (0.25.0)
 
-C1 can now sell at its protective/trailing stop and make one evidence-first recovery entry after a later bullish close reclaims the stopped price, previous high and original order-block upper level. Default watch: ten sessions; configurable in Strategy Backtests. A second stop exhausts the retry; source/adverse, sizing and profit/stop gates remain. Start a fresh run; earlier runs are preserved under their original execution rules. See the [C1 guide](docs/AegisTrade_C1_SMC_Three_Flow_Guide.md).
+The retired C1 portfolio recovery experiment remains readable only in archived material; it does not appear in the final demo flow.
 
 ### Historical issuer evidence library (0.25.1)
 
 All configured universes share a dated 103-stock source library. View **Policy Knowledge → Historical company evidence library** for coverage and remaining gaps. See [backfill report](docs/AegisTrade_RAG_Evidence_Backfill_Report.md) for the repeatable download/OCR/audit commands. Company facts remain date-filtered and separate from policy RAG. Downloaded sources stay local and are excluded from Git. Start fresh research after source/corpus updates.
 
-### Capstone comparison UI (0.26.0)
+### Capstone comparison UI (current)
 
-Strategy Backtests can clear the displayed saved run, begin a new C2 session and host the single-stock C0/C2 portfolio comparison. Its optional `HUMAN_EVIDENCE_OVERRIDE` study reuses the completed C2 trace and therefore adds no duplicate research calls. AI Agent Experiments keeps only the same-case C0/C1/C2 research ablation. The minimum-bar evidence matrix remains in Capstone Evaluation rather than cluttering the experiment page. See the [simplified UI guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md).
+Strategy Backtests can clear the displayed saved run and begin or resume a C2 portfolio session. Its optional `HUMAN_EVIDENCE_OVERRIDE` study reuses the completed C2 trace and therefore adds no duplicate research calls. AI Agent Experiments owns the same-case architecture ablation: C1 versus C2 is primary and C0 is the deterministic reference. The minimum-bar evidence matrix remains in Capstone Evaluation rather than cluttering the experiment page. See the [simplified UI guide](docs/SIMPLIFIED_UI_DEMO_GUIDE.md).

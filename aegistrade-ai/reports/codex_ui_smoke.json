@@ -1,0 +1,12 @@
+{
+  "version": "0.16.0",
+  "backend": "codex_cli",
+  "ready": true,
+  "streamlit_health": "ok",
+  "research_loaded": "290874d24eeb498b868949c2796b3424",
+  "portfolio_loaded": "714a9bdfbde04ad1a464424d4de5bd72",
+  "portfolio_status": "COMPLETED_WITH_GAPS",
+  "UI_exceptions": 0,
+  "new_generation_calls": 0,
+  "verification": "Streamlit AppTest with real local HTTP backend, saved genuine research/portfolio; no screen pixels inspected"
+}

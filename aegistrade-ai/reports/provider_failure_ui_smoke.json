@@ -1,0 +1,13 @@
+{
+  "version": "0.16.3",
+  "run_id": "327fd2f2b0d2453fb58b2decec69d259",
+  "status": "PAUSED_PROVIDER",
+  "recorded_calls": 16,
+  "banner_shows_latest_specific_error": true,
+  "first_attempt_code": "CODEX_TIMEOUT",
+  "second_attempt_code": "CODEX_OUTPUT_INVALID",
+  "failure_category": "PROVIDER",
+  "new_model_calls": 0,
+  "UI_exceptions": 0,
+  "original_run_resumed": false
+}

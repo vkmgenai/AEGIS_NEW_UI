@@ -35,19 +35,19 @@ SUMMARY=pd.DataFrame([{'config':c,'cases':3,'guard_pass_count':g} for c,g in (('
 @pytest.mark.parametrize('name',['ui.py','ui_blue_preview.py'])
 def test_abstention_is_not_reported_as_a_hard_failure(name):
     rows={r['Architecture']:r for r in load(name)(SUMMARY,OUTPUTS)}
-    assert rows['C0']['Route validation']=='Reference by construction' and rows['C0']['Grounded company evidence']=='N/A'
-    assert rows['C0']['Hard model/policy failures']==0 and rows['C0']['Decision coverage']=='3/3 routed'
+    assert rows['C0 — deterministic reference']['Route validation']=='Reference by construction' and rows['C0 — deterministic reference']['Grounded company evidence']=='N/A'
+    assert rows['C0 — deterministic reference']['Hard model/policy failures']==0 and rows['C0 — deterministic reference']['Decision coverage']=='3/3 routed'
     # C1: a route conflict is a genuine policy failure, never an abstention.
-    assert rows['C1']['Hard model/policy failures']==1 and rows['C1']['Safe evidence abstentions']==0
-    assert rows['C1']['Route validation']=='2/3 decided cases passed' and rows['C1']['Grounded company evidence']=='2/3'
+    assert rows['C1 — single-agent baseline']['Hard model/policy failures']==1 and rows['C1 — single-agent baseline']['Safe evidence abstentions']==0
+    assert rows['C1 — single-agent baseline']['Route validation']=='2/3 decided cases passed' and rows['C1 — single-agent baseline']['Grounded company evidence']=='2/3'
     # C2: the cited adverse finding is one flag and one safe abstention, and is left out of the route denominator.
-    assert rows['C2']['Adverse-risk flags']==1 and rows['C2']['Safe evidence abstentions']==1
-    assert rows['C2']['Hard model/policy failures']==0 and rows['C2']['Grounded company evidence']=='3/3'
-    assert rows['C2']['Route validation']=='2/2 decided cases passed, 1 abstained' and rows['C2']['Decision coverage']=='2/3'
+    assert rows['C2 — multi-agent team']['Adverse-risk flags']==1 and rows['C2 — multi-agent team']['Safe evidence abstentions']==1
+    assert rows['C2 — multi-agent team']['Hard model/policy failures']==0 and rows['C2 — multi-agent team']['Grounded company evidence']=='3/3'
+    assert rows['C2 — multi-agent team']['Route validation']=='2/2 decided cases passed, 1 abstained' and rows['C2 — multi-agent team']['Decision coverage']=='2/3'
 
 
 def test_both_dashboards_keep_the_raw_metrics_in_a_collapsed_audit():
     for name in ('ui.py','ui_blue_preview.py'):
         source=(ROOT/'app'/name).read_text()
-        assert 'Capability-oriented architecture comparison' in source and 'Technical audit metrics' in source
+        assert ('Primary comparison' in source or 'Capability-oriented architecture comparison' in source) and 'Technical audit metrics' in source
         assert 'Quality and reliability by architecture' not in source

@@ -17,14 +17,14 @@ def architecture():
     def line(a,c,label='',rad=0): b.arrow(ax,a,c,label,rad)
 
     # User, API and model-facing guardrail boundary.
-    b.box(ax,.25,11.75,2.0,.72,'Reviewer','C0/C2 • dates • capital\nconsent • approve','#e9f2e8')
-    b.box(ax,2.55,11.75,4.9,.72,'Streamlit tiles + bell → FastAPI','fixed risk • auth • allowance • progress • resume • review deep-link')
+    b.box(ax,.25,11.75,2.0,.72,'Reviewer','C2 portfolio • C1/C2 eval\nconsent • override','#e9f2e8')
+    b.box(ax,2.55,11.75,4.9,.72,'Streamlit + bell → FastAPI','fixed risk • auth • allowance • progress • resume • review deep-link')
     b.box(ax,7.75,11.75,2.0,.72,'Input / output guards','typed requests • cutoff\ninjection scan • scrub','#fde8e5')
     line((2.25,12.1),(2.55,12.1));line((7.45,12.1),(7.75,12.1));number(.42,12.42,1)
 
-    b.box(ax,.25,10.55,2.9,.72,'C0 baseline','four-route ROUTER • zero LLM','#e9f2e8')
+    b.box(ax,.25,10.55,2.9,.72,'C0 deterministic reference','four-route ROUTER • zero LLM','#e9f2e8')
     b.box(ax,3.55,10.55,2.9,.72,'C2 supervisor plan','market → strategy → critic','#fff1df')
-    b.box(ax,6.85,10.55,2.9,.72,'C1 single-agent baseline','same case / tools / budget','#fff1df')
+    b.box(ax,6.85,10.55,2.9,.72,'C1 single-agent baseline','same case / capabilities / total budget','#fff1df')
     for x in (1.7,5,8.3):line((5,11.75),(x,11.27))
     number(.42,11.18,2)
 
@@ -63,19 +63,19 @@ def architecture():
 
     b.box(ax,.25,1.15,9.5,.72,'Simulated broker / historical fill engine → immutable audit ledger','cash • holdings • decisions • linked override outcome • citations • model/tool usage • failures • checkpoints • P&L','#edf4fa')
     line((2.48,2.45),(3.4,1.87));line((7.52,2.45),(6.6,1.87))
-    b.box(ax,.25,.12,2.9,.55,'Capability + E1–E4 evaluation','grounding • risk • coverage • failures')
+    b.box(ax,.25,.12,2.9,.55,'C1 vs C2 + E1–E4 evaluation','grounding • risk • cost • 20-session outcome')
     b.box(ax,3.55,.12,2.9,.55,'Prometheus + Grafana','latency • calls • errors • outcomes')
     b.box(ax,6.85,.12,2.9,.55,'CI + Docker','evaluation gate • reproducible demo')
     for x in (1.7,5,8.3):line((5,1.15),(x,.67))
     number(.42,.78,9)
-    return b.save(fig,'final_architecture_v032')
+    return b.save(fig,'final_architecture_v033')
 
 
 def main():
     image=architecture();figures={'final_architecture':image}
-    report=b.build('FINAL_PROJECT_REPORT',figures,'FINAL CAPSTONE PROJECT REPORT',version='0.32.0',document_date='15 November 2026')
+    report=b.build('FINAL_PROJECT_REPORT',figures,'FINAL CAPSTONE PROJECT REPORT',version='0.35.0',document_date='17 November 2026')
     old=b.DOCS;b.DOCS=ROOT
-    try:presentation=b.build('FINAL_PRESENTATION_README',{},'FINAL PRESENTATION & DEMO GUIDE',version='0.32.0',document_date='15 November 2026')
+    try:presentation=b.build('FINAL_PRESENTATION_README',{},'FINAL PRESENTATION & DEMO GUIDE',version='0.35.0',document_date='17 November 2026')
     finally:b.DOCS=old
     print(report);print(presentation)
     assert len(Document(report).paragraphs)>40

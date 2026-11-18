@@ -1,0 +1,8 @@
+{
+  "version": "2026-11-09-rag-v1",
+  "passages": 81,
+  "project_policies": 72,
+  "external_references": 9,
+  "scope": "Project rules, code-derived specifications and primary-source summaries; no company news, future returns or hidden labels.",
+  "human_review": "Pending team review; no independent labelling claim."
+}

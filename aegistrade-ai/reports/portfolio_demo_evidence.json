@@ -1,0 +1,50 @@
+{
+  "date": "2023-12-01",
+  "model_calls": 0,
+  "packs": [
+    {
+      "symbol": "TMPV",
+      "status": "SUFFICIENT",
+      "view_version": "company-view-v3",
+      "pack_sha256": "27691dd7d382189cc9bfef4b28c956d41e0c35e30c3bc4a18dc08daf4b274e68",
+      "tool_payload_chars": 8773,
+      "previous_attachment_repairs": []
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "status": "SUFFICIENT",
+      "view_version": "company-view-v3",
+      "pack_sha256": "9ad583a10f7e88b1039341ea8184cce46f5806d7377bf4e1bd279607b969bfdd",
+      "tool_payload_chars": 9449,
+      "previous_attachment_repairs": [
+        {
+          "id": "CMP-c0da5149b12722be",
+          "status": "repaired",
+          "characters": 100000
+        }
+      ]
+    },
+    {
+      "symbol": "AXISBANK",
+      "status": "SUFFICIENT",
+      "view_version": "company-view-v3",
+      "pack_sha256": "60d1183b50575695e7f546ec1857aace816bd16f898d06c129c9e9b728d8cf9f",
+      "tool_payload_chars": 7342,
+      "previous_attachment_repairs": [
+        {
+          "id": "CMP-3cd028d76f954086",
+          "status": "repaired",
+          "characters": 45121
+        }
+      ]
+    },
+    {
+      "symbol": "HINDALCO",
+      "status": "SUFFICIENT",
+      "view_version": "company-view-v3",
+      "pack_sha256": "dc70d806d781a9cb97237d707e8721d5f19b27bbac466d93a8f666e2ca64786e",
+      "tool_payload_chars": 8719,
+      "previous_attachment_repairs": []
+    }
+  ]
+}

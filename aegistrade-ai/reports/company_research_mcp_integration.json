@@ -1,0 +1,20 @@
+{
+  "generation": "MOCKED; not authentic paid research",
+  "paid_model_calls": 0,
+  "actual_data": "NSE TCS 2026-10-23",
+  "actual_mcp_transport": "mcp",
+  "retrieval_mode": "neural",
+  "guard_pass": true,
+  "research_gate_pass": true,
+  "mock_llm_requests": 6,
+  "tool_calls": 7,
+  "tools_observed": [
+    "check_strategy",
+    "company_evidence",
+    "market_snapshot",
+    "search_policy"
+  ],
+  "max_serialized_context_chars": 16451,
+  "company_documents": 6,
+  "errors": []
+}

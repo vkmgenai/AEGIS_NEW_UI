@@ -1,0 +1,20 @@
+{
+  "version": "0.25.0",
+  "tests_passed": 321,
+  "new_test_model_calls": 0,
+  "price_recovery_rule": "later bullish close > prior high, stop price, original order-block upper bound",
+  "max_recovery_fills_per_chain": 1,
+  "default_watch_sessions": 10,
+  "risk_increase_after_loss": false,
+  "source_policy": "fresh dated C1 company screen; adverse cancels",
+  "rag": {
+    "passages": 84,
+    "sha256": "54b3186cb21007e8eabd9f11377a4aa7b11e178c7bdb398b945441cc7e44d082",
+    "project_policy_passages": 75,
+    "external_reference_passages": 9,
+    "source_count": 49,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "old_runs": "saved under original rules, no rewriting"
+}

@@ -1,0 +1,870 @@
+[
+  {
+    "server": "mcp_servers.market_server",
+    "name": "list_symbols",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Return available research market symbols.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "output_schema": {
+      "properties": {
+        "result": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "x-fastmcp-wrap-result": true
+    }
+  },
+  {
+    "server": "mcp_servers.market_server",
+    "name": "get_daily_bar",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Return an OHLCV bar on a YYYY-MM-DD date or structured not-found error.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "signal_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "signal_date"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.market_server",
+    "name": "assess_case",
+    "permission": "read/compute",
+    "exposed_to_llm": true,
+    "description": "READ/COMPUTE: Validate and inspect the selected case; no future labels or writes.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "additionalProperties": false,
+          "properties": {
+            "symbol": {
+              "pattern": "^[A-Z0-9][A-Z0-9_&-]{1,29}$",
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            },
+            "regime": {
+              "enum": [
+                "TREND",
+                "RANGE",
+                "BREAKOUT",
+                "HIGH_VOL",
+                "UNCERTAIN",
+                "WARMUP"
+              ],
+              "type": "string"
+            },
+            "Close": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "RSI14": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "ADX14": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "EMA20": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "EMA50": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "ATR14": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "research_purpose": {
+              "default": "ENTRY",
+              "enum": [
+                "ENTRY",
+                "HOLDING_REVIEW"
+              ],
+              "type": "string"
+            },
+            "holding_context": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "quantity": {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    "entry_price": {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    "stop_price": {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    "strategy": {
+                      "enum": [
+                        "EMA_TREND",
+                        "RSI_REVERSION",
+                        "BREAKOUT"
+                      ],
+                      "type": "string"
+                    },
+                    "holding_sessions": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "review_trigger": {
+                      "maxLength": 120,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quantity",
+                    "entry_price",
+                    "stop_price",
+                    "strategy",
+                    "holding_sessions",
+                    "review_trigger"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "selection_score": {
+              "anyOf": [
+                {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "selection_rank": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "average_turnover_20_inr": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "symbol",
+            "date",
+            "regime",
+            "Close",
+            "RSI14",
+            "ADX14",
+            "EMA20",
+            "EMA50",
+            "ATR14"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.market_server",
+    "name": "company_evidence",
+    "permission": "read/compute",
+    "exposed_to_llm": true,
+    "description": "READ: Historical cached filings/issuer news known by 15:30 IST; never download or use future news.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "signal_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "signal_date"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.strategy_server",
+    "name": "evaluate_regime",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Compute the code-defined regime and whether the approved routed strategy signals entry.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "signal_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "signal_date"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.strategy_server",
+    "name": "check_case_strategy",
+    "permission": "read/compute",
+    "exposed_to_llm": true,
+    "description": "READ/COMPUTE: Validate and inspect the selected case; no future labels or writes.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "additionalProperties": false,
+          "properties": {
+            "symbol": {
+              "pattern": "^[A-Z0-9][A-Z0-9_&-]{1,29}$",
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            },
+            "regime": {
+              "enum": [
+                "TREND",
+                "RANGE",
+                "BREAKOUT",
+                "HIGH_VOL",
+                "UNCERTAIN",
+                "WARMUP"
+              ],
+              "type": "string"
+            },
+            "Close": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "RSI14": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "ADX14": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            "EMA20": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "EMA50": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "ATR14": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "research_purpose": {
+              "default": "ENTRY",
+              "enum": [
+                "ENTRY",
+                "HOLDING_REVIEW"
+              ],
+              "type": "string"
+            },
+            "holding_context": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "quantity": {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    "entry_price": {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    "stop_price": {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    "strategy": {
+                      "enum": [
+                        "EMA_TREND",
+                        "RSI_REVERSION",
+                        "BREAKOUT"
+                      ],
+                      "type": "string"
+                    },
+                    "holding_sessions": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "review_trigger": {
+                      "maxLength": 120,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "quantity",
+                    "entry_price",
+                    "stop_price",
+                    "strategy",
+                    "holding_sessions",
+                    "review_trigger"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "selection_score": {
+              "anyOf": [
+                {
+                  "maximum": 100,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "selection_rank": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "average_turnover_20_inr": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "symbol",
+            "date",
+            "regime",
+            "Close",
+            "RSI14",
+            "ADX14",
+            "EMA20",
+            "EMA50",
+            "ATR14"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.risk_server",
+    "name": "validate_simulated_buy",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ/COMPUTE: Validate a typed proposed BUY against deterministic risk policy.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "additionalProperties": false,
+          "properties": {
+            "request_id": {
+              "maxLength": 100,
+              "minLength": 3,
+              "type": "string"
+            },
+            "symbol": {
+              "pattern": "^[A-Z0-9][A-Z0-9_&-]{1,29}$",
+              "type": "string"
+            },
+            "side": {
+              "enum": [
+                "BUY",
+                "SELL"
+              ],
+              "type": "string"
+            },
+            "quantity": {
+              "exclusiveMinimum": 0,
+              "maximum": 100000,
+              "type": "integer"
+            },
+            "order_type": {
+              "const": "MARKET",
+              "default": "MARKET",
+              "type": "string"
+            },
+            "reference_price": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "stop_loss_price": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "strategy": {
+              "enum": [
+                "EMA_TREND",
+                "RSI_REVERSION",
+                "BREAKOUT"
+              ],
+              "type": "string"
+            },
+            "account": {
+              "const": "DEMO_ONLY",
+              "default": "DEMO_ONLY",
+              "type": "string"
+            },
+            "signal_date": {
+              "type": "string"
+            },
+            "expires_at_utc": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "request_id",
+            "symbol",
+            "side",
+            "quantity",
+            "reference_price",
+            "stop_loss_price",
+            "strategy",
+            "signal_date",
+            "expires_at_utc"
+          ],
+          "type": "object"
+        },
+        "inputs": {
+          "additionalProperties": false,
+          "properties": {
+            "equity": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "available_cash": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "current_positions": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "portfolio_day_loss_pct": {
+              "default": 0.0,
+              "type": "number"
+            }
+          },
+          "required": [
+            "equity",
+            "available_cash",
+            "current_positions"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "order",
+        "inputs"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.risk_server",
+    "name": "policy_summary",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Retrieve the demo risk parameters.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.knowledge_server",
+    "name": "search_policy",
+    "permission": "read/compute",
+    "exposed_to_llm": true,
+    "description": "READ: Retrieve cited policy passages; each has source, date and passage id.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "top_k": {
+          "default": 5,
+          "type": "integer"
+        },
+        "as_of": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "passage_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.knowledge_server",
+    "name": "get_policy",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Return one exact cited passage ID.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "passage_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "passage_id"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.records_server",
+    "name": "approved_lessons",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Approved and reviewed lessons for one topic; never pending or rejected.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "topic": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "topic"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.records_server",
+    "name": "simulated_order_status",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Reconcile one simulated broker order by exact id.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.action_server",
+    "name": "order_status",
+    "permission": "read/compute",
+    "exposed_to_llm": false,
+    "description": "READ: Reconcile accepted simulated order status after timeout.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  },
+  {
+    "server": "mcp_servers.action_server",
+    "name": "submit_simulated_order",
+    "permission": "write",
+    "exposed_to_llm": false,
+    "description": "WRITE: Requires exact-payload approval + fresh quote + passing risk checks.",
+    "input_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "additionalProperties": false,
+          "properties": {
+            "request_id": {
+              "maxLength": 100,
+              "minLength": 3,
+              "type": "string"
+            },
+            "symbol": {
+              "pattern": "^[A-Z0-9][A-Z0-9_&-]{1,29}$",
+              "type": "string"
+            },
+            "side": {
+              "enum": [
+                "BUY",
+                "SELL"
+              ],
+              "type": "string"
+            },
+            "quantity": {
+              "exclusiveMinimum": 0,
+              "maximum": 100000,
+              "type": "integer"
+            },
+            "order_type": {
+              "const": "MARKET",
+              "default": "MARKET",
+              "type": "string"
+            },
+            "reference_price": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "stop_loss_price": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "strategy": {
+              "enum": [
+                "EMA_TREND",
+                "RSI_REVERSION",
+                "BREAKOUT"
+              ],
+              "type": "string"
+            },
+            "account": {
+              "const": "DEMO_ONLY",
+              "default": "DEMO_ONLY",
+              "type": "string"
+            },
+            "signal_date": {
+              "type": "string"
+            },
+            "expires_at_utc": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "request_id",
+            "symbol",
+            "side",
+            "quantity",
+            "reference_price",
+            "stop_loss_price",
+            "strategy",
+            "signal_date",
+            "expires_at_utc"
+          ],
+          "type": "object"
+        },
+        "approval_token": {
+          "type": "string"
+        },
+        "quote_price": {
+          "type": "number"
+        },
+        "quote_observed_utc": {
+          "type": "string"
+        },
+        "risk_inputs": {
+          "additionalProperties": false,
+          "properties": {
+            "equity": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "available_cash": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "current_positions": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "portfolio_day_loss_pct": {
+              "default": 0.0,
+              "type": "number"
+            }
+          },
+          "required": [
+            "equity",
+            "available_cash",
+            "current_positions"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "order",
+        "approval_token",
+        "quote_price",
+        "quote_observed_utc",
+        "risk_inputs"
+      ],
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "type": "object"
+    }
+  }
+]

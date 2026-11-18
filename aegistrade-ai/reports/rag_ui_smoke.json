@@ -1,0 +1,21 @@
+{
+  "mode": "neural",
+  "corpus": {
+    "passages": 81,
+    "sha256": "b389a449d555e5ff566b192ea18aa8addf26cd84218468e6ec4c1a838fab6aad",
+    "project_policy_passages": 72,
+    "external_reference_passages": 9,
+    "source_count": 44,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "verified_index": true,
+  "actual_models": "MiniLM + cross-encoder",
+  "UI": [
+    "corpus statistics",
+    "neural source retrieval",
+    "published-source link",
+    "historical cutoff"
+  ],
+  "paid_llm_calls": 0
+}

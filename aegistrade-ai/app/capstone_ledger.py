@@ -57,6 +57,8 @@ def list_runs() -> list[dict]:
                 "finished_at_utc":m.get("finished_at_utc"),"exit_code":m.get("exit_code"),
                 "split":cfg.get("split"),"repeats":cfg.get("repeats"),
                 "paid_inference_authorized":bool(m.get("paid_inference_authorized")),
+                "requested_by":(m.get("provenance") or {}).get("requested_by"),
+                "human_review_status":(m.get("provenance") or {}).get("human_review_status"),
                 "report_available":(manifest_path.parent/"report.json").is_file(),
             })
         except ValueError:

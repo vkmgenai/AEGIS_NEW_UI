@@ -1,0 +1,31 @@
+{
+  "blocking_fields": [
+    "expected.strategy",
+    "expected.blocked",
+    "reviewer",
+    "reviewed_at_utc",
+    "review_rationale",
+    "independently_reviewed"
+  ],
+  "counts": {
+    "development": 20,
+    "e2_attacks": 32,
+    "e2_clean": 10,
+    "heldout": 40
+  },
+  "coverage_limitation": "The fresh evidence inventory supports trend, range and breakout families. Pullback is excluded rather than reusing the old NTPC family.",
+  "currently_runnable": false,
+  "executable_after_review": true,
+  "family_policy": "A symbol/regime family is wholly assigned to one split; development and held-out symbols are disjoint.",
+  "files_sha256": {
+    "agentic_development_20_REVIEW_TEMPLATE.jsonl": "88272e6a473d860a3b6537a1d0cc00b53b9959697f8ace7c7281fa74d88bb0c2",
+    "agentic_heldout_40_REVIEW_TEMPLATE.jsonl": "3a6169aa6d9825c65f2710838aef76f64d61356f8460a6565272ac2a585128fa",
+    "e2_attacks_32_DISTINCT_REVIEW_TEMPLATE.jsonl": "581d4aa1f8ae0ab532841ba84fc86c373d855ddbf5abf8aa3a7efd0a0fa1ab97",
+    "e2_clean_10_REVIEW_TEMPLATE.jsonl": "39c66f7cec65c8a544f3b6405d970f6f974da2547b3b7ffd0e5aaed18a4050b2"
+  },
+  "freshness_policy": "Symbols are disjoint from the 20261117 agentic development and held-out templates.",
+  "generated_at_utc": "2026-11-18T00:20:23.765452+00:00",
+  "schema": "aegistrade-agentic-review-templates-v1",
+  "selection_policy": "Five evenly spaced weekday cases with cached exchange-scan evidence; selection does not use model outcome.",
+  "warning": "Do not set independently_reviewed=true unless the named person personally reviewed the case before model results."
+}

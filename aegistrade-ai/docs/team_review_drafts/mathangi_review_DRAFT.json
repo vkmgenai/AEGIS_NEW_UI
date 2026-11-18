@@ -1,0 +1,174 @@
+{
+  "review_id": "DRAFT-LLM-mathangi-20261114",
+  "reviewer": "Mathangi",
+  "role_from_proposal": "safety_platform",
+  "reviewed_at_utc": null,
+  "experiment_run_ids": [
+    "20261114T154041-1dd60bf8",
+    "20261114T153948-3dfe8a63"
+  ],
+  "artifact_sha256": {
+    "reports/capstone_runs/20261114T154041-1dd60bf8/report.json": "93b54ff73e3fce8948c32bc5672961f922e23c841c6f3e6f89e640c9558f13ac",
+    "reports/capstone_runs/20261114T153948-3dfe8a63/report.json": "952e0dd94b58613c082f42351f7d0ebe5c3b467997e8585ce59165a0f365c357",
+    "evaluation/golden/development.jsonl": "c3ae84fd01427e54c8f3ac1b5adffe8b45451ef7a230aa0b66f20862e8c658d8",
+    "evaluation/golden/heldout/heldout.jsonl": "2d7856767edce8343a6a123cc0a0ac0e87bcc966e2baa78352d96b3273deb246",
+    "evaluation/redteam/attacks_32.jsonl": "af25825a0c41fcd2d0e8f0e522e7bd72f4a7636c585b5eda9a0565bf8a6fbd91",
+    "evaluation/redteam/clean_10.jsonl": "5ad6a9a8a5a857feb0d6c3c482c1a8aa5e0d0333b7cf634ed95cdab8cc26cfb5",
+    "evaluation/retrieval/queries_36.jsonl": "e7830f9778c71ce044f61b8963c98408693e444f5160a4513be520d748c2d329"
+  },
+  "independence": {
+    "authored_or_tuned_reviewed_component": true,
+    "conflict_details": "LLM DRAFT. Not signed. Reviewer must confirm authorship and conflicts.",
+    "independent_acceptor_required": true,
+    "independent_acceptor": null
+  },
+  "case_decisions": [],
+  "question_answers": [
+    {
+      "question_number": 1,
+      "status": "PENDING",
+      "answer": "Only 20261114T154041-1dd60bf8 and 20261114T153948-3dfe8a63 exist; there is no E2, approval or deployment run.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "None"
+      ]
+    },
+    {
+      "question_number": 2,
+      "status": "PARTIALLY SUPPORTED",
+      "answer": "Scanner proxy only: 32 attacks, scanner_detection_rate 0.938 (about 30 of 32 detected). Model attack success is None; no E2 off/on run.",
+      "method": "Read security fields. Attack sha256 af25825a0c41...",
+      "exceptions": "All attacks have review_status = pending_independent_attack_validation. Which attacks the scanner missed has not been listed.",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "reports/capstone_runs/20261114T154041-1dd60bf8/report.json (security)",
+        "evaluation/redteam/attacks_32.jsonl"
+      ]
+    },
+    {
+      "question_number": 3,
+      "status": "PARTIALLY SUPPORTED",
+      "answer": "Scanner proxy only: false_blocks = 0 of 10 clean cases. Model off/on false blocks not measured.",
+      "method": "Read fields.",
+      "exceptions": "Not an E2 model result.",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "reports/capstone_runs/20261114T154041-1dd60bf8/report.json (security.false_blocks, clean_total)",
+        "evaluation/redteam/clean_10.jsonl"
+      ]
+    },
+    {
+      "question_number": 4,
+      "status": "PENDING",
+      "answer": "Cannot confirm from retained runs; E2 has not run.",
+      "method": "Mathangi must inspect the E2 harness config once it exists.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "code and tests (app/, tests/test_safety.py)"
+      ]
+    },
+    {
+      "question_number": 5,
+      "status": "PENDING",
+      "answer": "No recorded demonstration of approve/edit/reject. Tests reference payload_hash (tests/test_workflow.py, tests/test_safety.py), but a recorded trace is missing.",
+      "method": "Not executed in this draft.",
+      "exceptions": "Mathangi must perform and record the demo with audit event IDs.",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "tests/test_workflow.py, tests/test_safety.py"
+      ]
+    },
+    {
+      "question_number": 6,
+      "status": "PENDING",
+      "answer": "No recorded stale-quote, changed-evidence, duplicate or timeout demo.",
+      "method": "Not executed.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "tests/"
+      ]
+    },
+    {
+      "question_number": 7,
+      "status": "PARTIALLY SUPPORTED",
+      "answer": "A selectable order exists in the E4 ledger: ROUTER BUY ICICIBANK 2022-03-29, qty 92 at 434.194, fee 47.4319, initial_stop 416.9864. Fee matches qty*price*11.874 bps (39,946.8 * 0.0011874 = 47.43). Whole-share size is explained by the 20% position cap: floor(equity x 0.20 / entry) = 92 shares (39,947 is about 20% of 199,7xx equity), so the 1% risk size (about 116 shares) was not binding.",
+      "method": "Hand-computed fee and risk quantity from the report.",
+      "exceptions": "The cap explanation should be confirmed against the portfolio equity on that date. Slippage, target and cash effect not recomputed.",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "reports/capstone_runs/20261114T153948-3dfe8a63/report.json (ledgers.ROUTER[0], settings.risk_percent, settings.initial_capital)"
+      ]
+    },
+    {
+      "question_number": 8,
+      "status": "PARTIALLY SUPPORTED",
+      "answer": "Enforcement is claimed in code/tests, but I did not read those files in this draft.",
+      "method": "Not verified.",
+      "exceptions": "Mathangi must cite specific test names and code lines.",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "tests/test_safety.py, app/"
+      ]
+    },
+    {
+      "question_number": 9,
+      "status": "PARTIALLY SUPPORTED",
+      "answer": "Both runs retain manifest, events (queued, launched, started, finished), stdout/stderr, report; report_sha256 in each manifest matches shasum of report.json. No restart demonstration was done.",
+      "method": "Compared hashes (match).",
+      "exceptions": "inputs_sha256 is empty for both because no case file was supplied.",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "reports/capstone_runs/20261114T154041-1dd60bf8/",
+        "reports/capstone_runs/20261114T153948-3dfe8a63/"
+      ]
+    },
+    {
+      "question_number": 10,
+      "status": "PENDING",
+      "answer": "No hosted failed-CI evidence. reports/ci_intentional_failure_local.json is local only. Workflow file is .github/workflows/ci.yml.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "Needs GitHub Actions URL, failed check and later passing run.",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "None hosted"
+      ]
+    },
+    {
+      "question_number": 11,
+      "status": "PENDING",
+      "answer": "No fired-alert evidence. Rules exist in monitoring/alerts.yml.",
+      "method": "PENDING: required experiment has not been run.",
+      "exceptions": "Needs Prometheus/Grafana firing screenshot/export.",
+      "independent_acceptance_required": "No",
+      "evidence_paths": [
+        "monitoring/alerts.yml"
+      ]
+    },
+    {
+      "question_number": 12,
+      "status": "PENDING",
+      "answer": "Cannot decide. Provisional: REJECT/RE-RUN until E2, hosted CI and fired alert exist.",
+      "method": "Pending.",
+      "exceptions": "",
+      "independent_acceptance_required": "Yes: Veneet",
+      "evidence_paths": [
+        "All of the above"
+      ]
+    }
+  ],
+  "negative_results_retained": [
+    "20261114T153948-3dfe8a63: ROUTER total_return_pct 3.28 vs equal-weight benchmark 76.66 (synthetic)"
+  ],
+  "limitations": [
+    "LLM draft only; the named reviewer has not verified it.",
+    "No E1, E2 or E3 run exists; only deterministic and synthetic runs are retained.",
+    "All labels remain seeded or author-mapped."
+  ],
+  "final_decision": "REJECT_RERUN",
+  "final_rationale": "Provisional: required experiments and independent labels do not yet exist. Reviewer to confirm or change.",
+  "reviewer_attestation": "NOT SIGNED. Reviewer must personally inspect the cited artifacts before attesting."
+}

@@ -1,0 +1,4 @@
+{"at_utc": "2026-11-17T05:28:11.479828+00:00", "event": "queued"}
+{"at_utc": "2026-11-17T05:28:11.483178+00:00", "event": "background_worker_launched", "worker_pid": 17154}
+{"at_utc": "2026-11-17T05:28:11.524174+00:00", "event": "started", "pid": 17154}
+{"at_utc": "2026-11-17T05:28:21.896351+00:00", "event": "finished", "exit_code": 0, "report_sha256": "7e43ced6b0e815e6bca519e15f2cf05064bb567e1e20220f6b2e935bfa0c9451", "status": "COMPLETED"}

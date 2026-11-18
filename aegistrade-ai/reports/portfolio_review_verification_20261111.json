@@ -1,0 +1,13 @@
+{
+  "export_matches_complete_ledger": true,
+  "ten_stop_fills_verified": true,
+  "pnl_attribution_reconciles_within_one_paisa": true,
+  "realized_pnl_reconciles": true,
+  "completed_source_run_unchanged": true,
+  "new_review_document_built": true,
+  "review_document_chart_count": 1,
+  "viva_questions": 95,
+  "new_model_calls": 0,
+  "production_policies_changed": false,
+  "memory_activated": false
+}

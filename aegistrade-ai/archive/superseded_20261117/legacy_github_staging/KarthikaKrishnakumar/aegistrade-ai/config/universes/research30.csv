@@ -1,0 +1,31 @@
+Symbol,Sector,ResearchGroup
+HDFCBANK,Banking/lending,established
+ICICIBANK,Banking/lending,established
+SBIN,Banking/lending,established
+BAJFINANCE,Banking/lending,established
+TCS,IT,established
+INFY,IT,established
+HCLTECH,IT,established
+HINDUNILVR,Consumer businesses,established
+ITC,Consumer businesses,established
+DABUR,Consumer businesses,established
+TITAN,Consumer businesses,established
+SUNPHARMA,Pharmaceuticals,established
+CIPLA,Pharmaceuticals,established
+DRREDDY,Pharmaceuticals,established
+LT,Industrials,established
+BHARTIARTL,Telecom,established
+RELIANCE,Diversified,established
+MARUTI,Automobiles,established
+M&M,Automobiles,established
+NTPC,Utilities,established
+POWERGRID,Utilities,established
+TATASTEEL,Metals,cyclical
+HINDALCO,Metals,cyclical
+JSWSTEEL,Metals,cyclical
+ONGC,Energy/mining,cyclical
+COALINDIA,Energy/mining,cyclical
+INDIGO,Aviation,cyclical
+YESBANK,Banking,event_research
+IDEA,Telecom,event_research
+ZEEL,Media,event_research

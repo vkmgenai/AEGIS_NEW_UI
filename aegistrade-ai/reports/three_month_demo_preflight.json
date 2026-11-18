@@ -1,0 +1,133 @@
+{
+  "purpose": "Three-month UI demo prerequisite check; current 20-stock dataset only",
+  "selection_reason": "Start-date company archives already prepared; not a scan for best historical return",
+  "generation": "NONE; technical-only replay and local cache reads",
+  "actual_model_calls": 0,
+  "C2_quarter_verified": false,
+  "settings": {
+    "initial_capital": 500000.0,
+    "start_date": "2023-12-01",
+    "end_date": "2024-02-29",
+    "risk_percent": 1.0,
+    "mode": "ROUTER",
+    "fee_bps": 10.0,
+    "automatic_stock_selection": true,
+    "slippage_bps": 10.0,
+    "trailing_stop_enabled": true,
+    "trailing_atr_multiple": 2.0
+  },
+  "sessions": 63,
+  "symbols": 20,
+  "rows": 1260,
+  "first_actual_session": "2023-12-01",
+  "last_actual_session": "2024-02-29",
+  "first_day_shortlist": [
+    {
+      "symbol": "TMPV",
+      "date": "2023-12-01",
+      "strategy": "EMA_TREND",
+      "regime": "TREND",
+      "eligible": true,
+      "score": 83.15436,
+      "average_turnover_20_inr": 7182635189.56,
+      "atr_fraction": 0.01931372992949446,
+      "estimated_quantity_at_signal_close": 141,
+      "reasons": [],
+      "selected": true,
+      "rank": 1
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "date": "2023-12-01",
+      "strategy": "EMA_TREND",
+      "regime": "TREND",
+      "eligible": true,
+      "score": 80.45131,
+      "average_turnover_20_inr": 3756447016.35,
+      "atr_fraction": 0.014060962537249984,
+      "estimated_quantity_at_signal_close": 98,
+      "reasons": [],
+      "selected": true,
+      "rank": 2
+    },
+    {
+      "symbol": "AXISBANK",
+      "date": "2023-12-01",
+      "strategy": "BREAKOUT",
+      "regime": "BREAKOUT",
+      "eligible": true,
+      "score": 80.42248,
+      "average_turnover_20_inr": 7892089049.85,
+      "atr_fraction": 0.018040414147308677,
+      "estimated_quantity_at_signal_close": 90,
+      "reasons": [],
+      "selected": true,
+      "rank": 3
+    },
+    {
+      "symbol": "HINDALCO",
+      "date": "2023-12-01",
+      "strategy": "EMA_TREND",
+      "regime": "TREND",
+      "eligible": true,
+      "score": 68.69812,
+      "average_turnover_20_inr": 2695609475.01,
+      "atr_fraction": 0.020783855981619217,
+      "estimated_quantity_at_signal_close": 193,
+      "reasons": [],
+      "selected": true,
+      "rank": 4
+    }
+  ],
+  "first_day_company_evidence": [
+    {
+      "symbol": "TMPV",
+      "date": "2023-12-01",
+      "status": "SUFFICIENT",
+      "reasons": []
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "date": "2023-12-01",
+      "status": "SUFFICIENT",
+      "reasons": []
+    },
+    {
+      "symbol": "AXISBANK",
+      "date": "2023-12-01",
+      "status": "SUFFICIENT",
+      "reasons": []
+    },
+    {
+      "symbol": "HINDALCO",
+      "date": "2023-12-01",
+      "status": "SUFFICIENT",
+      "reasons": []
+    }
+  ],
+  "technical_only_completed": true,
+  "technical_only_ledger_events": 32,
+  "technical_only_trailing_stop_updates": 78,
+  "technical_only_metrics": [
+    {
+      "mode": "ROUTER",
+      "initial_capital": 500000.0,
+      "ending_cash": 108265.28079816682,
+      "total_return_pct": 4.41,
+      "cagr_pct": 18.83,
+      "sharpe": 1.617,
+      "max_drawdown_pct": -2.41,
+      "completed_trades": 14,
+      "win_rate_pct": 35.71,
+      "ending_equity": 522040.73
+    }
+  ],
+  "future_C2_evidence_packs_not_prepared": true,
+  "recommended_C2_parameters": {
+    "max_model_calls": 480,
+    "holding_review_sessions": 10,
+    "backend": "configured backend; currently codex_cli",
+    "inference_started": false
+  },
+  "universe_expansion": "Recommendation only; current source enforces top_n<=20 and no 50-stock download was started"
+}

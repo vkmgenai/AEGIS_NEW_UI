@@ -1,0 +1,70 @@
+{
+  "data": "synthetic, no actual NSE prices",
+  "results": [
+    {
+      "config": "C0_FIXED",
+      "mode": "EMA_TREND",
+      "label": "No dynamic routing; fixed EMA strategy",
+      "elapsed_seconds": 0.553,
+      "total_return_pct": 36.43,
+      "cagr_pct": 13.46,
+      "sharpe": 1.671,
+      "max_drawdown_pct": -4.95,
+      "completed_trades": 27,
+      "win_rate_pct": 37.04,
+      "ending_equity": 136428.93
+    },
+    {
+      "config": "C1_SINGLE",
+      "mode": "ROUTER",
+      "label": "Rule based router; SINGLE-AGENT PROMPT comparator is a separate LLM experiment",
+      "elapsed_seconds": 0.487,
+      "total_return_pct": 37.73,
+      "cagr_pct": 13.9,
+      "sharpe": 1.726,
+      "max_drawdown_pct": -4.28,
+      "completed_trades": 58,
+      "win_rate_pct": 44.83,
+      "ending_equity": 137728.52
+    },
+    {
+      "config": "C2_TEAM",
+      "mode": "ROUTER",
+      "label": "Rule based router; true multi-agent contribution requires workflow evaluations",
+      "elapsed_seconds": 0.401,
+      "total_return_pct": 37.73,
+      "cagr_pct": 13.9,
+      "sharpe": 1.726,
+      "max_drawdown_pct": -4.28,
+      "completed_trades": 58,
+      "win_rate_pct": 44.83,
+      "ending_equity": 137728.52
+    },
+    {
+      "config": "RSI_FIXED",
+      "mode": "RSI_REVERSION",
+      "label": "Fixed RSI reference",
+      "elapsed_seconds": 0.372,
+      "total_return_pct": 13.86,
+      "cagr_pct": 5.42,
+      "sharpe": 1.035,
+      "max_drawdown_pct": -4.8,
+      "completed_trades": 70,
+      "win_rate_pct": 58.57,
+      "ending_equity": 113864.59
+    },
+    {
+      "config": "BREAKOUT_FIXED",
+      "mode": "BREAKOUT",
+      "label": "Fixed breakout reference",
+      "elapsed_seconds": 0.433,
+      "total_return_pct": 9.67,
+      "cagr_pct": 3.82,
+      "sharpe": 0.827,
+      "max_drawdown_pct": -4.2,
+      "completed_trades": 49,
+      "win_rate_pct": 36.73,
+      "ending_equity": 109666.05
+    }
+  ]
+}

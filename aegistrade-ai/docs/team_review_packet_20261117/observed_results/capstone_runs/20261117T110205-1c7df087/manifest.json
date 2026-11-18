@@ -1,0 +1,47 @@
+{
+  "command": [
+    "/Users/karthikakrishnakumar/aegistrade-ai/.venv/bin/python",
+    "/Users/karthikakrishnakumar/aegistrade-ai/evaluation/run_eval.py",
+    "--split",
+    "dev",
+    "--retrieval-mode",
+    "neural",
+    "--output",
+    "/Users/karthikakrishnakumar/aegistrade-ai/reports/capstone_runs/20261117T110205-1c7df087/report.json"
+  ],
+  "configuration": {
+    "cases_file": false,
+    "consent_paid": false,
+    "experiment": "DETERMINISTIC",
+    "max_paid_calls": 24,
+    "repeats": 1,
+    "retrieval_mode": "neural",
+    "split": "dev"
+  },
+  "created_at_utc": "2026-11-17T05:32:05.718276+00:00",
+  "exit_code": 0,
+  "finished_at_utc": "2026-11-17T05:35:05.219312+00:00",
+  "inputs_sha256": {},
+  "limitations": [
+    "A retained run is not independent evidence until the referenced human labels and review records are complete.",
+    "Replay repeats the configuration but provider output may vary; it never overwrites the original run directory."
+  ],
+  "paid_inference_authorized": false,
+  "pid": 17397,
+  "provenance": {
+    "execution_assistance": "Codex-assisted background execution",
+    "human_review_status": "PENDING",
+    "independent_validation_status": "PENDING",
+    "launched_via": "AegisTrade automated experiment ledger",
+    "request_note": "Minimum-bar deterministic neural reference refresh requested 2026-11-17",
+    "requested_by": "Karthika",
+    "statement": "Automation executes the frozen configuration; it does not replace the named person's design contribution, result review or sign-off."
+  },
+  "replay_hint": "python3 evaluation/experiment_ledger.py replay 20261117T110205-1c7df087",
+  "report_sha256": "c93f0fb469186cfe6b8c4bcdb6ef8a10478ab6cb2ad51cb7553195ee2fed7a11",
+  "run_id": "20261117T110205-1c7df087",
+  "schema": "aegistrade-capstone-ledger-v1",
+  "started_at_utc": "2026-11-17T05:32:05.764340+00:00",
+  "status": "COMPLETED",
+  "worker_pid": 17397
+}

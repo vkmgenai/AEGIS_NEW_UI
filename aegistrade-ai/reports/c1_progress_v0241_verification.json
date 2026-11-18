@@ -1,0 +1,10 @@
+{
+  "version": "0.24.1",
+  "tests_passed": 310,
+  "new_test_model_calls": 0,
+  "price_rules_changed": false,
+  "source_policy_changed": false,
+  "original_active_run_resume": "same checkpoint and allowance",
+  "legacy_price_fingerprint_match": true,
+  "new_production_test_jobs_created": 0
+}

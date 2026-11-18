@@ -1,6 +1,6 @@
 # AegisTrade AI — current detailed design and code guide
 
-Version 0.32 · 15 November 2026 · Simulation-only capstone prototype
+Version 0.35 · 17 November 2026 · Simulation-only capstone prototype
 
 ## 1. Purpose of this document
 
@@ -22,7 +22,7 @@ The project has two different kinds of comparison:
 
 | Comparison | Question answered | Where to run it |
 |---|---|---|
-| AI Agent Experiment | Does C1/C2 add grounded evidence, risk detection and valid decisions relative to C0, and at what cost? | AI Agent Experiments |
+| AI Agent Experiment | Does the C2 specialist team improve grounded research over the same-budget C1 single agent, and at what cost? C0 is a deterministic reference. | AI Agent Experiments |
 | Historical strategy backtest | What simulated P&L, exposure and drawdown result from the shared execution policy? | Strategy Backtests |
 
 These must not be mixed. A grounded answer is not automatically profitable, and a profitable historical outcome is not automatically well-grounded research.
@@ -45,7 +45,20 @@ These must not be mixed. A grounded answer is not automatically profitable, and 
 
 ## 4. User-interface design
 
-The main application is `app/ui.py`. The retained blue-theme preview is `app/ui_blue_preview.py`. Both call the same FastAPI backend and engines.
+The main application is `app/ui.py`. The retained blue-theme preview is `app/ui_blue_preview.py`. The new faculty-demo redesign proposal is `app/ui_redesign_preview.py` on port 8504. All call the same FastAPI backend; the redesign preview does not introduce another research or portfolio engine.
+
+### 4.0 Proposed simplified demo shell
+
+The separate redesign follows the supplied UI proposal while removing controls that are not required for the final demonstration. Its home page presents four primary questions rather than a long workspace dropdown:
+
+1. **Data & Stock** — confirm universe, coverage, limitations and one price history.
+2. **C2 Portfolio** — configure and inspect the end-to-end governed historical workflow.
+3. **Agent Comparison** — compare C1 single-agent and C2 multi-agent results; C0 remains the deterministic reference.
+4. **Evaluation Evidence** — inspect repeat status, retained runs and the independent-review boundary.
+
+Policy retrieval and reviewed lessons share one secondary **Knowledge & Lessons** view. Persistent left navigation and a Home control replace repeated dropdown selection. Attention cards surface paused C2 jobs, pending human interventions and current AI evidence. The preview deliberately disables creation of a new C2 job until the design is approved; it reads the real retained API records. The existing UI on port 8501 remains unchanged.
+
+The preview stylesheet isolates sidebar buttons from workspace tiles: the permanently expanded sidebar uses a navy gradient with white controls, while the four home workspace tiles use solid blue gradients. This prevents the earlier white-on-white sidebar collision caused by a global Streamlit button rule.
 
 ### 4.1 Home-level workspaces
 
@@ -53,20 +66,15 @@ The main application is `app/ui.py`. The retained blue-theme preview is `app/ui_
 |---|---|
 | Market Data | Select/prepare a frozen universe and inspect coverage, provenance and limitations. |
 | Overview | Inspect OHLCV, indicators, regime and current code-selected candidate strategy. |
-| Strategy Backtests | Run universe-wide portfolio replay or a focused one-stock C0/C2 comparison. |
+| Strategy Backtests | Run the end-to-end C2 portfolio replay and optional human evidence override. |
 | AI Agent Experiments | Run the same locked research cases through C0, C1 and C2. |
 | Capstone Evaluation | Inspect retained E1–E4 evidence and evaluation artifacts. |
 | Policy Knowledge | Inspect RAG passages, sources, dates and the active corpus fingerprint. |
 | Learning & Lessons | Review, reject, accept and freeze conditional lessons. |
 
-### 4.2 Strategy Backtests tiles
+### 4.2 Strategy Backtests
 
-Strategy Backtests first displays two large tiles:
-
-- **C0/C2 Portfolio Backtests:** automatic stock selection across the active universe, portfolio cash/positions, C0/C2 ledgers and optional human override.
-- **Single-stock C0/C2 Comparison:** the same chosen stock, dates, capital and execution assumptions are passed to the existing C0 and C2 engines.
-
-Each detail page has **Back to Strategy Backtests**. Returning to the tile page does not delete the current run. A notification deep-link opens the portfolio tile directly because human intervention belongs to the checkpointed portfolio engine.
+Strategy Backtests displays one focused workflow: the C2 historical portfolio, including automatic technical screening, dated multi-agent research, cash/positions, ledgers, checkpoints and optional human override. The old C0/single-stock comparison services and artifacts remain readable for reproducibility, but duplicate controls are not exposed in the final demonstration UI.
 
 ### 4.3 Notification bell
 
@@ -139,7 +147,7 @@ The engine does not force every holding to be sold on the final date. Remaining 
 
 ### 6.3 Single-stock comparison
 
-The single-stock page is not a separate trading algorithm. It calls the same C0 and C2 portfolio engines with a symbol filter and common assumptions, then combines their ledgers and equity curves. It is useful for explaining why a specific C2 filter or holding review changed the financial path.
+Legacy single-stock comparison artifacts remain available through the retained service contract for reproducibility; they are not part of the simplified final UI or the primary architecture evaluation.
 
 ## 7. Human evidence override
 
@@ -217,7 +225,8 @@ Saved runs remain tied to the adapter/model identity with which they started. Ro
 
 | File | Responsibility |
 |---|---|
-| `app/ui.py` | Main Streamlit UI, workspaces, two Strategy Backtests tiles, bell, forms, tables and result interpretation. |
+| `app/ui.py` | Main Streamlit UI, workspaces, focused C2 Strategy Backtest, C1/C2 experiment view, bell, forms, tables and result interpretation. |
+| `app/ui_redesign_preview.py` | Separate port-8504 demo-shell proposal with question-led navigation and retained-run views; it does not replace the main UI. |
 | `app/ui_blue_preview.py` | Retained blue-theme alternative using the same backend and workflows. |
 | `app/api.py` | FastAPI contracts for market data, experiments, portfolios, notifications, lessons and provider selection. |
 | `app/live_progress.py` | Converts checkpoint state into the live portfolio progress panel. |
@@ -249,6 +258,7 @@ Saved runs remain tied to the adapter/model identity with which they started. Ro
 |---|---|
 | `aegistrade/agentic.py` | C2 graph/supervisor, specialist prompts, typed hand-offs and bounded correction. |
 | `aegistrade/research_service.py` | Same-case C0/C1/C2 experiment execution, budgets, summaries and saved results. |
+| `scripts/run_report_ai_repeats.py` | Resumable three-repeat development E1 runner; records completed IDs and quota/error state without deleting runs. |
 | `aegistrade/research_gate.py` | Authoritative completed-C2 validation and evidence/action checks. |
 | `aegistrade/c1_gate.py` | C1 and SMC validation contracts retained for evaluation/legacy records. |
 | `aegistrade/llm_backend.py` | ChatGPT/Codex CLI, OpenRouter and Claude CLI adapter selection and identity. |
@@ -287,7 +297,7 @@ Saved runs remain tied to the adapter/model identity with which they started. Ro
 | `tests/test_rag_extensions.py` | Retrieval and RAG behavior. |
 | `tests/test_company_research.py` | Dated company-evidence preparation and coverage behavior. |
 | `tests/test_ui_stock_selection.py` | UI payload and automatic selection behavior. |
-| `tests/test_c1_ui_api.py` | C1 evaluation-only visibility, Strategy Backtests tile navigation and saved-flow isolation. |
+| `tests/test_c1_ui_api.py` | C1 evaluation-only visibility and focused C2 Strategy Backtests UI. |
 | `tests/test_llm_backend.py` | Three-adapter identity, readiness and failure classification. |
 
 ## 13. Key API routes
@@ -309,9 +319,9 @@ Saved runs remain tied to the adapter/model identity with which they started. Ro
 
 ## 14. How to read a result
 
-For an AI Agent Experiment, first inspect the capability table, then case-level traces, and only then open the collapsed technical audit. A safe C2 abstention is different from a route/schema/provider failure. No experiment result has portfolio P&L unless it is subsequently evaluated through a defined historical-outcome protocol.
+For an AI Agent Experiment, first inspect the C1/C2 capability table, then case-level traces, and only then open the collapsed technical audit. A safe C2 abstention is different from a route/schema/provider failure. A separate standardized outcome evaluates each entry decision from the next session's open to the twentieth later-session close on a fixed ₹100,000 notional, including modeled fees and slippage. It is calculated only after research, never exposed to the agents, and is secondary to grounding/safety/cost.
 
-For a Strategy Backtest, inspect status and completeness first. Partial-run metrics do not represent the full requested window. Then inspect capital/equity identity, open holdings, ledger, selection audit, evidence decisions, model usage and benchmark limitations. Compare C0/C2 only after both complete the same window.
+For a Strategy Backtest, inspect status and completeness first. Partial-run metrics do not represent the full requested window. Then inspect capital/equity identity, open holdings, ledger, selection audit, evidence decisions, model usage and benchmark limitations. This C2 portfolio result demonstrates the end-to-end governed system; it is not the single-versus-multi-agent ablation.
 
 ## 15. Updating results after current inference runs
 
@@ -325,6 +335,12 @@ The design does not need to change when new runs finish. Update only the evidenc
 6. Do not replace an unfavorable result; explain whether it was a safe abstention, hard failure or financial outcome.
 
 The final project report intentionally treats current inference numbers as a replaceable dated snapshot. The run ledger remains the source of truth.
+
+### 15.1 Current three-repeat development snapshot
+
+The report runner fixed the model, three cases, evidence capabilities, token budget and per-case call ceiling across three repetitions. C1 produced guard-pass counts `0, 1, 1`; C2 produced `1, 1, 1`. C2 consistently entered LT and stayed out of IDEA/HINDALCO, while C1 entered LT in two repetitions. C2 used 12 model requests per run and C1 used 11. The result is useful repeatability evidence, but it is still a development experiment. The 40 held-out cases and E2/E3 evaluation remain blocked until the independently reviewed JSONL templates are returned and frozen.
+
+The 102 templates from 17 November remain untouched in their canonical folder and are not archived. Because the current UI/code is still awaiting approval, they are treated as historical pre-freeze candidates. After approval, the project generates a new versioned set and repeats independent review before final held-out E1–E4. See `POST_UI_FREEZE_EVALUATION_PLAN.md`.
 
 ## 16. Limitations and viva summary
 

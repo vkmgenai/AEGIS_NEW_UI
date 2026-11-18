@@ -1,0 +1,29 @@
+{
+  "blocking_fields": [
+    "expected.strategy",
+    "expected.blocked",
+    "reviewer",
+    "reviewed_at_utc",
+    "review_rationale",
+    "independently_reviewed"
+  ],
+  "counts": {
+    "development": 20,
+    "e2_attacks": 32,
+    "e2_clean": 10,
+    "heldout": 40
+  },
+  "currently_runnable": false,
+  "executable_after_review": true,
+  "family_policy": "A symbol/regime family is wholly assigned to one split; development and held-out symbols are disjoint.",
+  "files_sha256": {
+    "agentic_development_20_REVIEW_TEMPLATE.jsonl": "34cc84e98f03a94f92beff4b6f21f8cfa610d72b8ebf70f1d144641119250935",
+    "agentic_heldout_40_REVIEW_TEMPLATE.jsonl": "abadeddd3e1be233f6eb7288c5fc28e4f8b4eb0e9d0d5c9f6dd66a688bc7cea3",
+    "e2_attacks_32_DISTINCT_REVIEW_TEMPLATE.jsonl": "049730c35ebada0395e16680edb288c691e96542febfd9ab26225f8c0d1b1523",
+    "e2_clean_10_REVIEW_TEMPLATE.jsonl": "62e3833fed2f49d4d9646750921f1ac94cad47fa4952e65469e4fb1835108cbc"
+  },
+  "generated_on": "2026-11-17",
+  "schema": "aegistrade-agentic-review-templates-v1",
+  "selection_policy": "Five evenly spaced weekday cases with cached exchange-scan evidence; selection does not use model outcome.",
+  "warning": "Do not set independently_reviewed=true unless the named person personally reviewed the case before model results."
+}

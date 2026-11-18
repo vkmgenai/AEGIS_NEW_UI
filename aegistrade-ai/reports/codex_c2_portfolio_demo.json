@@ -1,0 +1,141 @@
+{
+  "generation": "GENUINE Codex CLI using ChatGPT sign-in; no mocked generation",
+  "archive_policy": "Existing actual dated cache only; absent coverage blocks. UI may prepare additional archives.",
+  "run_id": "714a9bdfbde04ad1a464424d4de5bd72",
+  "status": "COMPLETED_WITH_GAPS",
+  "inference": {
+    "backend": "codex_cli",
+    "model": "codex-default",
+    "budget_unit": "cli_invocations",
+    "adapter_version": "codex-intent-v1"
+  },
+  "model_usage": {
+    "budget_unit": "cli_invocations",
+    "provider_requests_counted": false,
+    "attempted_calls": 7,
+    "budget_charged_calls": 7,
+    "uncertain_calls_reserved": 0,
+    "call_limit": 16,
+    "total_tokens_reported": 63168,
+    "provider_cost_usd": null,
+    "cost_reporting_complete": false
+  },
+  "ledger": [
+    {
+      "date": "2023-04-03",
+      "symbol": "HINDUNILVR",
+      "event": "BUY",
+      "quantity": 15,
+      "price": 2572.5699999999997,
+      "fee": 38.58854999999999,
+      "strategy": "BREAKOUT",
+      "realized_pnl": null,
+      "research_id": "f9aa7d8f114baa9b2399b80ca64353de",
+      "signal_date": "2023-03-31"
+    }
+  ],
+  "open_holdings": [
+    {
+      "symbol": "HINDUNILVR",
+      "quantity": 15,
+      "entry_price": 2572.5699999999997,
+      "entry_fee": 38.58854999999999,
+      "stop": 2471.5759558878817,
+      "strategy": "BREAKOUT",
+      "entry_date": "2023-04-03",
+      "entry_index": 1,
+      "last_review_index": 1,
+      "entry_research_id": "f9aa7d8f114baa9b2399b80ca64353de",
+      "mark_price": 2536.1,
+      "mark_date": "2023-04-03",
+      "market_value": 38041.5,
+      "unrealized_pnl": -585.6385499999969,
+      "last_review_date": "2023-04-03"
+    }
+  ],
+  "accounting": {
+    "realized_pnl": 0,
+    "unrealized_pnl": -585.6385499999969,
+    "equity_identity_error": -6.366462912410498e-12,
+    "forced_end_liquidation": false,
+    "model_cost_in_trading_returns": false
+  },
+  "decisions": [
+    {
+      "id": "f9aa7d8f114baa9b2399b80ca64353de",
+      "key": "2023-03-31:HINDUNILVR:ENTRY",
+      "date": "2023-03-31",
+      "symbol": "HINDUNILVR",
+      "purpose": "ENTRY",
+      "action": "ENTER",
+      "guard_pass": true,
+      "explanation": "check_strategy permits BREAKOUT and ENTER for research only; entry signals and risk checks remain separate. POL-29 requires a ready row, Close above the shifted prior 20-session high and ADX14 at least 18. The supplied company assessment is SUFFICIENT: December-quarter commentary reports growth alongside margin contraction and exceptional costs (CMP-6b6495359ab91c2c). The March notice establishes a reporting-window closure, not results (CMP-a03ae83f72b1c9b1). These disclosed risks remain relevant, but the assessment identifies no unresolved material-risk blocker. ENTER is not a fundamental buy recommendation or order authorization.",
+      "company_assessment": {
+        "status": "SUFFICIENT",
+        "summary": "The readable January 19, 2023 financial filing reports results for the period ended December 31, 2022. Its commentary describes EBITDA growth alongside margin contraction, and profit-after-tax growth before exceptional items (CMP-6b6495359ab91c2c). Numerical financial analysis is unavailable because the extracted tables do not reliably establish units, periods and standalone/consolidated basis together. A March 15 announcement concerns the trading-window closure associated with March quarter/year-end results; it does not establish those results (CMP-a03ae83f72b1c9b1).",
+        "citations": [
+          "CMP-6b6495359ab91c2c",
+          "CMP-a03ae83f72b1c9b1"
+        ],
+        "event_risks": [
+          "The December-quarter commentary reports margin contraction and restructuring and acquisition/disposal-related exceptional costs (CMP-6b6495359ab91c2c).",
+          "March quarter/year-end results are not established by the selected evidence; the trading-window notice flags the reporting cycle, not its outcome (CMP-a03ae83f72b1c9b1)."
+        ],
+        "limitations": [
+          "Selected official filings and issuer releases; not comprehensive press coverage.",
+          "PDF extraction is limited to the first 35 pages; financial figures are not independently normalized.",
+          "Archive retrieved later; exchange timestamps support availability, not a certified historical content-version chain."
+        ]
+      },
+      "citations": [
+        "POL-29"
+      ],
+      "errors": [],
+      "llm_calls": 7
+    },
+    {
+      "id": null,
+      "key": "2023-03-31:MARUTI:ENTRY",
+      "date": "2023-03-31",
+      "symbol": "MARUTI",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": null,
+      "citations": [],
+      "errors": [
+        "Historical company pack not prepared; no assumption of clean fundamentals."
+      ],
+      "llm_calls": 0
+    }
+  ],
+  "metrics": [
+    {
+      "mode": "C2",
+      "initial_capital": 200000.0,
+      "ending_equity": 199414.36145,
+      "ending_cash": 161372.86145,
+      "total_return_pct": -0.29,
+      "realized_pnl": 0,
+      "unrealized_pnl": -585.6385499999969,
+      "open_positions": 1,
+      "cagr_pct": -30.89,
+      "sharpe": null,
+      "max_drawdown_pct": -0.29281927500000027,
+      "completed_trades": 0,
+      "win_rate_pct": null
+    },
+    {
+      "mode": "ROUTER",
+      "initial_capital": 200000.0,
+      "total_return_pct": -0.15,
+      "cagr_pct": -16.82,
+      "sharpe": null,
+      "max_drawdown_pct": -0.15,
+      "completed_trades": 0,
+      "win_rate_pct": null,
+      "ending_equity": 199707.82
+    }
+  ]
+}

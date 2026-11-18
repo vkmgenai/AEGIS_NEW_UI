@@ -435,6 +435,12 @@ def normalize_envelope(envelope,names,tool_choice):
         return {'content':json.dumps(content,ensure_ascii=False,separators=(',',':'))}
     raise ValueError('Invalid final response envelope')
 
+def claude_invalid_retries():
+    """How many times to ask Claude again after an answer the adapter cannot validate. 0 disables retries."""
+    count=int(os.getenv('AEGIS_CLAUDE_INVALID_RETRIES','1') or 0)
+    if not 0<=count<=3:raise ValueError('AEGIS_CLAUDE_INVALID_RETRIES allows 0–3')
+    return count
+
 
 @dataclass
 class ClaudeCliClient:
@@ -471,41 +477,49 @@ class ClaudeCliClient:
                 schema=envelope_schema(names,tool_choice,final_schema)
                 prompt=json.dumps({'conversation':messages,'allowed_virtual_tools':tools or [],'tool_choice':tool_choice,
                     'response_guidance':f'Keep the final content concise, approximately within {max_tokens} tokens. No native tools.'},ensure_ascii=True)
-                waits=claude_retry_waits();attempt=0
+                invalid_limit=claude_invalid_retries();invalid_attempt=0
+                # A malformed answer is usually a one-off formatting slip; ask again before pausing the whole run.
                 while True:
-                    stage='invocation';failure=None
-                    code,stdout,stderr=_execute(claude_command(binary,folder,self.model,schema),prompt,env=claude_environment(),cwd=folder,timeout=timeout_seconds('claude_cli'))
-                    if len(stdout)>2_000_000 or len(stderr)>200_000:raise ValueError('CLI output exceeds adapter bounds')
-                    stage='result_object'
-                    try:result=json.loads(stdout)
-                    except json.JSONDecodeError:
-                        if code==0:raise
-                        result=None;failure=claude_error_code(stdout[:4000]+'\n'+stderr)
-                    if result is not None and not isinstance(result,dict):raise ValueError('Invalid response envelope')
-                    if result is not None and (code!=0 or result.get('is_error') or result.get('subtype','success')!='success'):
-                        failure=claude_error_code(claude_failure_text(result)+'\n'+stderr)
-                    if failure is None:break
-                    # A temporary rate limit or overload usually clears within a minute; wait and retry before pausing the whole run.
-                    if failure=='CLAUDE_QUOTA' and attempt<len(waits):
-                        time.sleep(waits[attempt]);attempt+=1;record['transient_limit_retries']=attempt;continue
-                    record['error_code']=failure
-                    raise RuntimeError('Claude rejected or could not finish the invocation')
-                if result.get('permission_denials'):
-                    record['error_code']='CLAUDE_TOOL_VIOLATION';raise ValueError('Unexpected native CLI tool event')
-                usage_block=result.get('usage') or {}
-                record.update(cli_turns_completed=int(result.get('num_turns') or 1),
-                    input_tokens=sum(int(usage_block.get(k) or 0) for k in ('input_tokens','cache_creation_input_tokens','cache_read_input_tokens')),
-                    output_tokens=int(usage_block.get('output_tokens') or 0),
-                    notional_cost_usd=result.get('total_cost_usd'),resolved_models=sorted((result.get('modelUsage') or {}).keys()))
-                record['total_tokens']=record['input_tokens']+record['output_tokens']
-                stage='response_envelope'
-                envelope=result.get('structured_output')
-                if envelope is None:
-                    raw=result.get('result')
-                    if not isinstance(raw,str) or len(raw)>max(1800,max_tokens*8):raise ValueError('CLI final envelope exceeds response size bound')
-                    envelope=json.loads(raw)
-                stage='specialist_content'
-                answer=normalize_envelope(envelope,names,tool_choice)
+                    try:
+                        waits=claude_retry_waits();attempt=0
+                        while True:
+                            stage='invocation';failure=None
+                            code,stdout,stderr=_execute(claude_command(binary,folder,self.model,schema),prompt,env=claude_environment(),cwd=folder,timeout=timeout_seconds('claude_cli'))
+                            if len(stdout)>2_000_000 or len(stderr)>200_000:raise ValueError('CLI output exceeds adapter bounds')
+                            stage='result_object'
+                            try:result=json.loads(stdout)
+                            except json.JSONDecodeError:
+                                if code==0:raise
+                                result=None;failure=claude_error_code(stdout[:4000]+'\n'+stderr)
+                            if result is not None and not isinstance(result,dict):raise ValueError('Invalid response envelope')
+                            if result is not None and (code!=0 or result.get('is_error') or result.get('subtype','success')!='success'):
+                                failure=claude_error_code(claude_failure_text(result)+'\n'+stderr)
+                            if failure is None:break
+                            # A temporary rate limit or overload usually clears within a minute; wait and retry before pausing the whole run.
+                            if failure=='CLAUDE_QUOTA' and attempt<len(waits):
+                                time.sleep(waits[attempt]);attempt+=1;record['transient_limit_retries']=attempt;continue
+                            record['error_code']=failure
+                            raise RuntimeError('Claude rejected or could not finish the invocation')
+                        if result.get('permission_denials'):
+                            record['error_code']='CLAUDE_TOOL_VIOLATION';raise ValueError('Unexpected native CLI tool event')
+                        usage_block=result.get('usage') or {}
+                        record.update(cli_turns_completed=int(result.get('num_turns') or 1),
+                            input_tokens=sum(int(usage_block.get(k) or 0) for k in ('input_tokens','cache_creation_input_tokens','cache_read_input_tokens')),
+                            output_tokens=int(usage_block.get('output_tokens') or 0),
+                            notional_cost_usd=result.get('total_cost_usd'),resolved_models=sorted((result.get('modelUsage') or {}).keys()))
+                        record['total_tokens']=record['input_tokens']+record['output_tokens']
+                        stage='response_envelope'
+                        envelope=result.get('structured_output')
+                        if envelope is None:
+                            raw=result.get('result')
+                            if not isinstance(raw,str) or len(raw)>max(1800,max_tokens*8):raise ValueError('CLI final envelope exceeds response size bound')
+                            envelope=json.loads(raw)
+                        stage='specialist_content'
+                        answer=normalize_envelope(envelope,names,tool_choice)
+                        break
+                    except ValueError:
+                        if stage not in {'response_envelope','specialist_content'} or record.get('error_code') or invalid_attempt>=invalid_limit:raise
+                        invalid_attempt+=1;record['invalid_output_retries']=invalid_attempt
         except Exception as exc:
             record['validation_stage']=stage
             if isinstance(exc,json.JSONDecodeError):

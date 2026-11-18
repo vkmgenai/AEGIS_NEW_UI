@@ -1,0 +1,15 @@
+{
+  "run_id": "067a136d0a654ca5889d62c816c4d741",
+  "source": "nsepython",
+  "sessions": 1242,
+  "universe": 20,
+  "initial_capital": 200000,
+  "selection_audit_rows": 24840,
+  "ledger_events": 326,
+  "paid_model_calls": 0,
+  "limitations": [
+    "Current-constituent survivorship bias",
+    "Raw prices: splits, bonuses, demergers and dividends not reconstructed",
+    "Deterministic replay, not C2 trading returns"
+  ]
+}

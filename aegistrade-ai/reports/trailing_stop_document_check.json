@@ -1,0 +1,33 @@
+{
+  "version": "0.17.0",
+  "documents": {
+    "Detailed_Design_and_Demo_Guide": {
+      "bytes": 783854,
+      "trailing_section_present": true,
+      "source_version_current": true
+    },
+    "Viva_Questions_and_Answers": {
+      "bytes": 60793,
+      "trailing_section_present": true,
+      "source_version_current": true
+    },
+    "ChatGPT_Plus_Full_UI_Demo_Runbook": {
+      "bytes": 169026,
+      "trailing_section_present": true,
+      "source_version_current": true
+    },
+    "Project_Summary_and_UI_Overview": {
+      "bytes": 44154,
+      "trailing_section_present": true,
+      "source_version_current": true
+    },
+    "Portfolio_Simulation_Demo_Step_by_Step": {
+      "bytes": 182444,
+      "trailing_section_present": true,
+      "source_version_current": true
+    }
+  },
+  "viva_questions": 92,
+  "rag_index_matches_current_corpus": true,
+  "generation_calls": 0
+}

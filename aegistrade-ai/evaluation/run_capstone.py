@@ -35,6 +35,7 @@ def aggregate(rows):
     attacks=[r['score']['attack_success'] for r in rows if r.get('attack')]
     clean=[r['score']['blocked'] for r in rows if not r.get('attack') and not r['expected'].get('blocked',False)]
     import math
+    available=[r.get('forward_outcome',{}) for r in rows if r.get('forward_outcome',{}).get('available')]
     return {'cases':len(rows),'task_success':sum(r['score']['correct'] for r in rows)/max(1,len(rows)),
             'model_calls':sum(r['output'].get('llm_calls',0) for r in rows),
             'tool_calls':sum(r['output'].get('tool_calls',0) for r in rows),
@@ -43,7 +44,11 @@ def aggregate(rows):
             'provider_reported_cost_usd':sum(costs) if costs and all(isinstance(c,(int,float)) for c in costs) else None,
             'attack_success_rate':sum(attacks)/len(attacks) if attacks else None,
             'clean_false_block_rate':sum(clean)/len(clean) if clean else None,
-            'model_errors':sum(bool(r['output'].get('model_errors')) for r in rows)}
+            'model_errors':sum(bool(r['output'].get('model_errors')) for r in rows),
+            'forward_outcomes_available':len(available),
+            'forward_entries':sum(bool(x.get('participated')) for x in available),
+            'forward_pnl':round(sum(float(x.get('pnl') or 0) for x in available),2),
+            'forward_return_pct_on_case_notional':round(sum(float(x.get('return_pct') or 0) for x in available)/max(1,len(available)),4)}
 
 
 def variants(experiment):
@@ -122,10 +127,30 @@ def main():
                         out=run_agentic_case(snapshot,mode,model=model_name(),
                             lessons=lessons if memory else [],defences=defences,tools_factory=InjectedTools)
                     rows.append({'case_id':case['id'],'repeat':repeat+1,'variant':label,'attack':case.get('attack',False),
-                                 'expected':case['expected'],'score':score(case,out),'output':out})
+                                 'snapshot':evidence,'expected':case['expected'],'score':score(case,out),'output':out})
+        # Outcomes are calculated only after every research decision is final and
+        # are never placed in prompts or tools. If the configured market cannot
+        # supply the exact future window, retain an explicit unavailable result.
+        try:
+            from aegistrade.market import load_configured_market
+            from aegistrade.research_service import attach_forward_outcomes
+            forward_items=[]
+            for row in rows:
+                item={'snapshot':row['snapshot'],**row['output']};forward_items.append(item)
+            forward_policy=attach_forward_outcomes(forward_items,load_configured_market())
+            for row,item in zip(rows,forward_items):
+                row['forward_outcome']=item['forward_outcome'];row['output']['forward_outcome']=item['forward_outcome']
+        except Exception as exc:
+            forward_policy={'method':'UNAVAILABLE','reason':type(exc).__name__,
+                'interpretation':'Research scores remain valid; no partial or mismatched market outcome was substituted.'}
+            for row in rows:row['forward_outcome']={'available':False,'reason':forward_policy['reason']}
         report={'experiment':a.experiment,'split':a.split,'repeats':a.repeats,'inference':identity(),'case_file_sha256':hashlib.sha256(raw).hexdigest(),
                 'max_possible_paid_calls':maximum,'memory_manifest':manifest,'rows':rows,
                 'summary':{v:aggregate([r for r in rows if r['variant']==v]) for v in sorted({r['variant'] for r in rows})},
+                'architecture_comparison_contract':{'primary':['C1_SINGLE_AGENT','C2_MULTI_AGENT'],'secondary_reference':'C0_DETERMINISTIC_NO_LLM',
+                    'same_cases':True,'same_model':True,'same_evidence':True,'same_available_read_tools':True,
+                    'same_case_call_ceiling':8,'interpretation':'C1 versus C2 is the capstone architecture comparison; C0 is only a deterministic reference.'},
+                'forward_outcome_policy':forward_policy,
                 'limitations':['Independent human labels and judge calibration are external evidence.',
                                'E2 disables text scanner only; hard permissions, typed validation and broker isolation remain enforced.',
                                'Routing agreement is a compliance task, not prediction or trading profit.']}

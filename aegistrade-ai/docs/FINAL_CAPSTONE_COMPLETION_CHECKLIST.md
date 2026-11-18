@@ -20,7 +20,7 @@ Status meanings: `DONE` verified now; `PARTIAL` implemented but final-review evi
 - [x] DONE — C1 single tool-using agent exists with the same available tools and per-case budget.
 - [x] DONE — C2 supervisor plus market, strategy and critic specialists exists with typed hand-offs.
 - [x] DONE — Keep C1 in AI Experiment only; label it `evaluation baseline`, not a portfolio product flow.
-- [ ] TODO — Run same-case/model/tools/budget C0/C1/C2 comparison three times and report spread, failures, timeouts, cost/usage and latency.
+- [ ] PARTIAL — Three same-case/model/capability/budget development repetitions are retained with spread, failures, cost/usage and latency. Repeat on frozen independently reviewed held-out cases for the final claim.
 
 ## C. Independent team review workflow
 
@@ -50,7 +50,7 @@ Status meanings: `DONE` verified now; `PARTIAL` implemented but final-review evi
 - [ ] BLOCKED-TEAM — Independently verify expected outcomes before final runs; keep related families in one split and held-out inaccessible to agents.
 - [ ] TODO — Code-first checks for outcomes, citations, tool trajectories and forbidden actions.
 - [ ] BLOCKED-TEAM — Obtain 20+ human labels for judge calibration; use a different-family judge and report Cohen's kappa.
-- [ ] TODO — E1 C0/C1/C2 fair comparison.
+- [ ] PARTIAL — Development E1 three-repeat comparison completed; final reviewed held-out E1 remains gated by independent labels.
 - [ ] TODO — E2 defences off/on on attacks and clean cases.
 - [ ] TODO — E3 memory/playbook off/on on untouched held-out cases.
 - [ ] TODO — E4 critic-loop on/off and evidence parsing/retrieval ablation, adapted from Analyst Desk.
@@ -70,7 +70,7 @@ Status meanings: `DONE` verified now; `PARTIAL` implemented but final-review evi
 - [ ] BLOCKED-TEAM — Contribution log for the faculty-approved three-person team.
 - [ ] BLOCKED-TEAM — Final slides and backup demo recording.
 - [x] DONE — Secret scan found no committed key/token value; the only match was a documented `.env` placeholder. Runtime/private/unlicensed data remains excluded by policy and ignore rules.
-- [x] DONE — Full tests pass (346); v0.27 health, UI contracts and local smoke endpoints pass after service restart, with no real trades placed.
+- [x] DONE — Full tests pass (377); v0.34 health, UI contracts and local smoke endpoints pass, with no real trades placed.
 
 ## G. Required honesty statements
 

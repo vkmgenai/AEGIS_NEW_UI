@@ -1,0 +1,24 @@
+{
+  "version": "0.24.0",
+  "local_date": "2026-11-13",
+  "tests_passed": 301,
+  "failed": 0,
+  "model_responses": "mocked",
+  "actual_project_inference_calls": 0,
+  "original_runtime_states_and_market_config_preserved": 7,
+  "rag": {
+    "passages": 83,
+    "sha256": "8e079a382bfdfec2239e73101bf5864c0c9e98b53a4e3be4c215d85097fd0637",
+    "project_policy_passages": 74,
+    "external_reference_passages": 9,
+    "source_count": 48,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "neural_smoke_top_hits": {
+    "SMC pattern": "POL-73",
+    "C1 evidence before signal": "POL-74"
+  },
+  "guide": "docs/AegisTrade_C1_SMC_Three_Flow_Guide.docx",
+  "profitability_claim": "Not established; synthetic contract cases verify mechanics only"
+}

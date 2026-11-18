@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-12",
+  "tests_passed": 204,
+  "tests_failed": 0,
+  "interval_seconds": 5,
+  "statuses": [
+    "RUNNING",
+    "QUEUED"
+  ],
+  "transport": "read-only status GET via Streamlit fragment",
+  "manual_refresh_retained": true,
+  "stops_on_pause_completion_interruption": true,
+  "api_restart_required": false,
+  "automatic_generation_calls": 0,
+  "verification": "Controlled renderer lifecycle checks and Streamlit AppTest with mocked local API/worker; no actual inference invoked"
+}

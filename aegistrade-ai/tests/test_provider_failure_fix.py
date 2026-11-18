@@ -38,14 +38,60 @@ def test_critic_rejection_does_not_make_unproductive_revision_call(monkeypatch):
 
 def test_runtime_pins_strategy_ids_for_independent_critic_search(monkeypatch):
     class InspectTools(LocalTools):
+        seen=[]
         def __init__(self,snapshot):super().__init__(snapshot);self.required_policy_ids=()
         async def call(self,name,args):
             if name=='search_policy' and self.required_policy_ids:
-                assert self.required_policy_ids==('POL-06',)
+                self.seen.append(self.required_policy_ids)
             return await super().call(name,args)
     monkeypatch.setattr(RouterClient,'chat',fake_team)
     out=run_agentic_case(SNAPSHOT,tools_factory=InspectTools)
     assert out['guard_pass']
+    assert InspectTools.seen==[('POL-72',),('POL-06',)]
+
+
+def test_c1_route_policy_is_pinned_before_initial_search(monkeypatch):
+    class InspectTools(LocalTools):
+        seen=[]
+        def __init__(self,snapshot):super().__init__(snapshot);self.required_policy_ids=()
+        async def call(self,name,args):
+            if name=='search_policy':self.seen.append(self.required_policy_ids)
+            return await super().call(name,args)
+    monkeypatch.setattr(RouterClient,'chat',fake_team)
+    out=run_agentic_case(SNAPSHOT,'C1',tools_factory=InspectTools)
+    assert out['guard_pass'] and InspectTools.seen==[('POL-72',)]
+
+
+def test_company_citation_retry_guidance_does_not_relax_guard(monkeypatch):
+    sent_invalid=False;correction_seen=False
+    def fake(self,messages,**kwargs):
+        nonlocal sent_invalid,correction_seen
+        answer=fake_team(self,messages,**kwargs)
+        role=messages[0]['content'].split('Role: ')[1].split(' research')[0]
+        if role=='single' and answer.get('content') and not sent_invalid:
+            value=json.loads(answer['content'])
+            value['company']['citations']=['WEBSCAN-NOT-ELIGIBLE']
+            answer['content']=json.dumps(value);sent_invalid=True
+        elif role=='single' and answer.get('content'):
+            correction_seen=any('company.citations may use only these exact' in str(m.get('content','')) for m in messages)
+        return answer
+    monkeypatch.setattr(RouterClient,'chat',fake)
+    out=run_agentic_case(SNAPSHOT,'C1',tools_factory=LocalTools)
+    assert correction_seen and out['guard_pass']
+
+
+def test_openrouter_final_turn_requests_json_object(monkeypatch):
+    monkeypatch.setenv('OPENROUTER_API_KEY','test-only')
+    captured={}
+    response=Mock()
+    response.raise_for_status.return_value=None
+    response.json.return_value={'model':'test','choices':[{'message':{'content':'{"accept":true}'}}],
+                                'usage':{'prompt_tokens':1,'completion_tokens':1,'total_tokens':2,'cost':0}}
+    def post(*args,**kwargs):captured.update(kwargs['json']);return response
+    monkeypatch.setattr('aegistrade.llm_research.requests.post',post)
+    client=RouterClient(model='test',max_calls=1,max_output_tokens_total=200)
+    client.chat([{'role':'user','content':'Return JSON'}],max_tokens=100,tool_choice='none')
+    assert captured['response_format']=={'type':'json_object'}
 
 
 def test_timeout_and_format_errors_do_not_claim_credit_failure():

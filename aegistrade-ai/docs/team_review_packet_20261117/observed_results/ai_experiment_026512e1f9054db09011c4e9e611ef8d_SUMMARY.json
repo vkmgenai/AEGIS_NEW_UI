@@ -1,0 +1,250 @@
+{
+  "case_observations": [
+    {
+      "case_id": "BHARTIARTL-2026-11-08",
+      "citations": [
+        "POL-72",
+        "POL-74",
+        "POL-64",
+        "POL-10",
+        "POL-66"
+      ],
+      "config": "C0",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 5.082,
+      "llm_calls": 0,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": null
+    },
+    {
+      "case_id": "BHARTIARTL-2026-11-08",
+      "citations": [],
+      "config": "C1",
+      "date": null,
+      "guard_pass": false,
+      "latency_s": 35.44,
+      "llm_calls": 3,
+      "model_errors": [
+        "STRATEGY_ROUTE_CONFLICT: Strategy conflicts with code"
+      ],
+      "selected_strategy": "NONE",
+      "symbol": null,
+      "tool_calls": 5
+    },
+    {
+      "case_id": "BHARTIARTL-2026-11-08",
+      "citations": [],
+      "config": "C2",
+      "date": null,
+      "guard_pass": false,
+      "latency_s": 29.966,
+      "llm_calls": 3,
+      "model_errors": [
+        "COMPANY_ASSESSMENT_BLOCKED: Market company assessment is REVIEW_REQUIRED; ENTRY is not eligible. No further specialists were called."
+      ],
+      "selected_strategy": "NONE",
+      "symbol": null,
+      "tool_calls": 3
+    },
+    {
+      "case_id": "LT-2026-11-08",
+      "citations": [
+        "POL-72",
+        "POL-74",
+        "POL-64",
+        "POL-10",
+        "POL-66"
+      ],
+      "config": "C0",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 0.302,
+      "llm_calls": 0,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": null
+    },
+    {
+      "case_id": "LT-2026-11-08",
+      "citations": [
+        "POL-72",
+        "POL-16",
+        "POL-60"
+      ],
+      "config": "C1",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 27.74,
+      "llm_calls": 2,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": 4
+    },
+    {
+      "case_id": "LT-2026-11-08",
+      "citations": [
+        "POL-21",
+        "POL-25",
+        "POL-72"
+      ],
+      "config": "C2",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 63.819,
+      "llm_calls": 6,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": 7
+    },
+    {
+      "case_id": "TCS-2026-11-08",
+      "citations": [
+        "POL-72",
+        "POL-74",
+        "POL-64",
+        "POL-10",
+        "POL-66"
+      ],
+      "config": "C0",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 0.322,
+      "llm_calls": 0,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": null
+    },
+    {
+      "case_id": "TCS-2026-11-08",
+      "citations": [
+        "POL-72",
+        "POL-16",
+        "POL-76"
+      ],
+      "config": "C1",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 40.576,
+      "llm_calls": 3,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": 5
+    },
+    {
+      "case_id": "TCS-2026-11-08",
+      "citations": [
+        "POL-21",
+        "POL-25",
+        "POL-72"
+      ],
+      "config": "C2",
+      "date": null,
+      "guard_pass": true,
+      "latency_s": 70.951,
+      "llm_calls": 7,
+      "model_errors": [],
+      "selected_strategy": "EMA_TREND",
+      "symbol": null,
+      "tool_calls": 7
+    }
+  ],
+  "created_utc": "2026-11-15T05:08:11.419909+00:00",
+  "inference": {
+    "adapter_version": "codex-intent-v1",
+    "backend": "codex_cli",
+    "budget_unit": "cli_invocations",
+    "model": "codex-default"
+  },
+  "knowledge_corpus": {
+    "external_reference_passages": 9,
+    "passages": 86,
+    "project_policy_passages": 77,
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required.",
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "sha256": "b018426df44934256fd29a097184fc40445ca3e98c707e8ff527d69755d20d2a",
+    "source_count": 51
+  },
+  "limitations": [
+    "This is an earlier three-case development run, not independently reviewed held-out evidence.",
+    "C0 agreement is deterministic self-agreement, not proof that C0 is higher quality than C1/C2.",
+    "One model error occurred in both C1 and C2 and must remain visible."
+  ],
+  "prompt_version": "2026-11-13-dated-issuer-library-ocr-v15",
+  "run_id": "026512e1f9054db09011c4e9e611ef8d",
+  "settings": {
+    "automatic_stock_selection": true,
+    "cases": 3,
+    "configuration": "ALL",
+    "consent_to_paid_calls": true,
+    "dataset_split": "development",
+    "end_date": "2026-11-08",
+    "max_output_tokens_per_case": 3600,
+    "reference_capital": 200000.0,
+    "research_purpose": "ENTRY",
+    "selection_run_id": null,
+    "start_date": "2021-11-08",
+    "use_memory": false
+  },
+  "status": "COMPLETED",
+  "summary": [
+    {
+      "budget_unit": "none",
+      "cases": 3,
+      "config": "C0",
+      "cost_reporting_complete": false,
+      "guard_pass_count": 3,
+      "mean_latency_s": 1.902,
+      "median_latency_s": 0.322,
+      "model_calls": 0,
+      "model_error_count": 0,
+      "p95_latency_s": 5.082,
+      "policy_violation_count": 0,
+      "reported_cost_usd": null,
+      "task_success_count": 3,
+      "task_success_pct": 100.0,
+      "total_tokens_reported": 0
+    },
+    {
+      "budget_unit": "cli_invocations",
+      "cases": 3,
+      "config": "C1",
+      "cost_reporting_complete": false,
+      "guard_pass_count": 2,
+      "mean_latency_s": 34.585,
+      "median_latency_s": 35.44,
+      "model_calls": 8,
+      "model_error_count": 1,
+      "p95_latency_s": 40.576,
+      "policy_violation_count": 0,
+      "reported_cost_usd": null,
+      "task_success_count": 2,
+      "task_success_pct": 66.67,
+      "total_tokens_reported": 111152
+    },
+    {
+      "budget_unit": "cli_invocations",
+      "cases": 3,
+      "config": "C2",
+      "cost_reporting_complete": false,
+      "guard_pass_count": 2,
+      "mean_latency_s": 54.912,
+      "median_latency_s": 63.819,
+      "model_calls": 16,
+      "model_error_count": 1,
+      "p95_latency_s": 70.951,
+      "policy_violation_count": 0,
+      "reported_cost_usd": null,
+      "task_success_count": 2,
+      "task_success_pct": 66.67,
+      "total_tokens_reported": 182760
+    }
+  ]
+}

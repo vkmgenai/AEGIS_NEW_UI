@@ -140,7 +140,6 @@ def test_ui_portfolio_draft_review_freeze_and_select_without_inference(tmp_path,
     next(x for x in at.button if x.label=='Freeze portfolio lesson version').click().run()
     assert len(mem.list_versions())==1 and not at.exception
     at.selectbox(key='aegis_workspace').select('Strategy Backtests').run()
-    at.button(key='strategy_tile_portfolio').click().run()
     select=next(x for x in at.selectbox if x.label=='Frozen portfolio lesson version')
     assert len(select.options)==2
     select.select(select.options[1]).run()

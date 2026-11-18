@@ -1,0 +1,31 @@
+{
+  "version": "0.20.0",
+  "date": "2026-11-12",
+  "software_tests": {
+    "passed": 215,
+    "failed": 0
+  },
+  "live_universe_selector": "verified read-only for all three profiles",
+  "model_calls_started_for_change": 0,
+  "existing_files_unchanged": {
+    "data/nse_nifty20/manifest.json": true,
+    "data/nse_nifty20/ohlcv.csv": true,
+    "data/market_config.json": true
+  },
+  "research30": {
+    "ready": true,
+    "stocks": 30,
+    "rows": 39870,
+    "sha256": "7bf348bee9d6b67852b5ee148d6b5b6431fdbd107793e736b3ad676d12c6404a",
+    "reused_stocks": 14
+  },
+  "nifty100_preparation": "PREPARING",
+  "active_universe": "nifty20",
+  "historical_saved_run_fingerprints_verified": 8,
+  "selection_limitations": [
+    "current-member snapshot survivorship bias",
+    "curated event-case selection bias",
+    "unadjusted corporate actions",
+    "shorter listing histories retained and disclosed"
+  ]
+}

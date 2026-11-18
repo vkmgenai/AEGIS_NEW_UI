@@ -1,0 +1,179 @@
+{
+  "generation": "GENUINE Codex CLI using existing ChatGPT login; no mocked generation",
+  "run_id": "290874d24eeb498b868949c2796b3424",
+  "case_id": "HINDUNILVR-2023-03-31",
+  "inference": {
+    "backend": "codex_cli",
+    "model": "codex-default",
+    "budget_unit": "cli_invocations",
+    "adapter_version": "codex-intent-v1"
+  },
+  "summary": [
+    {
+      "config": "C2",
+      "cases": 1,
+      "guard_pass_count": 1,
+      "model_error_count": 0,
+      "model_calls": 7,
+      "total_tokens_reported": 59069,
+      "reported_cost_usd": null,
+      "cost_reporting_complete": false,
+      "mean_latency_s": 66.433
+    }
+  ],
+  "guard_pass": true,
+  "research_gate_pass": true,
+  "tool_transport": "mcp",
+  "tools_observed": [
+    "check_strategy",
+    "company_evidence",
+    "market_snapshot",
+    "search_policy"
+  ],
+  "tool_calls": 7,
+  "errors": [],
+  "usage": [
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 7594,
+      "output_tokens": 44,
+      "total_tokens": 7638,
+      "resolved_models": [],
+      "latency_s": 6.617
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 8405,
+      "output_tokens": 410,
+      "total_tokens": 8815,
+      "resolved_models": [],
+      "latency_s": 12.871
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 6964,
+      "output_tokens": 69,
+      "total_tokens": 7033,
+      "resolved_models": [],
+      "latency_s": 5.939
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 8326,
+      "output_tokens": 187,
+      "total_tokens": 8513,
+      "resolved_models": [],
+      "latency_s": 8.894
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 8546,
+      "output_tokens": 235,
+      "total_tokens": 8781,
+      "resolved_models": [],
+      "latency_s": 9.153
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 8091,
+      "output_tokens": 78,
+      "total_tokens": 8169,
+      "resolved_models": [],
+      "latency_s": 5.993
+    },
+    {
+      "backend": "codex_cli",
+      "model": "codex-default",
+      "cli_version": "codex-cli 0.164.0-alpha.11.1",
+      "cost": null,
+      "billing_basis": "ChatGPT plan allowance",
+      "budget_unit": "cli_invocations",
+      "provider_request_count": null,
+      "response_token_target": 600,
+      "hard_provider_token_cap": false,
+      "adapter_version": "codex-intent-v1",
+      "cli_turns_completed": 1,
+      "input_tokens": 10021,
+      "output_tokens": 99,
+      "total_tokens": 10120,
+      "resolved_models": [],
+      "latency_s": 8.373
+    }
+  ],
+  "company_assessment": {
+    "status": "SUFFICIENT",
+    "summary": "The readable January 19, 2023 financial filing reports results for the period ended December 31, 2022 (CMP-6b6495359ab91c2c). Extracted financial columns do not unambiguously establish units, periods and standalone/consolidated basis together, so numerical financial analysis is unavailable. A March 15, 2023 filing concerns trading-window closure associated with forthcoming March quarter/year-end results (CMP-a03ae83f72b1c9b1). These selected disclosures do not establish fair value or clean fundamentals.",
+    "citations": [
+      "CMP-6b6495359ab91c2c",
+      "CMP-a03ae83f72b1c9b1"
+    ],
+    "event_risks": [
+      "Forthcoming March quarter/year-end results create disclosure uncertainty; the trading-window notice alone does not establish a material adverse event."
+    ],
+    "limitations": [
+      "Selected official filings and issuer releases; not comprehensive press coverage.",
+      "PDF extraction is limited to the first 35 pages; financial figures are not independently normalized and table basis is ambiguous.",
+      "Archive retrieved later; exchange timestamps support historical availability but do not certify historical content versions."
+    ]
+  }
+}

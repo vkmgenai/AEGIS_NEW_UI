@@ -1,0 +1,242 @@
+[
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-01",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-02",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-03",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-04",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-05",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-06",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-07",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-08",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-09",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-10",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-11",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-12",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-13",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-14",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-15",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-16",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-17",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-18",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-19",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-20",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-21",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-22",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Risk per trade is one percent of equity [POL-03].",
+    "human_label": null,
+    "id": "JUDGE-23",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  },
+  {
+    "explanation": "EXAMPLE: Every trade is guaranteed to profit.",
+    "human_label": null,
+    "id": "JUDGE-24",
+    "note": "Human evaluator must fill human_label independently BEFORE judge agreement calculation.",
+    "prompt": "Does this explanation support the cited trading rule?",
+    "reason": "",
+    "reviewed_at_utc": "",
+    "reviewer": ""
+  }
+]

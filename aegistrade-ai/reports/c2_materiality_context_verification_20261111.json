@@ -1,0 +1,60 @@
+{
+  "version": "0.19.0",
+  "model_calls_external": 0,
+  "views_upgraded": 50,
+  "old_context_failure_cases_mocked": [
+    {
+      "symbol": "HINDALCO",
+      "date": "2023-12-04",
+      "max_context_chars": 17704,
+      "calls_mocked": 6,
+      "errors": []
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "date": "2023-12-05",
+      "max_context_chars": 23601,
+      "calls_mocked": 6,
+      "errors": []
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "date": "2023-12-06",
+      "max_context_chars": 25545,
+      "calls_mocked": 3,
+      "errors": [
+        "ADVERSE_SCAN_INCOMPLETE: Adverse disclosure coverage is incomplete"
+      ]
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "date": "2023-12-07",
+      "max_context_chars": 22519,
+      "calls_mocked": 6,
+      "errors": []
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "date": "2023-12-11",
+      "max_context_chars": 22517,
+      "calls_mocked": 6,
+      "errors": []
+    },
+    {
+      "symbol": "RELIANCE",
+      "date": "2023-12-26",
+      "max_context_chars": 19892,
+      "calls_mocked": 6,
+      "errors": []
+    },
+    {
+      "symbol": "RELIANCE",
+      "date": "2023-12-27",
+      "max_context_chars": 19890,
+      "calls_mocked": 6,
+      "errors": []
+    }
+  ],
+  "hdfc_nil_preserved": true,
+  "note": "Seven saved overflow cases replayed with explicitly mocked generation. One remains blocked for incomplete adverse scan, not context. No new profitability result."
+}

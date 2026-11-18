@@ -1,0 +1,51 @@
+{
+  "symbol": "ONGC",
+  "source": "Cached NSEPython OHLCV, unadjusted",
+  "dataset_sha256": "7bf348bee9d6b67852b5ee148d6b5b6431fdbd107793e736b3ad676d12c6404a",
+  "run_id": "ffa4db0d31ac45feb14f9a59bcede801",
+  "research_id": "6e9d98c408385d53d190875a807c25df",
+  "original_prompt_version": "2026-11-12-signal-specific-evidence-v10",
+  "signal": {
+    "date": "2025-01-08",
+    "close": 271.33,
+    "prior_20_high": 267.4,
+    "adx14": 34.901858926012714
+  },
+  "buy": {
+    "date": "2025-01-09",
+    "symbol": "ONGC",
+    "event": "BUY",
+    "quantity": 273,
+    "price": 272.30202999999995,
+    "fee": 37.16922709499999,
+    "initial_stop": 257.76349999999996,
+    "strategy": "BREAKOUT",
+    "realized_pnl": null,
+    "research_id": "6e9d98c408385d53d190875a807c25df",
+    "signal_date": "2025-01-08",
+    "original_signal_date": "2025-01-08"
+  },
+  "exit": {
+    "date": "2025-01-13",
+    "symbol": "ONGC",
+    "event": "SELL_STOP",
+    "quantity": 273,
+    "price": 257.50573649999995,
+    "fee": 35.14953303225,
+    "strategy": "BREAKOUT",
+    "realized_pnl": -4111.706885627252,
+    "initial_stop": 257.76349999999996,
+    "stop_price": 257.76349999999996,
+    "take_profit_reference": 289.21815449857064,
+    "entry_research_id": "6e9d98c408385d53d190875a807c25df",
+    "research_id": null,
+    "entry_date": "2025-01-09"
+  },
+  "exit_bar": {
+    "open": 266.03,
+    "low": 254.61,
+    "close": 255.73,
+    "ema20": 253.30175361582315
+  },
+  "note": "Actual saved trade. Stop exit preceded the strategy EMA exit; no replay, new approval, model call or retrospective performance change."
+}

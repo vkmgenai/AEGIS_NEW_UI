@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-11",
+  "action": "User-requested active history reset",
+  "archive": "/Users/karthikakrishnakumar/aegistrade-ai/data/history_archives/20261111_105802",
+  "archived_counts": {
+    "c2_portfolio_runs": {
+      "runs": 10,
+      "ledger_events": 14,
+      "open_holdings": 10,
+      "files": 71
+    },
+    "research_runs": {
+      "runs": 6,
+      "files": 6
+    },
+    "simulation_runs": {
+      "runs": 1,
+      "files": 1
+    }
+  },
+  "cleared_tables": {
+    "simulated_orders.sqlite": {
+      "approvals": 3,
+      "orders": 1,
+      "events": 6
+    },
+    "run_context.sqlite": {
+      "runs": 4
+    },
+    "graph_checkpoints.sqlite": {
+      "checkpoints": 38,
+      "writes": 158
+    }
+  },
+  "checks": {
+    "/simulation/c2/recent": {
+      "status": 200,
+      "records": 0
+    },
+    "/simulation/recent": {
+      "status": 200,
+      "records": 0
+    },
+    "/research/experiments/recent": {
+      "status": 200,
+      "records": 0
+    },
+    "/audit/events": {
+      "status": 200,
+      "records": 0
+    },
+    "archived_run_not_active": {
+      "status": 404
+    },
+    "simulated_orders.sqlite": {
+      "approvals": 0,
+      "orders": 0,
+      "events": 0
+    },
+    "run_context.sqlite": {
+      "runs": 0
+    },
+    "graph_checkpoints.sqlite": {
+      "checkpoints": 0,
+      "writes": 0
+    }
+  },
+  "protected_files_hash_checked": 143,
+  "API_version": "0.17.0",
+  "new_model_calls": 0,
+  "UI_check": {
+    "workspaces": [
+      "Strategy Backtests",
+      "AI Agent Experiments",
+      "Broker Audit"
+    ],
+    "exceptions": 0,
+    "retained_old_result_state": false,
+    "GET_requests_only": 14,
+    "simulations_started": 0,
+    "model_calls": 0
+  }
+}

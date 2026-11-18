@@ -1,0 +1,128 @@
+{
+  "version": "0.16.1",
+  "run_id": "5b766b7259a44113913eb31a207c1d2d",
+  "status": "PAUSED_USER",
+  "model_calls": 21,
+  "decisions": [
+    {
+      "id": "2889b8489a8924fcf09721b728d56d68",
+      "key": "2023-08-01:TMPV:ENTRY",
+      "date": "2023-08-01",
+      "symbol": "TMPV",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": null,
+      "citations": [],
+      "errors": [
+        "OUTPUT_SCHEMA_INVALID: company.summary must contain at most 600 characters (received 633)"
+      ],
+      "llm_calls": 3,
+      "recorded_errors": [
+        "BLOCK: ValidationError; invalid evidence, exhausted budget or provider failure"
+      ],
+      "failure": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "category": "SCHEMA",
+        "agent": "market",
+        "issues": [
+          {
+            "field": "company.summary",
+            "type": "string_too_long",
+            "message": "company.summary must contain at most 600 characters (received 633)"
+          }
+        ],
+        "message": "company.summary must contain at most 600 characters (received 633)",
+        "source": "saved_response_revalidation"
+      },
+      "failure_category": "SCHEMA"
+    },
+    {
+      "id": "5de73ded6769aff34a70d3340c2301f9",
+      "key": "2023-08-01:ICICIBANK:ENTRY",
+      "date": "2023-08-01",
+      "symbol": "ICICIBANK",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": null,
+      "citations": [],
+      "errors": [
+        "OUTPUT_SCHEMA_INVALID: company.summary must contain at most 600 characters (received 615)"
+      ],
+      "llm_calls": 3,
+      "recorded_errors": [
+        "BLOCK: ValidationError; invalid evidence, exhausted budget or provider failure"
+      ],
+      "failure": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "category": "SCHEMA",
+        "agent": "market",
+        "issues": [
+          {
+            "field": "company.summary",
+            "type": "string_too_long",
+            "message": "company.summary must contain at most 600 characters (received 615)"
+          }
+        ],
+        "message": "company.summary must contain at most 600 characters (received 615)",
+        "source": "saved_response_revalidation"
+      },
+      "failure_category": "SCHEMA"
+    },
+    {
+      "id": null,
+      "key": "2023-08-01:TATASTEEL:ENTRY",
+      "date": "2023-08-01",
+      "symbol": "TATASTEEL",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": null,
+      "citations": [],
+      "errors": [
+        "No readable financial results/annual filing within 180 days"
+      ],
+      "llm_calls": 0,
+      "failure_category": "EVIDENCE"
+    },
+    {
+      "id": "0c02ee6f695a8e97003e66a7d36bdbf6",
+      "key": "2023-08-01:BHARTIARTL:ENTRY",
+      "date": "2023-08-01",
+      "symbol": "BHARTIARTL",
+      "purpose": "ENTRY",
+      "action": "BLOCKED",
+      "guard_pass": false,
+      "explanation": "",
+      "company_assessment": null,
+      "citations": [],
+      "errors": [
+        "OUTPUT_SCHEMA_INVALID: company.summary must contain at most 600 characters (received 630)"
+      ],
+      "llm_calls": 3,
+      "recorded_errors": [
+        "BLOCK: ValidationError; invalid evidence, exhausted budget or provider failure"
+      ],
+      "failure": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "category": "SCHEMA",
+        "agent": "market",
+        "issues": [
+          {
+            "field": "company.summary",
+            "type": "string_too_long",
+            "message": "company.summary must contain at most 600 characters (received 630)"
+          }
+        ],
+        "message": "company.summary must contain at most 600 characters (received 630)",
+        "source": "saved_response_revalidation"
+      },
+      "failure_category": "SCHEMA"
+    }
+  ],
+  "stored_original_records_unchanged": true
+}

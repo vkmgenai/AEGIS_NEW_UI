@@ -1,0 +1,20 @@
+{
+  "version": "0.16.1",
+  "run_id": "5b766b7259a44113913eb31a207c1d2d",
+  "status": "PAUSED_USER",
+  "recorded_calls": 21,
+  "first_row_error": [
+    "OUTPUT_SCHEMA_INVALID: company.summary must contain at most 600 characters (received 633)"
+  ],
+  "categories": [
+    "SCHEMA",
+    "SCHEMA",
+    "EVIDENCE",
+    "SCHEMA"
+  ],
+  "new_prompt_version_notice_visible": true,
+  "specific_error_visible": true,
+  "UI_exceptions": 0,
+  "new_model_calls": 0,
+  "verification": "Streamlit AppTest against actual local HTTP; original records preserved"
+}

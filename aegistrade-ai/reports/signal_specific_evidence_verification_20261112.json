@@ -1,0 +1,50 @@
+{
+  "version": "0.22.0",
+  "date": "2026-11-12",
+  "tests": {
+    "passed": 256,
+    "failed": 0,
+    "generation": "mocked"
+  },
+  "verification_model_calls_started": 0,
+  "corpus": {
+    "passages": 81,
+    "sha256": "1c75312e42031b33406102a9d00ed057e02bfbe9ed6b1a32308116ede61e660f",
+    "project_policy_passages": 72,
+    "external_reference_passages": 9,
+    "source_count": 45,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "entry_policy": {
+    "trend_reversion": "Qualified technical signal may use LIMITED/COVERAGE_LIMITED after observed research; concrete unresolved adverse event remains blocking.",
+    "breakout": "Readable dated corroboration, source citations, breakout_support and supported adverse clearance required."
+  },
+  "exit_policy": "Cited ADVERSE_EVENT_FOUND or MATERIAL_ADVERSE holding assessment requires EXIT after independent critic and code checks; next eligible open, no forced terminal sale.",
+  "holding_watch": "Bounded official issuer metadata daily for NSE portfolios; empty checks use zero generation; new candidates trigger C2 between scheduled reviews.",
+  "evidence_fixes": [
+    "Currency marker boundaries and mandatory digit",
+    "Substantive subject/body context retained alongside risk windows",
+    "Routine trading-window notices excluded unless independently adverse"
+  ],
+  "cached_source_inspection": {
+    "case": "NTPC 2026-02-02",
+    "original_matched_documents": 5,
+    "routine_window_notices_excluded": 4,
+    "observed_result": "Substantive board and trading-window disclosure bodies visible; address fragments no longer selected as amounts. No new financial/adverse model conclusion generated."
+  },
+  "limitations": [
+    "No live inference replay or improved profitability claim",
+    "Coverage exception accepts residual evidence risk",
+    "Selling on small adverse events can increase fees/churn",
+    "Official daily metadata check is not comprehensive independent news",
+    "Old research fingerprints cannot resume under changed policy"
+  ],
+  "activation": {
+    "api_version": "0.22.0",
+    "universe": "research30",
+    "stocks": 30,
+    "saved_runs_preserved": 4,
+    "generation_calls": 0
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "version": "0.16.2",
+  "ui_api_contract": 1,
+  "workspace": "Strategy Backtests",
+  "blocked_by_patch_version": false,
+  "UI_exceptions": 0,
+  "new_model_calls": 0
+}

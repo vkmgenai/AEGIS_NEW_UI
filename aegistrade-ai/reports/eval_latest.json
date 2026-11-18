@@ -1,0 +1,37 @@
+{
+  "intentional_failure_demo": false,
+  "run_type": "synthetic_reference_checks",
+  "split": "both",
+  "case_results": {
+    "count": 60,
+    "correct": 60,
+    "accuracy": 1.0,
+    "errors": []
+  },
+  "retrieval_before": {
+    "queries": 36,
+    "hit_at_5": 0.6944,
+    "recall_at_5": 0.6944
+  },
+  "retrieval_after": {
+    "queries": 36,
+    "hit_at_5": 0.75,
+    "recall_at_5": 0.75
+  },
+  "retrieval_mode": "offline",
+  "security": {
+    "attacks": 32,
+    "scanner_detection_rate": 0.938,
+    "model_attack_success_rate": null,
+    "false_blocks": 0,
+    "clean_total": 10,
+    "warning": "Deterministic prompt-scan proxy; not a real LLM jailbreak success rate."
+  },
+  "limitations": [
+    "Labels generated as candidate references; require independent team review",
+    "Retrieval labels author-assigned; neural mode must be run for full course bar",
+    "No measured multi-agent vs single-agent LLM outcomes in this report",
+    "No human-labelled judge Cohen kappa yet",
+    "Red team guard result is a scanner proxy, not live model attack success"
+  ]
+}

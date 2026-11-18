@@ -1,0 +1,10 @@
+# Opt-in neural retrieval: docker compose -f docker-compose.yml -f docker-compose.neural.yml up --build
+services:
+  api:
+    environment:
+      AEGIS_RETRIEVAL_MODE: neural
+      AEGIS_QDRANT_URL: http://qdrant:6333
+  knowledge-mcp:
+    environment:
+      AEGIS_RETRIEVAL_MODE: neural
+      AEGIS_QDRANT_URL: http://qdrant:6333

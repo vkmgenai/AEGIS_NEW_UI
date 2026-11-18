@@ -1,0 +1,289 @@
+{
+  "version": "0.21.1",
+  "date": "2026-11-12",
+  "tests": {
+    "passed": 243,
+    "failed": 0,
+    "model_responses": "mocked"
+  },
+  "actual_model_calls_started_for_verification": 0,
+  "root_cause": "Company pack duplicated across company_evidence and search_dated_web, plus legitimate critic context slightly above prior guard.",
+  "context_limit": {
+    "old": 26000,
+    "new": 36000,
+    "unit": "serialized conversation characters, not provider tokens"
+  },
+  "evidence_packing": {
+    "method": "Per-specialist full first projection, then explicit JSON Pointer updates when smaller",
+    "verification": "Reconstruct every update exactly before inference; retain complete tool audit; independent critic receives its own first full projection",
+    "does_not": "Trim financial text, hide adverse risk, clear UNKNOWN, alter strategy or authorize orders"
+  },
+  "cached_failure_projection_check": {
+    "cases": 28,
+    "largest_estimated_repacked_characters": 27648,
+    "qualification": "Estimated from original recorded conversation size minus exact projection savings; current prompt/wrapper overhead can differ. This is not a live inference replay or evidence that the trades should pass.",
+    "cases_details": [
+      {
+        "symbol": "NTPC",
+        "date": "2026-01-06",
+        "agent": "market",
+        "original_characters": 32588,
+        "repeated_projection_characters_saved": 10687,
+        "estimated_repacked_characters": 21901,
+        "source_record": "44b0249289af314a368f47f7e2a74b14.json"
+      },
+      {
+        "symbol": "HINDALCO",
+        "date": "2026-01-13",
+        "agent": "market",
+        "original_characters": 36621,
+        "repeated_projection_characters_saved": 12646,
+        "estimated_repacked_characters": 23975,
+        "source_record": "792b6857f9b46654688132d2fc592517.json"
+      },
+      {
+        "symbol": "SBIN",
+        "date": "2026-01-07",
+        "agent": "market",
+        "original_characters": 27765,
+        "repeated_projection_characters_saved": 9342,
+        "estimated_repacked_characters": 18423,
+        "source_record": "a1c00a770339884d92edee3316a2bcd6.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-06",
+        "agent": "market",
+        "original_characters": 33007,
+        "repeated_projection_characters_saved": 10838,
+        "estimated_repacked_characters": 22169,
+        "source_record": "b6f05ff9c38775e4c3e47c749a483df7.json"
+      },
+      {
+        "symbol": "HINDALCO",
+        "date": "2026-01-07",
+        "agent": "market",
+        "original_characters": 37308,
+        "repeated_projection_characters_saved": 13901,
+        "estimated_repacked_characters": 23407,
+        "source_record": "8c691c607d95d9094e540cb677d72908.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-13",
+        "agent": "market",
+        "original_characters": 29887,
+        "repeated_projection_characters_saved": 9341,
+        "estimated_repacked_characters": 20546,
+        "source_record": "249c6e173c12c0b103586da6a62fec61.json"
+      },
+      {
+        "symbol": "SBIN",
+        "date": "2026-01-12",
+        "agent": "market",
+        "original_characters": 27971,
+        "repeated_projection_characters_saved": 8531,
+        "estimated_repacked_characters": 19440,
+        "source_record": "0117b9c38eafacc99181ec8af8a6a515.json"
+      },
+      {
+        "symbol": "HINDALCO",
+        "date": "2026-01-12",
+        "agent": "market",
+        "original_characters": 36621,
+        "repeated_projection_characters_saved": 12646,
+        "estimated_repacked_characters": 23975,
+        "source_record": "800548ce872db79a3dc5c2f49a49d353.json"
+      },
+      {
+        "symbol": "ICICIBANK",
+        "date": "2026-01-13",
+        "agent": "market",
+        "original_characters": 28354,
+        "repeated_projection_characters_saved": 8691,
+        "estimated_repacked_characters": 19663,
+        "source_record": "325172c6f9c6363c104ff337c4edc0e0.json"
+      },
+      {
+        "symbol": "SBIN",
+        "date": "2026-01-05",
+        "agent": "market",
+        "original_characters": 27766,
+        "repeated_projection_characters_saved": 9342,
+        "estimated_repacked_characters": 18424,
+        "source_record": "72001fec01511b5fc3ac04e081bb2253.json"
+      },
+      {
+        "symbol": "TITAN",
+        "date": "2026-01-07",
+        "agent": "critic",
+        "original_characters": 26852,
+        "repeated_projection_characters_saved": 0,
+        "estimated_repacked_characters": 26852,
+        "source_record": "cbae8fa070491e52905fe82ac3421798.json"
+      },
+      {
+        "symbol": "TITAN",
+        "date": "2026-01-08",
+        "agent": "market",
+        "original_characters": 30643,
+        "repeated_projection_characters_saved": 9785,
+        "estimated_repacked_characters": 20858,
+        "source_record": "cbc3b961c0c2800bc0fdecda9dc2683c.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-07",
+        "agent": "market",
+        "original_characters": 33060,
+        "repeated_projection_characters_saved": 10869,
+        "estimated_repacked_characters": 22191,
+        "source_record": "e50013aa341f01a910de4ca987574f86.json"
+      },
+      {
+        "symbol": "TITAN",
+        "date": "2026-01-13",
+        "agent": "market",
+        "original_characters": 30800,
+        "repeated_projection_characters_saved": 9867,
+        "estimated_repacked_characters": 20933,
+        "source_record": "d9035db239ba83f01cd2f79643fda78b.json"
+      },
+      {
+        "symbol": "MARUTI",
+        "date": "2026-01-06",
+        "agent": "market",
+        "original_characters": 31527,
+        "repeated_projection_characters_saved": 11106,
+        "estimated_repacked_characters": 20421,
+        "source_record": "fe3bcb34e79955a05373ad1d795fa3c2.json"
+      },
+      {
+        "symbol": "HINDALCO",
+        "date": "2026-01-19",
+        "agent": "market",
+        "original_characters": 35450,
+        "repeated_projection_characters_saved": 12099,
+        "estimated_repacked_characters": 23351,
+        "source_record": "40bdb2b5df17983c95a1fd66ef3faa8d.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-12",
+        "agent": "critic",
+        "original_characters": 27648,
+        "repeated_projection_characters_saved": 0,
+        "estimated_repacked_characters": 27648,
+        "source_record": "9ed2cd6284584fe3ad794f2be886c7c0.json"
+      },
+      {
+        "symbol": "TATASTEEL",
+        "date": "2026-01-08",
+        "agent": "market",
+        "original_characters": 43689,
+        "repeated_projection_characters_saved": 16523,
+        "estimated_repacked_characters": 27166,
+        "source_record": "1d322adb1125c8bba71017f94e868f09.json"
+      },
+      {
+        "symbol": "TITAN",
+        "date": "2026-01-12",
+        "agent": "market",
+        "original_characters": 30642,
+        "repeated_projection_characters_saved": 9785,
+        "estimated_repacked_characters": 20857,
+        "source_record": "ff41e6c95a4d8ab28e6f55b6f91e17ea.json"
+      },
+      {
+        "symbol": "HINDALCO",
+        "date": "2026-01-08",
+        "agent": "market",
+        "original_characters": 36622,
+        "repeated_projection_characters_saved": 12646,
+        "estimated_repacked_characters": 23976,
+        "source_record": "3d6cc014cbfe65485ab51a53ce408549.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-08",
+        "agent": "market",
+        "original_characters": 33058,
+        "repeated_projection_characters_saved": 10869,
+        "estimated_repacked_characters": 22189,
+        "source_record": "19524437d68c4746e047bb79c44b63c3.json"
+      },
+      {
+        "symbol": "NTPC",
+        "date": "2026-01-05",
+        "agent": "market",
+        "original_characters": 32585,
+        "repeated_projection_characters_saved": 10687,
+        "estimated_repacked_characters": 21898,
+        "source_record": "c06fe6b91b7ace18056890bc9f60138e.json"
+      },
+      {
+        "symbol": "INFY",
+        "date": "2026-01-01",
+        "agent": "market",
+        "original_characters": 31513,
+        "repeated_projection_characters_saved": 11146,
+        "estimated_repacked_characters": 20367,
+        "source_record": "bc0686d0dcc9cbdc3c0dfd1d1a8a0afd.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-01",
+        "agent": "market",
+        "original_characters": 29421,
+        "repeated_projection_characters_saved": 9139,
+        "estimated_repacked_characters": 20282,
+        "source_record": "2b529a669dbdf2f7a9814fabec5e79f8.json"
+      },
+      {
+        "symbol": "SBIN",
+        "date": "2026-01-01",
+        "agent": "market",
+        "original_characters": 27766,
+        "repeated_projection_characters_saved": 9342,
+        "estimated_repacked_characters": 18424,
+        "source_record": "68740eb7af00b2e0da62b3a6bd98c099.json"
+      },
+      {
+        "symbol": "TATASTEEL",
+        "date": "2026-01-06",
+        "agent": "market",
+        "original_characters": 44085,
+        "repeated_projection_characters_saved": 17634,
+        "estimated_repacked_characters": 26451,
+        "source_record": "72239b0f1ed51644eb93a99bc4d8b46f.json"
+      },
+      {
+        "symbol": "TATASTEEL",
+        "date": "2026-01-05",
+        "agent": "market",
+        "original_characters": 44092,
+        "repeated_projection_characters_saved": 17634,
+        "estimated_repacked_characters": 26458,
+        "source_record": "0d5c63b2bd1587619fe7e4e845f1fba0.json"
+      },
+      {
+        "symbol": "COALINDIA",
+        "date": "2026-01-05",
+        "agent": "market",
+        "original_characters": 33010,
+        "repeated_projection_characters_saved": 10838,
+        "estimated_repacked_characters": 22172,
+        "source_record": "748d149bbbfcd1006141bd0844be7cdc.json"
+      }
+    ]
+  },
+  "run_handling": "Existing active run paused at safe boundary; historical outcomes untouched; new run required because prompt fingerprint changed.",
+  "activation": {
+    "version": "0.21.1",
+    "context_limit": 36000,
+    "company_packing": "lossless-json-pointer-v1",
+    "preserved_universe": "research30",
+    "original_run": "PAUSED_USER",
+    "verification_generation_calls": 0
+  }
+}

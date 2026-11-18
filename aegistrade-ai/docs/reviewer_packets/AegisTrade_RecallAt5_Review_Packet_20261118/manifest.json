@@ -1,0 +1,15 @@
+{
+  "assignment": {
+    "Karthika": 12,
+    "Mathangi": 12,
+    "Vineet": 12
+  },
+  "blinding": "Author-suggested relevant_ids and retrieval rankings are withheld.",
+  "corpus_passages": 87,
+  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+  "generated_at_utc": "2026-11-18T00:33:05.306311+00:00",
+  "query_count": 36,
+  "schema": "aegistrade-retrieval-review-v1",
+  "source_query_file_sha256": "552eb019043545e3ee5b5bbbd2f24c903b40ded7080d884c9c75a2ee04b5e201",
+  "status": "PENDING_INDEPENDENT_REVIEW"
+}

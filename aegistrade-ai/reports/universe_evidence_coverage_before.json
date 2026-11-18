@@ -1,0 +1,5435 @@
+{
+  "stage": "before",
+  "generated_utc": "2026-11-13T03:58:02.845995+00:00",
+  "universes": {
+    "nifty20": [
+      "TMPV",
+      "RELIANCE",
+      "TATASTEEL",
+      "BHARTIARTL",
+      "INFY",
+      "TCS",
+      "SBIN",
+      "HDFCBANK",
+      "BAJFINANCE",
+      "ICICIBANK",
+      "KOTAKBANK",
+      "AXISBANK",
+      "HCLTECH",
+      "ITC",
+      "BAJAJFINSV",
+      "MARUTI",
+      "TECHM",
+      "HINDALCO",
+      "ADANIENT",
+      "HINDUNILVR"
+    ],
+    "nifty100": [
+      "ABB",
+      "ADANIENSOL",
+      "ADANIENT",
+      "ADANIGREEN",
+      "ADANIPORTS",
+      "ADANIPOWER",
+      "AMBUJACEM",
+      "APOLLOHOSP",
+      "ASIANPAINT",
+      "DMART",
+      "AXISBANK",
+      "BSE",
+      "BAJAJ-AUTO",
+      "BAJFINANCE",
+      "BAJAJFINSV",
+      "BAJAJHLDNG",
+      "BANKBARODA",
+      "BEL",
+      "BPCL",
+      "BHARTIARTL",
+      "BOSCHLTD",
+      "BRITANNIA",
+      "CGPOWER",
+      "CANBK",
+      "CHOLAFIN",
+      "CIPLA",
+      "COALINDIA",
+      "CUMMINSIND",
+      "DLF",
+      "DIVISLAB",
+      "DRREDDY",
+      "EICHERMOT",
+      "ETERNAL",
+      "GAIL",
+      "GODREJCP",
+      "GRASIM",
+      "HCLTECH",
+      "HDFCAMC",
+      "HDFCBANK",
+      "HDFCLIFE",
+      "HINDALCO",
+      "HAL",
+      "HINDUNILVR",
+      "HINDZINC",
+      "POWERINDIA",
+      "HYUNDAI",
+      "ICICIBANK",
+      "ITC",
+      "IOC",
+      "IRFC",
+      "INFY",
+      "INDIGO",
+      "JSWSTEEL",
+      "JINDALSTEL",
+      "JIOFIN",
+      "KOTAKBANK",
+      "LTM",
+      "LT",
+      "M&M",
+      "MARUTI",
+      "MAXHEALTH",
+      "MAZDOCK",
+      "MUTHOOTFIN",
+      "NTPC",
+      "NESTLEIND",
+      "ONGC",
+      "PIDILITIND",
+      "POLYCAB",
+      "PFC",
+      "POWERGRID",
+      "PNB",
+      "RELIANCE",
+      "SBILIFE",
+      "MOTHERSON",
+      "SHRIRAMFIN",
+      "ENRIN",
+      "SIEMENS",
+      "SOLARINDS",
+      "SBIN",
+      "SUNPHARMA",
+      "TVSMOTOR",
+      "TATACAP",
+      "TCS",
+      "TATACONSUM",
+      "TMCV",
+      "TMPV",
+      "TATAPOWER",
+      "TATASTEEL",
+      "TECHM",
+      "TITAN",
+      "TORNTPHARM",
+      "TRENT",
+      "ULTRACEMCO",
+      "UNIONBANK",
+      "VBL",
+      "VAML",
+      "VEDL",
+      "IDEA",
+      "WIPRO",
+      "ZYDUSLIFE"
+    ],
+    "research30": [
+      "HDFCBANK",
+      "ICICIBANK",
+      "SBIN",
+      "BAJFINANCE",
+      "TCS",
+      "INFY",
+      "HCLTECH",
+      "HINDUNILVR",
+      "ITC",
+      "DABUR",
+      "TITAN",
+      "SUNPHARMA",
+      "CIPLA",
+      "DRREDDY",
+      "LT",
+      "BHARTIARTL",
+      "RELIANCE",
+      "MARUTI",
+      "M&M",
+      "NTPC",
+      "POWERGRID",
+      "TATASTEEL",
+      "HINDALCO",
+      "JSWSTEEL",
+      "ONGC",
+      "COALINDIA",
+      "INDIGO",
+      "YESBANK",
+      "IDEA",
+      "ZEEL"
+    ]
+  },
+  "unique_stocks": 103,
+  "totals": {
+    "existing_packs": 509,
+    "packs_financial_ready": 466,
+    "packs_adverse_ready": 149,
+    "metadata_rows": 77931,
+    "selected_documents": 1058,
+    "readable_documents": 1013,
+    "financial_documents": 535,
+    "ocr_documents": 95,
+    "unavailable_documents": 45,
+    "evaluated_trading_sessions": 122029,
+    "sessions_with_recent_downloaded_financial": 31390
+  },
+  "stocks": [
+    {
+      "symbol": "TMPV",
+      "existing_packs": 34,
+      "packs_financial_ready": 34,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2024-01-10",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-08-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-02-21",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-12-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-17",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-16",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-26",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-02-08",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-23",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-02",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-15",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-02-28",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-18",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-13",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-24",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-18",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-08",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 123,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "RELIANCE",
+      "existing_packs": 28,
+      "packs_financial_ready": 27,
+      "packs_adverse_ready": 11,
+      "pack_gaps": [
+        {
+          "date": "2024-01-25",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-23",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-09",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "INCOMPLETE_METADATA"
+          ]
+        },
+        {
+          "date": "2024-01-24",
+          "reasons": [
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-04",
+          "reasons": [
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-09",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-03",
+          "reasons": [
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-17",
+          "reasons": [
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-26",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-24",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-10",
+          "reasons": [
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-16",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 1770,
+      "failed_metadata_windows": 0,
+      "selected_documents": 48,
+      "readable_documents": 48,
+      "financial_documents": 21,
+      "ocr_documents": 5,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1179,
+      "financial_coverage_pct": 94.93,
+      "financial_gap_date_examples": [
+        "2022-07-21",
+        "2022-07-22",
+        "2022-07-25",
+        "2022-07-26",
+        "2022-07-27",
+        "2022-07-28",
+        "2022-07-29",
+        "2022-08-01",
+        "2022-08-02",
+        "2022-08-03"
+      ]
+    },
+    {
+      "symbol": "TATASTEEL",
+      "existing_packs": 22,
+      "packs_financial_ready": 19,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2026-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-06",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-21",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2022-01-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-20",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-08-01",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-08-02",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2022-01-31",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-09",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-02-05",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-08-03",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-22",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-29",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-08",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 1666,
+      "failed_metadata_windows": 0,
+      "selected_documents": 43,
+      "readable_documents": 41,
+      "financial_documents": 19,
+      "ocr_documents": 0,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1175,
+      "financial_coverage_pct": 94.61,
+      "financial_gap_date_examples": [
+        "2022-11-07",
+        "2022-11-09",
+        "2022-11-10",
+        "2022-11-11",
+        "2022-11-14",
+        "2022-11-15",
+        "2022-11-16",
+        "2022-11-17",
+        "2022-11-18",
+        "2022-11-21"
+      ]
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "existing_packs": 28,
+      "packs_financial_ready": 28,
+      "packs_adverse_ready": 8,
+      "pack_gaps": [
+        {
+          "date": "2024-02-12",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-18",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-23",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-15",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-29",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-08",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-19",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-25",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-12-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-08-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-06",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-26",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 1342,
+      "failed_metadata_windows": 0,
+      "selected_documents": 51,
+      "readable_documents": 51,
+      "financial_documents": 23,
+      "ocr_documents": 3,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1242,
+      "financial_coverage_pct": 100.0,
+      "financial_gap_date_examples": []
+    },
+    {
+      "symbol": "INFY",
+      "existing_packs": 11,
+      "packs_financial_ready": 10,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2022-01-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-10",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-10-23",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-15",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 1234,
+      "failed_metadata_windows": 0,
+      "selected_documents": 38,
+      "readable_documents": 30,
+      "financial_documents": 17,
+      "ocr_documents": 1,
+      "unavailable_documents": 8,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1153,
+      "financial_coverage_pct": 92.83,
+      "financial_gap_date_examples": [
+        "2023-07-13",
+        "2023-07-14",
+        "2023-07-17",
+        "2023-07-18",
+        "2023-07-19",
+        "2023-07-20",
+        "2024-07-10",
+        "2024-07-11",
+        "2024-07-12",
+        "2024-07-15"
+      ]
+    },
+    {
+      "symbol": "TCS",
+      "existing_packs": 18,
+      "packs_financial_ready": 18,
+      "packs_adverse_ready": 2,
+      "pack_gaps": [
+        {
+          "date": "2021-12-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-10",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-10-23",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2022-01-17",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-22",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2022-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-18",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-26",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1338,
+      "failed_metadata_windows": 0,
+      "selected_documents": 45,
+      "readable_documents": 45,
+      "financial_documents": 20,
+      "ocr_documents": 2,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1237,
+      "financial_coverage_pct": 99.6,
+      "financial_gap_date_examples": [
+        "2023-01-05",
+        "2023-01-06",
+        "2023-01-09",
+        "2025-07-09",
+        "2025-07-10"
+      ]
+    },
+    {
+      "symbol": "SBIN",
+      "existing_packs": 45,
+      "packs_financial_ready": 45,
+      "packs_adverse_ready": 5,
+      "pack_gaps": [
+        {
+          "date": "2026-01-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-26",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-10",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-31",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-29",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-22",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-18",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1319,
+      "failed_metadata_windows": 0,
+      "selected_documents": 47,
+      "readable_documents": 44,
+      "financial_documents": 24,
+      "ocr_documents": 5,
+      "unavailable_documents": 3,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1238,
+      "financial_coverage_pct": 99.68,
+      "financial_gap_date_examples": [
+        "2023-02-02",
+        "2023-02-03",
+        "2023-02-06",
+        "2023-02-07"
+      ]
+    },
+    {
+      "symbol": "HDFCBANK",
+      "existing_packs": 23,
+      "packs_financial_ready": 2,
+      "packs_adverse_ready": 4,
+      "pack_gaps": [
+        {
+          "date": "2023-12-13",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-29",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-02-22",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2024-01-04",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-28",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-04",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-12",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-02",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2023-12-19",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-15",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-14",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-22",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-18",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-26",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2026-01-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-01",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2023-12-20",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-07",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-11",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-27",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-26",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-12-16",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-06",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1020,
+      "failed_metadata_windows": 0,
+      "selected_documents": 19,
+      "readable_documents": 19,
+      "financial_documents": 18,
+      "ocr_documents": 10,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1177,
+      "financial_coverage_pct": 94.77,
+      "financial_gap_date_examples": [
+        "2022-10-13",
+        "2022-10-14",
+        "2022-10-17",
+        "2022-10-18",
+        "2022-10-19",
+        "2022-10-20",
+        "2022-10-21",
+        "2022-10-24",
+        "2022-10-25",
+        "2022-10-27"
+      ]
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "existing_packs": 24,
+      "packs_financial_ready": 24,
+      "packs_adverse_ready": 14,
+      "pack_gaps": [
+        {
+          "date": "2021-12-15",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-26",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-23",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 648,
+      "failed_metadata_windows": 0,
+      "selected_documents": 28,
+      "readable_documents": 24,
+      "financial_documents": 19,
+      "ocr_documents": 1,
+      "unavailable_documents": 4,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1173,
+      "financial_coverage_pct": 94.44,
+      "financial_gap_date_examples": [
+        "2022-10-24",
+        "2022-10-25",
+        "2022-10-27",
+        "2022-10-28",
+        "2022-10-31",
+        "2022-11-01",
+        "2022-11-02",
+        "2022-11-03",
+        "2022-11-04",
+        "2022-11-07"
+      ]
+    },
+    {
+      "symbol": "ICICIBANK",
+      "existing_packs": 34,
+      "packs_financial_ready": 34,
+      "packs_adverse_ready": 5,
+      "pack_gaps": [
+        {
+          "date": "2023-08-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2022-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-16",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-10",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-29",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-29",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-18",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-08-02",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 2223,
+      "failed_metadata_windows": 0,
+      "selected_documents": 33,
+      "readable_documents": 32,
+      "financial_documents": 22,
+      "ocr_documents": 7,
+      "unavailable_documents": 1,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1241,
+      "financial_coverage_pct": 99.92,
+      "financial_gap_date_examples": [
+        "2025-07-24"
+      ]
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "existing_packs": 7,
+      "packs_financial_ready": 7,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2021-11-16",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-30",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-08-02",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 978,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "AXISBANK",
+      "existing_packs": 19,
+      "packs_financial_ready": 19,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2022-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-18",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-08",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1344,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HCLTECH",
+      "existing_packs": 7,
+      "packs_financial_ready": 7,
+      "packs_adverse_ready": 2,
+      "pack_gaps": [
+        {
+          "date": "2024-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-18",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2022-01-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1005,
+      "failed_metadata_windows": 0,
+      "selected_documents": 47,
+      "readable_documents": 45,
+      "financial_documents": 21,
+      "ocr_documents": 2,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1241,
+      "financial_coverage_pct": 99.92,
+      "financial_gap_date_examples": [
+        "2025-07-14"
+      ]
+    },
+    {
+      "symbol": "ITC",
+      "existing_packs": 13,
+      "packs_financial_ready": 13,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2024-03-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-22",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "UNREADABLE_RISK_ATTACHMENT"
+          ]
+        },
+        {
+          "date": "2025-01-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-14",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-20",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "UNREADABLE_RISK_ATTACHMENT"
+          ]
+        },
+        {
+          "date": "2021-12-21",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "UNREADABLE_RISK_ATTACHMENT"
+          ]
+        },
+        {
+          "date": "2022-01-24",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 821,
+      "failed_metadata_windows": 0,
+      "selected_documents": 26,
+      "readable_documents": 26,
+      "financial_documents": 23,
+      "ocr_documents": 3,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1242,
+      "financial_coverage_pct": 100.0,
+      "financial_gap_date_examples": []
+    },
+    {
+      "symbol": "BAJAJFINSV",
+      "existing_packs": 1,
+      "packs_financial_ready": 1,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2021-12-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 478,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "MARUTI",
+      "existing_packs": 32,
+      "packs_financial_ready": 31,
+      "packs_adverse_ready": 10,
+      "pack_gaps": [
+        {
+          "date": "2022-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-29",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2022-01-31",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-26",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-12-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-17",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2025-01-23",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-24",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 809,
+      "failed_metadata_windows": 0,
+      "selected_documents": 59,
+      "readable_documents": 57,
+      "financial_documents": 19,
+      "ocr_documents": 13,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1237,
+      "financial_coverage_pct": 99.6,
+      "financial_gap_date_examples": [
+        "2024-01-29",
+        "2024-01-30",
+        "2025-05-07",
+        "2025-05-08",
+        "2025-05-09"
+      ]
+    },
+    {
+      "symbol": "TECHM",
+      "existing_packs": 11,
+      "packs_financial_ready": 11,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2026-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-03-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-11",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-10",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2021-11-16",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-01-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 641,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HINDALCO",
+      "existing_packs": 30,
+      "packs_financial_ready": 28,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2023-12-21",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-01",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-11",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-01-20",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-06-03",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-26",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-30",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-08",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2026-02-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-08-03",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2021-11-29",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-08-02",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-09",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2023-12-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2022-02-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-29",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-12-18",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 948,
+      "failed_metadata_windows": 0,
+      "selected_documents": 47,
+      "readable_documents": 47,
+      "financial_documents": 22,
+      "ocr_documents": 4,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1185,
+      "financial_coverage_pct": 95.41,
+      "financial_gap_date_examples": [
+        "2022-11-23",
+        "2022-11-24",
+        "2022-11-25",
+        "2022-11-28",
+        "2022-11-29",
+        "2022-11-30",
+        "2022-12-01",
+        "2022-12-02",
+        "2022-12-05",
+        "2022-12-06"
+      ]
+    },
+    {
+      "symbol": "ADANIENT",
+      "existing_packs": 9,
+      "packs_financial_ready": 5,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2024-02-28",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-03-04",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2023-08-03",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-14",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-10",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-31",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-21",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-01-20",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        },
+        {
+          "date": "2024-02-07",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 858,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HINDUNILVR",
+      "existing_packs": 2,
+      "packs_financial_ready": 2,
+      "packs_adverse_ready": 1,
+      "pack_gaps": [
+        {
+          "date": "2023-03-31",
+          "reasons": [
+            "STALE_SCAN_VERSION",
+            "SCAN_CAP_OR_MISSING_SCAN"
+          ]
+        }
+      ],
+      "metadata_rows": 931,
+      "failed_metadata_windows": 0,
+      "selected_documents": 23,
+      "readable_documents": 22,
+      "financial_documents": 15,
+      "ocr_documents": 1,
+      "unavailable_documents": 1,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 987,
+      "financial_coverage_pct": 79.47,
+      "financial_gap_date_examples": [
+        "2022-10-25",
+        "2022-10-27",
+        "2022-10-28",
+        "2022-10-31",
+        "2022-11-01",
+        "2022-11-02",
+        "2022-11-03",
+        "2022-11-04",
+        "2022-11-07",
+        "2022-11-09"
+      ]
+    },
+    {
+      "symbol": "ABB",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 478,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ADANIENSOL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 362,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1174,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2022-02-14",
+        "2022-02-15",
+        "2022-02-16",
+        "2022-02-17",
+        "2022-02-18",
+        "2022-02-21",
+        "2022-02-22",
+        "2022-02-23",
+        "2022-02-24",
+        "2022-02-25"
+      ]
+    },
+    {
+      "symbol": "ADANIGREEN",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 745,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ADANIPORTS",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 778,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ADANIPOWER",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 521,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1109,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "AMBUJACEM",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 895,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "APOLLOHOSP",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 627,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 884,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "DMART",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 524,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BSE",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 855,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BAJAJ-AUTO",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 646,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BAJAJHLDNG",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 328,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BANKBARODA",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 753,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BEL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 469,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BPCL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 727,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BOSCHLTD",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 594,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "BRITANNIA",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 466,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "CGPOWER",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 891,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1202,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2022-01-04",
+        "2022-01-05",
+        "2022-01-06",
+        "2022-01-07",
+        "2022-01-10",
+        "2022-01-11",
+        "2022-01-12",
+        "2022-01-13",
+        "2022-01-14",
+        "2022-01-17"
+      ]
+    },
+    {
+      "symbol": "CANBK",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 772,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "CHOLAFIN",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 521,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "CIPLA",
+      "existing_packs": 5,
+      "packs_financial_ready": 5,
+      "packs_adverse_ready": 5,
+      "pack_gaps": [],
+      "metadata_rows": 756,
+      "failed_metadata_windows": 0,
+      "selected_documents": 46,
+      "readable_documents": 44,
+      "financial_documents": 20,
+      "ocr_documents": 0,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1186,
+      "financial_coverage_pct": 95.49,
+      "financial_gap_date_examples": [
+        "2022-11-07",
+        "2022-11-09",
+        "2022-11-10",
+        "2022-11-11",
+        "2022-11-14",
+        "2022-11-15",
+        "2022-11-16",
+        "2022-11-17",
+        "2022-11-18",
+        "2022-11-21"
+      ]
+    },
+    {
+      "symbol": "COALINDIA",
+      "existing_packs": 15,
+      "packs_financial_ready": 10,
+      "packs_adverse_ready": 5,
+      "pack_gaps": [
+        {
+          "date": "2024-01-31",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2026-01-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-02-01",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2026-01-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-29",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-12",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2026-01-22",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2024-01-04",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2024-01-09",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2026-01-19",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 779,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "CUMMINSIND",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 664,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "DLF",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 547,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "DIVISLAB",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 282,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "DRREDDY",
+      "existing_packs": 4,
+      "packs_financial_ready": 4,
+      "packs_adverse_ready": 4,
+      "pack_gaps": [],
+      "metadata_rows": 896,
+      "failed_metadata_windows": 0,
+      "selected_documents": 51,
+      "readable_documents": 50,
+      "financial_documents": 22,
+      "ocr_documents": 4,
+      "unavailable_documents": 1,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1241,
+      "financial_coverage_pct": 99.92,
+      "financial_gap_date_examples": [
+        "2025-07-23"
+      ]
+    },
+    {
+      "symbol": "EICHERMOT",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 947,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ETERNAL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 119,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "GAIL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 710,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "GODREJCP",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 600,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "GRASIM",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1117,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HDFCAMC",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 457,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HDFCLIFE",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 559,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HAL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 503,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HINDZINC",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 740,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "POWERINDIA",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 589,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "HYUNDAI",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 275,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 508,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2024-10-22",
+        "2024-10-23",
+        "2024-10-24",
+        "2024-10-25",
+        "2024-10-28",
+        "2024-10-29",
+        "2024-10-30",
+        "2024-10-31",
+        "2024-11-01",
+        "2024-11-04"
+      ]
+    },
+    {
+      "symbol": "IOC",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 501,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "IRFC",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 463,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "INDIGO",
+      "existing_packs": 3,
+      "packs_financial_ready": 3,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [],
+      "metadata_rows": 526,
+      "failed_metadata_windows": 0,
+      "selected_documents": 44,
+      "readable_documents": 43,
+      "financial_documents": 22,
+      "ocr_documents": 3,
+      "unavailable_documents": 1,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1242,
+      "financial_coverage_pct": 100.0,
+      "financial_gap_date_examples": []
+    },
+    {
+      "symbol": "JSWSTEEL",
+      "existing_packs": 4,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 4,
+      "pack_gaps": [
+        {
+          "date": "2024-02-21",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2024-01-17",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2024-01-18",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        },
+        {
+          "date": "2024-02-08",
+          "reasons": [
+            "NO_READABLE_FINANCIAL"
+          ]
+        }
+      ],
+      "metadata_rows": 808,
+      "failed_metadata_windows": 0,
+      "selected_documents": 46,
+      "readable_documents": 44,
+      "financial_documents": 20,
+      "ocr_documents": 7,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1200,
+      "financial_coverage_pct": 96.62,
+      "financial_gap_date_examples": [
+        "2022-11-24",
+        "2022-11-25",
+        "2022-11-28",
+        "2022-11-29",
+        "2022-11-30",
+        "2022-12-01",
+        "2022-12-02",
+        "2022-12-05",
+        "2022-12-06",
+        "2022-12-07"
+      ]
+    },
+    {
+      "symbol": "JINDALSTEL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 575,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "JIOFIN",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 286,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 789,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2023-09-04",
+        "2023-09-05",
+        "2023-09-06",
+        "2023-09-07",
+        "2023-09-08",
+        "2023-09-11",
+        "2023-09-12",
+        "2023-09-13",
+        "2023-09-14",
+        "2023-09-15"
+      ]
+    },
+    {
+      "symbol": "LTM",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 118,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "LT",
+      "existing_packs": 4,
+      "packs_financial_ready": 4,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2025-01-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1018,
+      "failed_metadata_windows": 0,
+      "selected_documents": 45,
+      "readable_documents": 45,
+      "financial_documents": 21,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1241,
+      "financial_coverage_pct": 99.92,
+      "financial_gap_date_examples": [
+        "2026-07-28"
+      ]
+    },
+    {
+      "symbol": "M&M",
+      "existing_packs": 4,
+      "packs_financial_ready": 4,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2026-01-27",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 1632,
+      "failed_metadata_windows": 0,
+      "selected_documents": 49,
+      "readable_documents": 48,
+      "financial_documents": 22,
+      "ocr_documents": 1,
+      "unavailable_documents": 1,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1242,
+      "financial_coverage_pct": 100.0,
+      "financial_gap_date_examples": []
+    },
+    {
+      "symbol": "MAXHEALTH",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 670,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "MAZDOCK",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 452,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "MUTHOOTFIN",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 500,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "NTPC",
+      "existing_packs": 13,
+      "packs_financial_ready": 13,
+      "packs_adverse_ready": 7,
+      "pack_gaps": [
+        {
+          "date": "2026-01-06",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-21",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 769,
+      "failed_metadata_windows": 0,
+      "selected_documents": 44,
+      "readable_documents": 43,
+      "financial_documents": 21,
+      "ocr_documents": 7,
+      "unavailable_documents": 1,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1191,
+      "financial_coverage_pct": 95.89,
+      "financial_gap_date_examples": [
+        "2022-11-17",
+        "2022-11-18",
+        "2022-11-21",
+        "2022-11-22",
+        "2022-11-23",
+        "2022-11-24",
+        "2022-11-25",
+        "2022-11-28",
+        "2022-11-29",
+        "2022-11-30"
+      ]
+    },
+    {
+      "symbol": "NESTLEIND",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 383,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 812,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2023-08-01",
+        "2023-08-02",
+        "2023-08-03",
+        "2023-08-04",
+        "2023-08-07",
+        "2023-08-08",
+        "2023-08-09",
+        "2023-08-10",
+        "2023-08-11",
+        "2023-08-14"
+      ]
+    },
+    {
+      "symbol": "ONGC",
+      "existing_packs": 22,
+      "packs_financial_ready": 22,
+      "packs_adverse_ready": 14,
+      "pack_gaps": [
+        {
+          "date": "2026-02-01",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-28",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-29",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 632,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "PIDILITIND",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 820,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "POLYCAB",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 870,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "PFC",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 480,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "POWERGRID",
+      "existing_packs": 6,
+      "packs_financial_ready": 6,
+      "packs_adverse_ready": 2,
+      "pack_gaps": [
+        {
+          "date": "2026-02-03",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-04",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-09",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-05",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 770,
+      "failed_metadata_windows": 0,
+      "selected_documents": 24,
+      "readable_documents": 21,
+      "financial_documents": 19,
+      "ocr_documents": 2,
+      "unavailable_documents": 3,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1180,
+      "financial_coverage_pct": 95.01,
+      "financial_gap_date_examples": [
+        "2022-11-18",
+        "2022-11-21",
+        "2022-11-22",
+        "2022-11-23",
+        "2022-11-24",
+        "2022-11-25",
+        "2022-11-28",
+        "2022-11-29",
+        "2022-11-30",
+        "2022-12-01"
+      ]
+    },
+    {
+      "symbol": "PNB",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1213,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "SBILIFE",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 531,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "MOTHERSON",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 854,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "SHRIRAMFIN",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1589,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ENRIN",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 75,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 335,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2025-07-03",
+        "2025-07-04",
+        "2025-07-07",
+        "2025-07-08",
+        "2025-07-09",
+        "2025-07-10",
+        "2025-07-11",
+        "2025-07-14",
+        "2025-07-15",
+        "2025-07-16"
+      ]
+    },
+    {
+      "symbol": "SIEMENS",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 515,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "SOLARINDS",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 470,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "existing_packs": 7,
+      "packs_financial_ready": 7,
+      "packs_adverse_ready": 7,
+      "pack_gaps": [],
+      "metadata_rows": 827,
+      "failed_metadata_windows": 0,
+      "selected_documents": 46,
+      "readable_documents": 44,
+      "financial_documents": 22,
+      "ocr_documents": 0,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1242,
+      "financial_coverage_pct": 100.0,
+      "financial_gap_date_examples": []
+    },
+    {
+      "symbol": "TVSMOTOR",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 974,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "TATACAP",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 132,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 266,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2025-10-13",
+        "2025-10-14",
+        "2025-10-15",
+        "2025-10-16",
+        "2025-10-17",
+        "2025-10-20",
+        "2025-10-21",
+        "2025-10-23",
+        "2025-10-24",
+        "2025-10-27"
+      ]
+    },
+    {
+      "symbol": "TATACONSUM",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 956,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "TMCV",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 133,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 236,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2025-11-26",
+        "2025-11-27",
+        "2025-11-28",
+        "2025-12-01",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04",
+        "2025-12-05",
+        "2025-12-08",
+        "2025-12-09"
+      ]
+    },
+    {
+      "symbol": "TATAPOWER",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1282,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "TITAN",
+      "existing_packs": 8,
+      "packs_financial_ready": 8,
+      "packs_adverse_ready": 3,
+      "pack_gaps": [
+        {
+          "date": "2026-01-13",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-08",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-12",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-02-02",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        },
+        {
+          "date": "2026-01-07",
+          "reasons": [
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 839,
+      "failed_metadata_windows": 0,
+      "selected_documents": 30,
+      "readable_documents": 26,
+      "financial_documents": 21,
+      "ocr_documents": 8,
+      "unavailable_documents": 4,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1237,
+      "financial_coverage_pct": 99.6,
+      "financial_gap_date_examples": [
+        "2022-11-01",
+        "2022-11-02",
+        "2022-11-03",
+        "2022-11-04",
+        "2022-11-07"
+      ]
+    },
+    {
+      "symbol": "TORNTPHARM",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 571,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "TRENT",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 762,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1126,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "UNIONBANK",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1122,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "VBL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 515,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "VAML",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 54,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 92,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2026-06-30",
+        "2026-07-01",
+        "2026-07-02",
+        "2026-07-03",
+        "2026-07-06",
+        "2026-07-07",
+        "2026-07-08",
+        "2026-07-09",
+        "2026-07-10",
+        "2026-07-13"
+      ]
+    },
+    {
+      "symbol": "VEDL",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1245,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "IDEA",
+      "existing_packs": 1,
+      "packs_financial_ready": 1,
+      "packs_adverse_ready": 1,
+      "pack_gaps": [],
+      "metadata_rows": 649,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "WIPRO",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 1257,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "ZYDUSLIFE",
+      "existing_packs": 0,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [],
+      "metadata_rows": 949,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    },
+    {
+      "symbol": "DABUR",
+      "existing_packs": 2,
+      "packs_financial_ready": 2,
+      "packs_adverse_ready": 2,
+      "pack_gaps": [],
+      "metadata_rows": 690,
+      "failed_metadata_windows": 0,
+      "selected_documents": 48,
+      "readable_documents": 45,
+      "financial_documents": 21,
+      "ocr_documents": 4,
+      "unavailable_documents": 3,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1239,
+      "financial_coverage_pct": 99.76,
+      "financial_gap_date_examples": [
+        "2025-07-30",
+        "2025-07-31",
+        "2025-08-01"
+      ]
+    },
+    {
+      "symbol": "YESBANK",
+      "existing_packs": 12,
+      "packs_financial_ready": 12,
+      "packs_adverse_ready": 12,
+      "pack_gaps": [],
+      "metadata_rows": 888,
+      "failed_metadata_windows": 0,
+      "selected_documents": 31,
+      "readable_documents": 29,
+      "financial_documents": 21,
+      "ocr_documents": 2,
+      "unavailable_documents": 2,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 1242,
+      "financial_coverage_pct": 100.0,
+      "financial_gap_date_examples": []
+    },
+    {
+      "symbol": "ZEEL",
+      "existing_packs": 1,
+      "packs_financial_ready": 0,
+      "packs_adverse_ready": 0,
+      "pack_gaps": [
+        {
+          "date": "2026-01-20",
+          "reasons": [
+            "NO_READABLE_FINANCIAL",
+            "STALE_SCAN_VERSION"
+          ]
+        }
+      ],
+      "metadata_rows": 568,
+      "failed_metadata_windows": 0,
+      "selected_documents": 0,
+      "readable_documents": 0,
+      "financial_documents": 0,
+      "ocr_documents": 0,
+      "unavailable_documents": 0,
+      "evaluated_trading_sessions": 1242,
+      "sessions_with_recent_downloaded_financial": 0,
+      "financial_coverage_pct": 0.0,
+      "financial_gap_date_examples": [
+        "2021-11-08",
+        "2021-11-09",
+        "2021-11-10",
+        "2021-11-11",
+        "2021-11-12",
+        "2021-11-15",
+        "2021-11-16",
+        "2021-11-17",
+        "2021-11-18",
+        "2021-11-22"
+      ]
+    }
+  ],
+  "model_calls": 0,
+  "limits": [
+    "Financial coverage counts recent readable cached source text, not financial accuracy or an adverse-free company.",
+    "Native OCR text is machine extracted and must be checked against original PDF table columns.",
+    "Publication/dissemination cutoffs remain authoritative; current retrieval is not a certified historical page-version chain.",
+    "Selected official issuer sources are not an exhaustive independent-news/newsletter archive.",
+    "Pre-listing sessions are excluded using actual available OHLCV bars."
+  ]
+}

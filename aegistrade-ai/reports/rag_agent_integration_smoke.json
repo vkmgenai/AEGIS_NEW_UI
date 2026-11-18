@@ -1,0 +1,18 @@
+{
+  "purpose": "Integration test only, not a real generated research result",
+  "model_responses": "mocked",
+  "actual_components": [
+    "neural embedding model",
+    "cross-encoder",
+    "persistent Chroma",
+    "stdio MCP",
+    "three-agent graph",
+    "C2 evidence gate"
+  ],
+  "case_date": "2024-01-01",
+  "corpus_sha256": "b389a449d555e5ff566b192ea18aa8addf26cd84218468e6ec4c1a838fab6aad",
+  "tool_calls": 5,
+  "mocked_model_steps": 6,
+  "guard_pass": true,
+  "paid_llm_calls": 0
+}

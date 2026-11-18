@@ -1,0 +1,132 @@
+{
+  "version": "0.22.1",
+  "date": "2026-11-12",
+  "tests": {
+    "passed": 276,
+    "failed": 0,
+    "generation": "mocked"
+  },
+  "verification_model_calls_started": 0,
+  "corpus": {
+    "passages": 81,
+    "sha256": "92daa4314ece16c3b12c2e3cda62510389ea459e0c04236d8079063559dfe7ac",
+    "project_policy_passages": 72,
+    "external_reference_passages": 9,
+    "source_count": 46,
+    "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+    "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+  },
+  "gate": "Recent exact visible source quotation, benefit metric, reported improvement/completed-event criterion, market/critic source agreement; nonempty prose and accept=true alone insufficient.",
+  "raw_price_guard": "Known recent non-financial structural-action disclosure quarantines entries across routes; full metadata survives title truncation. Does not repair holdings or complete corporate-action coverage.",
+  "rechecked_original_cases": [
+    {
+      "symbol": "ITC",
+      "signal_date": "2025-01-02",
+      "research_id": "f2894b37bcd2787e9e0c5a84ef7f1fec",
+      "old_breakout_support": "The 31 December 2024 disclosure confirms the hotels-business demerger effective 1 January 2025 and transfer of specified subsidiary and associate holdings to ITC Hotels, providing a dated corporate-action catalyst.",
+      "old_research_had_dated_sources": true,
+      "new_entry_check": {
+        "code": "UNADJUSTED_CORPORATE_ACTION",
+        "category": "DATA_QUALITY",
+        "agent": "audit",
+        "message": "Recent structural corporate action is unresolved on unadjusted prices; entry is quarantined"
+      },
+      "buy": [
+        {
+          "date": "2025-01-03",
+          "symbol": "ITC",
+          "event": "BUY",
+          "quantity": 154,
+          "price": 490.74024999999995,
+          "fee": 37.786999249999994,
+          "initial_stop": 464.59749999999997,
+          "strategy": "BREAKOUT",
+          "realized_pnl": null,
+          "research_id": "f2894b37bcd2787e9e0c5a84ef7f1fec",
+          "signal_date": "2025-01-02",
+          "original_signal_date": "2025-01-02"
+        }
+      ],
+      "sells": [
+        {
+          "date": "2025-01-06",
+          "symbol": "ITC",
+          "event": "SELL_TRAILING_STOP",
+          "quantity": 154,
+          "price": 455.1444,
+          "fee": 35.0461188,
+          "strategy": "BREAKOUT",
+          "realized_pnl": -5554.594018049984,
+          "initial_stop": 464.59749999999997,
+          "stop_price": 464.67918357187864,
+          "take_profit_reference": 521.2263362236673,
+          "entry_research_id": "f2894b37bcd2787e9e0c5a84ef7f1fec",
+          "research_id": null,
+          "entry_date": "2025-01-03"
+        }
+      ]
+    },
+    {
+      "symbol": "ONGC",
+      "signal_date": "2025-01-08",
+      "research_id": "6e9d98c408385d53d190875a807c25df",
+      "old_breakout_support": "The January 8 pre-open disclosure identifies BP Exploration (Alpha) as selected technical services provider for Mumbai High, supporting ONGC's mature-field recovery focus. The excerpt does not establish production gains.",
+      "old_research_had_dated_sources": true,
+      "new_entry_check": {
+        "code": "BREAKOUT_SOURCE_QUOTE_REQUIRED",
+        "category": "EVIDENCE",
+        "agent": "audit",
+        "message": "Breakout requires structured source-linked corroboration"
+      },
+      "buy": [
+        {
+          "date": "2025-01-09",
+          "symbol": "ONGC",
+          "event": "BUY",
+          "quantity": 273,
+          "price": 272.30202999999995,
+          "fee": 37.16922709499999,
+          "initial_stop": 257.76349999999996,
+          "strategy": "BREAKOUT",
+          "realized_pnl": null,
+          "research_id": "6e9d98c408385d53d190875a807c25df",
+          "signal_date": "2025-01-08",
+          "original_signal_date": "2025-01-08"
+        }
+      ],
+      "sells": [
+        {
+          "date": "2025-01-13",
+          "symbol": "ONGC",
+          "event": "SELL_STOP",
+          "quantity": 273,
+          "price": 257.50573649999995,
+          "fee": 35.14953303225,
+          "strategy": "BREAKOUT",
+          "realized_pnl": -4111.706885627252,
+          "initial_stop": 257.76349999999996,
+          "stop_price": 257.76349999999996,
+          "take_profit_reference": 289.21815449857064,
+          "entry_research_id": "6e9d98c408385d53d190875a807c25df",
+          "research_id": null,
+          "entry_date": "2025-01-09"
+        }
+      ]
+    }
+  ],
+  "original_ledger_rewritten": false,
+  "interpretation": "ITC raw stop P&L omits distributed-share entitlement; economic P&L is incomplete. ONGC had dated context but lacked the newly required structured quote; prospective recovery benefits are not achieved output. Neither loss alone establishes invalidity of a decision.",
+  "primary_sources": [
+    "https://nsearchives.nseindia.com/content/circulars/CMTR65845.pdf",
+    "https://nsearchives.nseindia.com/corporate/ITC_30122024153104_SELetter.pdf",
+    "https://nsearchives.nseindia.com/corporate/ONGC_08012025074955_Stockexchange08012025SD.pdf"
+  ],
+  "unchanged": "Technical strategy thresholds, stop/profit rules, costs, sizing, no-terminal-sale rule, maximum 8 inference units per assessment.",
+  "limits": "No live-model replay or profitability improvement claim; conservative source rules and lexical checks require semantic critic interpretation and separate evaluation.",
+  "activation": {
+    "version": "0.22.1",
+    "universe": "research30",
+    "verification_generation_calls": 0,
+    "historical_ledgers_rewritten": false
+  }
+}

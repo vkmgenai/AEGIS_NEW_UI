@@ -1,0 +1,2409 @@
+{
+  "run_type": "PROVISIONAL_DEVELOPMENT_COST_PREFLIGHT_NOT_FINAL_EVIDENCE",
+  "created_at_utc": "2026-11-17T08:22:52.858647+00:00",
+  "inference": {
+    "backend": "openrouter",
+    "model": "openai/gpt-4.1-mini",
+    "budget_unit": "model_requests",
+    "adapter_version": "openrouter-v1"
+  },
+  "case_source": "evaluation/agentic_candidates_20261117/agentic_development_20_REVIEW_TEMPLATE.jsonl",
+  "cases": 1,
+  "authorized_overall_account_spend_usd": 1.0,
+  "preflight_stop_ceiling_usd": 0.08,
+  "actual_provider_reported_cost_usd": 0.0125912,
+  "outputs": [
+    {
+      "case_id": "DEVELOPMENT_NTPC_PULLBACK-01",
+      "config": "C0",
+      "cost_usd": 0,
+      "output": {
+        "config": "C0",
+        "expected_strategy": "EMA_PULLBACK",
+        "expected_regime": "PULLBACK",
+        "selected_strategy": "EMA_PULLBACK",
+        "market_regime": "PULLBACK",
+        "model": "not_used",
+        "citations": [
+          "POL-74",
+          "POL-64",
+          "POL-10",
+          "POL-66",
+          "POL-72"
+        ],
+        "guard_pass": true,
+        "llm_calls": 0,
+        "usage": [],
+        "model_errors": [],
+        "latency_s": 5.764,
+        "company_research": {
+          "ok": true,
+          "status": "SUFFICIENT",
+          "symbol": "NTPC",
+          "decision_at": "2022-05-04T15:30:00+05:30",
+          "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+          "coverage": {
+            "exchange_scan_complete": true,
+            "invalid_timestamp_rows": 0,
+            "metadata_rows": 41,
+            "eligible_announcements": 39,
+            "downloaded_documents": 5,
+            "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+            "selected_documents_only": true
+          },
+          "reasons": [],
+          "limitations": [
+            "Selected official filings and issuer news, not comprehensive independent press coverage.",
+            "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+            "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+            "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+            "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+            "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+          ],
+          "documents": [
+            {
+              "id": "CMP-3993d1416d33a00d",
+              "kind": "financial_results",
+              "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+              "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+              "published_at": "2022-01-29T17:04:49+05:30",
+              "available_at": "2022-01-29T17:06:02+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": true,
+              "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+            },
+            {
+              "id": "CMP-1ff8398258e21dd4",
+              "kind": "company_news",
+              "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+              "published_at": "2022-04-27T09:35:35+05:30",
+              "available_at": "2022-04-27T09:35:41+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+            },
+            {
+              "id": "CMP-beebcaa69db7b4ed",
+              "kind": "company_news",
+              "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+              "published_at": "2022-01-31T18:14:53+05:30",
+              "available_at": "2022-01-31T18:15:05+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+            },
+            {
+              "id": "CMP-cc55f3e1f9a3fa38",
+              "kind": "announcement",
+              "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+              "published_at": "2022-04-27T15:04:57+05:30",
+              "available_at": "2022-04-27T15:05:01+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+            }
+          ],
+          "evidence_view_version": "company-view-v5-substantive-body",
+          "omitted_documents": [
+            {
+              "id": "CMP-44a6746498740fda",
+              "kind": "financial_results",
+              "available_at": "2022-03-29T12:59:03+05:30",
+              "reason": "not substantive financial results"
+            }
+          ],
+          "adverse_scan": {
+            "ready": true,
+            "version": "adverse-scan-v2-routine-notices",
+            "citation_id": "SCAN-38508a9b2f5b2f56",
+            "matched_document_ids": [],
+            "candidate_count": 0,
+            "window_start": "2021-11-05",
+            "decision_at": "2022-05-04T15:30:00+05:30",
+            "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+            "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+          },
+          "web_scan": {
+            "version": "dated-web-v1",
+            "citation_id": "WEBSCAN-a24a0a296ad67a99",
+            "decision_at": "2022-05-04T15:30:00+05:30",
+            "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+            "source_url": "https://html.duckduckgo.com/html/",
+            "status": "SEARCHED_BUT_INSUFFICIENT",
+            "accepted_document_ids": [],
+            "attempted_queries": 2,
+            "ready": false
+          },
+          "structural_action_documents": []
+        },
+        "note": "Deterministic route reference; policy agreement is true by construction. Company coverage is reported separately, without semantic assessment or order eligibility."
+      }
+    },
+    {
+      "case_id": "DEVELOPMENT_NTPC_PULLBACK-01",
+      "config": "C1",
+      "cost_usd": 0.0045656,
+      "output": {
+        "config": "C1",
+        "independent_critic": false,
+        "model": "openai/gpt-4.1-mini",
+        "inference": {
+          "backend": "openrouter",
+          "model": "openai/gpt-4.1-mini",
+          "budget_unit": "model_requests",
+          "adapter_version": "openrouter-v1"
+        },
+        "expected_strategy": "EMA_PULLBACK",
+        "research_purpose": "ENTRY",
+        "expected_regime": "PULLBACK",
+        "market_regime": "PULLBACK",
+        "selected_strategy": "EMA_PULLBACK",
+        "citations": [
+          "POL-72"
+        ],
+        "guard_pass": true,
+        "model_errors": [],
+        "tool_trace": [
+          {
+            "agent": "single",
+            "turn": 1,
+            "tool_call_id": "call_O9KhZ12YIRDWdNK8YGOahrIW",
+            "tool": "market_snapshot",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "data": {
+                "symbol": "NTPC",
+                "date": "2022-05-04",
+                "regime": "PULLBACK",
+                "Close": 158.65,
+                "RSI14": 62.07349167003486,
+                "ADX14": 47.220017467924045,
+                "EMA20": 154.1772367605496,
+                "EMA50": 146.1743142450487,
+                "ATR14": 4.3417024293468796,
+                "PriorHigh": 158.35,
+                "PullbackRecent": true,
+                "breakout_reentry": null,
+                "smc_context": null,
+                "research_purpose": "ENTRY",
+                "holding_context": null,
+                "selection_score": null,
+                "selection_rank": null,
+                "average_turnover_20_inr": null
+              },
+              "source": "historical research case; not a live quote"
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "single",
+            "turn": 1,
+            "tool_call_id": "call_hV97NXtOlqOVtGcx3kwy6exv",
+            "tool": "company_evidence",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "status": "SUFFICIENT",
+              "symbol": "NTPC",
+              "decision_at": "2022-05-04T15:30:00+05:30",
+              "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+              "coverage": {
+                "exchange_scan_complete": true,
+                "invalid_timestamp_rows": 0,
+                "metadata_rows": 41,
+                "eligible_announcements": 39,
+                "downloaded_documents": 5,
+                "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "selected_documents_only": true
+              },
+              "reasons": [],
+              "limitations": [
+                "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+                "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+                "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+                "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+              ],
+              "documents": [
+                {
+                  "id": "CMP-3993d1416d33a00d",
+                  "kind": "financial_results",
+                  "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+                  "published_at": "2022-01-29T17:04:49+05:30",
+                  "available_at": "2022-01-29T17:06:02+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": true,
+                  "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+                },
+                {
+                  "id": "CMP-1ff8398258e21dd4",
+                  "kind": "company_news",
+                  "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+                  "published_at": "2022-04-27T09:35:35+05:30",
+                  "available_at": "2022-04-27T09:35:41+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+                },
+                {
+                  "id": "CMP-beebcaa69db7b4ed",
+                  "kind": "company_news",
+                  "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+                  "published_at": "2022-01-31T18:14:53+05:30",
+                  "available_at": "2022-01-31T18:15:05+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+                },
+                {
+                  "id": "CMP-cc55f3e1f9a3fa38",
+                  "kind": "announcement",
+                  "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+                  "published_at": "2022-04-27T15:04:57+05:30",
+                  "available_at": "2022-04-27T15:05:01+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+                }
+              ],
+              "evidence_view_version": "company-view-v5-substantive-body",
+              "omitted_documents": [
+                {
+                  "id": "CMP-44a6746498740fda",
+                  "kind": "financial_results",
+                  "available_at": "2022-03-29T12:59:03+05:30",
+                  "reason": "not substantive financial results"
+                }
+              ],
+              "adverse_scan": {
+                "ready": true,
+                "version": "adverse-scan-v2-routine-notices",
+                "citation_id": "SCAN-38508a9b2f5b2f56",
+                "matched_document_ids": [],
+                "candidate_count": 0,
+                "window_start": "2021-11-05",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+              },
+              "web_scan": {
+                "version": "dated-web-v1",
+                "citation_id": "WEBSCAN-a24a0a296ad67a99",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "source_url": "https://html.duckduckgo.com/html/",
+                "status": "SEARCHED_BUT_INSUFFICIENT",
+                "accepted_document_ids": [],
+                "attempted_queries": 2,
+                "ready": false
+              },
+              "structural_action_documents": []
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "single",
+            "turn": 1,
+            "tool_call_id": "call_ve6umBUzRShu9O9xfFGK6Ye0",
+            "tool": "check_strategy",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "data": {
+                "approved_strategy": "EMA_PULLBACK",
+                "permitted_portfolio_actions": [
+                  "ENTER"
+                ],
+                "constraint": "Code-defined research route; entry signal and risk checks remain separate."
+              }
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "single",
+            "turn": 1,
+            "tool_call_id": "call_ZyzifWmgbIzazJy1agZZMMkn",
+            "tool": "search_policy",
+            "arguments": "{\"query\":\"entry\"}",
+            "observation": {
+              "ok": true,
+              "results": [
+                {
+                  "id": "POL-72",
+                  "date": "2026-11-12",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Strategy-specific evidence, coverage gaps and adverse-news exits",
+                  "text": "C2 always checks dated evidence before a permitted action. For a code-qualified strong EMA_TREND or confirmed EMA_PULLBACK entry (ADX at least 22, Close above EMA20 above EMA50) or RSI_REVERSION (RSI below 42, Close above 0.88 EMA50), missing financial or independent news coverage alone is not an entry veto. Inspect company evidence and attempt bounded dated web retrieval when coverage is missing or unknown. With no identified concrete unresolved adverse event, a LIMITED assessment may use COVERAGE_LIMITED, an observed attempted WEBSCAN or ready official SCAN citation, empty event_risks and explicit coverage limitations. This permits following the technical signal with residual evidence risk; it never establishes clean fundamentals, safety or profit. Concrete potentially serious unresolved event risk remains UNKNOWN and blocks entry; it cannot be hidden as a mere coverage gap. A ready supported scan with no adverse finding can use NO_MATERIAL_ADVERSE_FOUND. BREAKOUT (including BREAKOUT_BOUNCE) entry requires readable dated corroborating company evidence, exact document citations, breakout_support explaining the source-backed support, and a supported adverse assessment. COVERAGE_LIMITED cannot justify breakout. Actual cited adverse news uses REVIEW_REQUIRED with ADVERSE_EVENT_FOUND or MATERIAL_ADVERSE and nonempty supported event_risks. Both adverse categories block entry; in a holding review they require EXIT after independent critic verification. A genuine adverse event, not a negative keyword, is necessary. A routine penalty or notice that is not material under POL-MAT-01 is a limitation, not an adverse event. Routine trading-window closure for insiders is not business closure or proof of insider wrongdoing. Interpret substantive disclosure_context and exact source windows; do not treat address fragments as monetary exposure. Attribute issuer-reported Nil and preserve missing impact as unknown. Market and critic independently read the current hashed company pack and observed policy evidence. Daily bounded official issuer metadata checks can trigger holding research between scheduled reviews; empty checks make no generation call. Publication and availability must be at or before the historical cutoff; after-close releases are first considered at a later eligible close. A confirmed exit queues a later-open simulated sale, with existing gap/stop/profit protections; no same-close look-ahead and no forced end-period liquidation. Stops, fees, position sizing, Friday/gap refresh, human approval where required and execution remain code controlled. Search failures and truncated sources are recorded; a live dated web lookup is not a certified historical content archive or exhaustive news feed. Lessons cannot override this policy or the independent critic. Breakout corroboration must be structured as document_id, kind, exact contiguous visible quote and relevance, with source availability no more than 30 calendar days before the signal cutoff. Code checks a reported benefit metric and an earnings/operating improvement or completed commercial event; prose alone, an auditor review, vague business focus, provider selection or a prospective forecast is insufficient. Sole support consisting of plans, expected/indicated gains or up-to targets is not an achieved result. The independent critic must separately quote and corroborate the same source; accept=true alone is insufficient. A structurally valid source and critic approval still do not predict price direction. Known recent explicit structural-action disclosures also invoke the raw-price entry quarantine in POL-60. Reject unsupported quotes rather than invent missing evidence; later profit or loss must never select a historical entry.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "execution",
+                  "source_locator": "aegistrade/signal_evidence.py; aegistrade/company_research.py; aegistrade/agentic.py; aegistrade/c2_portfolio.py; aegistrade/breakout_evidence.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": null,
+                  "retrieval_mode": "exact_id",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-27",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "RSI reversion entry threshold",
+                  "text": "The implemented RSI_REVERSION entry requires a ready row, RSI14 below 42 and Close above 0.88 times EMA50. This is the current code specification. RSI below 30 with an upward confirmation appeared only as a proposal example and is not the implemented entry rule.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -0.26758,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-16",
+                  "date": "2026-11-11",
+                  "source": "AegisTrade authored research policy",
+                  "title": "Backtest fidelity",
+                  "text": "Historical entries use completed-session evidence and later eligible opens with fees/slippage. Friday and pre-nontrading-gap candidates are deferred without paid entry research until the next available trading close, then freshly screened and researched before a subsequent-open fill. Monday closing data never justify a Monday-opening fill. Current entries remain provisional historical simulations with survivorship and raw-price limits.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "core_policy",
+                  "source_locator": "aegistrade/safety.py; aegistrade/workflow.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -0.8313,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-43",
+                  "date": "2026-11-11",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Entry gap invalidates a stop",
+                  "text": "The initial protective stop is fixed from signal-time evidence before the entry fills. If the next eligible open makes that stop invalid or violates sizing constraints, the engine rejects the queued BUY. After a historical fill, an explicitly enabled trailing stop may only rise at a completed close: max(previous stop, highest completed close since entry minus the configured multiple of entry-signal ATR14). The ATR distance stays fixed; a raised stop applies from the next session and cannot be tested against the earlier low of the same bar. The LLM cannot lower or veto this coded protective exit. Historical portfolios may also exit at the configured take-profit percentage, default eight percent NET of modeled entry and exit fees with adverse slippage in execution. Opening gaps are processed before intraday triggers. If an intraday daily bar touches both stop and target without a known order, use the stop first. Stops, targets and code exits cannot be vetoed by an LLM. No final-period liquidation is forced.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "backtest",
+                  "source_locator": "aegistrade/engine.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -0.89989,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-10",
+                  "date": "2026-11-03",
+                  "source": "AegisTrade authored research policy",
+                  "title": "No trade",
+                  "text": "When the market is uncertain, indicators are insufficient, or risk limits fail, the system must abstain from entry.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "core_policy",
+                  "source_locator": "aegistrade/safety.py; aegistrade/workflow.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -1.54382,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                }
+              ],
+              "as_of": "2022-05-04",
+              "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+              "retrieval_mode": "neural"
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "single",
+            "turn": 1,
+            "tool_call_id": "call_X167g5jAV5oiMb2tFlJSagw5",
+            "tool": "search_dated_web",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "company_evidence": {
+                "ok": true,
+                "status": "SUFFICIENT",
+                "symbol": "NTPC",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+                "coverage": {
+                  "exchange_scan_complete": true,
+                  "invalid_timestamp_rows": 0,
+                  "metadata_rows": 41,
+                  "eligible_announcements": 39,
+                  "downloaded_documents": 5,
+                  "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                  "selected_documents_only": true
+                },
+                "reasons": [],
+                "limitations": [
+                  "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                  "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+                  "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+                  "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+                  "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                  "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+                ],
+                "documents": [
+                  {
+                    "id": "CMP-3993d1416d33a00d",
+                    "kind": "financial_results",
+                    "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+                    "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+                    "published_at": "2022-01-29T17:04:49+05:30",
+                    "available_at": "2022-01-29T17:06:02+05:30",
+                    "extraction_status": "readable",
+                    "financial_content_detected": true,
+                    "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+                  },
+                  {
+                    "id": "CMP-1ff8398258e21dd4",
+                    "kind": "company_news",
+                    "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+                    "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+                    "published_at": "2022-04-27T09:35:35+05:30",
+                    "available_at": "2022-04-27T09:35:41+05:30",
+                    "extraction_status": "readable",
+                    "financial_content_detected": false,
+                    "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+                  },
+                  {
+                    "id": "CMP-beebcaa69db7b4ed",
+                    "kind": "company_news",
+                    "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+                    "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+                    "published_at": "2022-01-31T18:14:53+05:30",
+                    "available_at": "2022-01-31T18:15:05+05:30",
+                    "extraction_status": "readable",
+                    "financial_content_detected": false,
+                    "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+                  },
+                  {
+                    "id": "CMP-cc55f3e1f9a3fa38",
+                    "kind": "announcement",
+                    "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+                    "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+                    "published_at": "2022-04-27T15:04:57+05:30",
+                    "available_at": "2022-04-27T15:05:01+05:30",
+                    "extraction_status": "readable",
+                    "financial_content_detected": false,
+                    "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+                  }
+                ],
+                "evidence_view_version": "company-view-v5-substantive-body",
+                "omitted_documents": [
+                  {
+                    "id": "CMP-44a6746498740fda",
+                    "kind": "financial_results",
+                    "available_at": "2022-03-29T12:59:03+05:30",
+                    "reason": "not substantive financial results"
+                  }
+                ],
+                "adverse_scan": {
+                  "ready": true,
+                  "version": "adverse-scan-v2-routine-notices",
+                  "citation_id": "SCAN-38508a9b2f5b2f56",
+                  "matched_document_ids": [],
+                  "candidate_count": 0,
+                  "window_start": "2021-11-05",
+                  "decision_at": "2022-05-04T15:30:00+05:30",
+                  "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                  "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+                },
+                "web_scan": {
+                  "version": "dated-web-v1",
+                  "citation_id": "WEBSCAN-a24a0a296ad67a99",
+                  "decision_at": "2022-05-04T15:30:00+05:30",
+                  "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                  "source_url": "https://html.duckduckgo.com/html/",
+                  "status": "SEARCHED_BUT_INSUFFICIENT",
+                  "accepted_document_ids": [],
+                  "attempted_queries": 2,
+                  "ready": false
+                },
+                "structural_action_documents": []
+              },
+              "previous_pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+              "search_audit": {
+                "version": "dated-web-v1",
+                "provider": "duckduckgo_html",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "attempted_at": "2026-11-17T08:19:08.979313+00:00",
+                "queries": [
+                  {
+                    "query": "NTPC financial results India after:2021-11-05 before:2022-05-05",
+                    "status": "searched",
+                    "returned": 8
+                  },
+                  {
+                    "query": "NTPC adverse regulatory default news India after:2021-11-05 before:2022-05-05",
+                    "status": "searched",
+                    "returned": 8
+                  }
+                ],
+                "sources": [
+                  {
+                    "url": "https://ntpc.co.in/investors/financial-performance/financial-results",
+                    "status": "rejected",
+                    "reason": "NO_VERIFIABLE_PUBLICATION_METADATA"
+                  },
+                  {
+                    "url": "https://ntpc.co.in/investors/annual-reports",
+                    "status": "rejected",
+                    "reason": "NO_VERIFIABLE_PUBLICATION_METADATA"
+                  },
+                  {
+                    "url": "https://economictimes.indiatimes.com/markets/stocks/news/bse-nse-impose-over-rs-59-lakh-penalty-on-ntpc-sjvn-rec-for-non-compliance/articleshow/133540750.cms",
+                    "status": "rejected",
+                    "reason": "PAGE_UPDATED_AFTER_DECISION"
+                  },
+                  {
+                    "url": "https://bfsi.economictimes.indiatimes.com/news/bse-nse-impose-over-rs-59-lakh-penalty-on-ntpc-sjvn-rec-for-non-compliance/133542074",
+                    "status": "rejected",
+                    "reason": "PAGE_UPDATED_AFTER_DECISION"
+                  }
+                ],
+                "accepted_document_ids": [],
+                "ready": false,
+                "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "status": "SEARCHED_BUT_INSUFFICIENT",
+                "citation_id": "WEBSCAN-a24a0a296ad67a99",
+                "source_url": "https://html.duckduckgo.com/html/"
+              },
+              "cached": true
+            },
+            "initiator": "model"
+          }
+        ],
+        "trajectory": [
+          {
+            "event": "plan_created",
+            "plan": {
+              "objective": "One agent gathers evidence and explains the constrained route",
+              "steps": [
+                "Gather market, strategy and policy observations",
+                "Generate and validate typed decision"
+              ],
+              "budget": {
+                "model_calls": 8,
+                "output_tokens": 3600,
+                "tool_calls": 16,
+                "context_characters": 36000
+              }
+            }
+          },
+          {
+            "event": "context_usage",
+            "agent": "single",
+            "turn": 1,
+            "characters": 11147,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "single",
+            "turn": 1,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "single",
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "reasoning": null,
+              "tool_calls": [
+                {
+                  "type": "function",
+                  "index": 0,
+                  "id": "call_O9KhZ12YIRDWdNK8YGOahrIW",
+                  "function": {
+                    "name": "market_snapshot",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 1,
+                  "id": "call_hV97NXtOlqOVtGcx3kwy6exv",
+                  "function": {
+                    "name": "company_evidence",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 2,
+                  "id": "call_ve6umBUzRShu9O9xfFGK6Ye0",
+                  "function": {
+                    "name": "check_strategy",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 3,
+                  "id": "call_ZyzifWmgbIzazJy1agZZMMkn",
+                  "function": {
+                    "name": "search_policy",
+                    "arguments": "{\"query\":\"entry\"}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 4,
+                  "id": "call_X167g5jAV5oiMb2tFlJSagw5",
+                  "function": {
+                    "name": "search_dated_web",
+                    "arguments": "{}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "event": "pre_tool",
+            "agent": "single",
+            "tool": "market_snapshot",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "single",
+            "tool": "market_snapshot",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "single",
+            "tool": "company_evidence",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "single",
+            "tool": "company_evidence",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "single",
+            "tool": "check_strategy",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "single",
+            "tool": "check_strategy",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "single",
+            "tool": "search_policy",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "single",
+            "tool": "search_policy",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "single",
+            "tool": "search_dated_web",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "single",
+            "tool": "search_dated_web",
+            "ok": true
+          },
+          {
+            "event": "context_usage",
+            "agent": "single",
+            "turn": 2,
+            "characters": 31706,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "single",
+            "turn": 2,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "single",
+            "message": {
+              "role": "assistant",
+              "content": "{\"strategy\":\"EMA_PULLBACK\",\"citations\":[\"POL-72\"],\"explanation\":\"NTPC shows a strong EMA_PULLBACK setup on 2022-05-04 with ADX above 22, Close above EMA20 and EMA50, and a recent pullback confirmed by price action. Company evidence is sufficient with recent financial results and corporate news, and no material adverse events found in the adverse scan. Coverage is adequate for entry under policy POL-72.\",\"company\":{\"status\":\"SUFFICIENT\",\"summary\":\"NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable profitability. Recent corporate news includes a strategic MOU for energy storage technology and issuance of unsecured debentures for capital expenditure. No material adverse events or unresolved risks detected in official disclosures or adverse scans.\",\"citations\":[\"CMP-3993d1416d33a00d\",\"CMP-1ff8398258e21dd4\",\"CMP-cc55f3e1f9a3fa38\",\"SCAN-38508a9b2f5b2f56\",\"WEBSCAN-a24a0a296ad67a99\"],\"event_risks\":[],\"limitations\":[\"Selected official filings and issuer news, not comprehensive independent press coverage.\",\"PDF extraction limited to first 35 pages; financial figures are not independently normalized.\"],\"adverse_risk\":\"NO_MATERIAL_ADVERSE_FOUND\"},\"portfolio_action\":\"ENTER\"}",
+              "refusal": null,
+              "reasoning": null
+            }
+          },
+          {
+            "event": "validation_failed",
+            "turn": 2,
+            "code": "COMPANY_CITATION_UNSUPPORTED",
+            "category": "EVIDENCE",
+            "agent": "single",
+            "message": "Company citation not observed/readable"
+          },
+          {
+            "event": "replan",
+            "agent": "single",
+            "reason": "Company citation not observed/readable",
+            "code": "COMPANY_CITATION_UNSUPPORTED",
+            "next_action": "Correct the specific field or evidence issue within the existing budget"
+          },
+          {
+            "event": "context_usage",
+            "agent": "single",
+            "turn": 3,
+            "characters": 33648,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "single",
+            "turn": 3,
+            "tool_choice": "none"
+          },
+          {
+            "event": "llm_response",
+            "agent": "single",
+            "message": {
+              "role": "assistant",
+              "content": "{\"strategy\":\"EMA_PULLBACK\",\"citations\":[\"POL-72\"],\"explanation\":\"NTPC shows a strong EMA_PULLBACK setup on 2022-05-04 with ADX above 22, Close above EMA20 and EMA50, and a recent pullback confirmed by price action. Company evidence is sufficient with recent financial results and corporate news, and no material adverse events found in the adverse scan. Coverage is adequate for entry under policy POL-72.\",\"company\":{\"status\":\"SUFFICIENT\",\"summary\":\"NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable profitability. Recent corporate news includes a strategic MOU for energy storage technology and issuance of unsecured debentures for capital expenditure. No material adverse events or unresolved risks detected in official disclosures or adverse scans.\",\"citations\":[\"CMP-3993d1416d33a00d\",\"CMP-1ff8398258e21dd4\",\"CMP-cc55f3e1f9a3fa38\",\"SCAN-38508a9b2f5b2f56\"],\"event_risks\":[],\"limitations\":[\"Selected official filings and issuer news, not comprehensive independent press coverage.\",\"PDF extraction limited to first 35 pages; financial figures are not independently normalized.\"],\"adverse_risk\":\"NO_MATERIAL_ADVERSE_FOUND\"},\"portfolio_action\":\"ENTER\"}",
+              "refusal": null,
+              "reasoning": null
+            }
+          },
+          {
+            "event": "typed_handoff",
+            "agent": "single",
+            "schema": "SingleJudgement",
+            "evidence_tools": [
+              "check_strategy",
+              "company_evidence",
+              "market_snapshot",
+              "search_dated_web",
+              "search_policy"
+            ],
+            "payload": {
+              "strategy": "EMA_PULLBACK",
+              "citations": [
+                "POL-72"
+              ],
+              "explanation": "NTPC shows a strong EMA_PULLBACK setup on 2022-05-04 with ADX above 22, Close above EMA20 and EMA50, and a recent pullback confirmed by price action. Company evidence is sufficient with recent financial results and corporate news, and no material adverse events found in the adverse scan. Coverage is adequate for entry under policy POL-72.",
+              "portfolio_action": "ENTER",
+              "company": {
+                "status": "SUFFICIENT",
+                "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+                "breakout_support": null,
+                "breakout_evidence": null,
+                "summary": "NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable profitability. Recent corporate news includes a strategic MOU for energy storage technology and issuance of unsecured debentures for capital expenditure. No material adverse events or unresolved risks detected in official disclosures or adverse scans.",
+                "citations": [
+                  "CMP-3993d1416d33a00d",
+                  "CMP-1ff8398258e21dd4",
+                  "CMP-cc55f3e1f9a3fa38",
+                  "SCAN-38508a9b2f5b2f56"
+                ],
+                "event_risks": [],
+                "limitations": [
+                  "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                  "PDF extraction limited to first 35 pages; financial figures are not independently normalized."
+                ]
+              }
+            }
+          }
+        ],
+        "handoffs": {
+          "single": {
+            "agent": "single",
+            "schema": "SingleJudgement",
+            "evidence_tools": [
+              "check_strategy",
+              "company_evidence",
+              "market_snapshot",
+              "search_dated_web",
+              "search_policy"
+            ],
+            "payload": {
+              "strategy": "EMA_PULLBACK",
+              "citations": [
+                "POL-72"
+              ],
+              "explanation": "NTPC shows a strong EMA_PULLBACK setup on 2022-05-04 with ADX above 22, Close above EMA20 and EMA50, and a recent pullback confirmed by price action. Company evidence is sufficient with recent financial results and corporate news, and no material adverse events found in the adverse scan. Coverage is adequate for entry under policy POL-72.",
+              "portfolio_action": "ENTER",
+              "company": {
+                "status": "SUFFICIENT",
+                "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+                "breakout_support": null,
+                "breakout_evidence": null,
+                "summary": "NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable profitability. Recent corporate news includes a strategic MOU for energy storage technology and issuance of unsecured debentures for capital expenditure. No material adverse events or unresolved risks detected in official disclosures or adverse scans.",
+                "citations": [
+                  "CMP-3993d1416d33a00d",
+                  "CMP-1ff8398258e21dd4",
+                  "CMP-cc55f3e1f9a3fa38",
+                  "SCAN-38508a9b2f5b2f56"
+                ],
+                "event_risks": [],
+                "limitations": [
+                  "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                  "PDF extraction limited to first 35 pages; financial figures are not independently normalized."
+                ]
+              }
+            }
+          }
+        },
+        "prompt_version": "2026-11-15-relative-materiality-v16",
+        "available_tools": [
+          "search_dated_web",
+          "market_snapshot",
+          "company_evidence",
+          "search_policy",
+          "check_strategy"
+        ],
+        "budget": {
+          "model_calls": 8,
+          "output_tokens": 3600,
+          "tool_calls": 16,
+          "context_characters": 36000
+        },
+        "note": "LLM research only; deterministic risk and human approval govern simulated orders.",
+        "tool_transport": "mcp",
+        "plan": {
+          "objective": "One agent gathers evidence and explains the constrained route",
+          "steps": [
+            "Gather market, strategy and policy observations",
+            "Generate and validate typed decision"
+          ],
+          "budget": {
+            "model_calls": 8,
+            "output_tokens": 3600,
+            "tool_calls": 16,
+            "context_characters": 36000
+          }
+        },
+        "company_research": {
+          "ok": true,
+          "status": "SUFFICIENT",
+          "symbol": "NTPC",
+          "decision_at": "2022-05-04T15:30:00+05:30",
+          "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+          "coverage": {
+            "exchange_scan_complete": true,
+            "invalid_timestamp_rows": 0,
+            "metadata_rows": 41,
+            "eligible_announcements": 39,
+            "downloaded_documents": 5,
+            "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+            "selected_documents_only": true
+          },
+          "reasons": [],
+          "limitations": [
+            "Selected official filings and issuer news, not comprehensive independent press coverage.",
+            "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+            "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+            "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+            "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+            "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+          ],
+          "documents": [
+            {
+              "id": "CMP-3993d1416d33a00d",
+              "kind": "financial_results",
+              "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+              "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+              "published_at": "2022-01-29T17:04:49+05:30",
+              "available_at": "2022-01-29T17:06:02+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": true,
+              "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+            },
+            {
+              "id": "CMP-1ff8398258e21dd4",
+              "kind": "company_news",
+              "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+              "published_at": "2022-04-27T09:35:35+05:30",
+              "available_at": "2022-04-27T09:35:41+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+            },
+            {
+              "id": "CMP-beebcaa69db7b4ed",
+              "kind": "company_news",
+              "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+              "published_at": "2022-01-31T18:14:53+05:30",
+              "available_at": "2022-01-31T18:15:05+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+            },
+            {
+              "id": "CMP-cc55f3e1f9a3fa38",
+              "kind": "announcement",
+              "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+              "published_at": "2022-04-27T15:04:57+05:30",
+              "available_at": "2022-04-27T15:05:01+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+            }
+          ],
+          "evidence_view_version": "company-view-v5-substantive-body",
+          "omitted_documents": [
+            {
+              "id": "CMP-44a6746498740fda",
+              "kind": "financial_results",
+              "available_at": "2022-03-29T12:59:03+05:30",
+              "reason": "not substantive financial results"
+            }
+          ],
+          "adverse_scan": {
+            "ready": true,
+            "version": "adverse-scan-v2-routine-notices",
+            "citation_id": "SCAN-38508a9b2f5b2f56",
+            "matched_document_ids": [],
+            "candidate_count": 0,
+            "window_start": "2021-11-05",
+            "decision_at": "2022-05-04T15:30:00+05:30",
+            "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+            "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+          },
+          "web_scan": {
+            "version": "dated-web-v1",
+            "citation_id": "WEBSCAN-a24a0a296ad67a99",
+            "decision_at": "2022-05-04T15:30:00+05:30",
+            "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+            "source_url": "https://html.duckduckgo.com/html/",
+            "status": "SEARCHED_BUT_INSUFFICIENT",
+            "accepted_document_ids": [],
+            "attempted_queries": 2,
+            "ready": false
+          },
+          "structural_action_documents": []
+        },
+        "company_assessment": {
+          "status": "SUFFICIENT",
+          "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+          "breakout_support": null,
+          "breakout_evidence": null,
+          "summary": "NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable profitability. Recent corporate news includes a strategic MOU for energy storage technology and issuance of unsecured debentures for capital expenditure. No material adverse events or unresolved risks detected in official disclosures or adverse scans.",
+          "citations": [
+            "CMP-3993d1416d33a00d",
+            "CMP-1ff8398258e21dd4",
+            "CMP-cc55f3e1f9a3fa38",
+            "SCAN-38508a9b2f5b2f56"
+          ],
+          "event_risks": [],
+          "limitations": [
+            "Selected official filings and issuer news, not comprehensive independent press coverage.",
+            "PDF extraction limited to first 35 pages; financial figures are not independently normalized."
+          ]
+        },
+        "portfolio_action": "ENTER",
+        "explanation": "NTPC shows a strong EMA_PULLBACK setup on 2022-05-04 with ADX above 22, Close above EMA20 and EMA50, and a recent pullback confirmed by price action. Company evidence is sufficient with recent financial results and corporate news, and no material adverse events found in the adverse scan. Coverage is adequate for entry under policy POL-72.",
+        "critic_accept": true,
+        "critic_reason": "No separate LLM critic in single-agent baseline; deterministic validation still applies.",
+        "dated_web_search": {
+          "status": "SEARCHED_BUT_INSUFFICIENT",
+          "cached": true,
+          "queries_recorded": 2,
+          "accepted_sources": 0
+        },
+        "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+        "usage": [
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 2414,
+            "completion_tokens": 79,
+            "total_tokens": 2493,
+            "cost": 0.0005544,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0005544,
+              "upstream_inference_prompt_cost": 0.000428,
+              "upstream_inference_completions_cost": 0.0001264
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 2.422
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 7273,
+            "completion_tokens": 297,
+            "total_tokens": 7570,
+            "cost": 0.0026932,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 2304,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0026932,
+              "upstream_inference_prompt_cost": 0.002218,
+              "upstream_inference_completions_cost": 0.0004752
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 4.791
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 7731,
+            "completion_tokens": 283,
+            "total_tokens": 8014,
+            "cost": 0.001318,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 7424,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.001318,
+              "upstream_inference_prompt_cost": 0.0008652,
+              "upstream_inference_completions_cost": 0.0004528
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 4.117
+          }
+        ],
+        "llm_calls": 3,
+        "tool_calls": 5,
+        "latency_s": 21.744,
+        "tools_observed": [
+          "check_strategy",
+          "company_evidence",
+          "market_snapshot",
+          "search_dated_web",
+          "search_policy"
+        ]
+      }
+    },
+    {
+      "case_id": "DEVELOPMENT_NTPC_PULLBACK-01",
+      "config": "C2",
+      "cost_usd": 0.0080256,
+      "output": {
+        "config": "C2",
+        "independent_critic": true,
+        "model": "openai/gpt-4.1-mini",
+        "inference": {
+          "backend": "openrouter",
+          "model": "openai/gpt-4.1-mini",
+          "budget_unit": "model_requests",
+          "adapter_version": "openrouter-v1"
+        },
+        "expected_strategy": "EMA_PULLBACK",
+        "research_purpose": "ENTRY",
+        "expected_regime": "PULLBACK",
+        "market_regime": "PULLBACK",
+        "selected_strategy": "EMA_PULLBACK",
+        "citations": [
+          "POL-72"
+        ],
+        "guard_pass": true,
+        "model_errors": [],
+        "tool_trace": [
+          {
+            "agent": "market",
+            "turn": 1,
+            "tool_call_id": "call_PL3dyGv78FAgOJQJjUTYDcpC",
+            "tool": "market_snapshot",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "data": {
+                "symbol": "NTPC",
+                "date": "2022-05-04",
+                "regime": "PULLBACK",
+                "Close": 158.65,
+                "RSI14": 62.07349167003486,
+                "ADX14": 47.220017467924045,
+                "EMA20": 154.1772367605496,
+                "EMA50": 146.1743142450487,
+                "ATR14": 4.3417024293468796,
+                "PriorHigh": 158.35,
+                "PullbackRecent": true,
+                "breakout_reentry": null,
+                "smc_context": null,
+                "research_purpose": "ENTRY",
+                "holding_context": null,
+                "selection_score": null,
+                "selection_rank": null,
+                "average_turnover_20_inr": null
+              },
+              "source": "historical research case; not a live quote"
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "market",
+            "turn": 1,
+            "tool_call_id": "call_DBk1tnPQljwbvlLrfnKyhGPN",
+            "tool": "company_evidence",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "status": "SUFFICIENT",
+              "symbol": "NTPC",
+              "decision_at": "2022-05-04T15:30:00+05:30",
+              "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+              "coverage": {
+                "exchange_scan_complete": true,
+                "invalid_timestamp_rows": 0,
+                "metadata_rows": 41,
+                "eligible_announcements": 39,
+                "downloaded_documents": 5,
+                "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "selected_documents_only": true
+              },
+              "reasons": [],
+              "limitations": [
+                "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+                "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+                "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+                "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+              ],
+              "documents": [
+                {
+                  "id": "CMP-3993d1416d33a00d",
+                  "kind": "financial_results",
+                  "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+                  "published_at": "2022-01-29T17:04:49+05:30",
+                  "available_at": "2022-01-29T17:06:02+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": true,
+                  "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+                },
+                {
+                  "id": "CMP-1ff8398258e21dd4",
+                  "kind": "company_news",
+                  "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+                  "published_at": "2022-04-27T09:35:35+05:30",
+                  "available_at": "2022-04-27T09:35:41+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+                },
+                {
+                  "id": "CMP-beebcaa69db7b4ed",
+                  "kind": "company_news",
+                  "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+                  "published_at": "2022-01-31T18:14:53+05:30",
+                  "available_at": "2022-01-31T18:15:05+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+                },
+                {
+                  "id": "CMP-cc55f3e1f9a3fa38",
+                  "kind": "announcement",
+                  "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+                  "published_at": "2022-04-27T15:04:57+05:30",
+                  "available_at": "2022-04-27T15:05:01+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+                }
+              ],
+              "evidence_view_version": "company-view-v5-substantive-body",
+              "omitted_documents": [
+                {
+                  "id": "CMP-44a6746498740fda",
+                  "kind": "financial_results",
+                  "available_at": "2022-03-29T12:59:03+05:30",
+                  "reason": "not substantive financial results"
+                }
+              ],
+              "adverse_scan": {
+                "ready": true,
+                "version": "adverse-scan-v2-routine-notices",
+                "citation_id": "SCAN-38508a9b2f5b2f56",
+                "matched_document_ids": [],
+                "candidate_count": 0,
+                "window_start": "2021-11-05",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+              },
+              "web_scan": {
+                "version": "dated-web-v1",
+                "citation_id": "WEBSCAN-a24a0a296ad67a99",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "source_url": "https://html.duckduckgo.com/html/",
+                "status": "SEARCHED_BUT_INSUFFICIENT",
+                "accepted_document_ids": [],
+                "attempted_queries": 2,
+                "ready": false
+              },
+              "structural_action_documents": []
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "strategy",
+            "turn": 1,
+            "tool_call_id": "call_mF5G3iEZWuggN154k9juasjp",
+            "tool": "check_strategy",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "data": {
+                "approved_strategy": "EMA_PULLBACK",
+                "permitted_portfolio_actions": [
+                  "ENTER"
+                ],
+                "constraint": "Code-defined research route; entry signal and risk checks remain separate."
+              }
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "strategy",
+            "turn": 1,
+            "tool_call_id": "call_MAbYT2XwoIyKE6dIlbGbV2mB",
+            "tool": "search_policy",
+            "arguments": "{\"query\":\"trend pullback ADX EMA RSI NTPC\"}",
+            "observation": {
+              "ok": true,
+              "results": [
+                {
+                  "id": "POL-72",
+                  "date": "2026-11-12",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Strategy-specific evidence, coverage gaps and adverse-news exits",
+                  "text": "C2 always checks dated evidence before a permitted action. For a code-qualified strong EMA_TREND or confirmed EMA_PULLBACK entry (ADX at least 22, Close above EMA20 above EMA50) or RSI_REVERSION (RSI below 42, Close above 0.88 EMA50), missing financial or independent news coverage alone is not an entry veto. Inspect company evidence and attempt bounded dated web retrieval when coverage is missing or unknown. With no identified concrete unresolved adverse event, a LIMITED assessment may use COVERAGE_LIMITED, an observed attempted WEBSCAN or ready official SCAN citation, empty event_risks and explicit coverage limitations. This permits following the technical signal with residual evidence risk; it never establishes clean fundamentals, safety or profit. Concrete potentially serious unresolved event risk remains UNKNOWN and blocks entry; it cannot be hidden as a mere coverage gap. A ready supported scan with no adverse finding can use NO_MATERIAL_ADVERSE_FOUND. BREAKOUT (including BREAKOUT_BOUNCE) entry requires readable dated corroborating company evidence, exact document citations, breakout_support explaining the source-backed support, and a supported adverse assessment. COVERAGE_LIMITED cannot justify breakout. Actual cited adverse news uses REVIEW_REQUIRED with ADVERSE_EVENT_FOUND or MATERIAL_ADVERSE and nonempty supported event_risks. Both adverse categories block entry; in a holding review they require EXIT after independent critic verification. A genuine adverse event, not a negative keyword, is necessary. A routine penalty or notice that is not material under POL-MAT-01 is a limitation, not an adverse event. Routine trading-window closure for insiders is not business closure or proof of insider wrongdoing. Interpret substantive disclosure_context and exact source windows; do not treat address fragments as monetary exposure. Attribute issuer-reported Nil and preserve missing impact as unknown. Market and critic independently read the current hashed company pack and observed policy evidence. Daily bounded official issuer metadata checks can trigger holding research between scheduled reviews; empty checks make no generation call. Publication and availability must be at or before the historical cutoff; after-close releases are first considered at a later eligible close. A confirmed exit queues a later-open simulated sale, with existing gap/stop/profit protections; no same-close look-ahead and no forced end-period liquidation. Stops, fees, position sizing, Friday/gap refresh, human approval where required and execution remain code controlled. Search failures and truncated sources are recorded; a live dated web lookup is not a certified historical content archive or exhaustive news feed. Lessons cannot override this policy or the independent critic. Breakout corroboration must be structured as document_id, kind, exact contiguous visible quote and relevance, with source availability no more than 30 calendar days before the signal cutoff. Code checks a reported benefit metric and an earnings/operating improvement or completed commercial event; prose alone, an auditor review, vague business focus, provider selection or a prospective forecast is insufficient. Sole support consisting of plans, expected/indicated gains or up-to targets is not an achieved result. The independent critic must separately quote and corroborate the same source; accept=true alone is insufficient. A structurally valid source and critic approval still do not predict price direction. Known recent explicit structural-action disclosures also invoke the raw-price entry quarantine in POL-60. Reject unsupported quotes rather than invent missing evidence; later profit or loss must never select a historical entry.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "execution",
+                  "source_locator": "aegistrade/signal_evidence.py; aegistrade/company_research.py; aegistrade/agentic.py; aegistrade/c2_portfolio.py; aegistrade/breakout_evidence.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": 2.98592,
+                  "retrieval_mode": "exact_id",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-21",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Trend regime classification",
+                  "text": "TREND requires ADX14 at least 22 and EMA20 above EMA50, after higher-priority warm-up, high-volatility and breakout checks. Code permits EMA_TREND for this regime. A permitted route is distinct from an entry signal and does not guarantee an executable or profitable order.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "regime",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": 2.3453,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-29",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Breakout strategy entry and exit",
+                  "text": "BREAKOUT enters on a ready row when Close exceeds the shifted prior 20-session high and ADX14 is at least 18. Its signal exit is Close below EMA20. The current high is not included in Prior20High, preventing a same-session high from entering its own comparison window. Breakout uses separately configured risk (default 0.5% equity), initial stop 2.5 ATR, trailing 2.5 entry ATR activated after 1R close gain. Stop fills first. One later confirmed re-entry per setup is allowed within ten trading sessions: close above stopped level, EMA20 and previous high; ADX>=18; no high-vol or warmup. Fresh C2 and the same strict recent source quote and independent critic are mandatory. Fill at a later eligible open. No same-candle rebuy or averaging down. A second stop exhausts the setup; profit/adverse exits do not create rebound watches. The approved catalogue includes EMA_PULLBACK for PULLBACK: ADX14>=22, EMA20>EMA50, an EMA20 touch holding EMA50 in a prior three-session window, followed by a completed close above EMA20 and prior-session high. Exit on EMA20<EMA50, or code protective/profit/C2 exits. Routing gives this confirmed pullback priority over breakout. BREAKOUT_BOUNCE is portfolio-owned stop/rebound context and routes only to BREAKOUT.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": 0.22305,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-26",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "EMA trend exit",
+                  "text": "The EMA_TREND signal exit is EMA20 below EMA50. The historical engine queues that exit for a subsequent eligible open and also applies protective-stop logic. A model explanation cannot modify the moving-average windows or submit an unapproved external-style exit.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py; aegistrade/engine.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -0.41996,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-25",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "EMA trend entry",
+                  "text": "EMA_TREND enters only on a ready row with EMA20 above EMA50 and Close above EMA20. Both moving averages and the closing price are numerical code evidence, not LLM estimates. A signal from a completed close is only eligible for a later-session historical fill.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -1.29789,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                }
+              ],
+              "as_of": "2022-05-04",
+              "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+              "retrieval_mode": "neural"
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "critic",
+            "turn": 1,
+            "tool_call_id": "call_dkPiITKK5O5dS0M9YMIUThTd",
+            "tool": "company_evidence",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "status": "SUFFICIENT",
+              "symbol": "NTPC",
+              "decision_at": "2022-05-04T15:30:00+05:30",
+              "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+              "coverage": {
+                "exchange_scan_complete": true,
+                "invalid_timestamp_rows": 0,
+                "metadata_rows": 41,
+                "eligible_announcements": 39,
+                "downloaded_documents": 5,
+                "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "selected_documents_only": true
+              },
+              "reasons": [],
+              "limitations": [
+                "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+                "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+                "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+                "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+              ],
+              "documents": [
+                {
+                  "id": "CMP-3993d1416d33a00d",
+                  "kind": "financial_results",
+                  "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+                  "published_at": "2022-01-29T17:04:49+05:30",
+                  "available_at": "2022-01-29T17:06:02+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": true,
+                  "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+                },
+                {
+                  "id": "CMP-1ff8398258e21dd4",
+                  "kind": "company_news",
+                  "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+                  "published_at": "2022-04-27T09:35:35+05:30",
+                  "available_at": "2022-04-27T09:35:41+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+                },
+                {
+                  "id": "CMP-beebcaa69db7b4ed",
+                  "kind": "company_news",
+                  "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+                  "published_at": "2022-01-31T18:14:53+05:30",
+                  "available_at": "2022-01-31T18:15:05+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+                },
+                {
+                  "id": "CMP-cc55f3e1f9a3fa38",
+                  "kind": "announcement",
+                  "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+                  "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+                  "published_at": "2022-04-27T15:04:57+05:30",
+                  "available_at": "2022-04-27T15:05:01+05:30",
+                  "extraction_status": "readable",
+                  "financial_content_detected": false,
+                  "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+                }
+              ],
+              "evidence_view_version": "company-view-v5-substantive-body",
+              "omitted_documents": [
+                {
+                  "id": "CMP-44a6746498740fda",
+                  "kind": "financial_results",
+                  "available_at": "2022-03-29T12:59:03+05:30",
+                  "reason": "not substantive financial results"
+                }
+              ],
+              "adverse_scan": {
+                "ready": true,
+                "version": "adverse-scan-v2-routine-notices",
+                "citation_id": "SCAN-38508a9b2f5b2f56",
+                "matched_document_ids": [],
+                "candidate_count": 0,
+                "window_start": "2021-11-05",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+                "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+              },
+              "web_scan": {
+                "version": "dated-web-v1",
+                "citation_id": "WEBSCAN-a24a0a296ad67a99",
+                "decision_at": "2022-05-04T15:30:00+05:30",
+                "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+                "source_url": "https://html.duckduckgo.com/html/",
+                "status": "SEARCHED_BUT_INSUFFICIENT",
+                "accepted_document_ids": [],
+                "attempted_queries": 2,
+                "ready": false
+              },
+              "structural_action_documents": []
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "critic",
+            "turn": 1,
+            "tool_call_id": "call_n1wI8gweeqT1RjQYszZcje0w",
+            "tool": "check_strategy",
+            "arguments": "{}",
+            "observation": {
+              "ok": true,
+              "data": {
+                "approved_strategy": "EMA_PULLBACK",
+                "permitted_portfolio_actions": [
+                  "ENTER"
+                ],
+                "constraint": "Code-defined research route; entry signal and risk checks remain separate."
+              }
+            },
+            "initiator": "model"
+          },
+          {
+            "agent": "critic",
+            "turn": 1,
+            "tool_call_id": "call_9jU7FBvjRLzHq7Ygr4rTrSbv",
+            "tool": "search_policy",
+            "arguments": "{\"query\":\"EMA_PULLBACK\"}",
+            "observation": {
+              "ok": true,
+              "results": [
+                {
+                  "id": "POL-72",
+                  "date": "2026-11-12",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Strategy-specific evidence, coverage gaps and adverse-news exits",
+                  "text": "C2 always checks dated evidence before a permitted action. For a code-qualified strong EMA_TREND or confirmed EMA_PULLBACK entry (ADX at least 22, Close above EMA20 above EMA50) or RSI_REVERSION (RSI below 42, Close above 0.88 EMA50), missing financial or independent news coverage alone is not an entry veto. Inspect company evidence and attempt bounded dated web retrieval when coverage is missing or unknown. With no identified concrete unresolved adverse event, a LIMITED assessment may use COVERAGE_LIMITED, an observed attempted WEBSCAN or ready official SCAN citation, empty event_risks and explicit coverage limitations. This permits following the technical signal with residual evidence risk; it never establishes clean fundamentals, safety or profit. Concrete potentially serious unresolved event risk remains UNKNOWN and blocks entry; it cannot be hidden as a mere coverage gap. A ready supported scan with no adverse finding can use NO_MATERIAL_ADVERSE_FOUND. BREAKOUT (including BREAKOUT_BOUNCE) entry requires readable dated corroborating company evidence, exact document citations, breakout_support explaining the source-backed support, and a supported adverse assessment. COVERAGE_LIMITED cannot justify breakout. Actual cited adverse news uses REVIEW_REQUIRED with ADVERSE_EVENT_FOUND or MATERIAL_ADVERSE and nonempty supported event_risks. Both adverse categories block entry; in a holding review they require EXIT after independent critic verification. A genuine adverse event, not a negative keyword, is necessary. A routine penalty or notice that is not material under POL-MAT-01 is a limitation, not an adverse event. Routine trading-window closure for insiders is not business closure or proof of insider wrongdoing. Interpret substantive disclosure_context and exact source windows; do not treat address fragments as monetary exposure. Attribute issuer-reported Nil and preserve missing impact as unknown. Market and critic independently read the current hashed company pack and observed policy evidence. Daily bounded official issuer metadata checks can trigger holding research between scheduled reviews; empty checks make no generation call. Publication and availability must be at or before the historical cutoff; after-close releases are first considered at a later eligible close. A confirmed exit queues a later-open simulated sale, with existing gap/stop/profit protections; no same-close look-ahead and no forced end-period liquidation. Stops, fees, position sizing, Friday/gap refresh, human approval where required and execution remain code controlled. Search failures and truncated sources are recorded; a live dated web lookup is not a certified historical content archive or exhaustive news feed. Lessons cannot override this policy or the independent critic. Breakout corroboration must be structured as document_id, kind, exact contiguous visible quote and relevance, with source availability no more than 30 calendar days before the signal cutoff. Code checks a reported benefit metric and an earnings/operating improvement or completed commercial event; prose alone, an auditor review, vague business focus, provider selection or a prospective forecast is insufficient. Sole support consisting of plans, expected/indicated gains or up-to targets is not an achieved result. The independent critic must separately quote and corroborate the same source; accept=true alone is insufficient. A structurally valid source and critic approval still do not predict price direction. Known recent explicit structural-action disclosures also invoke the raw-price entry quarantine in POL-60. Reject unsupported quotes rather than invent missing evidence; later profit or loss must never select a historical entry.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "execution",
+                  "source_locator": "aegistrade/signal_evidence.py; aegistrade/company_research.py; aegistrade/agentic.py; aegistrade/c2_portfolio.py; aegistrade/breakout_evidence.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": 1.94018,
+                  "retrieval_mode": "exact_id",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-29",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Breakout strategy entry and exit",
+                  "text": "BREAKOUT enters on a ready row when Close exceeds the shifted prior 20-session high and ADX14 is at least 18. Its signal exit is Close below EMA20. The current high is not included in Prior20High, preventing a same-session high from entering its own comparison window. Breakout uses separately configured risk (default 0.5% equity), initial stop 2.5 ATR, trailing 2.5 entry ATR activated after 1R close gain. Stop fills first. One later confirmed re-entry per setup is allowed within ten trading sessions: close above stopped level, EMA20 and previous high; ADX>=18; no high-vol or warmup. Fresh C2 and the same strict recent source quote and independent critic are mandatory. Fill at a later eligible open. No same-candle rebuy or averaging down. A second stop exhausts the setup; profit/adverse exits do not create rebound watches. The approved catalogue includes EMA_PULLBACK for PULLBACK: ADX14>=22, EMA20>EMA50, an EMA20 touch holding EMA50 in a prior three-session window, followed by a completed close above EMA20 and prior-session high. Exit on EMA20<EMA50, or code protective/profit/C2 exits. Routing gives this confirmed pullback priority over breakout. BREAKOUT_BOUNCE is portfolio-owned stop/rebound context and routes only to BREAKOUT.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": 2.41619,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-26",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "EMA trend exit",
+                  "text": "The EMA_TREND signal exit is EMA20 below EMA50. The historical engine queues that exit for a subsequent eligible open and also applies protective-stop logic. A model explanation cannot modify the moving-average windows or submit an unapproved external-style exit.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py; aegistrade/engine.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -0.039,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-25",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "EMA trend entry",
+                  "text": "EMA_TREND enters only on a ready row with EMA20 above EMA50 and Close above EMA20. Both moving averages and the closing price are numerical code evidence, not LLM estimates. A signal from a completed close is only eligible for a later-session historical fill.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "strategy",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -1.52983,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                },
+                {
+                  "id": "POL-21",
+                  "date": "2026-11-09",
+                  "source": "AegisTrade code-derived project specification",
+                  "title": "Trend regime classification",
+                  "text": "TREND requires ADX14 at least 22 and EMA20 above EMA50, after higher-priority warm-up, high-volatility and breakout checks. Code permits EMA_TREND for this regime. A permitted route is distinct from an entry signal and does not guarantee an executable or profitable order.",
+                  "authority": "project_policy",
+                  "date_kind": "authored",
+                  "topic": "regime",
+                  "source_locator": "aegistrade/strategies.py",
+                  "review_status": "code_checked_pending_team_review",
+                  "retrieval_score": -2.61251,
+                  "retrieval_mode": "neural",
+                  "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb"
+                }
+              ],
+              "as_of": "2022-05-04",
+              "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+              "retrieval_mode": "neural"
+            },
+            "initiator": "model"
+          }
+        ],
+        "trajectory": [
+          {
+            "event": "plan_created",
+            "plan": {
+              "objective": "Explain a policy-permitted historical research route",
+              "steps": [
+                "Market specialist",
+                "Strategy specialist",
+                "Compliance critic",
+                "Deterministic final guard"
+              ],
+              "budget": {
+                "model_calls": 8,
+                "output_tokens": 3600,
+                "tool_calls": 16,
+                "context_characters": 36000
+              },
+              "symbol": "NTPC",
+              "date": "2022-05-04"
+            }
+          },
+          {
+            "event": "context_usage",
+            "agent": "market",
+            "turn": 1,
+            "characters": 9429,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "market",
+            "turn": 1,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "market",
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "reasoning": null,
+              "tool_calls": [
+                {
+                  "type": "function",
+                  "index": 0,
+                  "id": "call_PL3dyGv78FAgOJQJjUTYDcpC",
+                  "function": {
+                    "name": "market_snapshot",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 1,
+                  "id": "call_DBk1tnPQljwbvlLrfnKyhGPN",
+                  "function": {
+                    "name": "company_evidence",
+                    "arguments": "{}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "event": "pre_tool",
+            "agent": "market",
+            "tool": "market_snapshot",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "market",
+            "tool": "market_snapshot",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "market",
+            "tool": "company_evidence",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "market",
+            "tool": "company_evidence",
+            "ok": true
+          },
+          {
+            "event": "context_usage",
+            "agent": "market",
+            "turn": 2,
+            "characters": 20113,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "market",
+            "turn": 2,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "market",
+            "message": {
+              "role": "assistant",
+              "content": "{\"regime\":\"PULLBACK\",\"explanation\":\"Technical indicators on 2022-05-04 show a strong trend pullback: ADX is 47.22 (strong trend), Close price 158.65 is above EMA20 (154.18) and EMA50 (146.17), and the recent price action confirms a pullback with the Close above EMA20 and prior session high.\",\"company\":{\"status\":\"SUFFICIENT\",\"summary\":\"NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable revenue and profit. Recent corporate actions include a strategic MOU with Energy Vault for energy storage technology and issuance of unsecured non-convertible debentures of Rs.1,500 crore for capital expenditure and refinancing. No material adverse events were found in official disclosures or adverse scans.\",\"citations\":[\"CMP-3993d1416d33a00d\",\"CMP-1ff8398258e21dd4\",\"CMP-cc55f3e1f9a3fa38\",\"SCAN-38508a9b2f5b2f56\"],\"event_risks\":[],\"limitations\":[\"Selected official filings and issuer news, not comprehensive independent press coverage.\",\"PDF extraction limited to first 35 pages; financial figures are not independently normalized.\"],\"adverse_risk\":\"NO_MATERIAL_ADVERSE_FOUND\"}}",
+              "refusal": null,
+              "reasoning": null
+            }
+          },
+          {
+            "event": "typed_handoff",
+            "agent": "market",
+            "schema": "MarketJudgement",
+            "evidence_tools": [
+              "company_evidence",
+              "market_snapshot"
+            ],
+            "payload": {
+              "regime": "PULLBACK",
+              "explanation": "Technical indicators on 2022-05-04 show a strong trend pullback: ADX is 47.22 (strong trend), Close price 158.65 is above EMA20 (154.18) and EMA50 (146.17), and the recent price action confirms a pullback with the Close above EMA20 and prior session high.",
+              "company": {
+                "status": "SUFFICIENT",
+                "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+                "breakout_support": null,
+                "breakout_evidence": null,
+                "summary": "NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable revenue and profit. Recent corporate actions include a strategic MOU with Energy Vault for energy storage technology and issuance of unsecured non-convertible debentures of Rs.1,500 crore for capital expenditure and refinancing. No material adverse events were found in official disclosures or adverse scans.",
+                "citations": [
+                  "CMP-3993d1416d33a00d",
+                  "CMP-1ff8398258e21dd4",
+                  "CMP-cc55f3e1f9a3fa38",
+                  "SCAN-38508a9b2f5b2f56"
+                ],
+                "event_risks": [],
+                "limitations": [
+                  "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                  "PDF extraction limited to first 35 pages; financial figures are not independently normalized."
+                ]
+              }
+            }
+          },
+          {
+            "event": "context_usage",
+            "agent": "strategy",
+            "turn": 1,
+            "characters": 8952,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "strategy",
+            "turn": 1,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "strategy",
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "reasoning": null,
+              "tool_calls": [
+                {
+                  "type": "function",
+                  "index": 0,
+                  "id": "call_mF5G3iEZWuggN154k9juasjp",
+                  "function": {
+                    "name": "check_strategy",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 1,
+                  "id": "call_MAbYT2XwoIyKE6dIlbGbV2mB",
+                  "function": {
+                    "name": "search_policy",
+                    "arguments": "{\"query\":\"trend pullback ADX EMA RSI NTPC\"}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "event": "pre_tool",
+            "agent": "strategy",
+            "tool": "check_strategy",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "strategy",
+            "tool": "check_strategy",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "strategy",
+            "tool": "search_policy",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "strategy",
+            "tool": "search_policy",
+            "ok": true
+          },
+          {
+            "event": "context_usage",
+            "agent": "strategy",
+            "turn": 2,
+            "characters": 18216,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "strategy",
+            "turn": 2,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "strategy",
+            "message": {
+              "role": "assistant",
+              "content": "{\"strategy\":\"EMA_PULLBACK\",\"citations\":[\"POL-72\"],\"explanation\":\"On 2022-05-04, NTPC shows a strong trend pullback with ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming a pullback. The company has stable financial results and no material adverse events found in official disclosures or scans (NO_MATERIAL_ADVERSE_FOUND). Coverage limitations exist due to selected filings and limited independent press, but no unresolved adverse events block entry. The EMA_PULLBACK strategy is permitted and supported by policy POL-72.\",\"portfolio_action\":\"ENTER\"}",
+              "refusal": null,
+              "reasoning": null
+            }
+          },
+          {
+            "event": "typed_handoff",
+            "agent": "strategy",
+            "schema": "StrategyJudgement",
+            "evidence_tools": [
+              "check_strategy",
+              "search_policy"
+            ],
+            "payload": {
+              "strategy": "EMA_PULLBACK",
+              "citations": [
+                "POL-72"
+              ],
+              "explanation": "On 2022-05-04, NTPC shows a strong trend pullback with ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming a pullback. The company has stable financial results and no material adverse events found in official disclosures or scans (NO_MATERIAL_ADVERSE_FOUND). Coverage limitations exist due to selected filings and limited independent press, but no unresolved adverse events block entry. The EMA_PULLBACK strategy is permitted and supported by policy POL-72.",
+              "portfolio_action": "ENTER"
+            }
+          },
+          {
+            "event": "context_usage",
+            "agent": "critic",
+            "turn": 1,
+            "characters": 10147,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "critic",
+            "turn": 1,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "critic",
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "reasoning": null,
+              "tool_calls": [
+                {
+                  "type": "function",
+                  "index": 0,
+                  "id": "call_dkPiITKK5O5dS0M9YMIUThTd",
+                  "function": {
+                    "name": "company_evidence",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 1,
+                  "id": "call_n1wI8gweeqT1RjQYszZcje0w",
+                  "function": {
+                    "name": "check_strategy",
+                    "arguments": "{}"
+                  }
+                },
+                {
+                  "type": "function",
+                  "index": 2,
+                  "id": "call_9jU7FBvjRLzHq7Ygr4rTrSbv",
+                  "function": {
+                    "name": "search_policy",
+                    "arguments": "{\"query\":\"EMA_PULLBACK\"}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "event": "pre_tool",
+            "agent": "critic",
+            "tool": "company_evidence",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "critic",
+            "tool": "company_evidence",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "critic",
+            "tool": "check_strategy",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "critic",
+            "tool": "check_strategy",
+            "ok": true
+          },
+          {
+            "event": "pre_tool",
+            "agent": "critic",
+            "tool": "search_policy",
+            "permission": "read",
+            "allowed": true,
+            "initiator": "model"
+          },
+          {
+            "event": "post_tool",
+            "agent": "critic",
+            "tool": "search_policy",
+            "ok": true
+          },
+          {
+            "event": "context_usage",
+            "agent": "critic",
+            "turn": 2,
+            "characters": 29288,
+            "limit": 36000
+          },
+          {
+            "event": "llm_request",
+            "agent": "critic",
+            "turn": 2,
+            "tool_choice": "auto"
+          },
+          {
+            "event": "llm_response",
+            "agent": "critic",
+            "message": {
+              "role": "assistant",
+              "content": "{\"accept\":true,\"reason\":\"NTPC on 2022-05-04 meets the EMA_PULLBACK strategy criteria with a strong trend pullback: ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming the pullback. The company has stable unaudited standalone financial results for the quarter ended December 31, 2021, with no material adverse events found in official disclosures or adverse scans (SCAN-38508a9b2f5b2f56). The strategy POL-72 permits entry despite limited independent news coverage, supported by a ready adverse scan showing no material adverse findings. Limitations include selected official filings and limited independent press coverage, and some PDF extraction uncertainties. No unresolved adverse events or material risks block entry.\"}",
+              "refusal": null,
+              "reasoning": null
+            }
+          },
+          {
+            "event": "typed_handoff",
+            "agent": "critic",
+            "schema": "CriticJudgement",
+            "evidence_tools": [
+              "check_strategy",
+              "company_evidence",
+              "search_policy"
+            ],
+            "payload": {
+              "accept": true,
+              "reason": "NTPC on 2022-05-04 meets the EMA_PULLBACK strategy criteria with a strong trend pullback: ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming the pullback. The company has stable unaudited standalone financial results for the quarter ended December 31, 2021, with no material adverse events found in official disclosures or adverse scans (SCAN-38508a9b2f5b2f56). The strategy POL-72 permits entry despite limited independent news coverage, supported by a ready adverse scan showing no material adverse findings. Limitations include selected official filings and limited independent press coverage, and some PDF extraction uncertainties. No unresolved adverse events or material risks block entry.",
+              "breakout_evidence": null
+            }
+          }
+        ],
+        "handoffs": {
+          "market": {
+            "agent": "market",
+            "schema": "MarketJudgement",
+            "evidence_tools": [
+              "company_evidence",
+              "market_snapshot"
+            ],
+            "payload": {
+              "regime": "PULLBACK",
+              "explanation": "Technical indicators on 2022-05-04 show a strong trend pullback: ADX is 47.22 (strong trend), Close price 158.65 is above EMA20 (154.18) and EMA50 (146.17), and the recent price action confirms a pullback with the Close above EMA20 and prior session high.",
+              "company": {
+                "status": "SUFFICIENT",
+                "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+                "breakout_support": null,
+                "breakout_evidence": null,
+                "summary": "NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable revenue and profit. Recent corporate actions include a strategic MOU with Energy Vault for energy storage technology and issuance of unsecured non-convertible debentures of Rs.1,500 crore for capital expenditure and refinancing. No material adverse events were found in official disclosures or adverse scans.",
+                "citations": [
+                  "CMP-3993d1416d33a00d",
+                  "CMP-1ff8398258e21dd4",
+                  "CMP-cc55f3e1f9a3fa38",
+                  "SCAN-38508a9b2f5b2f56"
+                ],
+                "event_risks": [],
+                "limitations": [
+                  "Selected official filings and issuer news, not comprehensive independent press coverage.",
+                  "PDF extraction limited to first 35 pages; financial figures are not independently normalized."
+                ]
+              }
+            }
+          },
+          "strategy": {
+            "agent": "strategy",
+            "schema": "StrategyJudgement",
+            "evidence_tools": [
+              "check_strategy",
+              "search_policy"
+            ],
+            "payload": {
+              "strategy": "EMA_PULLBACK",
+              "citations": [
+                "POL-72"
+              ],
+              "explanation": "On 2022-05-04, NTPC shows a strong trend pullback with ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming a pullback. The company has stable financial results and no material adverse events found in official disclosures or scans (NO_MATERIAL_ADVERSE_FOUND). Coverage limitations exist due to selected filings and limited independent press, but no unresolved adverse events block entry. The EMA_PULLBACK strategy is permitted and supported by policy POL-72.",
+              "portfolio_action": "ENTER"
+            }
+          },
+          "critic": {
+            "agent": "critic",
+            "schema": "CriticJudgement",
+            "evidence_tools": [
+              "check_strategy",
+              "company_evidence",
+              "search_policy"
+            ],
+            "payload": {
+              "accept": true,
+              "reason": "NTPC on 2022-05-04 meets the EMA_PULLBACK strategy criteria with a strong trend pullback: ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming the pullback. The company has stable unaudited standalone financial results for the quarter ended December 31, 2021, with no material adverse events found in official disclosures or adverse scans (SCAN-38508a9b2f5b2f56). The strategy POL-72 permits entry despite limited independent news coverage, supported by a ready adverse scan showing no material adverse findings. Limitations include selected official filings and limited independent press coverage, and some PDF extraction uncertainties. No unresolved adverse events or material risks block entry.",
+              "breakout_evidence": null
+            }
+          }
+        },
+        "prompt_version": "2026-11-15-relative-materiality-v16",
+        "available_tools": [
+          "search_dated_web",
+          "market_snapshot",
+          "company_evidence",
+          "search_policy",
+          "check_strategy"
+        ],
+        "budget": {
+          "model_calls": 8,
+          "output_tokens": 3600,
+          "tool_calls": 16,
+          "context_characters": 36000
+        },
+        "note": "LLM research only; deterministic risk and human approval govern simulated orders.",
+        "tool_transport": "mcp",
+        "company_research": {
+          "ok": true,
+          "status": "SUFFICIENT",
+          "symbol": "NTPC",
+          "decision_at": "2022-05-04T15:30:00+05:30",
+          "pack_sha256": "4437aa7e424cbcd097f0ff7ead2c026fc06b8c20b7a3a7931ccf40838931c7cc",
+          "coverage": {
+            "exchange_scan_complete": true,
+            "invalid_timestamp_rows": 0,
+            "metadata_rows": 41,
+            "eligible_announcements": 39,
+            "downloaded_documents": 5,
+            "source": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+            "selected_documents_only": true
+          },
+          "reasons": [],
+          "limitations": [
+            "Selected official filings and issuer news, not comprehensive independent press coverage.",
+            "PDF extraction limited to first 35 pages; financial figures are not independently normalized.",
+            "Archive retrieved now; exchange disclosure timestamp is the availability evidence, not a certified historical content-version chain.",
+            "Some selected filings use local machine OCR; numerical/table-column accuracy is unverified. Inspect the original source PDF before relying on extracted figures.",
+            "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+            "Model view prioritizes one recent substantive financial source; secondary excerpts are shorter and unavailable/non-financial attachments are listed separately. Full source text and metadata remain in the hashed pack."
+          ],
+          "documents": [
+            {
+              "id": "CMP-3993d1416d33a00d",
+              "kind": "financial_results",
+              "title": "Financial Result Updates \u2014 NTPC Limited has submitted to the Exchange, the financial results for the period ended December 31, 2021.",
+              "source_url": "https://nsearchives.nseindia.com/corporate/Q3FY22FRNTPC_29012022170449.pdf",
+              "published_at": "2022-01-29T17:04:49+05:30",
+              "available_at": "2022-01-29T17:06:02+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": true,
+              "excerpt": "FINANCIAL STATEMENT CONTEXT (verbatim; read column periods and basis):\n\nWebsite : www.ntpc.co.in\nNTPC LIMITED\nRegd Office: NTPC Bhawan, SCOPE Complex, 7 Institutional area, Lodhi Road, New Delhi -110003\nCIN-L40101 DL 1975GOI007966, website: www.ntpc.co.in\nSTATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTHS ENDED\n31 DECEMBER 2021\nSI.\nNo.\nParticulars\nIncome\n(a) Revenue from operations\n(b) Other income\nTotal Income (a+b)\n2\n2 Expenses\n(a) Fuel cost\n(b) Electricity purchased for trading\n(c) Employee benefits expense\n(d) Finance costs\n(e) Depreciation and amortisation expense\n(f) Other expenses\nTotal expenses (a+b+c+d+e+f)\n3 Profit before exceptional Items, tax and regulatory deferral\naccount balances (1-2)\n4 Exceptional items-(income) / expense (Refer Note 9)\n5 Profit before tax and regulatory deferral account balances\n(3-4)\n6 Tax expense:\n(a) Current tax (Refer Note 10)\n(b) Deferred tax\nTotal tax expense (a+b)\n7 Profit before regulatory deferral account balances (5-6)\n8 Net movement in regulatory deferral account balances (net of\ntax)\n9 Profit for the period (7+8)\n10 Other comprehensive income\nItems that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\n(b) Net gains/(losses) on fair value of equity instruments\nIncome tax on items that will not be reclassified to profit or loss\n(a) Net acturial gains/(losses) on defined benefit plans\nOther comprehensive income for the period (net of tax)\n11 Total comprehensive income for the period (9+10)\n12 Earnings per share (of\u00b7 10/- each) - (not annualised) (including\nnet movement in regulatory deferral account balances): Basic\nand Diluted (in ')\n13 Earnings per share (of \u00b7 10/- each) - (not annualised)\n(excluding net movement in regulatory deferral account\nbalances): Basic and Diluted (in\u00b7)\nQuarter\nended\n31.12.2021\n(Unaudited)\n28864.79\n972.34\n29837.13\n15631.96\n798.98\n1326.49\n1733.81\n2891.38\n2045.50\n24428.12\n5409.01\n5409.01\n963.68\n256.28\n1219.96\n4189.05\n(57.06)\n4131.99\n(29.74)\n(8.16)\n5.20\n(32.70)\n4099.29\n4.26\n4.32\nQuarter\nended\n30.09.2021\n(Unaudited)\n4\n28329.01\n943.99\n29273.00\n16644.37\n851.18\n1334.34\n1716.34\n2721.50\n2274.77\n25542.50\n3730.50\n3730.50\n665.34\n295.19\n960.53\n2769.97\n441.94\n3211.91\n(21.65)\n14.82\n3.78\n(3.05}\n3208.86\n3.31\n2.86\nQuarter Nine months Nine months\nended ended ended\n31.12.2020 31.12.2021 31.12.2020\n(Unaudited)\n24509.26\n759.30"
+            },
+            {
+              "id": "CMP-1ff8398258e21dd4",
+              "kind": "company_news",
+              "title": "Press Release \u2014 NTPC Limited has informed the Exchange about press release dated 27-Apr-2022 titled NTPC, India\ufffd\ufffd\ufffds Largest Power Utility, Signs MOU with Energy Vault for Gravity-b",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022093532_PressReleaseEnergyVault27042022.pdf",
+              "published_at": "2022-04-27T09:35:35+05:30",
+              "available_at": "2022-04-27T09:35:41+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 27 April 2022\nNTPC, India\u2019s Largest Power Utility, Signs MOU with Energy Vault for Gravity-\nbased Energy Storage Technology\nMOU governs the formalization of a long-term strategic partnership for the deployment of Energy Vault\u2019s EVx\u2122\ngravity-based energy storage technology and software solutions to support NTPC\u2019s clean energy transition\nNew Delhi, April 27, 2022 - NTPC Limited (NSE India : NTPC, BSE : 532555), the largest power generating utility"
+            },
+            {
+              "id": "CMP-beebcaa69db7b4ed",
+              "kind": "company_news",
+              "title": "Press Release \u2014 NTPC Limited has informed the Exchange regarding a press release dated January 31, 2022, titled \"NVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity st",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_31012022181453_PressReleasePXIL31012022.pdf",
+              "published_at": "2022-01-31T18:14:53+05:30",
+              "available_at": "2022-01-31T18:15:05+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Registered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GOI007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in\nNTPC Limited\n(A Government of India Enterprise)\nCORPORATE CENTRE\nPress Release Dated: 31 January 2022\nNVVN (a wholly owned subsidiary of NTPC Ltd.) acquires 5% Equity stake in PXIL\nNTPC Vidyut Vyapar Nigam Ltd. (NVVN), a wholly owned subsidiary of NTPC Ltd. has acquired 5% equity stake\nin Power Exchange of India Ltd (PXIL). NVVN has purchased these shares from NSE Investment Limited, a co -\npromoter shareholder of PXIL, on January 31, 2022."
+            },
+            {
+              "id": "CMP-cc55f3e1f9a3fa38",
+              "kind": "announcement",
+              "title": "General updates \u2014 NTPC Limited has informed the Exchange about issue of unsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a coup",
+              "source_url": "https://nsearchives.nseindia.com/corporate/NTPC_27042022150455_DISCL77BSENSE.pdf",
+              "published_at": "2022-04-27T15:04:57+05:30",
+              "available_at": "2022-04-27T15:05:01+05:30",
+              "extraction_status": "readable",
+              "financial_content_detected": false,
+              "excerpt": "Sub: Corporate Disclosure\nDear Sir,\nIn line with Corporate Disclosure requirements, we wish to inform that, NTPC has decided to issue\nunsecured non-convertible debentures of Rs.1,500 crore on 29 April 2022, through private placement at a\ncoupon of 5.78% p.a. with a door to door maturity of 2 years on 29 April 2024. The proceeds will be\nutilized for, inter alia, funding of capital expenditure, refinancing of existing loans and other general\ncorporate purposes. The debentures are proposed to be listed on BSE. Debenture Trust Deed will be duly\nexecuted as per the requirements of and within the period of time prescribed under the Companies Act and\ntules specified therein.\nThese debentures are issued under the approval obtained through shareholders\u2019 resolution dated 28\nSeptember, 2021.\nYours faithfully,\neZ (Aditya Dar)\nExecutive Director (Finance)\nRegistered Office: NTPC Bhawan, SCOPE Complex, 7, Institutional Area. Lodi Road, New Delhi-110003\nCorporate Identification Number: L40101DL1975GO1007966, Telephone No.-01124387333, Fax: 011-24361018, E-mail: isd@ntpc.co.in\nWebsite: www.ntpc.co.in"
+            }
+          ],
+          "evidence_view_version": "company-view-v5-substantive-body",
+          "omitted_documents": [
+            {
+              "id": "CMP-44a6746498740fda",
+              "kind": "financial_results",
+              "available_at": "2022-03-29T12:59:03+05:30",
+              "reason": "not substantive financial results"
+            }
+          ],
+          "adverse_scan": {
+            "ready": true,
+            "version": "adverse-scan-v2-routine-notices",
+            "citation_id": "SCAN-38508a9b2f5b2f56",
+            "matched_document_ids": [],
+            "candidate_count": 0,
+            "window_start": "2021-11-05",
+            "decision_at": "2022-05-04T15:30:00+05:30",
+            "source_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+            "scope": "Bounded official NSE issuer-disclosure metadata search plus readable matched attachments; not exhaustive press or proof of no adverse information."
+          },
+          "web_scan": {
+            "version": "dated-web-v1",
+            "citation_id": "WEBSCAN-a24a0a296ad67a99",
+            "decision_at": "2022-05-04T15:30:00+05:30",
+            "scope": "Two bounded financial/adverse queries; up to four trusted source pages. Not exhaustive web/news coverage or proof of safety. Publication metadata is not a certified historical content-version chain.",
+            "source_url": "https://html.duckduckgo.com/html/",
+            "status": "SEARCHED_BUT_INSUFFICIENT",
+            "accepted_document_ids": [],
+            "attempted_queries": 2,
+            "ready": false
+          },
+          "structural_action_documents": []
+        },
+        "company_assessment": {
+          "status": "SUFFICIENT",
+          "adverse_risk": "NO_MATERIAL_ADVERSE_FOUND",
+          "breakout_support": null,
+          "breakout_evidence": null,
+          "summary": "NTPC reported unaudited standalone financial results for the quarter ended December 31, 2021, showing stable revenue and profit. Recent corporate actions include a strategic MOU with Energy Vault for energy storage technology and issuance of unsecured non-convertible debentures of Rs.1,500 crore for capital expenditure and refinancing. No material adverse events were found in official disclosures or adverse scans.",
+          "citations": [
+            "CMP-3993d1416d33a00d",
+            "CMP-1ff8398258e21dd4",
+            "CMP-cc55f3e1f9a3fa38",
+            "SCAN-38508a9b2f5b2f56"
+          ],
+          "event_risks": [],
+          "limitations": [
+            "Selected official filings and issuer news, not comprehensive independent press coverage.",
+            "PDF extraction limited to first 35 pages; financial figures are not independently normalized."
+          ]
+        },
+        "plan": {
+          "objective": "Explain a policy-permitted historical research route",
+          "steps": [
+            "Market specialist",
+            "Strategy specialist",
+            "Compliance critic",
+            "Deterministic final guard"
+          ],
+          "budget": {
+            "model_calls": 8,
+            "output_tokens": 3600,
+            "tool_calls": 16,
+            "context_characters": 36000
+          },
+          "symbol": "NTPC",
+          "date": "2022-05-04"
+        },
+        "portfolio_action": "ENTER",
+        "explanation": "On 2022-05-04, NTPC shows a strong trend pullback with ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming a pullback. The company has stable financial results and no material adverse events found in official disclosures or scans (NO_MATERIAL_ADVERSE_FOUND). Coverage limitations exist due to selected filings and limited independent press, but no unresolved adverse events block entry. The EMA_PULLBACK strategy is permitted and supported by policy POL-72.",
+        "critic_accept": true,
+        "critic_reason": "NTPC on 2022-05-04 meets the EMA_PULLBACK strategy criteria with a strong trend pullback: ADX at 47.22, Close price above EMA20 and EMA50, and recent price action confirming the pullback. The company has stable unaudited standalone financial results for the quarter ended December 31, 2021, with no material adverse events found in official disclosures or adverse scans (SCAN-38508a9b2f5b2f56). The strategy POL-72 permits entry despite limited independent news coverage, supported by a ready adverse scan showing no material adverse findings. Limitations include selected official filings and limited independent press coverage, and some PDF extraction uncertainties. No unresolved adverse events or material risks block entry.",
+        "corpus_sha256": "f4bc69945315b225eabf2794c2ef41a9e7f8bcccdbbbb3f7894ed863e9573dcb",
+        "usage": [
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 1985,
+            "completion_tokens": 41,
+            "total_tokens": 2026,
+            "cost": 0.0008596,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0008596,
+              "upstream_inference_prompt_cost": 0.000794,
+              "upstream_inference_completions_cost": 6.56e-05
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 1.97
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 4758,
+            "completion_tokens": 282,
+            "total_tokens": 5040,
+            "cost": 0.0017784,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 1920,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0017784,
+              "upstream_inference_prompt_cost": 0.0013272,
+              "upstream_inference_completions_cost": 0.0004512
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 3.735
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 1926,
+            "completion_tokens": 50,
+            "total_tokens": 1976,
+            "cost": 0.0008504,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0008504,
+              "upstream_inference_prompt_cost": 0.0007704,
+              "upstream_inference_completions_cost": 8e-05
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 1.499
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 3912,
+            "completion_tokens": 129,
+            "total_tokens": 4041,
+            "cost": 0.0012336,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 1792,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0012336,
+              "upstream_inference_prompt_cost": 0.0010272,
+              "upstream_inference_completions_cost": 0.0002064
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 1.916
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 2219,
+            "completion_tokens": 56,
+            "total_tokens": 2275,
+            "cost": 0.0009772,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0009772,
+              "upstream_inference_prompt_cost": 0.0008876,
+              "upstream_inference_completions_cost": 8.96e-05
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 1.521
+          },
+          {
+            "model": "openai/gpt-4.1-mini",
+            "prompt_tokens": 6796,
+            "completion_tokens": 163,
+            "total_tokens": 6959,
+            "cost": 0.0023264,
+            "is_byok": false,
+            "prompt_tokens_details": {
+              "cached_tokens": 2176,
+              "cache_write_tokens": 0,
+              "audio_tokens": 0,
+              "video_tokens": 0
+            },
+            "cost_details": {
+              "upstream_inference_cost": 0.0023264,
+              "upstream_inference_prompt_cost": 0.0020656,
+              "upstream_inference_completions_cost": 0.0002608
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "image_tokens": 0,
+              "audio_tokens": 0
+            },
+            "latency_s": 2.197
+          }
+        ],
+        "llm_calls": 6,
+        "tool_calls": 7,
+        "latency_s": 23.77,
+        "tools_observed": [
+          "check_strategy",
+          "company_evidence",
+          "market_snapshot",
+          "search_policy"
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "Mechanically selected development candidates; not independently human-labelled.",
+    "Used for connectivity, schema, failure and cost planning only.",
+    "No profitability or held-out-quality claim is permitted."
+  ]
+}

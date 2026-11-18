@@ -1,4 +1,4 @@
-# AegisTrade AI v0.31 — final architecture and walkthrough
+# AegisTrade AI v0.35 — final architecture and walkthrough
 
 This is the original AegisTrade detailed-design diagram for final review. Its numbered layered presentation follows the capstone guideline's diagram convention, while every component and connection describes this repository. The system is simulation-only.
 
@@ -8,7 +8,7 @@ This is the original AegisTrade detailed-design diagram for final review. Its nu
 
 ```mermaid
 flowchart TB
-  U[Researcher / reviewer] --> UI[Streamlit UI<br/>C0/C2, capital, dates, consent, approval]
+  U[Researcher / reviewer] --> UI[Question-led Streamlit shell<br/>Data · C2 Portfolio · Agent Comparison · Evidence]
   UI --> API[FastAPI<br/>auth, consent, sessions, budgets, streaming/status]
   API --> IG[Input guardrails<br/>scope, typed schemas, injection scan, cutoff]
 
@@ -30,8 +30,8 @@ flowchart TB
     R0[Four-route deterministic ROUTER<br/>EMA trend · EMA pullback<br/>RSI reversion · breakout]
   end
 
-  subgraph E1[E1 evaluation-only baseline]
-    C1[C1 single ReAct agent<br/>same read tools and eight-call ceiling]
+  subgraph E1[E1 primary architecture comparison]
+    C1[C1 single ReAct agent<br/>same capabilities and total budget as C2]
   end
 
   subgraph C2[C2 — agentic research workflow]
@@ -73,12 +73,12 @@ flowchart TB
   C1 --> TYPED
   R0 --> RISK
   TYPED --> RISK
-  RISK -->|grounded BUY / SELL recommendation| GATE
-  GATE -->|approve reviewed recommendation| FRESH --> MOCK
+  RISK -->|eligible evidence-uncertainty block| GATE
+  GATE -->|approve explicit override| FRESH --> MOCK
   RISK -->|upfront-approved historical replay| MOCK
 
   MOCK --> AUDIT[(SQLite / JSON audit<br/>trade ledger, decision ledger<br/>checkpoints, traces)]
-  GATE --> OUT[Fixed 10-session outcome<br/>review evidence, not causal proof]
+  GATE --> OUT[Linked position/exit outcome<br/>review evidence, not causal proof]
   OUT --> AUDIT
   AUDIT --> MEM[Reviewed Reflexion lessons<br/>accept/reject/freeze/retrieve]
   MEM --> RMCP
@@ -99,19 +99,19 @@ flowchart TB
 
 ## Numbered walkthrough
 
-1. The reviewer selects a frozen universe, C0 or C2, historical period and capital in Streamlit. The reproducible risk policy is displayed but fixed. C2 can use ChatGPT/Codex CLI, OpenRouter API or Claude CLI.
+1. The reviewer runs the C2 portfolio in Strategy Backtests or selects C0/C1/C2 locked cases in AI Agent Experiments. C2 can use ChatGPT/Codex CLI, OpenRouter API or Claude CLI.
 2. FastAPI validates authentication, explicit inference consent and a bounded allowance. Historical replay receives upfront approval of deterministic rules; supervised actions use exact-payload approval later.
 3. Code creates a locked case from completed daily bars. No future price or post-cutoff evidence is available.
-4. C0 routes the case through four deterministic strategies and makes zero model calls. In the E1 experiment, C1 receives the same case, tools, model and budget as C2 but uses one agent.
+4. C0 routes the case through four deterministic strategies and makes zero model calls. The primary E1 comparison is C1 versus C2: identical locked cases, model, evidence, available tool capabilities, total response-token budget and eight-call ceiling; C1 uses one agent and C2 uses the specialist team.
 5. C2 creates a plan and invokes market, strategy and critic specialists. Its catalogue adds SMC to the four C0 routes. Each specialist has scoped read tools.
 6. Market/company tools return dated evidence. Hybrid policy retrieval combines BM25 and vectors with RRF, reranking and query rewriting. Every result retains source/date/passage IDs.
 7. Typed hand-offs are validated. A contradiction causes a bounded correction/replan. Missing evidence is recorded honestly; it is never described as a positive fundamental finding. Breakouts require stricter corroboration.
 8. Python—not the LLM—calculates ranking, quantity, fees, slippage, stops, profit targets and portfolio limits.
-9. Grounded C2 BUY/SELL recommendations enter `WAITING_HUMAN`. The reviewer approves or rejects with a rationale and name/initials; this reuses the completed C2 result and makes zero additional research calls.
-10. Human decisions are stored separately from model traces and trade ledgers. When data permits, a fixed 10-session outcome is attached for review. This association is not a claim of causality or universal correctness.
+9. Only an eligible C2 evidence-uncertainty block attached to a technically valid BUY or holding SELL may enter `PAUSED_HUMAN_OVERRIDE`. Hard adverse, provider, schema, policy and risk failures are not overrideable. The reviewer keeps the block or explicitly overrides it with a rationale; no research call is repeated.
+10. Human decisions are stored separately from model traces and trade ledgers and linked through position exit. Separately, AI Agent Experiments attach a fixed post-decision 20-session outcome on ₹100,000 notional for C1/C2 interpretation. Neither association is a causal or profitability claim.
 11. Decisions, model/tool traces, checkpoints and ledger events are persisted. Interrupted portfolio jobs resume only when data, prompt, corpus, backend and engine versions still match.
 12. Failed development cases and eligible reviewed outcomes can inform conditional Reflexion lesson candidates. Nothing is learned automatically: a human accepts or rejects each lesson and freezes a version before later-period evaluation.
-13. The evaluation harness runs code-first checks, C0/C1/C2 comparisons, security trials, memory ablations and critic/retrieval ablations. Prometheus/Grafana and CI expose operational evidence.
+13. The evaluation harness runs code-first checks, C0/C1/C2 comparisons, security trials, memory ablations and critic/retrieval ablations. The resumable report runner has completed three development E1 repetitions; final held-out E1/E2/E3 stays gated by independently reviewed labels. Prometheus/Grafana and CI expose operational evidence.
 
 ## Decision ownership
 

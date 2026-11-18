@@ -1,0 +1,80 @@
+{
+  "run_id": "95ef3724c1a94eb6bf69286a4c60272a",
+  "source": "Saved genuine C2 research; historical explanations, not new recommendations",
+  "review_interval_sessions": 5,
+  "examples": [
+    {
+      "date": "2024-01-10",
+      "symbol": "TMPV",
+      "action": "HOLD",
+      "EMA20": 762.34,
+      "EMA50": 720.88,
+      "close": 808.45,
+      "stop_for_next_session": 772.81,
+      "held_strategy": "EMA_TREND",
+      "held_sessions": 5,
+      "critic_accept": true,
+      "guard_pass": true,
+      "reason": "HOLD the observed 123-share position. Code permits EMA_TREND in TREND (POL-21); EMA20 762.34 remains above EMA50 720.88, so the EMA exit condition is absent (POL-26). Elevated RSI alone does not establish an exit. Company evidence is SUFFICIENT: reported Q2 revenue/profit and Q3 wholesale growth support improved operations, not a valuation or fundamental buy conclusion (CMP-3869e0b3019e0844, CMP-a2adcb50fd5f1d92, CMP-27d94a01c4871163). No material event risk is identified in the supplied assessment. Preserve the coded protective stop, effective next session; it cannot be lowered or vetoed (POL-43). Selection standing and liquidity remain unassessed. No order is authorized."
+    },
+    {
+      "date": "2024-01-11",
+      "symbol": "RELIANCE",
+      "action": "HOLD",
+      "EMA20": 2576.36,
+      "EMA50": 2497.84,
+      "close": 2719.8,
+      "stop_for_next_session": 2648.69,
+      "held_strategy": "EMA_TREND",
+      "held_sessions": 10,
+      "critic_accept": true,
+      "guard_pass": true,
+      "reason": "HOLD the observed 37-share EMA_TREND position: EMA20 2576.36 exceeds EMA50 2497.84, so its signal exit is absent (POL-26). The current code-permitted route is BREAKOUT, not a replacement holding strategy or entry authorization (POL-23). Preserve code protective-stop logic; the reported stop applies next session. Company evidence is SUFFICIENT: digital growth and higher O2C EBITDA coexist with chemical-margin pressure; the ADIA investment remains planned, not confirmed complete (CMP-5775b07401e1186f, CMP-de0ed9b2e2216e13, CMP-a6a2f8dcfbd56e4a). These risks warrant monitoring, not an unsupported exit or fundamental buy recommendation."
+    },
+    {
+      "date": "2024-01-12",
+      "symbol": "ICICIBANK",
+      "action": "HOLD",
+      "EMA20": 992.5,
+      "EMA50": 980.58,
+      "close": 1003.5,
+      "stop_for_next_session": 973.72,
+      "held_strategy": "EMA_TREND",
+      "held_sessions": 15,
+      "critic_accept": true,
+      "guard_pass": true,
+      "reason": "HOLD the observed 98-share EMA_TREND position: EMA20 992.50 remains above EMA50 980.58, so its signal-exit condition is absent (POL-26). RANGE permits RSI_REVERSION as the current research route, not a replacement holding strategy or a buy signal (POL-22). Preserve the recorded 973.72365 protective stop effective next session; do not override it (POL-30). Company evidence is SUFFICIENT: reported Q2-2024 consolidated PAT rose 36.1% year-on-year; selected filings identify no material event risk, but do not establish financial health (CMP-542805e9b9e4e0a3; CMP-622f945a9fcb8c7a; CMP-deef1651b2e654ce). This is a holding review, not a fundamental buy recommendation."
+    },
+    {
+      "date": "2024-01-17",
+      "symbol": "TMPV",
+      "action": "HOLD",
+      "EMA20": 782.45,
+      "EMA50": 737.7,
+      "close": 805.55,
+      "stop_for_next_session": 783.21,
+      "held_strategy": "EMA_TREND",
+      "held_sessions": 10,
+      "critic_accept": true,
+      "guard_pass": true,
+      "reason": "HOLD the observed 123-share EMA_TREND position. Code permits EMA_TREND in TREND; EMA20 782.45 remains above EMA50 737.70, so its signal-exit condition is absent. Preserve the code-updated protective stop of 783.20875 for the next session. Company evidence is SUFFICIENT: reported Q2 revenue and profit and January wholesale growth support improved operating performance (CMP-3869e0b3019e0844, CMP-a2adcb50fd5f1d92, CMP-27d94a01c4871163), with no identified material event risks in the supplied assessment. Coverage is limited; selection standing and liquidity are unassessed. This is a constrained holding review, not a fundamental buy recommendation or order authorization."
+    }
+  ],
+  "ledger_event_counts_at_check": {
+    "BUY": 12,
+    "SELL_TRAILING_STOP": 8
+  },
+  "hold_count_at_check": 13,
+  "code_exit_rule": "Held EMA_TREND exits when EMA20 < EMA50; code stop checks are independent of HOLD",
+  "UI_change": "Show successful explanation in reason column and below selected research record",
+  "model_calls_started_by_agent": 0,
+  "run_records_modified": false,
+  "backend_restarted": false,
+  "UI_verification": {
+    "success_reason_populated_for_all_visible_HOLDs": true,
+    "selected_RELIANCE_explanation_visible": true,
+    "exceptions": 0,
+    "HTTP_requests_GET_only": 12,
+    "new_model_calls": 0
+  }
+}

@@ -1,0 +1,946 @@
+{
+  "version": "0.26.0",
+  "review_date": "2026-11-13",
+  "team": {
+    "members": [
+      "Veneet",
+      "Karthika",
+      "Mathangi"
+    ],
+    "three_member_approval": "Confirmed by user; professor-approved"
+  },
+  "local_tests": {
+    "passed": 344,
+    "failed": 0,
+    "model_responses": "mocked in contract tests",
+    "scope": "Full suite plus selectable-backend contracts, CLI isolation, quota/timeout handling, child termination, no fallback, Codex C2 specialist integration and portfolio identity binding; exact summary-length repair, persistent schema failure classification, evidence short-circuit, risk-reducing EXIT and read-only legacy diagnostics; causal trailing-stop, fixed entry ATR, gap/missing-bar handling, no terminal sale, engine-version binding and idempotent close-phase resume; fresh post-gap signal review, weekend adverse releases, LIMITED financial coverage in C1/C2, independent critic and adverse-risk gates, fee-aware profit targets and intraday ordering; extractive source materiality/overlap/duplicate packing, source-based pending portfolio lessons, authenticated review/freeze, immutable temporal memory binding, no extra generation, original snapshot date filtering and complete UI draft/review/freeze/select workflow; bounded dated web fallback, model/controller initiation, source date/identity/modified-page checks, failed-search abstention, portfolio entry and critic source binding; lossless per-specialist company context references and JSON Pointer reconstruction, exact changed facts/risks, independent critic context and fail-closed input-size diagnostics; strategy-specific coverage exception, positive breakout corroboration, independent critic provenance, adverse HOLD-to-EXIT correction, daily dated disclosure watch, after-close visibility and zero extra generation on empty checks; exact quoted breakout source and date/benefit checks, independent critic corroboration, speculative/selection/auditor exclusions, structural-action raw-price quarantine including full titles, false researcher pass rejected before BUY and no hindsight return filtering; EMA pullback causality, separate breakout sizing/stops, delayed 1R trailing activation, stop-first confirmed rebound, fresh strict breakout C2, one retry exhaustion, budget pause/resume without duplicate research and Streamlit UI controls; C1 evidence-before-SMC company screen, single-agent tool provenance, causal sweep/BOS/order-block retest, profit exits net of fees/slippage, mandatory evidence, archived newsletter as-of import, distinct adverse exits, stop and unsold terminal mark, pre-fill SMC/stop revalidation, C1 budget checkpoint/resume, zero-generation explicit technical SMC, three-flow Streamlit consent/payload and API authentication/flow binding; per-flow UI result isolation and automatic read-only restore, top-of-page progress for C1/C2, live within-session source/model/tool telemetry, safe progress callbacks, stage-specific SMC no-entry diagnostics after evidence, no invented session progress, complete saved C1 rendering, and legacy trading-frame fingerprint compatibility; SMC stop-first later bullish recovery, fresh evidence before recovery checks, actual stop-ledger proof and original-zone binding, separate recovery BUY sizing, shared technical-reference recovery, one retry/exhaustion, watch expiry, bounded stop-history batch priority, adverse cancellation including adverse exits with opening stop gaps, disabled recovery, profit exits without watches, persisted budget resume and forged watch/order rejection; dated issuer catalogue complete-window/checksum validation, alias fallback, financial statement priority, safe native OCR source bounds and cache preservation"
+  },
+  "mcp": {
+    "servers_defined": 6,
+    "tools_contract_tested": 15,
+    "discovery_stdio": "passed for five read/compute servers",
+    "research_tool_calls_stdio": "passed market_snapshot, check_strategy, search_policy",
+    "agent_transport": "real MCP stdio locally; HTTP URLs configured for Docker"
+  },
+  "orchestration": {
+    "C1": "single tool-using agent",
+    "C2": "deterministic LangGraph supervisor + market/strategy/compliance critic LLM specialists",
+    "normal_C2_model_calls": 6,
+    "C1_C2_shared_max_calls": 8,
+    "C1_C2_shared_max_output_tokens": 4800,
+    "sqlite_checkpoint_rebuild_and_edit_test": "passed",
+    "research_mid_call_resume": false
+  },
+  "development_evaluation": {
+    "report": "reports/capstone_review_dev.json",
+    "reference_cases": 20,
+    "matched": 20,
+    "independent_human_gold": false,
+    "retrieval_queries": 36,
+    "retrieval_mode": "offline BM25+TF-IDF surrogate",
+    "recall_at_5_before": 0.9444,
+    "recall_at_5_after": 0.9444,
+    "scanner_detected": 30,
+    "scanner_attacks": 32,
+    "clean_false_blocks": 0,
+    "clean_cases": 10,
+    "model_attack_success_measured": false
+  },
+  "deployment": {
+    "base_compose_config": "valid",
+    "neural_compose_config": "valid",
+    "docker_cli": "29.5.2",
+    "docker_daemon": "not running",
+    "clean_machine_stack_verified": false,
+    "real_alert_demonstrated": false,
+    "local_intentional_eval_gate_failure": "17/20=85%, exit 1 as expected",
+    "hosted_github_ci_run": "not performed; workspace has no .git"
+  },
+  "paid_provider": {
+    "new_requests_during_this_review": 0,
+    "last_check_in_conversation": "Key recognized; minimal completion returned HTTP 402, account had not purchased credits",
+    "successful_new_C2_live_run": false
+  },
+  "implemented_not_externally_verified": [
+    "Docker HTTP MCP path",
+    "Model-level E1/E2/E3 on independently reviewed cases",
+    "Different-family judge predictions and calibration",
+    "Real-market historical backtests and walk-forward testing",
+    "Qdrant HTTP deployment (local Chroma neural retrieval is verified)"
+  ],
+  "documents": {
+    "handbook": "docs/AegisTrade_Capstone_Review_and_Viva_Guide.docx",
+    "gap_register": "docs/CAPSTONE_GAP_REVIEW.md",
+    "tool_inventory": "docs/MCP_TOOL_INVENTORY.json",
+    "design": "docs/AegisTrade_Detailed_Design_and_Demo_Guide.docx",
+    "viva": "docs/AegisTrade_Viva_Questions_and_Answers.docx",
+    "company_research": "docs/HISTORICAL_COMPANY_RESEARCH.md",
+    "c2_portfolio": "docs/C2_HISTORICAL_PORTFOLIO.md",
+    "plus_demo": "docs/AegisTrade_ChatGPT_Plus_Full_UI_Demo_Runbook.docx",
+    "portfolio_demo": "docs/AegisTrade_Portfolio_Simulation_Demo_Step_by_Step.docx",
+    "trailing_stop": "docs/TRAILING_STOP_POLICY.md"
+  },
+  "scope": "Simulation only; no live broker APIs; no profitability or complete capstone-compliance claim",
+  "running_user_services": "API/UI0.18.0 activated only while all saved workers were idle. Fresh gap-review/adverse research/net8% target defaults verified. Original completed24-event result retained with its original policy. No automatic resume or new inference.",
+  "updated_api_smoke": {
+    "version": "0.11.0",
+    "port": 8011,
+    "data_dir": "isolated temporary directory",
+    "routes_passed": 6,
+    "paid_model_requests": 0,
+    "existing_user_api_restarted": false
+  },
+  "mandatory_research_correction": {
+    "date": "2026-11-09",
+    "policy": "Completed C2, accepted critic and code checks required before order proposal and approval",
+    "validated_at": [
+      "normal start",
+      "streaming start",
+      "graph plan",
+      "approval reconstruction/resume",
+      "execution context"
+    ],
+    "result_digest_bound": true,
+    "changed_market_or_research": "blocked; requires new research/proposal/approval",
+    "legacy_without_C2": "blocked",
+    "model_calls_for_this_correction": 0
+  },
+  "nse20_update": {
+    "date": "2026-11-09",
+    "library": "nsepython 2.101",
+    "requested_period": [
+      "2021-11-08",
+      "2026-11-08"
+    ],
+    "warmup_start": "2021-07-01",
+    "rows": 26580,
+    "stocks": 20,
+    "evaluation_sessions_per_stock": 1242,
+    "active_source": "nsepython",
+    "activation": "persisted data/market_config.json; restart existing process",
+    "membership": "current snapshot; survivorship bias explicitly retained",
+    "prices": "unadjusted; corporate actions/dividends unresolved",
+    "universe_selection": "pre-period top-20 average traded value",
+    "trade_selection": "causal daily filters and weighted signal/liquidity/ATR score",
+    "automatic_historical_replay": "Technical-only baseline has zero model calls. C2 historical portfolio researches prospective entries and scheduled holding reviews under upfront rules.",
+    "supervised_orders": "mandatory C2 + critic/code checks + exact human approval",
+    "download_complete": true,
+    "checksum_and_minimum_coverage_checks": "passed",
+    "UI_interactive_test": "Market Data -> automatic backtest -> selection audit -> C2; approval locked without completed research",
+    "actual_data_api_smoke": "6 checks passed, no model calls",
+    "actual_data_replay": "200000 INR, 1242 sessions, 24840 selection rows, 326 ledger events; raw-price outputs provisional",
+    "paid_model_calls_during_update": 0,
+    "UI_actual_cache_test": "passed actual NSE data page, CSV export, research screen and no-spend screening",
+    "frozen_universe_evaluation_boundary": "warm-up evaluation blocked; dates restricted to downloaded evaluation window"
+  },
+  "rag_update": {
+    "date": "2026-11-09",
+    "corpus": {
+      "passages": 81,
+      "project_policies_and_specs": 72,
+      "external_reference_passages": 9,
+      "human_review": "pending independent team review"
+    },
+    "active_mode": "neural",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "dimensions": 384,
+    "reranker_model": "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "persistent_store": "Chroma",
+    "keyword_retrieval": "BM25",
+    "fusion": "RRF",
+    "verified": [
+      "public model weights cached locally",
+      "persistent vector-store round trip",
+      "neural API/UI",
+      "actual neural stdio MCP",
+      "historical external-source filter",
+      "corpus-bound approval gate"
+    ],
+    "development_queries": 101,
+    "recall_at_5_before_rewrite": 0.9505,
+    "recall_at_5_after_rewrite": 0.9703,
+    "legacy_36_query_original_corpus_recall": 0.9444,
+    "legacy_36_query_expanded_neural_recall": 0.9167,
+    "evaluation_limit": "Authored development labels; no independent held-out relevance or generated-answer faithfulness claim",
+    "scope": "Project policy/strategy/data-quality knowledge, not company news or filings",
+    "paid_llm_calls_for_update": 0,
+    "trailing_policy_rebuild": {
+      "date": "2026-11-11",
+      "updated_passage": "POL-43",
+      "corpus_sha256": "1851ab56c1026f16a2bde0d3a7131e9260653b3c7f958c13c6e90a3462d58272",
+      "mode": "neural",
+      "paid_llm_calls": 0,
+      "status": "rebuilt and current hash verified"
+    },
+    "latest_policy_rebuild": {
+      "date": "2026-11-11",
+      "updated_passages": [
+        "POL-16",
+        "POL-43",
+        "POL-72"
+      ],
+      "corpus_sha256": "604027e9ed9e58495fe5ecc434b724544dc5232854d999fd7a2f6cc5149e7332",
+      "mode": "neural",
+      "generation_calls": 0
+    }
+  },
+  "historical_company_research": {
+    "date": "2026-11-09",
+    "scope": "Dated company financial filings, issuer press releases and reviewed archive news/newsletter imports; not exhaustive independent press/valuation",
+    "cutoff": "15:30 Asia/Kolkata on signal date",
+    "archive_lookback_days": 180,
+    "max_pdf_downloads": 6,
+    "tool": "company_evidence via market MCP",
+    "market_and_critic_observe": true,
+    "current_pack_digest_required_for_approval": true,
+    "TCS_2026_10_23": "SUFFICIENT: actual readable financial results and issuer news downloaded",
+    "INFY_2026_10_23": "INSUFFICIENT_EVIDENCE: no readable qualifying financial attachment",
+    "normal_model_requests": 6,
+    "normal_tool_invocations": 7,
+    "shared_max_model_requests": 8,
+    "paid_model_calls_for_update": 0,
+    "genuine_paid_C2_verified": false,
+    "neural_stdio_mcp_integration": "Passed actual source/tool path with explicitly mocked generation; 6 mock requests, 7 tool calls, maximum serialized context 16451 characters",
+    "new_ui": "Prepare/inspect historical company pack; source timestamps/links; typed assessment before order review",
+    "report": "reports/company_research_mcp_integration.json",
+    "adverse_policy": {
+      "version": "adverse-scan-v1",
+      "financial_coverage": "SUFFICIENT or explicitly LIMITED if completed cited adverse scan is acceptable",
+      "risk_assessment": [
+        "NO_MATERIAL_ADVERSE_FOUND",
+        "MATERIAL_ADVERSE",
+        "UNKNOWN"
+      ],
+      "unknown_or_material_new_entries": "blocked",
+      "matched_risk_attachment_limit": 8,
+      "scope": "Bounded official issuer-disclosure metadata plus matched readable attachments; not exhaustive independent press or proof of safety",
+      "market_and_critic_observe": true
+    }
+  },
+  "c2_historical_portfolio": {
+    "version": "c2-portfolio-v3-fresh-adverse-profit",
+    "implemented": "Chronological C2-researched entries, scheduled HOLD/EXIT, independent stops/strategy exits, next-open fills and full ledger",
+    "forced_terminal_liquidation": false,
+    "realized_unrealized_pnl_separate": true,
+    "holding_review_default_sessions": 5,
+    "default_total_model_call_allowance": 48,
+    "per_case_model_ceiling": 8,
+    "normal_case_requests": 6,
+    "checkpoint": "Atomic OPEN/CLOSE phases, durable case results, conservative unknown-call reservations",
+    "provider_failures": "Pause immediately; explicit consented resume retries with failure trace retained",
+    "approval_scope": "Upfront historical-rule approval; separate supervised action still requires exact per-order human approval",
+    "auth_and_UI": "Reviewer token, paid consent, budget, progress/refresh, pause/resume and saved-run ID restoration tested",
+    "integration_report": "reports/c2_portfolio_integration.json",
+    "integration_generation": "MOCKED; actual NSE bars, stdio MCP and neural retrieval",
+    "integration_sessions": 11,
+    "integration_buy_events": 1,
+    "integration_open_holdings": 1,
+    "genuine_paid_portfolio_verified": false,
+    "paid_calls_for_update": 0,
+    "model_cost": "Reported USD separately; not silently converted/deducted from INR trading returns",
+    "limitations": "Current-constituent/unadjusted data, incomplete company archives and independent financial/model evaluation remain open",
+    "trailing_stop": {
+      "enabled_for_new_UI_API_runs": true,
+      "default_ATR_multiple": 2.0,
+      "ATR_basis": "entry signal, fixed distance for holding",
+      "price_basis": "highest completed close since fill",
+      "activation": "next session after old-stop OHLC checks",
+      "never_lowers_stop": true,
+      "ledger_event": "SELL_TRAILING_STOP",
+      "extra_generation_calls": 0,
+      "legacy_runs": "preserved read-only; changed engine/corpus requires new run",
+      "reference": "active technical uses matching setting; passive benchmark has no stops"
+    },
+    "genuine_completed_quarter": "Verified63 sessions with gaps,313 CLI invocations and source-linked24-event ledger; not independent model/financial evaluation",
+    "default_take_profit_percent": 8.0,
+    "take_profit_basis": "Net of modeled entry/exit fees; price trigger accounts for slippage; independent code exit",
+    "friday_entry_review": "Next actual trading close, research refreshed, fill no earlier than following eligible open; no Monday-close lookahead"
+  },
+  "research_preflight_fix": {
+    "version": "0.15.1",
+    "confirmed_local_condition": "Screenshot enables memory, but no frozen playbook/accepted lessons exist",
+    "fix": "Disable memory until frozen accepted lessons exist; validate before archive/model work; show structured API reason and next action inline",
+    "prepared_case": "HINDUNILVR 2023-03-31: actual NSE financial filing readable, coverage sufficient",
+    "paid_model_calls": 0,
+    "lessons_modified_or_frozen": false,
+    "live_ui_smoke": "reports/research_preflight_smoke.json: disabled empty memory, submitted-date preview2023-03-31, zero model calls"
+  },
+  "codex_transport": {
+    "implemented_version": "0.16.0",
+    "selected_local_backend": "codex_cli",
+    "source_default_backend": "openrouter",
+    "supported_backends": [
+      "openrouter",
+      "codex_cli"
+    ],
+    "authentication": "Official CLI ChatGPT sign-in; no extracted/copied OAuth credentials",
+    "installed_cli": "codex-cli 0.164.0-alpha.11.1",
+    "selected_model": "codex-default",
+    "resolved_model_id": null,
+    "scope": "CLI as tool-free structured inference transport; AegisTrade retains LangGraph and actual MCP execution/validation",
+    "budget_unit": "cli_invocations",
+    "internal_provider_request_count_known": false,
+    "provider_token_hard_cap": false,
+    "per_run_usd_cost_known": false,
+    "fallback": false,
+    "portfolio_identity_binding": [
+      "backend",
+      "model",
+      "adapter_version",
+      "budget_unit"
+    ],
+    "genuine_research": "reports/codex_c2_demo.json",
+    "genuine_portfolio": "reports/codex_c2_portfolio_demo.json",
+    "ui_smoke": "reports/codex_ui_smoke.json",
+    "new_cli_invocations_for_verification": 15,
+    "breakdown": "One protocol response + seven-invocation research + seven-invocation portfolio entry research",
+    "portfolio_archive_scope": "Existing real cache only; missing MARUTI coverage blocked; normal UI can prepare additional archives",
+    "portfolio_status": "COMPLETED_WITH_GAPS",
+    "portfolio_fills": 1,
+    "portfolio_open_holdings": 1,
+    "forced_end_liquidation": false,
+    "genuine_holding_review_or_exit_this_update": false,
+    "exit_verification": "Covered by existing mocked-inference contract tests; no live brokerage",
+    "limitations": [
+      "ChatGPT allowance/model availability can change",
+      "Moving CLI default is unsuitable for pinned-model capstone comparisons",
+      "Successful UI/flow is not profitability or completed independent E1\u2013E4 evaluation evidence"
+    ]
+  },
+  "field_validation_fix": {
+    "version": "0.16.1",
+    "prompt_version": "2026-11-10-field-validation-v2",
+    "root_cause": "Model company.summary exceeded the unchanged600-character schema limit; correction previously omitted the failed field",
+    "recorded_summary_lengths": {
+      "TMPV": 633,
+      "ICICIBANK": 615,
+      "BHARTIARTL": 630
+    },
+    "provider_calls_succeeded": true,
+    "tatasteel": "Separate missing financial-filing evidence;0 calls on2023-08-01",
+    "fix": [
+      "Schema-derived prompt limits",
+      "Exact field/bound/actual-length feedback within existing ceilings",
+      "Structured failure categories",
+      "Early stop on blocking market evidence",
+      "Read-only diagnosis for historical schema errors"
+    ],
+    "affected_run": "5b766b7259a44113913eb31a207c1d2d",
+    "affected_run_status": "PAUSED_USER",
+    "affected_run_consumed_invocations": 21,
+    "original_research_records_modified": false,
+    "old_job_resumable_with_new_prompts": false,
+    "genuine_verification": "reports/field_validation_fix.json",
+    "genuine_verification_calls": 2,
+    "genuine_verification_result": "BHARTIARTL2023-08-01 produced a valid364-character summary; model assessed insufficient evidence; entry correctly blocked before strategy/critic",
+    "legacy_diagnosis_report": "reports/research_validation_diagnosis.json",
+    "automatic_full_replay_started": false
+  },
+  "portfolio_demo_update": {
+    "version": "0.16.2",
+    "current_prompt_version": "2026-11-10-demo-evidence-v4",
+    "ui_compatibility": "Explicit interface1; compatible patch versions no longer block dashboard",
+    "ui_smoke": "reports/ui_compatibility_smoke.json",
+    "evidence_view": "company-view-v3",
+    "pdf_max_bytes": 32000000,
+    "extracted_page_limit": 35,
+    "pdf_page_bound": 250,
+    "attachment_cache": "Source URL keyed, extracted text hash/PDF hash and original retrieval time; explicit refresh bypasses cache",
+    "repaired_quarterly_sources": [
+      "BHARTIARTL2023-10-31",
+      "AXISBANK2023-10-25"
+    ],
+    "source_prepare_report": "reports/portfolio_demo_evidence.json",
+    "mocked_context_smoke": "reports/company_context_budget_smoke.json",
+    "current_context_limit_chars": 36000,
+    "identical_observations": "Reference prior full observation within the same specialist conversation; full audit retained",
+    "genuine_demo_report": "reports/portfolio_demo_verified.json",
+    "genuine_demo_run_id": "64263380f155412ea95a4deca6355a1f",
+    "genuine_demo_status": "COMPLETED_WITH_GAPS",
+    "genuine_demo_calls": 23,
+    "genuine_demo_buy": "38 BHARTIARTL,2023-12-04",
+    "genuine_demo_open_holdings": 1,
+    "genuine_demo_equity": 199842.82215800002,
+    "genuine_demo_accounting_error": 2.2140511646284722e-11,
+    "genuine_demo_limit_note": "Rehearsal used earlier22000-char cap; TMPV/AXISBANK additional policy retrieval exceeded it. Current26000 cap/citation prompts changed afterwards; no retrospective trade approval or all-pass claim.",
+    "earlier_bounded_check": {
+      "run_id": "3b77558e859d4bd9b73417cdca9e48e5",
+      "calls": 18,
+      "status": "PAUSED_BUDGET",
+      "note": "Earlier evidence view exceeded context; retained as failed check, not a successful demo"
+    },
+    "genuine_model_calls_for_this_update": 41,
+    "scope": "18 earlier bounded check +23 final rehearsal. Mocked context checks and archive repair made no model calls.",
+    "guide_values": {
+      "initial_capital": 200000.0,
+      "start_date": "2023-12-01",
+      "end_date": "2023-12-04",
+      "risk_percent": 1.0,
+      "mode": "ROUTER",
+      "fee_bps": 5.0,
+      "automatic_stock_selection": true,
+      "slippage_bps": 5.0,
+      "consent_to_paid_calls": true,
+      "approve_historical_rules": true,
+      "max_model_calls": 32,
+      "holding_review_sessions": 5
+    },
+    "profitability_established": false
+  },
+  "provider_failure_fix": {
+    "version": "0.16.3",
+    "prompt_version": "2026-11-11-exact-critic-v5",
+    "affected_run": "327fd2f2b0d2453fb58b2decec69d259",
+    "recorded_failures": [
+      "CODEX_TIMEOUT on eighth invocation after seven successful completions",
+      "CODEX_OUTPUT_INVALID on consented retry of unproductive revision"
+    ],
+    "account_or_credit_failure_established": false,
+    "original_invocations_consumed": 16,
+    "fixes": [
+      "Critic independently pins strategy policy IDs through existing MCP search with corpus/date filtering",
+      "End on rejected critic, removing guaranteed-blocking extra revision",
+      "Specific provider codes/category/elapsed time displayed; old records diagnosed read-only"
+    ],
+    "new_model_calls": 0,
+    "validation": "141 tests, mocked generation with actual in-process MCP exact-policy contract checks",
+    "report": "reports/provider_failure_fix.json",
+    "limits_changed": false,
+    "current_timeout_seconds": 120,
+    "old_job_resume_with_new_prompts": false,
+    "remaining_limit_preserved": true
+  },
+  "trailing_stop_verification": {
+    "tests_passed": 154,
+    "mechanics_report": "reports/trailing_stop_verification.json",
+    "UI_report": "reports/trailing_stop_ui_smoke.json",
+    "document_report": "reports/trailing_stop_document_check.json",
+    "generation": "MOCKED C2 only; no new actual model calls",
+    "mechanics_prices": "controlled SYNTHETIC path; not financial performance",
+    "runtime_version": "0.17.0",
+    "real_C2_run_for_feature": false
+  },
+  "three_month_demo_preflight": {
+    "report": "reports/three_month_demo_preflight.json",
+    "date_window": [
+      "2023-12-01",
+      "2024-02-29"
+    ],
+    "sessions": 63,
+    "stocks": 20,
+    "capital_inr": 500000,
+    "generation_calls": 0,
+    "technical_only_completed": true,
+    "full_C2_quarter_verified": true,
+    "universe_expanded": false
+  },
+  "history_reset": {
+    "date": "2026-11-11",
+    "requested_by_user": true,
+    "archive": "data/history_archives/20261111_105802",
+    "verification_report": "reports/history_reset_verification.json",
+    "archived_counts": {
+      "c2_portfolio_runs": {
+        "runs": 10,
+        "ledger_events": 14,
+        "open_holdings": 10,
+        "files": 71
+      },
+      "research_runs": {
+        "runs": 6,
+        "files": 6
+      },
+      "simulation_runs": {
+        "runs": 1,
+        "files": 1
+      }
+    },
+    "active_history_empty": true,
+    "old_approvals_and_checkpoints_cleared": true,
+    "protected_files_hash_checked": 143,
+    "new_model_calls": 0
+  },
+  "codex_timeout_diagnosis": {
+    "report": "reports/codex_timeout_diagnosis_20261111.json",
+    "date": "2026-11-11",
+    "run_id": "95ef3724c1a94eb6bf69286a4c60272a",
+    "configured_timeout_seconds": 120,
+    "user_resume_progressed": true,
+    "services_restarted": false,
+    "new_model_calls_by_agent": 0
+  },
+  "HOLD_explanation_UI": {
+    "report": "reports/hold_decision_explanation.json",
+    "date": "2026-11-11",
+    "reason_source": "Existing saved genuine research explanation; errors retain priority",
+    "trading_logic_changed": false,
+    "new_model_calls_by_agent": 0,
+    "backend_restarted": false
+  },
+  "completed_three_month_C2_review": {
+    "run_id": "95ef3724c1a94eb6bf69286a4c60272a",
+    "report": "reports/portfolio_performance_review_20261111.json",
+    "document": "docs/AegisTrade_Three_Month_Portfolio_Performance_Review.docx",
+    "sessions": 63,
+    "status": "COMPLETED_WITH_GAPS",
+    "capital_inr": 500000,
+    "return_pct": 4.26,
+    "realized_pnl": 5310.260241234804,
+    "unrealized_pnl": 16003.798233150055,
+    "technical_reference_return_pct": 4.41,
+    "passive_equal_weight20_return_pct": 8.68,
+    "export_rows_matched": 24,
+    "stop_fills_verified": 10,
+    "original_CLI_invocations": 313,
+    "review_model_calls": 0,
+    "trading_rules_changed": false,
+    "lessons_activated": false,
+    "financial_superiority_established": false
+  },
+  "fresh_adverse_profit_update": {
+    "report": "reports/fresh_adverse_profit_verification.json",
+    "policy_guide": "docs/ENTRY_ADVERSE_AND_PROFIT_POLICY.md",
+    "default_net_target_percent": 8,
+    "pytest_passed": 172,
+    "new_model_calls": 0,
+    "original_completed_run_unchanged": true,
+    "new_run_required": true,
+    "real_model_or_financial_effectiveness_verified": false,
+    "viva_questions": 98
+  },
+  "reviewed_portfolio_memory": {
+    "version": "0.19.0",
+    "tests": {
+      "passed": 181,
+      "failed": 0,
+      "model_generation": "mocked"
+    },
+    "external_inference_calls_started": 0,
+    "live_api_version": "0.19.0",
+    "live_dashboard_verified": true,
+    "inference_backend_preserved": "codex_cli",
+    "source_portfolio_states_unchanged": {
+      "5f0551162e0040289fe86524c5c60f55": true,
+      "95ef3724c1a94eb6bf69286a4c60272a": true
+    },
+    "pending_portfolio_candidates": 3,
+    "candidate_statuses": [
+      "PENDING",
+      "PENDING",
+      "PENDING"
+    ],
+    "frozen_versions": 0,
+    "context_checks": {
+      "version": "0.19.0",
+      "model_calls_external": 0,
+      "views_upgraded": 50,
+      "old_context_failure_cases_mocked": [
+        {
+          "symbol": "HINDALCO",
+          "date": "2023-12-04",
+          "max_context_chars": 17704,
+          "calls_mocked": 6,
+          "errors": []
+        },
+        {
+          "symbol": "BHARTIARTL",
+          "date": "2023-12-05",
+          "max_context_chars": 23601,
+          "calls_mocked": 6,
+          "errors": []
+        },
+        {
+          "symbol": "BHARTIARTL",
+          "date": "2023-12-06",
+          "max_context_chars": 25545,
+          "calls_mocked": 3,
+          "errors": [
+            "ADVERSE_SCAN_INCOMPLETE: Adverse disclosure coverage is incomplete"
+          ]
+        },
+        {
+          "symbol": "BHARTIARTL",
+          "date": "2023-12-07",
+          "max_context_chars": 22519,
+          "calls_mocked": 6,
+          "errors": []
+        },
+        {
+          "symbol": "BHARTIARTL",
+          "date": "2023-12-11",
+          "max_context_chars": 22517,
+          "calls_mocked": 6,
+          "errors": []
+        },
+        {
+          "symbol": "RELIANCE",
+          "date": "2023-12-26",
+          "max_context_chars": 19892,
+          "calls_mocked": 6,
+          "errors": []
+        },
+        {
+          "symbol": "RELIANCE",
+          "date": "2023-12-27",
+          "max_context_chars": 19890,
+          "calls_mocked": 6,
+          "errors": []
+        }
+      ],
+      "hdfc_nil_preserved": true,
+      "note": "Seven saved overflow cases replayed with explicitly mocked generation. One remains blocked for incomplete adverse scan, not context. No new profitability result."
+    },
+    "neural_index_current": true
+  },
+  "codex_response_format_patch": {
+    "typed_specialist_json_object": true,
+    "parse_stage_diagnostics": true,
+    "automatic_retry": false,
+    "actual_provider_success_after_patch": "Not tested; user will explicitly resume",
+    "paused_run_preserved": true,
+    "failed_units_counted": 2
+  },
+  "configurable_initial_stop_loss": {
+    "methods": [
+      "ATR",
+      "PERCENT"
+    ],
+    "default_atr_multiple": 2,
+    "percentage_basis": "completed signal close before fill",
+    "legacy_settings": "default ATR 2 preserved",
+    "runtime_activation": "Idle-only restart watcher scheduled; active/queued work left running. No jobs automatically resumed.",
+    "new_generation_calls_started": 0
+  },
+  "live_c2_progress": {
+    "interval_seconds": 5,
+    "statuses": [
+      "RUNNING",
+      "QUEUED"
+    ],
+    "transport": "read-only status GET via Streamlit fragment",
+    "manual_refresh_retained": true,
+    "stops_on_pause_completion_interruption": true,
+    "api_restart_required": false,
+    "automatic_generation_calls": 0
+  },
+  "universe_switching": {
+    "version": "0.20.0",
+    "date": "2026-11-12",
+    "software_tests": {
+      "passed": 215,
+      "failed": 0
+    },
+    "live_universe_selector": "verified read-only for all three profiles",
+    "model_calls_started_for_change": 0,
+    "existing_files_unchanged": {
+      "data/nse_nifty20/manifest.json": true,
+      "data/nse_nifty20/ohlcv.csv": true,
+      "data/market_config.json": true
+    },
+    "research30": {
+      "ready": true,
+      "stocks": 30,
+      "rows": 39870,
+      "sha256": "7bf348bee9d6b67852b5ee148d6b5b6431fdbd107793e736b3ad676d12c6404a",
+      "reused_stocks": 14
+    },
+    "nifty100_preparation": "PREPARING",
+    "active_universe": "nifty20",
+    "historical_saved_run_fingerprints_verified": 8,
+    "selection_limitations": [
+      "current-member snapshot survivorship bias",
+      "curated event-case selection bias",
+      "unadjusted corporate actions",
+      "shorter listing histories retained and disclosed"
+    ]
+  },
+  "universe_rag_coverage": {
+    "date": "2026-11-12",
+    "policy_rag": {
+      "passages": 81,
+      "updated_passages": [
+        "POL-37",
+        "POL-58"
+      ],
+      "neural_index_current": true,
+      "corpus_sha256": "5a484c3cc57cfaa8b13d425868a004f60118dbd0db702eee9aacdef18bd61342"
+    },
+    "company_archive_snapshot": {
+      "research30": {
+        "symbols_with_any_cached_pack": 14,
+        "total_symbols": 30
+      },
+      "nifty100": {
+        "symbols_with_any_cached_pack": 20,
+        "total_symbols": 100
+      },
+      "qualification": "Any pack on any date; not full-period, readable-financial or complete adverse coverage."
+    },
+    "on_demand": "Selected symbol/date company packs are prepared before C2 generation; missing or incomplete required evidence can still block.",
+    "generation_calls_started": 0,
+    "targeted_tests_passed": 27,
+    "saved_run_effect": "Prior results retained; corrected corpus is for new C2 research/runs. Existing fingerprint mismatch guards remain in force."
+  },
+  "dated_web_evidence": {
+    "version": "0.21.0",
+    "date": "2026-11-12",
+    "tests": {
+      "passed": 233,
+      "failed": 0,
+      "generation": "mocked"
+    },
+    "generation_calls_started_by_this_change": 0,
+    "corpus": {
+      "passages": 81,
+      "sha256": "aaddae386e8e094b84edbb94860e241272014b948a0be2647808e6f488608c40",
+      "project_policy_passages": 72,
+      "external_reference_passages": 9,
+      "source_count": 45,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "public_search_smoke": {
+      "case": "TCS 2024-01-03",
+      "cache": "isolated /tmp/aegis-dated-web-smoke-v2",
+      "queries_completed": 2,
+      "accepted_documents": 0,
+      "result": "SEARCHED_BUT_INSUFFICIENT",
+      "reasons": [
+        "Issuer page HTTP failure",
+        "PDF publication not verified",
+        "Secondary page HTTP failure"
+      ],
+      "conclusion": "Public search reachable; verified abstention on unusable sources. No live model end-to-end success claimed."
+    },
+    "saved_runs": "Preserved; existing interrupted jobs use older prompt/corpus fingerprints and need a new run for this feature.",
+    "activation": {
+      "api_version": "0.21.0",
+      "dated_web_search_enabled": true,
+      "dashboard": "healthy",
+      "active_simulation_workers_before_restart": 0,
+      "saved_runs": "preserved",
+      "inference_calls": 0
+    }
+  },
+  "context_budget_fix": {
+    "version": "0.21.1",
+    "date": "2026-11-12",
+    "tests": {
+      "passed": 243,
+      "failed": 0,
+      "model_responses": "mocked"
+    },
+    "actual_model_calls_started_for_verification": 0,
+    "root_cause": "Company pack duplicated across company_evidence and search_dated_web, plus legitimate critic context slightly above prior guard.",
+    "context_limit": {
+      "old": 26000,
+      "new": 36000,
+      "unit": "serialized conversation characters, not provider tokens"
+    },
+    "evidence_packing": {
+      "method": "Per-specialist full first projection, then explicit JSON Pointer updates when smaller",
+      "verification": "Reconstruct every update exactly before inference; retain complete tool audit; independent critic receives its own first full projection",
+      "does_not": "Trim financial text, hide adverse risk, clear UNKNOWN, alter strategy or authorize orders"
+    },
+    "run_handling": "Existing active run paused at safe boundary; historical outcomes untouched; new run required because prompt fingerprint changed.",
+    "cached_failure_projection_check": {
+      "cases": 28,
+      "largest_estimated_repacked_characters": 27648,
+      "qualification": "Estimated from original recorded conversation size minus exact projection savings; current prompt/wrapper overhead can differ. This is not a live inference replay or evidence that the trades should pass."
+    }
+  },
+  "signal_specific_evidence_policy": {
+    "version": "0.22.0",
+    "date": "2026-11-12",
+    "tests": {
+      "passed": 256,
+      "failed": 0,
+      "generation": "mocked"
+    },
+    "verification_model_calls_started": 0,
+    "corpus": {
+      "passages": 81,
+      "sha256": "1c75312e42031b33406102a9d00ed057e02bfbe9ed6b1a32308116ede61e660f",
+      "project_policy_passages": 72,
+      "external_reference_passages": 9,
+      "source_count": 45,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "entry_policy": {
+      "trend_reversion": "Qualified technical signal may use LIMITED/COVERAGE_LIMITED after observed research; concrete unresolved adverse event remains blocking.",
+      "breakout": "Readable dated corroboration, source citations, breakout_support and supported adverse clearance required."
+    },
+    "exit_policy": "Cited ADVERSE_EVENT_FOUND or MATERIAL_ADVERSE holding assessment requires EXIT after independent critic and code checks; next eligible open, no forced terminal sale.",
+    "holding_watch": "Bounded official issuer metadata daily for NSE portfolios; empty checks use zero generation; new candidates trigger C2 between scheduled reviews.",
+    "evidence_fixes": [
+      "Currency marker boundaries and mandatory digit",
+      "Substantive subject/body context retained alongside risk windows",
+      "Routine trading-window notices excluded unless independently adverse"
+    ],
+    "cached_source_inspection": {
+      "case": "NTPC 2026-02-02",
+      "original_matched_documents": 5,
+      "routine_window_notices_excluded": 4,
+      "observed_result": "Substantive board and trading-window disclosure bodies visible; address fragments no longer selected as amounts. No new financial/adverse model conclusion generated."
+    },
+    "limitations": [
+      "No live inference replay or improved profitability claim",
+      "Coverage exception accepts residual evidence risk",
+      "Selling on small adverse events can increase fees/churn",
+      "Official daily metadata check is not comprehensive independent news",
+      "Old research fingerprints cannot resume under changed policy"
+    ]
+  },
+  "breakout_entry_gate_correction": {
+    "version": "0.22.1",
+    "date": "2026-11-12",
+    "tests": {
+      "passed": 276,
+      "failed": 0,
+      "generation": "mocked"
+    },
+    "verification_model_calls_started": 0,
+    "corpus": {
+      "passages": 81,
+      "sha256": "92daa4314ece16c3b12c2e3cda62510389ea459e0c04236d8079063559dfe7ac",
+      "project_policy_passages": 72,
+      "external_reference_passages": 9,
+      "source_count": 46,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "gate": "Recent exact visible source quotation, benefit metric, reported improvement/completed-event criterion, market/critic source agreement; nonempty prose and accept=true alone insufficient.",
+    "raw_price_guard": "Known recent non-financial structural-action disclosure quarantines entries across routes; full metadata survives title truncation. Does not repair holdings or complete corporate-action coverage.",
+    "original_ledger_rewritten": false,
+    "interpretation": "ITC raw stop P&L omits distributed-share entitlement; economic P&L is incomplete. ONGC had dated context but lacked the newly required structured quote; prospective recovery benefits are not achieved output. Neither loss alone establishes invalidity of a decision.",
+    "unchanged": "Technical strategy thresholds, stop/profit rules, costs, sizing, no-terminal-sale rule, maximum 8 inference units per assessment.",
+    "limits": "No live-model replay or profitability improvement claim; conservative source rules and lexical checks require semantic critic interpretation and separate evaluation.",
+    "recorded_case_codes": {
+      "ITC": "UNADJUSTED_CORPORATE_ACTION",
+      "ONGC": "BREAKOUT_SOURCE_QUOTE_REQUIRED"
+    }
+  },
+  "breakout_reentry": {
+    "enabled_default": true,
+    "max_retries_per_stopped_setup": 1,
+    "watch_sessions": 10,
+    "same_candle_reentry": false,
+    "fresh_c2_required": true,
+    "strict_breakout_quotes_retained": true,
+    "planned_risk_percent": 0.5,
+    "initial_atr": 2.5,
+    "trailing_atr": 2.5,
+    "trailing_activation_r": 1.0,
+    "profitability_validated": false,
+    "actual_model_calls_during_implementation": 0
+  },
+  "c1_smc": {
+    "version": "smc-daily-sweep-bos-ob-v1",
+    "research_order": "EVIDENCE_BEFORE_SIGNAL",
+    "independent_llm_critic": false,
+    "default_take_profit_percent": 4,
+    "default_screens_per_session": 3,
+    "date_verified_newsletter_import": true,
+    "actual_llm_calls_during_implementation": 0,
+    "real_newsletter_downloads_during_implementation": 0,
+    "profitability_validated": false,
+    "knowledge": {
+      "passages": 83,
+      "sha256": "8e079a382bfdfec2239e73101bf5864c0c9e98b53a4e3be4c215d85097fd0637",
+      "project_policy_passages": 74,
+      "external_reference_passages": 9,
+      "source_count": 48,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    }
+  },
+  "flow_progress_fix": {
+    "ui_panel": "above configuration form",
+    "refresh_seconds": 5,
+    "per_flow_saved_results": true,
+    "default_restore": "latest matching flow when none selected",
+    "telemetry": "bounded activity sidecar; no prompts/source text/credentials",
+    "price_and_evidence_rules_changed": false,
+    "legacy_0240_checkpoint_compatible": true,
+    "tests_mocked": true,
+    "new_test_generation_calls": 0,
+    "original_active_user_job_resumed_with_additional_allowance": 0,
+    "compatibility_scope": "0.24.1 telemetry-only patch; 0.25.0 changes trading policy and requires fresh simulations"
+  },
+  "smc_stop_recovery": {
+    "enabled_default_c1": true,
+    "max_recovery_fills_per_chain": 1,
+    "default_watch_sessions": 10,
+    "window_range": [
+      1,
+      30
+    ],
+    "fresh_company_screen_required": true,
+    "same_session_reentry": false,
+    "execution": "later eligible open; ordinary SMC risk and profit/stop policy",
+    "policy_passage": "POL-75",
+    "knowledge": {
+      "passages": 84,
+      "sha256": "54b3186cb21007e8eabd9f11377a4aa7b11e178c7bdb398b945441cc7e44d082",
+      "project_policy_passages": 75,
+      "external_reference_passages": 9,
+      "source_count": 49,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "new_test_llm_calls": 0,
+    "older_runs": "preserved; fresh simulation required for changed trading/corpus policy",
+    "profitability_validated": false
+  },
+  "historical_evidence_backfill": {
+    "date": "2026-11-13",
+    "coverage": {
+      "existing_packs": 509,
+      "packs_financial_ready": 509,
+      "packs_adverse_ready": 485,
+      "metadata_rows": 81269,
+      "selected_documents": 4341,
+      "readable_documents": 4215,
+      "financial_documents": 2040,
+      "ocr_documents": 168,
+      "unavailable_documents": 126,
+      "evaluated_trading_sessions": 122029,
+      "sessions_with_recent_downloaded_financial": 118388
+    },
+    "unique_stocks": 103,
+    "generation_calls": 0,
+    "knowledge": {
+      "passages": 86,
+      "sha256": "b018426df44934256fd29a097184fc40445ca3e98c707e8ff527d69755d20d2a",
+      "project_policy_passages": 77,
+      "external_reference_passages": 9,
+      "source_count": 51,
+      "scope": "Project policies, strategy/risk/data specifications and primary-source background. No current news, future returns or hidden gold answers.",
+      "review_status": "Code/source checked; independent human review and evaluation labels remain required."
+    },
+    "profitability_validated": false,
+    "remaining_adverse_pack_gaps": 24
+  },
+  "fixed_delivery_fees": {
+    "model": "nse-delivery-screenshot-zero-brokerage-v1",
+    "buy_bps": 11.87406,
+    "sell_bps": 10.37406,
+    "user_configurable": false,
+    "dp_charges_included": false,
+    "source": "User-supplied charges screenshot",
+    "current_tariff_verified": false
+  },
+  "optional_stop_and_single_stock_comparison": {
+    "version": "0.26.0",
+    "stop_loss_optional": true,
+    "disabled_stop_sizing": "cash and maximum-position exposure; no stop-distance risk cap",
+    "disabled_with_stop": ["trailing stop", "breakout stop recovery", "SMC stop recovery"],
+    "still_active_without_stop": ["take-profit", "strategy exits", "validated adverse-evidence exits", "fees", "slippage"],
+    "comparison_flows": {"C0":"deterministic ROUTER", "C1":"single-agent evidence-first SMC", "C2":"multi-specialist ROUTER"},
+    "pure_agent_ablation": false,
+    "fair_agent_evaluation": "existing same-case C0/C1/C2 experiment with task success, violations, errors, calls and latency",
+    "actual_model_calls_during_implementation": 0,
+    "profitability_validated": false
+  }
+}

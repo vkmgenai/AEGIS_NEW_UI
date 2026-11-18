@@ -1,0 +1,87 @@
+{
+  "purpose": "Sensitivity check using existing risk setting; no production strategy/risk/memory modification",
+  "interpretation": "Not C2 and not proof that changing C2 risk would produce these outcomes. Same current-constituent unadjusted data limitations. Following quarter predeclared before computation; not an independent held-out validation programme.",
+  "actual_model_calls": 0,
+  "results": [
+    {
+      "window": "reviewed quarter",
+      "start": "2023-12-01",
+      "end": "2024-02-29",
+      "risk_percent": 1.0,
+      "generation": "NONE; deterministic technical reference only",
+      "metrics": {
+        "mode": "ROUTER",
+        "initial_capital": 500000.0,
+        "ending_cash": 108265.28079816682,
+        "total_return_pct": 4.41,
+        "cagr_pct": 18.83,
+        "sharpe": 1.617,
+        "max_drawdown_pct": -2.41,
+        "completed_trades": 14,
+        "win_rate_pct": 35.71,
+        "ending_equity": 522040.73
+      },
+      "fees": 3130.8348
+    },
+    {
+      "window": "reviewed quarter",
+      "start": "2023-12-01",
+      "end": "2024-02-29",
+      "risk_percent": 0.5,
+      "generation": "NONE; deterministic technical reference only",
+      "metrics": {
+        "mode": "ROUTER",
+        "initial_capital": 500000.0,
+        "ending_cash": 252465.75211633605,
+        "total_return_pct": 3.31,
+        "cagr_pct": 13.89,
+        "sharpe": 1.816,
+        "max_drawdown_pct": -1.52,
+        "completed_trades": 14,
+        "win_rate_pct": 35.71,
+        "ending_equity": 516529.5
+      },
+      "fees": 1966.1118000000001
+    },
+    {
+      "window": "separate following quarter",
+      "start": "2024-03-01",
+      "end": "2024-05-31",
+      "risk_percent": 1.0,
+      "generation": "NONE; deterministic technical reference only",
+      "metrics": {
+        "mode": "ROUTER",
+        "initial_capital": 500000.0,
+        "ending_cash": 103145.31396623816,
+        "total_return_pct": -1.59,
+        "cagr_pct": -6.4,
+        "sharpe": -0.637,
+        "max_drawdown_pct": -5.67,
+        "completed_trades": 15,
+        "win_rate_pct": 26.67,
+        "ending_equity": 492061.86
+      },
+      "fees": 3198.1749
+    },
+    {
+      "window": "separate following quarter",
+      "start": "2024-03-01",
+      "end": "2024-05-31",
+      "risk_percent": 0.5,
+      "generation": "NONE; deterministic technical reference only",
+      "metrics": {
+        "mode": "ROUTER",
+        "initial_capital": 500000.0,
+        "ending_cash": 261061.94480601157,
+        "total_return_pct": -1.19,
+        "cagr_pct": -4.84,
+        "sharpe": -0.929,
+        "max_drawdown_pct": -3.18,
+        "completed_trades": 15,
+        "win_rate_pct": 26.67,
+        "ending_equity": 494034.79
+      },
+      "fees": 1787.3142
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "run_id": "95ef3724c1a94eb6bf69286a4c60272a",
+  "status": "ANALYSIS_ONLY; not active model memory or project policy",
+  "candidates": [
+    {
+      "id": "OBS-ENTRY-GAP",
+      "status": "HYPOTHESIS_PENDING_TEST_AND_HUMAN_REVIEW",
+      "topic": "regime",
+      "candidate": "Recheck next-open gap and entry extension against entry-signal ATR before filling; evaluate a predefined maximum gap/extension filter rather than accepting every positive signal.",
+      "evidence": "The three December4 purchases followed approximately1.43\u20132.10% opening gaps and together lost about\u20b98,008. Other losing entries did not have large gaps.",
+      "validation": "Choose the threshold before separate-window testing; measure all replacement trades, exposure, net return, drawdown and turnover. Do not claim that omitting these rows adds\u20b98,008 to portfolio profit.",
+      "learned_from_period_end": "2024-02-29"
+    },
+    {
+      "id": "OBS-AGGREGATE-RISK",
+      "status": "HYPOTHESIS_PENDING_TEST_AND_HUMAN_REVIEW",
+      "topic": "risk",
+      "candidate": "Assess portfolio-level sector/correlation concentration alongside individual stop risk; evaluate a lower per-trade risk if loss reduction is the priority.",
+      "evidence": "Early holdings included two bank stocks; several December20\u201321 stop exits clustered. Technical-only risk0.5% checks reduced drawdown in both predeclared windows, with a return trade-off.",
+      "validation": "Use time-appropriate sector/correlation data and fixed future-window comparisons; do not assume standalone risk caps prevent correlated losses or gaps.",
+      "learned_from_period_end": "2024-02-29"
+    },
+    {
+      "id": "OBS-REENTRY-MIXED",
+      "status": "OBSERVATION_NOT_A_VALIDATED_RULE",
+      "topic": "regime",
+      "candidate": "Record whether a stop-out was followed by a genuinely renewed setup; test a cooldown only if broader evidence supports it. Never blacklist re-entry solely because one previous trade lost.",
+      "evidence": "Next-session ICICIBANK re-entry lost\u20b92,310 when closed, while next-session RELIANCE and TMPV re-entries had positive final marks. The latter are unrealized outcomes.",
+      "validation": "A blanket cooldown may remove recoveries and profitable continuations; compare complete chronological portfolios on separate windows.",
+      "learned_from_period_end": "2024-02-29"
+    },
+    {
+      "id": "OBS-EVIDENCE-COVERAGE",
+      "status": "PROCESS_IMPROVEMENT_CANDIDATE_PENDING_REVIEW",
+      "topic": "grounding",
+      "candidate": "Separate missing readable dated evidence from adverse financial evidence. Improve time-eligible source coverage and explicit period/basis/unit extraction; retain abstention when facts remain unavailable.",
+      "evidence": "There were13 blocks for no readable qualifying filing and22 model company-assessment blocks in the completed run.",
+      "validation": "Audit the real sources and cutoff; do not invent figures, relabel missing evidence as clean fundamentals, or remove critic gates to increase trades.",
+      "learned_from_period_end": "2024-02-29"
+    }
+  ]
+}

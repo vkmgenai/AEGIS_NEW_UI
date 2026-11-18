@@ -1,0 +1,43 @@
+{
+  "version": "0.16.3",
+  "run_id": "327fd2f2b0d2453fb58b2decec69d259",
+  "status": "PAUSED_PROVIDER",
+  "calls": 16,
+  "new_model_calls_for_fix": 0,
+  "stored_original_records_unchanged": true,
+  "research_configuration_changed": true,
+  "failures": [
+    {
+      "id": "c62e4ec2a0edee3e2d2085c9417fdeb0",
+      "failure_category": "PROVIDER",
+      "errors": [
+        "CODEX_TIMEOUT: Codex did not finish before the local CLI timeout. The invocation was stopped. This does not establish a login or quota problem."
+      ],
+      "failure": {
+        "code": "CODEX_TIMEOUT",
+        "category": "PROVIDER",
+        "agent": "strategy",
+        "message": "Codex did not finish before the local CLI timeout. The invocation was stopped. This does not establish a login or quota problem.",
+        "elapsed_seconds": 120.03,
+        "source": "saved_transport_usage",
+        "unproductive_revision_after_rejection": true
+      }
+    },
+    {
+      "id": "12cdae11726f07ceb00c1cdad3784082",
+      "failure_category": "PROVIDER",
+      "errors": [
+        "CODEX_OUTPUT_INVALID: Codex returned output the adapter could not validate. Inspect the response-format diagnostics; this does not establish an account-credit problem."
+      ],
+      "failure": {
+        "code": "CODEX_OUTPUT_INVALID",
+        "category": "PROVIDER",
+        "agent": "strategy",
+        "message": "Codex returned output the adapter could not validate. Inspect the response-format diagnostics; this does not establish an account-credit problem.",
+        "elapsed_seconds": 7.329,
+        "source": "saved_transport_usage",
+        "unproductive_revision_after_rejection": true
+      }
+    }
+  ]
+}

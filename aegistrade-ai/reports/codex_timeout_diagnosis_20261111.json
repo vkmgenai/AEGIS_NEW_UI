@@ -1,0 +1,35 @@
+{
+  "created_utc": "2026-11-11T06:20:53.274358+00:00",
+  "run_id": "95ef3724c1a94eb6bf69286a4c60272a",
+  "failure_case": "SBIN-2023-12-29-ENTRY",
+  "failure_agent": "market",
+  "failed_invocation_seconds": 120.029,
+  "configured_timeout_seconds": 120,
+  "observed_failure": {
+    "code": "CODEX_TIMEOUT",
+    "category": "PROVIDER",
+    "agent": "market",
+    "message": "Codex did not finish before the local CLI timeout. The invocation was stopped. This does not establish a login or quota problem.",
+    "elapsed_seconds": 120.029,
+    "timeout_seconds": 120
+  },
+  "successful_invocations_at_diagnostic_check": 108,
+  "success_latency_seconds_at_check": {
+    "median": 8.83,
+    "maximum": 17.163
+  },
+  "last_read_saved_progress": {
+    "status": "RUNNING",
+    "completed_sessions": 24,
+    "total_sessions": 63,
+    "phase": "CLOSE",
+    "historical_date": "2024-01-05"
+  },
+  "recovery": "User resumed the existing job; it advanced beyond the failed case. Agent did not retry or resume.",
+  "root_cause": "Invocation exceeded local application watchdog. Exact cause of slow response is not established. No confirmed quota or authentication failure in saved trace.",
+  "configuration_changed": false,
+  "services_restarted": false,
+  "run_records_modified": false,
+  "agent_initiated_model_calls": 0,
+  "documentation_updated": true
+}

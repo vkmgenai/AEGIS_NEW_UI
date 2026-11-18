@@ -1,0 +1,56 @@
+{
+  "version": "0.17.0",
+  "ui_api_contract": 1,
+  "health_trailing_supported": true,
+  "UI_default_enabled": true,
+  "UI_default_ATR_multiple": 2.0,
+  "api_schema_default_enabled": true,
+  "api_schema_default_multiple": 2.0,
+  "legacy_demo_retains_fixed_stop": true,
+  "legacy_demo_requires_new_run": true,
+  "UI_exceptions": 0,
+  "read_only_requests": [
+    {
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "method": "GET",
+      "path": "/market/universe"
+    },
+    {
+      "method": "GET",
+      "path": "/market/dataset"
+    },
+    {
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "method": "GET",
+      "path": "/market/universe"
+    },
+    {
+      "method": "GET",
+      "path": "/simulation/c2/recent"
+    },
+    {
+      "method": "GET",
+      "path": "/simulation/recent"
+    },
+    {
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "method": "GET",
+      "path": "/openapi.json"
+    },
+    {
+      "method": "GET",
+      "path": "/simulation/c2/status/64263380f155412ea95a4deca6355a1f"
+    }
+  ],
+  "model_calls": 0,
+  "simulations_started": 0
+}

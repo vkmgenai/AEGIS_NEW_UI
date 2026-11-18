@@ -1,0 +1,30 @@
+{
+  "paid_model_calls": 0,
+  "results": [
+    {
+      "symbol": "HINDUNILVR",
+      "decision_at": "2023-03-31T15:30:00+05:30",
+      "status": "SUFFICIENT",
+      "pack_sha256": "f61d7452eed1dc04f5435afd52c019a87d2fd74185ec39f60944bd28671de3bb",
+      "reasons": [],
+      "documents": [
+        {
+          "id": "CMP-6b6495359ab91c2c",
+          "kind": "financial_results",
+          "title": "Financial Result Updates \u2014 Hindustan Unilever Limited has submitted to the Exchange, the financial results for the period ended December 31, 2022.",
+          "source_url": "https://nsearchives.nseindia.com/corporate/OutcomeofBM19012023_19012023161657.pdf",
+          "available_at": "2023-01-19T16:17:04+05:30",
+          "extraction_status": "readable"
+        },
+        {
+          "id": "CMP-a03ae83f72b1c9b1",
+          "kind": "announcement",
+          "title": "Trading Window \u2014 Hindustan Unilever Limited has informed the Exchange regarding the Trading Window closure pursuant to SEBI (Prohibition of Insider Trading) Regulations, 2015",
+          "source_url": "https://nsearchives.nseindia.com/corporate/HINDUNILVR_15032023160950_15032023IntimationofClosedPeriodsigned.pdf",
+          "available_at": "2023-03-15T16:09:55+05:30",
+          "extraction_status": "readable"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "api_version": "0.15.1",
+  "actual_API_UI": "passed",
+  "empty_playbook_memory_disabled": true,
+  "memory_selected": false,
+  "screening_date": "2023-03-31",
+  "selected_symbols": [
+    "HINDUNILVR",
+    "MARUTI"
+  ],
+  "paid_model_calls": 0,
+  "lesson_reviews_or_freezes": 0
+}
