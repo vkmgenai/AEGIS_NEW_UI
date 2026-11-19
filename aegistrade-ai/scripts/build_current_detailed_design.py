@@ -5,7 +5,7 @@ from scripts import build_design_and_viva_docs as b
 def current_architecture():
     b.ASSETS.mkdir(parents=True,exist_ok=True)
     fig,ax=b.canvas(10.2)
-    b.box(ax,.3,9.05,9.4,.82,'1  Question-led demo shell','Data & Stock • C2 Portfolio • Agent Comparison • Evaluation Evidence','#e9f2e8')
+    b.box(ax,.3,9.05,9.4,.82,'1  Official Streamlit UI on port 8501','Market Data • Overview • C2 Strategy Backtest • AI Agent Experiments • Evaluation • RAG • Lessons','#e9f2e8')
     b.box(ax,.3,7.75,9.4,.82,'2  FastAPI control boundary','Typed requests • reviewer authorization • explicit allowance • saved-run APIs','#fde8e5')
     b.arrow(ax,(5,9.05),(5,8.57))
     b.box(ax,.25,6.25,2.85,.9,'3  Market + selection','Frozen universe • OHLCV • indicators • ranked audit','#eaf1f8')
@@ -44,7 +44,7 @@ def research_flow():
 
 def main():
     figures={'current_architecture':current_architecture(),'research_flow':research_flow()}
-    path=b.build('AegisTrade_Current_Detailed_Design',figures,'CURRENT DETAILED DESIGN & CODE GUIDE',version='0.35.0',document_date='17 November 2026')
+    path=b.build('AegisTrade_Current_Detailed_Design',figures,'CURRENT DETAILED DESIGN & CODE GUIDE',version='0.35.0',document_date='19 November 2026')
     print(path)
 
 

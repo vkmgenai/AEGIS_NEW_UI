@@ -69,9 +69,19 @@ def table(doc,rows):
         for r in p.runs:r.font.color.rgb=RGBColor(255,255,255);r.bold=True;r.font.size=Pt(9)
     for index,values in enumerate(rows[1:]):
         cells=t.add_row().cells
+        row_fill=None
+        status=values[0] if values else ''
+        for marker,color in {
+            '🟩':'E2F0D9',  # Current UI demo/runtime path.
+            '🟦':'DDEBF7',  # Capstone evaluation/supporting path.
+            '🟨':'FFF2CC',  # Retained compatibility or alternative, not the demo path.
+            '⬜':'E7E6E6',  # Generated state/artifact, not source code.
+        }.items():
+            if status.startswith(marker):row_fill=color;break
         for i,value in enumerate(values):
             add_inline(cells[i].paragraphs[0],value)
-            if index%2==0:shade(cells[i],'F0F4F8')
+            if row_fill:shade(cells[i],row_fill)
+            elif index%2==0:shade(cells[i],'F0F4F8')
             for p in cells[i].paragraphs:
                 p.paragraph_format.space_after=Pt(4)
                 for r in p.runs:r.font.size=Pt(9)

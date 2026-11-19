@@ -1,4 +1,9 @@
-"""Keep displayed C1/C2/technical runs separate; restoration performs GETs only."""
+"""Remember and safely restore the selected portfolio run using read-only GETs.
+
+The current port-8501 Strategy Backtests page exposes only the C2 portfolio.
+The generic flow checks remain so older C0/C1 result records cannot be mistaken
+for the selected C2 run while they remain readable through compatibility APIs.
+"""
 
 
 def flow_of(result):

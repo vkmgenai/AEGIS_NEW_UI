@@ -221,101 +221,109 @@ Saved runs remain tied to the adapter/model identity with which they started. Ro
 
 ## 12. Source-code map: which file implements what
 
+The color code distinguishes the code used in the current port-8501 demonstration from files retained for evaluation or backward compatibility:
+
+- **🟩 Green — current demo/runtime:** directly used by the approved UI demonstration or its required backend path.
+- **🟦 Blue — capstone support:** required for evaluation, tests, monitoring or reproducibility, but not normally opened during the short UI demo.
+- **🟨 Yellow — retained compatibility/alternative:** still readable or callable for old runs, tests or comparison history, but not part of the current UI demo flow.
+- **⬜ Grey — generated artifact:** run state or evidence produced by the application; it is not source code.
+
+Yellow does not mean defective. It means “do not present this as the current demo path.” Removing a yellow module requires a separate migration because old saved runs or API compatibility tests may still depend on it.
+
 ### 12.1 Application and API
 
-| File | Responsibility |
-|---|---|
-| `app/ui.py` | Main Streamlit UI, workspaces, focused C2 Strategy Backtest, C1/C2 experiment view, bell, forms, tables and result interpretation. |
-| `app/ui_redesign_preview.py` | Separate port-8504 demo-shell proposal with question-led navigation and retained-run views; it does not replace the main UI. |
-| `app/ui_blue_preview.py` | Retained blue-theme alternative using the same backend and workflows. |
-| `app/api.py` | FastAPI contracts for market data, experiments, portfolios, notifications, lessons and provider selection. |
-| `app/live_progress.py` | Converts checkpoint state into the live portfolio progress panel. |
-| `app/portfolio_view.py` | Keeps C0/C2 displayed results separate and restores saved runs without submitting work. |
-| `app/backend_compat.py` | UI/API compatibility contract and restart warning. |
-| `app/client_errors.py` | Structured display of API failures and suggested user actions. |
+| Status | File | Current responsibility |
+|---|---|---|
+| 🟩 Current demo/runtime | `app/ui.py` | Official Streamlit UI on port 8501: market data, overview, focused C2 Strategy Backtest, C1/C2 AI experiment, evidence/lesson views, notification bell and result interpretation. Dead duplicate single-stock comparison rendering has been removed. |
+| 🟩 Current demo/runtime | `app/api.py` | FastAPI contracts for market data, C2 portfolio work, C1/C2 experiments, notifications, lessons, retained evidence and provider selection. |
+| 🟩 Current demo/runtime | `app/live_progress.py` | Converts the selected C2 checkpoint into the live progress panel and refreshes it through read-only status calls. |
+| 🟩 Current demo/runtime | `app/portfolio_view.py` | Remembers and safely restores the selected C2 run, verifies run/flow identity and prevents a legacy C0/C1 result from being displayed as C2. The current UI does **not** show C0 beside C2 on this page. |
+| 🟩 Current demo/runtime | `app/dataset_progress.py` | Displays market-data preparation progress used by the Market Data workspace. |
+| 🟩 Current demo/runtime | `app/capstone_ledger.py` | Supplies the read-only retained-run evidence shown in Capstone Evaluation. |
+| 🟩 Current demo/runtime | `app/backend_compat.py` | Enforces the UI/API capability contract and displays a restart warning for an older backend. |
+| 🟩 Current demo/runtime | `app/client_errors.py` | Converts structured API failures into specific UI messages and corrective actions. |
+| 🟨 Retained alternative | `app/ui_blue_preview.py` | Earlier blue-theme UI alternative. It is not launched by the approved port-8501 demo. |
+| 🟨 Retained alternative | `app/ui_redesign_preview.py` | Rejected port-8504 redesign proposal retained only for design history. It is not part of the submitted demo. |
 
 ### 12.2 Market data, signals and execution
 
-| File | Responsibility |
-|---|---|
-| `aegistrade/data.py` | OHLCV preparation and indicator-ready data structures. |
-| `aegistrade/nse_data.py` | NSEPython download/cache and dataset provenance. |
-| `aegistrade/universes.py` | Configured Nifty20/Nifty100/research30 universes and metadata. |
-| `aegistrade/strategies.py` | Technical strategy routing and exit-signal catalogue. |
-| `aegistrade/smc.py` | SMC features and the C2 SMC route. |
-| `aegistrade/selection.py` | Candidate eligibility, ranking and selection audit. |
-| `aegistrade/engine.py` | Deterministic backtest, sizing, cash accounting and performance calculations. |
-| `aegistrade/simulation_service.py` | C0 simulation request validation, persistence and result shape. |
-| `aegistrade/fees.py` | Fixed modeled equity-delivery charge assumptions. |
-| `aegistrade/execution_policy.py` | Strategy-specific stops, targets and protective-exit rules. |
-| `aegistrade/trailing_stop.py` | Close-updated trailing-stop state and exit reason. |
-| `aegistrade/breakout_reentry.py` | Governed breakout recovery watch after a stopped setup. |
-| `aegistrade/smc_reentry.py` | Governed SMC recovery watch after a stopped setup. |
+| Status | File | Current responsibility |
+|---|---|---|
+| 🟩 Current demo/runtime | `aegistrade/market.py` | Prepares OHLCV and indicator-ready market frames. This replaces the erroneous old map entry `aegistrade/data.py`, which does not exist. |
+| 🟩 Current demo/runtime | `aegistrade/nse_data.py` | NSEPython download/cache, coverage and dataset provenance. |
+| 🟩 Current demo/runtime | `aegistrade/universes.py` | Configured Nifty20, Nifty100 and research30 universes and metadata. |
+| 🟩 Current demo/runtime | `aegistrade/strategies.py` | EMA trend, EMA pullback, RSI reversion and breakout routing plus deterministic exit signals. |
+| 🟩 Current demo/runtime | `aegistrade/smc.py` | SMC feature calculation and the permitted C2 SMC route. |
+| 🟩 Current demo/runtime | `aegistrade/selection.py` | Candidate eligibility, ranking and the selection audit displayed in C2 results. |
+| 🟩 Current demo/runtime | `aegistrade/engine.py` | Deterministic replay, quantity sizing, cash accounting, fees, equity curve and performance calculations. |
+| 🟩 Current demo/runtime | `aegistrade/simulation_service.py` | Shared settings, normalization, execution-policy construction and deterministic reference calculation used by C2. Its standalone C0 endpoints are retained compatibility. |
+| 🟩 Current demo/runtime | `aegistrade/fees.py` | Fixed modeled NSE equity-delivery charges applied to simulated fills. |
+| 🟩 Current demo/runtime | `aegistrade/execution_policy.py` | Fixed strategy-specific stops, targets, exposure and protective-exit rules. |
+| 🟩 Current demo/runtime | `aegistrade/trailing_stop.py` | Close-updated trailing-stop state and auditable exit reason. |
+| 🟩 Current demo/runtime | `aegistrade/breakout_reentry.py` | Controlled breakout recovery watch after a stopped setup. |
+| 🟩 Current demo/runtime | `aegistrade/smc_reentry.py` | Controlled SMC recovery watch after a stopped setup. |
+| 🟨 Retained compatibility | `aegistrade/portfolio_comparison.py` | Old single-stock C0/C2 comparison service. Its widgets are no longer in the approved UI; routes remain readable/callable for saved comparison history and regression tests. |
+| 🟨 Retained compatibility | `aegistrade/experiments.py` | Earlier deterministic strategy-comparison helper retained for API/notebook compatibility; it is not the current C1-versus-C2 AI experiment. |
 
 ### 12.3 Agents, tools, RAG and evidence
 
-| File | Responsibility |
-|---|---|
-| `aegistrade/agentic.py` | C2 graph/supervisor, specialist prompts, typed hand-offs and bounded correction. |
-| `aegistrade/research_service.py` | Same-case C0/C1/C2 experiment execution, budgets, summaries and saved results. |
-| `scripts/run_report_ai_repeats.py` | Resumable three-repeat development E1 runner; records completed IDs and quota/error state without deleting runs. |
-| `aegistrade/research_gate.py` | Authoritative completed-C2 validation and evidence/action checks. |
-| `aegistrade/c1_gate.py` | C1 and SMC validation contracts retained for evaluation/legacy records. |
-| `aegistrade/llm_backend.py` | ChatGPT/Codex CLI, OpenRouter and Claude CLI adapter selection and identity. |
-| `aegistrade/mcp_servers.py` | MCP tool contracts for market, company, policy, strategy and records observations. |
-| `aegistrade/corpus.py` | Active policy corpus loading and immutable fingerprint. |
-| `aegistrade/rag.py` | Hybrid retrieval, fusion, reranking and dated passage selection. |
-| `aegistrade/company_research.py` | Historical company evidence packs, official attachments and adverse scans. |
-| `aegistrade/company_excerpts.py` | Bounded relevant excerpts while retaining source provenance. |
-| `aegistrade/dated_web.py` | Bounded historical web fallback with decision-date constraints. |
-| `aegistrade/evidence_context.py` | Lossless evidence projection and context-budget controls. |
-| `aegistrade/research_diagnostics.py` | Provider/schema/policy/evidence failure reconstruction and display categories. |
+| Status | File | Current responsibility |
+|---|---|---|
+| 🟩 Current demo/runtime | `aegistrade/agentic.py` | C1 single-agent baseline and C2 supervisor/market/strategy/critic execution, typed hand-offs, bounded correction and tool-use audit. |
+| 🟩 Current demo/runtime | `aegistrade/research_service.py` | Same-case C0 reference plus fair C1/C2 experiment execution, budgets, summaries, standardized secondary outcomes and saved results. |
+| 🟩 Current demo/runtime | `aegistrade/research_gate.py` | Authoritative completed-C2 validation, evidence/action checks and final guard. |
+| 🟩 Current demo/runtime | `aegistrade/llm_backend.py`, `aegistrade/llm_research.py` | ChatGPT/Codex CLI, OpenRouter and Claude CLI adapters, provider identity, JSON transport and typed response models. |
+| 🟩 Current demo/runtime | `aegistrade/agent_tools.py`, `aegistrade/mcp_runtime.py`, `mcp_servers/` | Real typed read-tool boundary for market, company, policy, strategy and records observations. The old map entry `aegistrade/mcp_servers.py` was incorrect. |
+| 🟩 Current demo/runtime | `aegistrade/corpus.py`, `aegistrade/knowledge.py`, `aegistrade/vector_store.py` | Active corpus loading, hybrid retrieval, fusion/reranking and immutable fingerprint. The old map entry `aegistrade/rag.py` was incorrect. |
+| 🟩 Current demo/runtime | `aegistrade/company_research.py`, `aegistrade/evidence_library.py` | Historical company evidence packs, official attachments, cached coverage and adverse scans. |
+| 🟩 Current demo/runtime | `aegistrade/company_excerpts.py` | Bounded relevant excerpts that retain document IDs and source provenance. |
+| 🟩 Current demo/runtime | `aegistrade/dated_web.py` | Bounded historical web fallback constrained by the decision-date cutoff. |
+| 🟩 Current demo/runtime | `aegistrade/evidence_context.py` | Lossless evidence projection and explicit context-budget controls. |
+| 🟩 Current demo/runtime | `aegistrade/research_diagnostics.py` | Provider, schema, policy and evidence failure classification shown in results. |
+| 🟦 Capstone support | `scripts/run_report_ai_repeats.py` | Resumable three-repeat E1 runner used to produce report evidence; not a normal UI-demo action. |
+| 🟨 Retained compatibility | `aegistrade/c1_gate.py` | Old C1 portfolio/SMC order validation needed to read or test legacy C1 portfolio records. The current C1 baseline is evaluated in AI Agent Experiments, not Strategy Backtests. |
 
 ### 12.4 Portfolio, human control and learning
 
-| File | Responsibility |
-|---|---|
-| `aegistrade/c2_portfolio.py` | Checkpointed C2 historical loop, research budget, positions, human override, notifications state and linked outcomes. |
-| `aegistrade/portfolio_memory.py` | Draft/review/freeze/retrieve governed portfolio lessons. |
-| `aegistrade/safety.py` | Deterministic risk inputs, simulated broker safety and audit helpers. |
-| `data/c2_portfolio_runs/<id>/state.json` | Durable per-run checkpoint; generated data, not source code. |
-| `data/research_runs/<id>.json` | Saved AI Agent Experiment result; generated data, not source code. |
-| `knowledge/corpus.jsonl` | Versioned policy/reference passages used by RAG. |
+| Status | File | Current responsibility |
+|---|---|---|
+| 🟩 Current demo/runtime | `aegistrade/c2_portfolio.py` | Checkpointed C2 historical loop, research allowance, positions, evidence override, notifications and linked human entry/exit outcomes. Legacy C1 branches remain readable but are not exposed for new UI runs. |
+| 🟩 Current demo/runtime | `aegistrade/portfolio_memory.py`, `aegistrade/lessons.py`, `aegistrade/memory.py`, `aegistrade/reflection.py` | Draft, human review, freeze and bounded retrieval of governed lessons. No outcome becomes memory automatically. |
+| 🟩 Current demo/runtime | `aegistrade/safety.py` | Deterministic order/risk validation, simulated broker safety and audit helpers. |
+| 🟩 Current demo/runtime | `knowledge/corpus.jsonl` | Versioned policy/reference passages observed through RAG. |
+| ⬜ Generated artifact | `data/c2_portfolio_runs/<id>/state.json` | Durable per-run C2 checkpoint and ledger. It is generated evidence, not executable source. |
+| ⬜ Generated artifact | `data/research_runs/<id>.json` | Saved C0/C1/C2 AI Agent Experiment result and traces. It is generated evidence, not executable source. |
 
 ### 12.5 Evaluation, deployment and tests
 
-| File/folder | Responsibility |
-|---|---|
-| `evaluation/` | E1–E4 harnesses, golden cases, attack cases, judge calibration and experiment ledger. |
-| `monitoring/` | Prometheus/Grafana definitions and alerts. |
-| `scripts/launch_local.py` | Starts FastAPI and Streamlit together with the private environment. |
-| `scripts/start_unix.sh` | Unix/macOS setup and launcher entry point. |
-| `docker-compose.yml` | Reproducible API/UI/MCP/monitoring stack. |
-| `.github/workflows/` | CI tests and evaluation gates. |
-| `tests/test_c2_portfolio.py` | C2 replay, checkpoint, human override and linked exit tests. |
-| `tests/test_agentic.py` | Specialist orchestration, typed hand-off and correction tests. |
-| `tests/test_rag_extensions.py` | Retrieval and RAG behavior. |
-| `tests/test_company_research.py` | Dated company-evidence preparation and coverage behavior. |
-| `tests/test_ui_stock_selection.py` | UI payload and automatic selection behavior. |
-| `tests/test_c1_ui_api.py` | C1 evaluation-only visibility and focused C2 Strategy Backtests UI. |
-| `tests/test_llm_backend.py` | Three-adapter identity, readiness and failure classification. |
+| Status | File/folder | Current responsibility |
+|---|---|---|
+| 🟩 Current demo/runtime | `scripts/start_unix.sh`, `scripts/launch_local.py` | Approved macOS/Unix startup path for FastAPI on 8000 and the original Streamlit UI on 8501. |
+| 🟦 Capstone support | `evaluation/` | E1–E4 harnesses, fresh development/held-out cases, attacks, clean controls, judge calibration, Recall@5 and the experiment ledger. |
+| 🟦 Capstone support | `monitoring/` | Prometheus/Grafana definitions and alerts used as operational evidence, not a required UI-demo screen. |
+| 🟦 Capstone support | `.github/workflows/` | Hosted CI regression and evaluation gates. |
+| 🟦 Capstone support | `tests/` | 377 deterministic regression, UI-contract, evidence, safety and orchestration tests. |
+| 🟦 Capstone support | `docker-compose.yml`, `docker-compose.neural.yml` | Reproducible container and optional neural-retrieval stacks; the local viva demo uses `start_unix.sh`. |
+| 🟦 Capstone support | `scripts/render_c1_c2_flow_graphs.py` | Regenerates the code-accurate C1 and C2 flow diagrams used for explanation. |
+| 🟨 Retained compatibility | `scripts/start_redesign_preview.sh` | Starts the rejected UI redesign preview. It is retained for design history and must not be used in the approved demo. |
 
 ## 13. Key API routes
 
-| Route | Purpose |
-|---|---|
-| `GET /health` | UI/API capability and inference identity. |
-| `GET /market/universe` | Active dataset symbols, coverage and provenance. |
-| `POST /simulation/run` | Deterministic C0 historical simulation. |
-| `POST /simulation/c2/run` | Start checkpointed C2 portfolio replay. |
-| `GET /simulation/c2/status/{run_id}` | Read live/saved C2 progress and results. |
-| `POST /simulation/c2/resume/{run_id}` | Add explicit allowance and resume a safe checkpoint. |
-| `GET /simulation/c2/notifications` | Read-only list of pending human override checkpoints. |
-| `POST /simulation/c2/human-override/{run_id}` | Record authenticated keep/override/exit decision. |
-| `POST /research/experiments/run` | Run same-case C0/C1/C2 research ablation. |
-| `GET /research/experiments/result/{run_id}` | Load a retained experiment and traces. |
-| `POST /research/portfolio-comparison/run` | Start same-stock C0/C2 financial comparison. |
-| `GET /portfolio-lessons` | List reviewed/frozen lesson versions. |
+| Status | Route | Current purpose |
+|---|---|---|
+| 🟩 Current demo/runtime | `GET /health` | UI/API capability, feature contract and inference identity. |
+| 🟩 Current demo/runtime | `GET /market/universe` | Active dataset symbols, coverage and provenance. |
+| 🟩 Current demo/runtime | `POST /simulation/c2/run` | Start the checkpointed C2 portfolio replay shown in Strategy Backtests. |
+| 🟩 Current demo/runtime | `GET /simulation/c2/status/{run_id}` | Read live or saved C2 progress and results. |
+| 🟩 Current demo/runtime | `POST /simulation/c2/resume/{run_id}` | Add explicit inference allowance and resume a compatible safe checkpoint. |
+| 🟩 Current demo/runtime | `GET /simulation/c2/notifications` | Read pending human evidence-override checkpoints for the notification bell. |
+| 🟩 Current demo/runtime | `POST /simulation/c2/human-override/{run_id}` | Record an authenticated keep/override/exit decision and rationale. |
+| 🟩 Current demo/runtime | `POST /research/experiments/run` | Run the fair C1 single-agent versus C2 multi-agent comparison; ALL also includes C0 as a secondary reference. |
+| 🟩 Current demo/runtime | `GET /research/experiments/result/{run_id}` | Load a retained AI experiment and its traces. |
+| 🟩 Current demo/runtime | `GET /portfolio-lessons` | List reviewed and frozen lesson versions. |
+| 🟨 Retained compatibility | `POST /simulation/run` and related `/simulation/recent`, `/simulation/result/{id}` | Standalone deterministic C0 history retained for old saved runs and internal reference calculations. It is no longer a selectable Strategy Backtests workflow. |
+| 🟨 Retained compatibility | `/research/portfolio-comparison/*` | Old single-stock C0/C2 financial comparison API. The current UI widgets were removed; the routes remain for saved history and regression tests. |
+| 🟨 Retained compatibility | `/simulation/c1/*` | Legacy C1 portfolio records remain readable, but new C1 portfolio submission returns a retirement response. C1 now belongs only to AI Agent Experiments. |
 
 ## 14. How to read a result
 
