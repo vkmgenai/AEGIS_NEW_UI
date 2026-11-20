@@ -37,7 +37,7 @@ def status(root,key):
     return payload
 
 
-def prepare(root,key,start,end,*,legacy=None):
+def prepare(root,key,start,end,*,legacy=None,force=False):
     root=Path(root);p=profile(key);target=folder(root,key,legacy)
     if start>=end:raise ValueError('Start must precede end')
     if end>=datetime.now(ZoneInfo('Asia/Kolkata')).date():raise ValueError('Choose completed historical dates before today')
@@ -45,10 +45,10 @@ def prepare(root,key,start,end,*,legacy=None):
     if manifest_path.exists():
         existing=json.loads(manifest_path.read_text())
         if existing.get('definition_sha256') and existing['definition_sha256']!=definition_hash(key):raise ValueError('Frozen definition changed; preserve the existing dataset and use a separately reviewed version')
-        if existing.get('status')=='complete':
+        if existing.get('status')=='complete' and not force:
             _,complete=load_dataset(target);validate_manifest(key,complete)
             return {'status':'COMPLETE','already_prepared':True,'universe_id':key,'generation_calls':0}
-        if existing.get('requested_start')!=str(start) or existing.get('requested_end')!=str(end):
+        if not force and (existing.get('requested_start')!=str(start) or existing.get('requested_end')!=str(end)):
             raise ValueError('Resume this dataset with its original frozen date range')
     previous=status(root,key)
     if previous and previous.get('worker_active'):raise ValueError('This universe preparation is already queued or running')

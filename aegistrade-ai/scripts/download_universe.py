@@ -14,11 +14,12 @@ def main():
     parser.add_argument('--data-root',type=Path,default=Path('data'))
     parser.add_argument('--start',type=date.fromisoformat)
     parser.add_argument('--end',type=date.fromisoformat)
+    parser.add_argument('--force',action='store_true',help='Rebuild the selected universe using the requested evaluation dates, reusing validated cached bars where possible')
     args=parser.parse_args();old=args.data_root/'nse_nifty20'/'manifest.json'
     baseline=json.loads(old.read_text()) if old.exists() else {}
     end=args.end or (date.fromisoformat(baseline['requested_end']) if baseline.get('requested_end') else datetime.now(ZoneInfo('Asia/Kolkata')).date()-timedelta(days=1))
     start=args.start or (date.fromisoformat(baseline['requested_start']) if baseline.get('requested_start') else (pd.Timestamp(end)-pd.DateOffset(years=5)).date())
-    reply=prepare(args.data_root,args.universe,start,end)
+    reply=prepare(args.data_root,args.universe,start,end,force=args.force)
     if reply.get('already_prepared'):print('Already validated; activate explicitly in Market Data.');return
     last=None
     while True:
