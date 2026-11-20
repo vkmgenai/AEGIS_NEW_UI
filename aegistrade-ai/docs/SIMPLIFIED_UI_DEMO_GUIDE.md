@@ -1,10 +1,10 @@
 # AegisTrade AI — simplified UI demonstration guide
 
-Version 0.35 · 17 November 2026 · simulation only
+Version 0.36 · 20 November 2026 · simulation only
 
 ## What to demonstrate
 
-AegisTrade compares a zero-generation technical baseline (C0), a controlled single-agent baseline (C1), and the specialist/critic agent workflow (C2). It grounds research in evidence available by the historical decision date, validates typed outputs, keeps financial arithmetic in Python, and records decisions and failures. It never connects to a live broker.
+AegisTrade compares a zero-generation technical baseline (C0), a controlled single-agent baseline (C1), and the specialist/critic agent workflow (C2). C1 and C2 execute as typed LangGraphs. The C2 portfolio has a separate outer LangGraph for session execution, conditional human interruption and durable resume. It grounds research in evidence available by the historical decision date, validates typed outputs, keeps financial arithmetic in Python, and records decisions and failures. It never connects to a live broker.
 
 The portfolio screen fixes risk settings so that C0 and C2 use the same reproducible policy rather than hand-tuned settings.
 
@@ -47,7 +47,9 @@ Open **Strategy Backtests**. In **Run AI agents using**, select ChatGPT, OpenRou
 
 Use capital `₹300,000` and a covered three-month window with at least 45 market sessions. Use inference allowance `48` for a small rehearsal, choose **No portfolio lessons** for a clean memory-off run, and check inference consent and replay-rule approval.
 
-Start the run. Show live progress, current date/stage, saved run ID, and refresh/pause/resume controls. After completion, open one trace and show the shortlist, dated RAG/web evidence, market specialist, strategy specialist, independent critic, deterministic validation, later-open fill, and holding-review/exit reason.
+Start the run. Show live progress, current date/stage, saved run ID, and refresh/pause/resume controls. The result identifies `LangGraph`, graph name `aegistrade-c2-portfolio`, SQLite checkpointer and thread ID `portfolio:<run_id>`. After completion, open one trace and show the shortlist, dated RAG/web evidence, market specialist, strategy specialist, independent critic, deterministic validation, later-open fill, and holding-review/exit reason.
+
+For the orchestration proof, show the generated graph sources in `docs/diagrams/`, pause at a safe checkpoint, restart the application, reopen the same run and resume it. Completed sessions and research records must not be duplicated. The orchestration checkpoint is in `data/langgraph/checkpoints.sqlite`; financial cash, positions and ledgers remain in the versioned run JSON.
 
 Inspect C2 return, drawdown, research ledger and human checkpoints. Do not claim that a short-window return proves profitability; the capstone claim concerns grounding, auditability, policy compliance and safety versus inference cost.
 
@@ -59,7 +61,7 @@ For the prepared demonstration, open any repeat ID: `1eac0a24d4e04453ab9bbab9e7c
 
 Do not start a new final held-out experiment merely because the preview changed. First approve and freeze the UI/code, generate the new versioned review set, complete its independent review, and then run the resumable E1–E4 plan. The old 102 templates remain retained but are not the new final review set.
 
-The experiment automatically selects eligible entry cases; there is no separate BUY/HOLD/SELL scenario control. It runs to completion without approval pauses. Human evidence override belongs only to the checkpointed C2 portfolio, so research calls are not duplicated.
+The experiment automatically selects eligible entry cases; there is no separate BUY/HOLD/SELL scenario control. It runs to completion without approval pauses. C1 uses a two-node persistent LangGraph; C2 uses supervisor, market, strategy, typed validation/replan and critic nodes. Human evidence override belongs only to the outer checkpointed C2 portfolio graph, so research calls are not duplicated.
 
 **Reading the results.** The first table compares C1 and C2. Point out grounded company evidence, safe evidence abstentions, hard model/policy failures and decision coverage. Open **Technical audit metrics** for raw calls, latency and errors. Then show **Secondary standardized forward outcome**: fixed ₹100,000 notional, next-session open to the 20th later-session close, modeled fees/slippage, and cash for non-entry. Explain that it is a financial interpretation of each decision, not the primary architecture score or a portfolio backtest.
 
@@ -69,7 +71,7 @@ For the optional intervention study, open **Strategy Backtests → Optional eval
 
 An approved BUY is not immediately a successful lesson. Its outcome remains `INCONCLUSIVE_OPEN` until the linked position exits. A later discretionary C2 SELL recommendation pauses for `KEEP_HOLDING` or `APPROVE_EXIT`; an evidence-blocked SELL can also pause for review. Deterministic stop, trailing-stop and take-profit exits do not wait for approval. After exit, the ledger reports `SUPPORTED` only when realized P&L is positive and `NOT_SUPPORTED` otherwise; either label is merely eligible for later human lesson review. It is never accepted into memory automatically. The reviewer token is local authorization for writing this audit decision; it is not sent to an LLM.
 
-While the dashboard is open, the notification bell refreshes every 15 seconds. When a C2 checkpoint needs a decision, the bell shows a count and a one-time toast appears. Open the bell, identify the stock/action/date, and select **Open review**. The UI switches to Strategy Backtests and loads the exact saved run; inspect the evidence there before deciding. The notification disappears after the decision is durably recorded and the run leaves `PAUSED_HUMAN_OVERRIDE`. This is an in-app notification only, so it does not send email or operating-system alerts when the dashboard is closed.
+While the dashboard is open, the notification bell refreshes every 15 seconds. When a C2 checkpoint needs a decision, LangGraph's `interrupt()` suspends the thread, the bell shows a count and a one-time toast appears. Open the bell, identify the stock/action/date, and select **Open review**. The UI switches to Strategy Backtests and loads the exact saved run; inspect the evidence there before deciding. Saving the decision resumes that exact thread with `Command(resume=...)`. The notification disappears after the decision is durably recorded and the run leaves `PAUSED_HUMAN_OVERRIDE`. This is an in-app notification only, so it does not send email or operating-system alerts when the dashboard is closed.
 
 Open **Learning & Lessons → Human decision outcomes** to show the separate decision ledger and fixed 10-session outcome. State that the outcome is review evidence, not causal proof; an eligible row can only inform a conditional lesson after human review and is never learned automatically. Then show that lessons remain drafts until review and freezing. Open **Capstone Evaluation** for retained E1–E4 runs, manifests and questionnaires.
 

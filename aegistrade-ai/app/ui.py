@@ -590,6 +590,10 @@ elif page == "Strategy Backtests":
         st.markdown('#### Results — '+result_flow+' historical portfolio' if c2_result else '#### Results — C0 Technical baseline')
         if c2_result and result_flow=='C1':st.caption('Evidence-first single-agent research, followed by code SMC checks. No independent LLM critic. NO_SMC_SIGNAL means evidence passed but price structure did not qualify.')
         if c2_result:
+            orchestration=result.get('orchestration',{})
+            if orchestration:
+                st.caption('Orchestration: '+str(orchestration.get('framework'))+' · '+str(orchestration.get('graph') or 'legacy saved run')+
+                    ' · checkpointer: '+str(orchestration.get('checkpointer'))+' · thread: '+str(orchestration.get('thread_id') or 'not applicable'))
             pending_override=result.get('pending_human_override')
             if pending_override:
                 if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT':

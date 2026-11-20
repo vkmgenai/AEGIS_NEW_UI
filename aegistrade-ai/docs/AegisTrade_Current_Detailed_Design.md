@@ -36,12 +36,12 @@ These must not be mixed. A grounded answer is not automatically profitable, and 
 1. The user chooses a dataset, workflow, historical window and capital in Streamlit. The UI exposes ChatGPT/Codex CLI, OpenRouter and Claude CLI adapters.
 2. FastAPI validates typed inputs, reviewer authorization, explicit inference consent and call allowance.
 3. Market-data code loads the active frozen universe, calculates indicators and ranks eligible technical candidates without an LLM.
-4. C0 finishes in deterministic code. C1 calls one evaluation agent. C2 runs market, strategy and critic specialists with a shared bounded allowance.
+4. C0 finishes in deterministic code. C1 runs one agent through a typed, SQLite-checkpointed LangGraph. C2 uses a supervisor LangGraph containing market, strategy, graph-level validation/replan and critic nodes under a shared bounded allowance.
 5. MCP tools expose market snapshots, dated company evidence, policy RAG, the permitted strategy route and reviewed lesson memory. These are read tools; no LLM receives a live broker-write tool.
 6. Deterministic gates validate schemas, cutoff dates, citations, route consistency, adverse-risk policy and the critic result.
 7. The historical engine calculates whole-share quantity, costs, slippage, stops, targets, capacity and cash. Fills occur only at eligible historical bars.
-8. If the optional `HUMAN_EVIDENCE_OVERRIDE` study encounters an eligible uncertainty block, the run checkpoints and pauses. The human decision is written separately; the original C2 block is never rewritten.
-9. JSON/SQLite ledgers retain inputs, outputs, calls, decisions, positions and P&L. Reviewed lessons require an additional accept-and-freeze process before later retrieval.
+8. The outer C2 portfolio is also a LangGraph. It calls the deterministic session engine, conditionally routes eligible uncertainty to `interrupt()`, and can resume the exact thread with `Command(resume=...)`. The human decision is written separately; the original C2 block is never rewritten.
+9. `data/langgraph/checkpoints.sqlite` retains orchestration checkpoints. Versioned JSON ledgers retain inputs, decisions, positions and P&L so pre-migration runs remain readable. Reviewed lessons still require a separate accept-and-freeze process before retrieval.
 
 ## 4. User-interface design
 
@@ -302,7 +302,7 @@ Yellow does not mean defective. It means “do not present this as the current d
 | 🟦 Capstone support | `evaluation/` | E1–E4 harnesses, fresh development/held-out cases, attacks, clean controls, judge calibration, Recall@5 and the experiment ledger. |
 | 🟦 Capstone support | `monitoring/` | Prometheus/Grafana definitions and alerts used as operational evidence, not a required UI-demo screen. |
 | 🟦 Capstone support | `.github/workflows/` | Hosted CI regression and evaluation gates. |
-| 🟦 Capstone support | `tests/` | 377 deterministic regression, UI-contract, evidence, safety and orchestration tests. |
+| 🟦 Capstone support | `tests/` | 380 deterministic regression, UI-contract, evidence, safety and orchestration tests, including persistent LangGraph and native interrupt/resume contracts. |
 | 🟦 Capstone support | `docker-compose.yml`, `docker-compose.neural.yml` | Reproducible container and optional neural-retrieval stacks; the local viva demo uses `start_unix.sh`. |
 | 🟦 Capstone support | `scripts/render_c1_c2_flow_graphs.py` | Regenerates the code-accurate C1 and C2 flow diagrams used for explanation. |
 | 🟨 Retained compatibility | `scripts/start_redesign_preview.sh` | Starts the rejected UI redesign preview. It is retained for design history and must not be used in the approved demo. |
