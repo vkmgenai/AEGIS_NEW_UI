@@ -1,4 +1,4 @@
-# AegisTrade AI v0.35 — final architecture and walkthrough
+# AegisTrade AI v0.36 — final architecture and walkthrough
 
 This is the original AegisTrade detailed-design diagram for final review. Its numbered layered presentation follows the capstone guideline's diagram convention, while every component and connection describes this repository. The system is simulation-only.
 
@@ -11,6 +11,7 @@ flowchart TB
   U[Researcher / reviewer] --> UI[Question-led Streamlit shell<br/>Data · C2 Portfolio · Agent Comparison · Evidence]
   UI --> API[FastAPI<br/>auth, consent, sessions, budgets, streaming/status]
   API --> IG[Input guardrails<br/>scope, typed schemas, injection scan, cutoff]
+  API --> PGRAPH[Outer C2 portfolio LangGraph<br/>execute sessions · conditional interrupt · resume]
 
   subgraph DATA[Point-in-time data and retrieval]
     NSE[NSEPython OHLCV cache<br/>frozen Nifty20 / Nifty100 / research30]
@@ -39,7 +40,7 @@ flowchart TB
     MA[Market specialist<br/>regime + company evidence]
     SA[Strategy specialist<br/>five-route catalogue incl. SMC]
     CR[Independent compliance critic]
-    FIX[Correction / replan loop<br/>bounded retries]
+    FIX[Conditional validation / replan edge<br/>bounded self-correction]
     PLAN --> MA --> SA --> CR
     CR -->|schema or evidence contradiction| FIX --> MA
   end
@@ -73,11 +74,12 @@ flowchart TB
   C1 --> TYPED
   R0 --> RISK
   TYPED --> RISK
+  PGRAPH --> RISK
   RISK -->|eligible evidence-uncertainty block| GATE
-  GATE -->|approve explicit override| FRESH --> MOCK
+  GATE -->|LangGraph interrupt + Command resume| FRESH --> MOCK
   RISK -->|upfront-approved historical replay| MOCK
 
-  MOCK --> AUDIT[(SQLite / JSON audit<br/>trade ledger, decision ledger<br/>checkpoints, traces)]
+  MOCK --> AUDIT[(SQLite LangGraph checkpoints<br/>versioned JSON financial ledger<br/>decisions and traces)]
   GATE --> OUT[Linked position/exit outcome<br/>review evidence, not causal proof]
   OUT --> AUDIT
   AUDIT --> MEM[Reviewed Reflexion lessons<br/>accept/reject/freeze/retrieve]
@@ -103,13 +105,13 @@ flowchart TB
 2. FastAPI validates authentication, explicit inference consent and a bounded allowance. Historical replay receives upfront approval of deterministic rules; supervised actions use exact-payload approval later.
 3. Code creates a locked case from completed daily bars. No future price or post-cutoff evidence is available.
 4. C0 routes the case through four deterministic strategies and makes zero model calls. The primary E1 comparison is C1 versus C2: identical locked cases, model, evidence, available tool capabilities, total response-token budget and eight-call ceiling; C1 uses one agent and C2 uses the specialist team.
-5. C2 creates a plan and invokes market, strategy and critic specialists. Its catalogue adds SMC to the four C0 routes. Each specialist has scoped read tools.
+5. C1 executes a typed two-node LangGraph. C2 executes a persistent supervisor LangGraph containing plan, market, strategy, typed validation/replan and critic nodes. Its catalogue adds SMC to the four C0 routes. Each specialist has scoped read tools.
 6. Market/company tools return dated evidence. Hybrid policy retrieval combines BM25 and vectors with RRF, reranking and query rewriting. Every result retains source/date/passage IDs.
 7. Typed hand-offs are validated. A contradiction causes a bounded correction/replan. Missing evidence is recorded honestly; it is never described as a positive fundamental finding. Breakouts require stricter corroboration.
 8. Python—not the LLM—calculates ranking, quantity, fees, slippage, stops, profit targets and portfolio limits.
-9. Only an eligible C2 evidence-uncertainty block attached to a technically valid BUY or holding SELL may enter `PAUSED_HUMAN_OVERRIDE`. Hard adverse, provider, schema, policy and risk failures are not overrideable. The reviewer keeps the block or explicitly overrides it with a rationale; no research call is repeated.
+9. The outer C2 portfolio LangGraph advances the deterministic session engine. Only an eligible C2 evidence-uncertainty block attached to a technically valid BUY or holding SELL may invoke LangGraph `interrupt()` and enter `PAUSED_HUMAN_OVERRIDE`. Hard adverse, provider, schema, policy and risk failures are not overrideable. The reviewer keeps the block or explicitly overrides it with a rationale; `Command(resume=...)` continues the exact graph thread and no research call is repeated.
 10. Human decisions are stored separately from model traces and trade ledgers and linked through position exit. Separately, AI Agent Experiments attach a fixed post-decision 20-session outcome on ₹100,000 notional for C1/C2 interpretation. Neither association is a causal or profitability claim.
-11. Decisions, model/tool traces, checkpoints and ledger events are persisted. Interrupted portfolio jobs resume only when data, prompt, corpus, backend and engine versions still match.
+11. LangGraph node state is persisted in `data/langgraph/checkpoints.sqlite`; financial state and immutable ledgers remain in versioned JSON. Interrupted portfolio jobs resume only when data, prompt, corpus, backend and engine versions still match. Pre-v11 portfolio runs remain readable and are labelled as legacy custom-Python orchestration; they are not rewritten.
 12. Failed development cases and eligible reviewed outcomes can inform conditional Reflexion lesson candidates. Nothing is learned automatically: a human accepts or rejects each lesson and freezes a version before later-period evaluation.
 13. The evaluation harness runs code-first checks, C0/C1/C2 comparisons, security trials, memory ablations and critic/retrieval ablations. The resumable report runner has completed three development E1 repetitions; final held-out E1/E2/E3 stays gated by independently reviewed labels. Prometheus/Grafana and CI expose operational evidence.
 

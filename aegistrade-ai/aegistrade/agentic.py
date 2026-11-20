@@ -8,7 +8,7 @@ from .evidence_context import CompanyEvidenceConversation,compact_json
 from .dated_web import eligible as web_eligible,needed as web_needed
 from .signal_evidence import require_adverse_exit,ADVERSE_FINDINGS
 from .breakout_evidence import validate_breakout_critic
-import asyncio,json,os,time
+import asyncio,json,os,time,uuid
 from pathlib import Path
 from typing import TypedDict
 from pydantic import ValidationError
@@ -20,6 +20,7 @@ from .mcp_runtime import ResearchTools
 from .security import scan_untrusted_text, sanitize_untrusted
 from .llm_backend import create_client,model_name,identity
 from .research_diagnostics import field_limits,validation_diagnostic,ResearchStop,inference_diagnostic
+from .langgraph_runtime import async_checkpointer,graph_config
 
 CONFIG=json.loads((Path(__file__).resolve().parents[1]/'config'/'agents.json').read_text())
 
@@ -49,6 +50,9 @@ class ResearchState(TypedDict,total=False):
     strategy:dict
     critic:dict
     status:str
+    correction_required:bool
+    correction_feedback:str
+    correction_count:int
 
 
 def scrub(value):
@@ -66,7 +70,8 @@ def scrub(value):
     return visit(cleaned)
 
 
-async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_factory,defences,backend,progress=None):
+async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_factory,defences,backend,progress=None,
+               checkpoint_thread_id=None):
     started=time.perf_counter()
     evidence=CaseEvidence.from_snapshot(snapshot)
     from .corpus import load_corpus
@@ -275,13 +280,25 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                         messages.append({'role':'user','content':'Code validation failed: '+last_failure['message']+'.'+correction+' Return the corrected complete JSON using the same evidence. String limits count characters, not tokens. Preserve the assessment status and material risks unless the observed evidence justifies a change; do not invent evidence or shorten by silently dropping risks.'})
                 raise ValueError('Specialist correction budget exhausted')
 
+            thread_id=checkpoint_thread_id or f"research:{config}:{evidence.symbol}:{evidence.date}:{uuid.uuid4().hex}"
             if config=='C1':
-                runtime.required_policy_ids=required_route_policy_ids(evidence)
-                result['plan']={'objective':'One agent gathers evidence and explains the constrained route',
-                    'steps':['Gather market, strategy and policy observations','Generate and validate typed decision'],
-                    'budget':result['budget']}
-                emit('plan_created',plan=result['plan'])
-                strategy=await specialist('single',{'lessons':lessons})
+                async def single_plan(s):
+                    p={'objective':'One agent gathers evidence and explains the constrained route',
+                       'steps':['Gather market, strategy and policy observations','Generate and validate typed decision'],
+                       'budget':result['budget'],'symbol':evidence.symbol,'date':evidence.date}
+                    emit('plan_created',plan=p)
+                    return {'plan':p,'status':'PLANNED','correction_count':0}
+                async def single_node(s):
+                    runtime.required_policy_ids=required_route_policy_ids(evidence)
+                    value=await specialist('single',{'lessons':lessons,'correction_feedback':s.get('correction_feedback')})
+                    return {'strategy':value,'status':'SINGLE_COMPLETE'}
+                sg=StateGraph(ResearchState)
+                sg.add_node('plan',single_plan);sg.add_node('single_agent',single_node)
+                sg.add_edge(START,'plan');sg.add_edge('plan','single_agent');sg.add_edge('single_agent',END)
+                async with async_checkpointer() as saver:
+                    state=await sg.compile(checkpointer=saver,name='aegistrade-c1-single-agent').ainvoke(
+                        {},graph_config(thread_id,checkpoint_ns='c1'))
+                result['plan']=state['plan'];strategy=state['strategy']
                 company_assessment=strategy['company']
                 critic={'accept':True,'reason':'No separate LLM critic in single-agent baseline; deterministic validation still applies.'}
             else:
@@ -302,17 +319,43 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
                     return {'market':value}
                 async def strategy_node(s):
                     runtime.required_policy_ids=required_route_policy_ids(evidence)
-                    return {'strategy':await specialist('strategy',{'market':s['market'],'lessons':lessons})}
+                    return {'strategy':await specialist('strategy',{'market':s['market'],'lessons':lessons,
+                        'correction_feedback':s.get('correction_feedback')}),'status':'STRATEGY_COMPLETE'}
+                async def validate_strategy_node(s):
+                    """Graph-level self-correction gate in addition to schema validation inside the specialist."""
+                    value=s.get('strategy') or {};problems=[]
+                    if value.get('strategy')!=approved_route(evidence.regime):problems.append('route mismatch')
+                    if not value.get('citations'):problems.append('missing policy citations')
+                    allowed={'SCREEN'} if evidence.research_purpose=='COMPANY_SCREEN' else {'HOLD','EXIT'} if evidence.research_purpose=='HOLDING_REVIEW' else {'ENTER'}
+                    if value.get('portfolio_action') not in allowed:problems.append('action mismatch')
+                    count=int(s.get('correction_count',0))
+                    required=bool(problems) and count<1
+                    return {'correction_required':required,'correction_feedback':'; '.join(problems),
+                            'status':'CORRECTION_REQUIRED' if required else 'STRATEGY_VALIDATED'}
+                def after_strategy_validation(s):
+                    return 'replan' if s.get('correction_required') else 'critic'
+                async def replan_node(s):
+                    count=int(s.get('correction_count',0))+1
+                    emit('graph_replan',agent='supervisor',reason=s.get('correction_feedback','Strategy validation failed'),
+                         correction_count=count,next_action='Return to strategy specialist with typed feedback')
+                    return {'correction_count':count,'status':'REPLANNED'}
                 async def critic_node(s):
                     runtime.required_policy_ids=tuple(s['strategy']['citations'])
                     return {'critic':await specialist('critic',{'market':s['market'],'strategy':s['strategy'],'lessons':lessons})}
                 g=StateGraph(ResearchState)
-                for name,fn in [('plan',plan),('market',market),('strategy',strategy_node),('critic',critic_node)]:g.add_node(name,fn)
-                g.add_edge(START,'plan');g.add_edge('plan','market');g.add_edge('market','strategy');g.add_edge('strategy','critic')
-                g.add_edge('critic',END)
-                state=await g.compile().ainvoke({})
+                for name,fn in [('plan',plan),('market',market),('strategy',strategy_node),
+                                ('validate_strategy',validate_strategy_node),('replan',replan_node),('critic',critic_node)]:g.add_node(name,fn)
+                g.add_edge(START,'plan');g.add_edge('plan','market');g.add_edge('market','strategy')
+                g.add_edge('strategy','validate_strategy')
+                g.add_conditional_edges('validate_strategy',after_strategy_validation,{'replan':'replan','critic':'critic'})
+                g.add_edge('replan','strategy');g.add_edge('critic',END)
+                async with async_checkpointer() as saver:
+                    state=await g.compile(checkpointer=saver,name='aegistrade-c2-supervisor').ainvoke(
+                        {},graph_config(thread_id,checkpoint_ns='c2'))
                 result['plan']=state['plan']; strategy=state['strategy'];critic=state['critic']
                 company_assessment=state['market']['company']
+            result['langgraph']={'enabled':True,'thread_id':thread_id,'checkpoint':'sqlite',
+                'graph':'aegistrade-c1-single-agent' if config=='C1' else 'aegistrade-c2-supervisor'}
             result.update(company_research=observations.get('company_evidence',{}),company_assessment=company_assessment)
             action=strategy.get('portfolio_action','ENTER')
             reducing=evidence.research_purpose=='HOLDING_REVIEW' and action=='EXIT'
@@ -352,7 +395,31 @@ async def _run(snapshot,config,model,max_calls,max_output_tokens,lessons,tools_f
 
 
 def run_agentic_case(snapshot,config='C2',model=None,max_calls=8,max_output_tokens=4800,
-                     lessons=None,*,tools_factory=ResearchTools,defences=True,backend=None,progress=None):
+                     lessons=None,*,tools_factory=ResearchTools,defences=True,backend=None,progress=None,
+                     checkpoint_thread_id=None):
     if config not in {'C1','C2'}:raise ValueError('Agent mode must be C1 or C2')
     return asyncio.run(_run(snapshot,config,model_name(model,backend=backend),max_calls,max_output_tokens,
-                            lessons or [],tools_factory,defences,backend,progress))
+                            lessons or [],tools_factory,defences,backend,progress,checkpoint_thread_id))
+
+
+def c2_graph_mermaid():
+    """Render the executable C2 graph topology without requiring a model call."""
+    def node(s):return s
+    def route(s):return 'replan' if s.get('correction_required') else 'critic'
+    graph=StateGraph(ResearchState)
+    for name in ('plan','market','strategy','validate_strategy','replan','critic'):
+        graph.add_node(name,node)
+    graph.add_edge(START,'plan');graph.add_edge('plan','market');graph.add_edge('market','strategy')
+    graph.add_edge('strategy','validate_strategy')
+    graph.add_conditional_edges('validate_strategy',route,{'replan':'replan','critic':'critic'})
+    graph.add_edge('replan','strategy');graph.add_edge('critic',END)
+    return graph.compile().get_graph().draw_mermaid()
+
+
+def c1_graph_mermaid():
+    """Render the executable C1 single-agent graph topology without a model call."""
+    def node(s):return s
+    graph=StateGraph(ResearchState)
+    graph.add_node('plan',node);graph.add_node('single_agent',node)
+    graph.add_edge(START,'plan');graph.add_edge('plan','single_agent');graph.add_edge('single_agent',END)
+    return graph.compile().get_graph().draw_mermaid()

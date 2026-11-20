@@ -12,7 +12,9 @@ from concurrent.futures import ThreadPoolExecutor
 import hashlib,json,math,os,threading,uuid
 import pandas as pd
 from pydantic import Field,model_validator
-from typing import Literal
+from typing import Literal,TypedDict
+from langgraph.graph import StateGraph,START,END
+from langgraph.types import interrupt,Command
 from prometheus_client import Counter
 from .simulation_service import SimulationSettings,normalize,execute_simulation,policy_from_settings
 from .selection import prepare_selection_features,rank_candidates
@@ -30,8 +32,9 @@ from . import portfolio_memory
 from .dated_web import eligible as web_eligible
 from .breakout_reentry import register_breakout_stop,reentry_candidates,reentry_context
 from . import smc_reentry
+from .langgraph_runtime import sync_checkpointer,graph_config
 
-VERSION='portfolio-v10-human-evidence-override-v1'
+VERSION='portfolio-v11-langgraph-checkpoint-v1'
 model_calls_total=Counter('aegis_c2_portfolio_model_calls_total','Known inference units in C2 historical portfolios; backend determines unit')
 uncertain_calls_total=Counter('aegis_c2_portfolio_uncertain_calls_total','Conservative call reservations after interrupted responses')
 completed_total=Counter('aegis_c2_portfolios_completed_total','Completed C2 historical windows, including coverage gaps')
@@ -187,7 +190,7 @@ def evidence_override_eligible(rec,snapshot,*,holding=False):
     return category=='EVIDENCE' or any(marker in text for marker in markers)
 
 
-def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None,news_monitor=None):
+def _execute_run_engine(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None,news_monitor=None):
     """Resume exact day/phase. Dependency injection is for explicit contract tests only."""
     state=load(run_id);settings=settings_for_state(state)
     if state['status'].startswith('COMPLETED'):return result_for(state)
@@ -288,6 +291,7 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
         memory_args={'lessons':selected_lessons} if state.get('memory_manifest') else {}
         if researcher is run_agentic_case:
             memory_args['progress']=lambda event:activity(event['event'].upper(),snapshot,**{k:v for k,v in event.items() if k!='event'})
+            memory_args['checkpoint_thread_id']=f"portfolio:{run_id}:{cid}"
         activity('LLM_RESEARCH',snapshot)
         out=researcher(snapshot,flow,model=state['model'],max_calls=8,max_output_tokens=4800,backend=frozen['backend'],**memory_args)
         out['portfolio_memory']={'manifest':state.get('memory_manifest'),'lesson_ids':[x['id'] for x in selected_lessons]}
@@ -583,6 +587,67 @@ def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,shou
     checkpoint();return result_for(state)
 
 
+class PortfolioGraphState(TypedDict,total=False):
+    run_id:str
+    status:str
+    result:dict
+    pending_human_override:dict
+    human_resume:dict
+
+
+def _portfolio_graph(frame,engine_kwargs=None):
+    """Build the durable outer graph while retaining the versioned financial engine."""
+    engine_kwargs=engine_kwargs or {}
+    def execute_sessions(s:PortfolioGraphState):
+        result=_execute_run_engine(s['run_id'],frame,**engine_kwargs)
+        return {'result':result,'status':result['status'],
+                'pending_human_override':result.get('pending_human_override')}
+    def route_after_execution(s:PortfolioGraphState):
+        return 'human_gate' if s.get('status')=='PAUSED_HUMAN_OVERRIDE' and s.get('pending_human_override') else 'done'
+    def human_gate(s:PortfolioGraphState):
+        pending=dict(s['pending_human_override']);pending.pop('proposed_order',None)
+        review=interrupt({'type':'HUMAN_EVIDENCE_OVERRIDE','run_id':s['run_id'],'request':pending})
+        return {'human_resume':review,'status':'HUMAN_RESUMED'}
+    def apply_human_resume(s:PortfolioGraphState):
+        review=s.get('human_resume') or {};pending=load(s['run_id']).get('pending_human_override')
+        if pending:
+            _apply_human_review(s['run_id'],pending,review.get('override_id',pending['override_id']),
+                review.get('decision','KEEP_BLOCKED'),review.get('reviewer','LangGraph reviewer'),
+                review.get('rationale','Resolved through the LangGraph human interrupt.'))
+        return {'status':'QUEUED','pending_human_override':None}
+    def done(s:PortfolioGraphState):return {'status':s.get('status','COMPLETED')}
+    graph=StateGraph(PortfolioGraphState)
+    graph.add_node('execute_sessions',execute_sessions);graph.add_node('human_gate',human_gate)
+    graph.add_node('apply_human_resume',apply_human_resume);graph.add_node('done',done)
+    graph.add_edge(START,'execute_sessions')
+    graph.add_conditional_edges('execute_sessions',route_after_execution,{'human_gate':'human_gate','done':'done'})
+    graph.add_edge('human_gate','apply_human_resume');graph.add_edge('apply_human_resume','execute_sessions');graph.add_edge('done',END)
+    return graph
+
+
+def execute_run(run_id,frame,*,researcher=None,preparer=None,validator=None,should_cancel=None,news_monitor=None):
+    """Invoke a new or continued C2 portfolio through persistent LangGraph state."""
+    kwargs={k:v for k,v in {'researcher':researcher,'preparer':preparer,'validator':validator,
+        'should_cancel':should_cancel,'news_monitor':news_monitor}.items() if v is not None}
+    with sync_checkpointer() as saver:
+        graph=_portfolio_graph(frame,kwargs).compile(checkpointer=saver,name='aegistrade-c2-portfolio')
+        output=graph.invoke({'run_id':run_id},graph_config(f'portfolio:{run_id}',checkpoint_ns='portfolio'))
+    return output.get('result') or result_for(load(run_id))
+
+
+def resume_portfolio_graph(run_id,frame,review:dict):
+    """Resume the exact native LangGraph human interrupt with Command(resume=...)."""
+    with sync_checkpointer() as saver:
+        graph=_portfolio_graph(frame).compile(checkpointer=saver,name='aegistrade-c2-portfolio')
+        output=graph.invoke(Command(resume=review),graph_config(f'portfolio:{run_id}',checkpoint_ns='portfolio'))
+    return output.get('result') or result_for(load(run_id))
+
+
+def portfolio_graph_mermaid():
+    """Return a stable diagram source for the final-review graph demonstration."""
+    return _portfolio_graph(pd.DataFrame()).compile().get_graph().draw_mermaid()
+
+
 def human_override_outcomes(state,holdings):
     """Describe lifecycle maturity without automatically converting outcomes into lessons."""
     events=state.get('human_override_ledger',[]);by_id={}
@@ -705,6 +770,11 @@ def result_for(state):
         activity={'stage':'QUEUED' if state['status']=='QUEUED' else 'LLM_RESEARCH' if state.get('inflight') else state['phase'],
                   'symbol':key[1] if len(key)>1 else None,'updated_utc':state.get('updated_utc')}
     return normalize({'activity':activity,'updated_utc':state.get('updated_utc'),'run_id':state['run_id'],'research_flow':flow,'strategy_definition':'smc-daily-sweep-bos-ob-v1' if flow=='C1' else None,'research_order':'EVIDENCE_BEFORE_SIGNAL' if flow=='C1' else 'SIGNAL_BEFORE_RESEARCH','independent_critic':flow=='C2','version':state['version'],'created_utc':state['created_utc'],'status':state['status'],
+        'orchestration':{'framework':'LangGraph' if state.get('version')==VERSION else 'Legacy custom Python',
+            'graph':'aegistrade-c2-portfolio' if state.get('version')==VERSION else None,
+            'thread_id':f"portfolio:{state['run_id']}" if state.get('version')==VERSION else None,
+            'checkpointer':'SQLite' if state.get('version')==VERSION else 'versioned JSON only',
+            'native_human_interrupt':state.get('version')==VERSION},
         'research_prompt_version':state['prompt_version'],'current_research_prompt_version':CONFIG['version'],
         'research_configuration_changed':state['prompt_version']!=CONFIG['version'] or state['version']!=VERSION or state['corpus_sha256']!=corpus_info()['sha256'],
         'signal_checks':[{k:d.get(k) for k in ('date','symbol','smc_stage','smc_signal','action','explanation')} for d in decisions if d.get('evidence_passed')],
@@ -761,15 +831,33 @@ _active={};_lock=threading.RLock()
 def active(run_id):
     with _lock:return run_id in _active and not _active[run_id].done()
 
-def launch(run_id,frame):
+def launch(run_id,frame,review=None):
     with _lock:
         if run_id in _active and not _active[run_id].done():raise ValueError('Run already active')
-        _active[run_id]=_executor.submit(execute_run,run_id,frame.copy())
+        target=resume_portfolio_graph if review is not None else execute_run
+        args=(run_id,frame.copy(),review) if review is not None else (run_id,frame.copy())
+        _active[run_id]=_executor.submit(target,*args)
 
 def status(run_id):
     state=load(run_id);result=result_for(state);result['worker_active']=active(run_id)
     if state['status'] in {'RUNNING','QUEUED'} and not result['worker_active']:result['status']='INTERRUPTED'
     return result
+
+def _apply_human_review(run_id,pending,override_id,decision,reviewer,rationale):
+    if pending.get('override_id')!=override_id:raise ValueError('Override ID does not match the pending decision')
+    if decision not in {'APPROVE_OVERRIDE','KEEP_BLOCKED'}:raise ValueError('Decision must be APPROVE_OVERRIDE or KEEP_BLOCKED')
+    if len(reviewer.strip())<2 or len(rationale.strip())<3:raise ValueError('Reviewer and rationale are required')
+    state=load(run_id)
+    event={k:v for k,v in pending.items() if k!='proposed_order'}
+    event.update(event='HUMAN_DECISION',decision=decision,reviewer=reviewer.strip(),rationale=rationale.strip(),decided_utc=now())
+    state.setdefault('human_override_ledger',[]).append(event)
+    if decision=='APPROVE_OVERRIDE':
+        order=dict(pending['proposed_order']);order['human_override_id']=override_id
+        state['queued'].append(order)
+    state['pending_human_override']=None;state['status']='QUEUED'
+    state.setdefault('consents',[]).append({'at':now(),'human_override_id':override_id,'decision':decision})
+    save(state_path(run_id),state)
+    return state
 
 def resolve_human_override(run_id,frame,override_id,decision,reviewer,rationale):
     """Resolve one evidence-uncertainty pause and continue the same checkpointed run."""
@@ -777,18 +865,8 @@ def resolve_human_override(run_id,frame,override_id,decision,reviewer,rationale)
         if active(run_id):raise ValueError('Run is still active')
         state=load(run_id);pending=state.get('pending_human_override')
         if not pending or state.get('status')!='PAUSED_HUMAN_OVERRIDE':raise ValueError('No human evidence override is awaiting review')
-        if pending.get('override_id')!=override_id:raise ValueError('Override ID does not match the pending decision')
-        if decision not in {'APPROVE_OVERRIDE','KEEP_BLOCKED'}:raise ValueError('Decision must be APPROVE_OVERRIDE or KEEP_BLOCKED')
-        if len(reviewer.strip())<2 or len(rationale.strip())<3:raise ValueError('Reviewer and rationale are required')
-        event={k:v for k,v in pending.items() if k!='proposed_order'}
-        event.update(event='HUMAN_DECISION',decision=decision,reviewer=reviewer.strip(),rationale=rationale.strip(),decided_utc=now())
-        state.setdefault('human_override_ledger',[]).append(event)
-        if decision=='APPROVE_OVERRIDE':
-            order=dict(pending['proposed_order']);order['human_override_id']=override_id
-            state['queued'].append(order)
-        state['pending_human_override']=None;state['status']='QUEUED'
-        state.setdefault('consents',[]).append({'at':now(),'human_override_id':override_id,'decision':decision})
-        save(state_path(run_id),state);launch(run_id,frame)
+        state=_apply_human_review(run_id,pending,override_id,decision,reviewer,rationale)
+        launch(run_id,frame,{'override_id':override_id,'decision':decision,'reviewer':reviewer.strip(),'rationale':rationale.strip()})
         return result_for(state)
 
 def resume(run_id,frame,additional_calls):

@@ -37,7 +37,7 @@ The detailed diagram and numbered walkthrough are in [FINAL_ARCHITECTURE.md](FIN
 6. FastMCP tools provide market, company, policy, route and reviewed-memory observations. Pre/post-tool hooks enforce permissions and budgets, scan untrusted content, scrub secrets and append the trace.
 7. Deterministic validation checks schemas, dates, citations, route agreement and adverse evidence. Python then owns quantity, fixed delivery fees, slippage, stops, targets, capacity and all cash/ledger arithmetic.
 8. Historical replay proceeds only under upfront-approved rules and fills at the eligible later open. A separately supervised action pauses for approve, edit or reject on the exact payload hash, then repeats freshness and risk checks before simulated submission. No live broker exists.
-9. JSON/SQLite records preserve traces, checkpoints, decisions and ledger events. Human-reviewed lessons may be frozen for later development runs; the E1–E4 harness, monitoring dashboards and CI measure quality, safety, latency and cost.
+9. LangGraph persists C1/C2 research and C2 portfolio orchestration in `data/langgraph/checkpoints.sqlite`. The separately versioned JSON portfolio state preserves financial arithmetic and backwards-readable old runs. Human-reviewed lessons may be frozen for later development runs; the E1–E4 harness, monitoring dashboards and CI measure quality, safety, latency and cost.
 
 ### Final demonstration UI
 
@@ -63,7 +63,7 @@ C2 does not require a frontier reasoning model for routine typed extraction and 
 |---|---|---|
 | Retrieval | Source/date metadata; BM25 + vectors + RRF; reranker; query rewriting; passage IDs | Partial: development Recall@5 exists; independent label review and a held-out rerun remain required |
 | Tools/MCP | Six FastMCP servers, typed schemas, structured errors, scoped read/write access and tests | Implemented; export final inventory and test evidence |
-| Orchestration | Typed LangGraph specialist graph, bounded correction loop, durable portfolio checkpoints/resume | Partial: retain a live resume recording and do not overclaim a LangGraph-native checkpointer where file/SQLite checkpoints are used |
+| Orchestration | Typed C1/C2 LangGraphs; conditional strategy-validation/replan edge; SQLite checkpointer; outer C2 portfolio graph; native `interrupt()`/`Command(resume=...)`; old JSON runs retained | Implemented in code; final review still needs a recorded stop/resume and human-interrupt demonstration |
 | Memory | Short-term workflow state; reviewed SQLite lessons; applicability, accept/reject/freeze and policy | Partial: run final memory-off/on held-out E3 |
 | Planning | Visible plan object, ReAct tool use, correction/replan events | Partial: retain one successful contradiction/replan trace |
 | Multi-agent | C2 supervisor + three specialists; C1 same-tool/budget baseline | Partial: final funded three-repeat E1 is still required |

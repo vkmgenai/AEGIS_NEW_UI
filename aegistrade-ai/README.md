@@ -26,7 +26,7 @@ Separate v0.35 UI proposal: run `bash scripts/start_redesign_preview.sh`, then o
 **GitHub-ready local capstone research application**  
 **SIMULATION ONLY — no broker connection, real-money order placement, leverage, or intraday execution.**
 
-AegisTrade is a human-governed multi-agent algorithmic trading research platform. It combines cached NSEPython daily OHLCV (with explicit synthetic test mode), automatic stock screening, EMA/RSI/breakout strategies, a deterministic risk engine, policy retrieval, a LangGraph approval workflow, a mock order gateway and an audit trail. A selectable Codex CLI or OpenRouter transport provides actual model inference for evidence-grounded specialist research.
+AegisTrade is a human-governed multi-agent algorithmic trading research platform. It combines cached NSEPython daily OHLCV (with explicit synthetic test mode), automatic stock screening, EMA/RSI/breakout strategies, a deterministic risk engine, policy retrieval, persistent LangGraph orchestration, a mock order gateway and an audit trail. C1 and C2 research use typed LangGraph state; C2 portfolio runs use an outer checkpointed LangGraph with a native human interrupt. SQLite graph checkpoints coexist with the versioned financial JSON ledger so older runs remain readable. A selectable Codex CLI, OpenRouter or Claude CLI transport provides actual model inference for evidence-grounded specialist research.
 
 > **Academic status:** An integrated research prototype. Passing unit tests does **not** prove profitable trading or satisfy all final capstone evaluation requirements. The README and `docs/COMPLIANCE_AND_REMAINING_WORK.md` distinguish implemented code from missing research evidence.
 
@@ -120,7 +120,9 @@ aegistrade-ai/
 │   ├── strategies.py              # Indicators and regime-aware routing
 │   ├── engine.py                  # Daily-bar backtesting & portfolio
 │   ├── safety.py                  # Typed orders, risk, approval hash, mock broker
-│   ├── workflow.py                # LangGraph supervisor and specialists
+│   ├── agentic.py                 # C1/C2 LangGraph supervisor, specialists and correction edge
+│   ├── c2_portfolio.py            # Outer portfolio LangGraph + deterministic financial engine
+│   ├── langgraph_runtime.py       # Persistent SQLite graph checkpointer
 │   ├── knowledge.py               # Hybrid policy retrieval (offline / neural)
 │   ├── openrouter.py              # Optional budget-limited explanation
 │   ├── memory.py, lessons.py      # Memory and human-reviewed Reflexion lessons
@@ -308,7 +310,7 @@ C2 now shares unchanged company evidence within each specialist conversation thr
 
 Strong trend and RSI-reversion signals may proceed after attempted dated research with explicit LIMITED/COVERAGE_LIMITED when no concrete adverse event remains unresolved. This accepts residual coverage risk; it does not label missing evidence as clean fundamentals. Breakouts require readable dated corroboration and breakout_support. Supported adverse findings block entries and require critic-validated EXIT for holdings, filling at a later eligible open. A bounded daily official-disclosure metadata watch can trigger C2 between scheduled holding reviews; empty checks make no generation call. Routine trading-window notices and address fragments are distinguished from substantive adverse events. Existing stops, profit targets, sizing, costs and no-terminal-liquidation rules remain.
 
-Start a new run after updating: research, corpus and engine fingerprints changed. See the [policy, orchestration, UI demo and viva guide](docs/AegisTrade_Signal_Specific_Research_and_Adverse_Exit_Guide.docx). Verification: 256 tests pass with mocked generation; no profitability improvement is claimed.
+Start a new run after updating: research, corpus and engine fingerprints changed. See the [policy, orchestration, UI demo and viva guide](docs/AegisTrade_Signal_Specific_Research_and_Adverse_Exit_Guide.docx). Verification: 380 tests pass, including persistent LangGraph checkpoint and native interrupt/resume contracts; generation is mocked in the deterministic suite and no profitability improvement is claimed.
 
 ### Quoted breakout corroboration and structural-action quarantine (0.22.1)
 
