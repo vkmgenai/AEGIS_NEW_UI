@@ -37,7 +37,9 @@ st.markdown(
     div[data-testid="stRadio"] div[role="radiogroup"] label:hover {background:rgba(49, 51, 63, .06);}
     div[class*="st-key-notification_anchor"] {margin-top:0;}
     div[class*="st-key-notification_anchor"] button {position:fixed; top:.7rem; right:6.2rem; z-index:10000001; width:max-content !important; min-width:0; font-size:1rem !important; border:0 !important; background:transparent !important; box-shadow:none !important;}
-    div[class*="st-key-global_universe_selector"] {position:sticky; top:3.25rem; z-index:100; background:var(--background-color); padding:.35rem 0;}
+    .block-container {overflow:visible !important;}
+    div[class*="st-key-global_universe_selector"] {position:sticky !important; top:3.25rem; z-index:100; background:var(--background-color); padding:.35rem 0;}
+    div[class*="st-key-global_provider_selector"] {position:sticky !important; top:8.4rem; z-index:99; background:var(--background-color); padding:.55rem .8rem; border:1px solid rgba(49, 51, 63, .2); border-radius:.75rem; box-sizing:border-box;}
     div[class*="st-key-simulation_notice"] {margin-top:.5rem;}
     div[class*="st-key-simulation_notice"] p {font-size:.82rem; line-height:1.35;}
     </style>""",
@@ -52,8 +54,8 @@ from app.backend_compat import compatible_backend,UI_API_CONTRACT
 API = os.getenv("AEGIS_API_URL", "http://127.0.0.1:8000").rstrip("/")
 PAGES = (
     "Research Universe Setup",
-    "Strategy Backtests",
-    "AI Agent Experiments",
+    "E2E C2 Simulation",
+    "Multi Agent Comparison",
     "Capstone Evaluation",
     "Policy Knowledge",
     "Learning & Lessons",
@@ -156,7 +158,7 @@ def metric_value(value, suffix: str = "") -> str:
 
 @st.fragment(run_every="15s")
 def notification_bell(workspace_key: str):
-    """Read-only local alert inbox; approvals remain on Strategy Backtests."""
+    """Read-only local alert inbox; approvals remain on E2E C2 Simulation."""
     try:inbox=get('/simulation/c2/notifications',timeout=8)
     except Exception:return
     alerts=inbox.get('notifications',[]);ids={x['notification_id'] for x in alerts}
@@ -181,19 +183,19 @@ def notification_bell(workspace_key: str):
                 st.session_state['portfolio_job_C2_next']=alert['run_id']
                 st.session_state['portfolio_new_session_C2']=False
                 st.session_state['strategy_backtest_view']='portfolio'
-                st.session_state[workspace_key]='Strategy Backtests'
+                st.session_state[workspace_key]='E2E C2 Simulation'
                 st.rerun()
 
 
 if st.session_state.pop('open_research_workspace',False):
-    st.session_state['aegis_workspace']='AI Agent Experiments'
+    st.session_state['aegis_workspace']='Multi Agent Comparison'
     params=st.session_state.get('selection_research_settings',{})
     if params:
         from datetime import date as research_date
         st.session_state['ai_eval_start']=research_date.fromisoformat(params['start'])
         st.session_state['ai_eval_end']=research_date.fromisoformat(params['end'])
 if st.session_state.pop('open_supervised_workspace',False):
-    st.session_state['aegis_workspace']='AI Agent Experiments'
+    st.session_state['aegis_workspace']='Multi Agent Comparison'
 
 reviewer_token = os.getenv('AEGIS_REVIEWER_TOKEN','')
 nav_column, content_column = st.columns([1.5, 4.5], gap="large")
@@ -206,6 +208,11 @@ with nav_column:
     st.markdown('<div style="height: .25rem;"></div>' if not reviewer_token else '<div style="height: 11rem;"></div>', unsafe_allow_html=True)
     if st.session_state.get('aegis_workspace')=='Market Data & Overview':
         st.session_state['aegis_workspace']='Research Universe Setup'
+    # Preserve the current selection across the workspace rename during hot reload.
+    st.session_state['aegis_workspace'] = {
+        'Strategy Backtests': 'E2E C2 Simulation',
+        'AI Agent Experiments': 'Multi Agent Comparison',
+    }.get(st.session_state.get('aegis_workspace'), st.session_state.get('aegis_workspace'))
     page = st.radio("Workspace", PAGES, key="aegis_workspace", label_visibility="collapsed")
 
 with content_column:
@@ -296,6 +303,10 @@ with content_column:
         st.caption(('Ready. ' if picked.get('ready') else 'Not ready. ')+str(picked.get('reason',''))+' Model: '+str(picked.get('model','unknown'))+'.')
         st.caption(PROVIDER_NOTES[chosen]+' A saved C1 or C2 run stays tied to the provider it started on: switch back to resume it, or start a new run.')
         return active
+
+    # Keep the inference provider visible in one shared, sticky location below the universe selector.
+    with st.container(key='global_provider_selector'):
+        provider_selector('global')
 
 
     if page == "Research Universe Setup":
@@ -436,14 +447,12 @@ with content_column:
                     st.markdown("**EMA20 / EMA50:** moving averages used to identify directional trends. **RSI14:** momentum indicator that can support mean-reversion signals. **ATR14:** typical price range used in stop-loss calculations. **ADX14:** trend strength indicator. An indicator alone is not a trade instruction.")
         with st.expander("How the AegisTrade workflow connects these parts", expanded=True):
             st.markdown("**Daily market data** → **Automatic stock ranking** → **Completed C2 research + critic/code checks** → **Code-sized order** → **Human approval** → **Final freshness/risk checks** → **Simulated broker + audit**")
-            st.info("Next: run Strategy Backtests, inspect the stock-selection audit, then send selected candidates through C2. AI Agent Experiments run to completion without pausing. Human intervention is available only in a C2 portfolio run in Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE enabled.")
+            st.info("Next: run E2E C2 Simulation, inspect the stock-selection audit, then send selected candidates through C2. Multi Agent Comparison runs to completion without pausing. Human intervention is available only in a C2 portfolio run in E2E C2 Simulation with HUMAN_EVIDENCE_OVERRIDE enabled.")
 
-    elif page == "Strategy Backtests":
+    elif page == "E2E C2 Simulation":
         heading("C2 historical portfolio", "Run the end-to-end multi-agent portfolio simulation with dated evidence, deterministic financial controls and optional human evidence overrides.")
         is_c2=True
         is_ai=True
-        if is_ai:
-            with st.container(border=True):provider_selector('backtest')
         flow_label='C2'
         view_flow=flow_label if is_ai else 'TECHNICAL'
         new_session_key='portfolio_new_session_'+view_flow
@@ -498,7 +507,7 @@ with content_column:
                     if c_pause.button('Pause '+flow_label+' portfolio',disabled=not bool(job_id and reviewer_token)):
                         try:load_ai_job(job_id);post(prefix+'/pause/'+job_id,{},reviewer_token);st.info('Pause requested at the next safe boundary.')
                         except Exception as exc:fail('Pause request failed.',exc)
-        st.caption('This page is the end-to-end C2 portfolio demonstration. The controlled C0/C1/C2 architecture comparison belongs only in AI Agent Experiments. No live order is placed.')
+        st.caption('This page is the end-to-end C2 portfolio demonstration. The controlled C0/C1/C2 architecture comparison belongs only in Multi Agent Comparison. No live order is placed.')
         if is_ai:
             inf=health.get('inference',{})
             st.caption('Long C2 periods consume provider allowance. Start with a short window; paused runs can be resumed from the progress panel.')
@@ -779,19 +788,12 @@ with content_column:
         with st.expander("How should I interpret the backtest?",expanded=True):
             st.markdown("**Ending portfolio:** cash plus marked-to-market shares. **Total return:** percent change from starting capital. **Maximum drawdown:** worst peak-to-trough portfolio fall. **Sharpe:** ratio based on historical daily returns. **Fees/slippage:** reduce simulated outcomes. **Limitations:** no real fills, no live broker, no forecast of future profits. Use out-of-sample real data before making academic performance claims.")
 
-    elif page == "AI Agent Experiments":
-        heading("Single-agent versus multi-agent experiments", "C1 is one agent with the complete shared tool set. C2 is a supervisor coordinating market, strategy and critic specialists through typed hand-offs. C0 is a secondary deterministic reference. No live trades are placed.")
-        st.info("This is the guideline-required C1 single-agent versus C2 multi-agent comparison. Both receive identical cases, model, dated evidence, available read tools and case-level budget. Human-in-the-loop remains in the C2 portfolio workspace.")
-        with st.container(border=True):
-            a,b=st.columns(2)
-            inference=health.get("inference",{})
-            a.metric("Inference provider", PROVIDER_LABELS.get(inference.get("backend","openrouter"),inference.get("backend","openrouter")).split(" (")[0])
-            b.metric("Inference enabled and ready", "Yes" if health.get("llm_experiments_enabled") else "No")
-            provider_selector('experiments')
-            if not health.get("llm_experiments_enabled"):
-                st.caption("To activate C1/C2: choose a provider above that shows ready (Claude: run claude auth login in Terminal; ChatGPT: run codex login; OpenRouter: set OPENROUTER_API_KEY in .env), set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
+    elif page == "Multi Agent Comparison":
+        heading("Single-agent versus multi-agent experiments", "C0 is a secondary deterministic reference. C1 is one agent with the complete shared tool set. C2 is a supervisor coordinating market, strategy and critic specialists through typed hand-offs. No live trades are placed.")
+        if not health.get("llm_experiments_enabled"):
+            st.caption("To activate C1/C2: choose a provider above that shows ready (Claude: run claude auth login in Terminal; ChatGPT: run codex login; OpenRouter: set OPENROUTER_API_KEY in .env), set AEGIS_ENABLE_LLM_EXPERIMENTS=true in .env, then restart the API. Never paste account credentials into this page.")
         from datetime import date, timedelta
-        if False:  # Legacy single-stock widgets are hidden; the live comparison is in Strategy Backtests.
+        if False:  # Legacy single-stock widgets are hidden; the live comparison is in E2E C2 Simulation.
             st.markdown('### Single-stock C0 / C2 portfolio comparison')
             st.caption('Runs one stock over one historical window. C0 is the deterministic four-strategy ROUTER; C2 adds dated research, the market/strategy/critic team and SMC. Both share capital, costs, target and stop settings.')
             comparison=st.session_state.get('portfolio_comparison_result')
@@ -991,7 +993,7 @@ with content_column:
                 with st.expander('C2 evidence-gate diagnostics',expanded=False):
                     render_table([{'case_id':x.get('case_id'),'reason':x.get('human_review_gate_error')} for x in review_gate_failures],
                                  'These diagnostics explain model/evidence exclusions; they do not create a second approval workflow.',height=180)
-            st.caption('Human intervention is tested only inside Strategy Backtests with HUMAN_EVIDENCE_OVERRIDE. It reuses the completed C2 research and pauses eligible evidence-blocked BUY/SELL cases without making another research call.')
+            st.caption('Human intervention is tested only inside E2E C2 Simulation with HUMAN_EVIDENCE_OVERRIDE. It reuses the completed C2 research and pauses eligible evidence-blocked BUY/SELL cases without making another research call.')
             st.download_button("Download research results JSON",json.dumps(experiment,indent=2),file_name=f"aegistrade_agents_{experiment['run_id'][:8]}.json",mime="application/json")
         with st.expander('Human C2 decisions and simulated-action audit',expanded=False):
             try:
@@ -1081,7 +1083,7 @@ with content_column:
             capital_ref=st.number_input("Reference capital for this supervised proposal (₹)",min_value=1000.0,max_value=100000000.0,
                                         value=float(st.session_state.get("simulation_result",{}).get("settings",{}).get("initial_capital",100000.0)),step=10000.0,key="trade_capital_reference")
             link=st.session_state.get('linked_research')
-            if not link:st.info("Complete C2 in AI Agent Experiments, then select Use this C2 case in Supervised Trading. Approval is unavailable until research passes.")
+            if not link:st.info("Complete C2 in Multi Agent Comparison, then select Use this C2 case in Supervised Trading. Approval is unavailable until research passes.")
             if link:st.info(f"Linked case: {link['research_case_id']}. Code will recheck the snapshot and entry signal before proposing an order.")
             stale = st.checkbox("Inject stale quote (expect rejection)", key="trade_stale")
             timeout = st.checkbox("Inject timeout after simulated commit (expect reconciliation)", key="trade_timeout")
@@ -1229,7 +1231,7 @@ with content_column:
             if decision_reviews:
                 render_table([{k:r.get(k) for k in ('created_utc','reviewer','symbol','signal_date','strategy','action','decision','holding_return_pct','outcome_assessment','lesson_candidate_status')} for r in reversed(decision_reviews)],
                              'Eligible rows may inform a future conditional lesson only after human review. They are never learned automatically.',height=260)
-            else:st.info('No C2 human decisions have been recorded yet. Review an actionable C2 result in AI Agent Experiments first.')
+            else:st.info('No C2 human decisions have been recorded yet. Review an actionable C2 result in Multi Agent Comparison first.')
         except Exception as exc:fail('Unable to load C2 human-decision outcomes.',exc)
         st.divider()
         heading("Portfolio lesson memory", "Completed portfolio → dated source review → accepted conditional lesson → immutable version → selected future C2 run. No generation calls for this workflow.")
@@ -1272,7 +1274,7 @@ with content_column:
                 if st.button('Freeze portfolio lesson version',disabled=not bool(reviewer_token) or not freeze_ids):
                     post('/portfolio-lessons/freeze',{'candidate_ids':freeze_ids},reviewer_token);st.rerun()
             else:st.info('No portfolio lesson candidates yet. Draft from a completed run above; no candidate is automatically accepted.')
-            if memory.get('versions'):render_table(memory['versions'],'Versions are immutable. Select one in Strategy Backtests before creating a new C2 run.',height=220)
+            if memory.get('versions'):render_table(memory['versions'],'Versions are immutable. Select one in E2E C2 Simulation before creating a new C2 run.',height=220)
         except Exception as exc:fail('Portfolio lesson workflow failed.',exc)
         st.divider()
         heading("Reviewed lessons", "Propose Reflexion lessons on development cases, review them as a human and freeze the playbook before held-out evaluation.")
