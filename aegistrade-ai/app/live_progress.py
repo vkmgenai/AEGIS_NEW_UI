@@ -37,35 +37,36 @@ def render_c2_progress(initial_result,fetch_status):
             details=[str(activity[k]) for k in ('symbol','agent','tool') if activity.get(k)]
             if activity.get('turn'):details.append('model turn '+str(activity['turn']))
             if details:st.caption(' · '.join(details))
-            if activity.get('updated_utc'):
+        with st.expander('Run details',expanded=False):
+            if activity and activity.get('updated_utc'):
                 stamp=activity['updated_utc']
                 try:
                     moment=datetime.fromisoformat(stamp.replace('Z','+00:00'))
                     if moment.tzinfo is not None:stamp=moment.astimezone(ZoneInfo('Asia/Kolkata')).strftime('%d %b %Y %H:%M:%S IST')
                 except (ValueError,TypeError):pass
                 st.caption('Last activity: '+stamp)
-        summary=result.get('research_summary') or {}
-        if flow=='C1':
-            st.write('Company screens: '+str(summary.get('company_screens',0))+
-                ' | Evidence passed: '+str(summary.get('evidence_passed',0))+
-                ' | SMC checks: '+str(summary.get('signal_checks',summary.get('evidence_passed',0)))+
-                ' | Signals: '+str(summary.get('signals_found',summary.get('entry_decisions',0)))+
-                ' | Queued buys: '+str(summary.get('queued_buys',0))+
-                ' | BUY fills: '+str(summary.get('buy_fills',0)))
-            st.caption('Research blocked: '+str(summary.get('research_blocked',0))+
-                ' · Evidence passed but no SMC entry: '+str(summary.get('no_smc_signal',0)))
-        if flow=='C1' and summary.get('eligible_company_sessions'):
-            st.caption('Research batch coverage: '+str(summary.get('shortlisted_company_sessions',0))+' shortlisted company-sessions out of '+str(summary['eligible_company_sessions'])+' eligible. A bounded rotating batch can miss a stock on its SMC signal date; incomplete evidence can also prevent a signal check.')
-        latest=result.get('decisions',[])[-8:]
-        if latest:
-            st.dataframe([{k:d.get(k) for k in ['date','symbol','purpose','action','smc_stage','explanation']} for d in latest],
-                         hide_index=True,use_container_width=True)
-        if polling:
-            checked=datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S IST')
-            st.caption(f'Live progress, activity and outcomes refresh every {POLL_SECONDS} seconds · Last checked {checked}')
-            if result['status']=='QUEUED':st.caption('Queued behind the shared AI worker. No inference starts for this job until its turn.')
-            st.caption('Session progress advances after the close finishes. Source downloads and model turns appear above while a session is in progress. Refresh AI progress reloads all detailed tables.')
-        st.json(result['model_usage'])
-        if fresh and fresh.get('status') not in LIVE_STATUSES:st.rerun()
+            summary=result.get('research_summary') or {}
+            if flow=='C1':
+                st.write('Company screens: '+str(summary.get('company_screens',0))+
+                    ' | Evidence passed: '+str(summary.get('evidence_passed',0))+
+                    ' | SMC checks: '+str(summary.get('signal_checks',summary.get('evidence_passed',0)))+
+                    ' | Signals: '+str(summary.get('signals_found',summary.get('entry_decisions',0)))+
+                    ' | Queued buys: '+str(summary.get('queued_buys',0))+
+                    ' | BUY fills: '+str(summary.get('buy_fills',0)))
+                st.caption('Research blocked: '+str(summary.get('research_blocked',0))+
+                    ' · Evidence passed but no SMC entry: '+str(summary.get('no_smc_signal',0)))
+            if flow=='C1' and summary.get('eligible_company_sessions'):
+                st.caption('Research batch coverage: '+str(summary.get('shortlisted_company_sessions',0))+' shortlisted company-sessions out of '+str(summary['eligible_company_sessions'])+' eligible. A bounded rotating batch can miss a stock on its SMC signal date; incomplete evidence can also prevent a signal check.')
+            latest=result.get('decisions',[])[-8:]
+            if latest:
+                st.dataframe([{k:d.get(k) for k in ['date','symbol','purpose','action','smc_stage','explanation']} for d in latest],
+                             hide_index=True,use_container_width=True)
+            if polling:
+                checked=datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S IST')
+                st.caption(f'Live progress, activity and outcomes refresh every {POLL_SECONDS} seconds · Last checked {checked}')
+                if result['status']=='QUEUED':st.caption('Queued behind the shared AI worker. No inference starts for this job until its turn.')
+                st.caption('Session progress advances after the close finishes. Source downloads and model turns appear above while a session is in progress. Refresh AI progress reloads all detailed tables.')
+            st.json(result['model_usage'])
+            if fresh and fresh.get('status') not in LIVE_STATUSES:st.rerun()
 
     panel()

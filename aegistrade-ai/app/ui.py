@@ -37,11 +37,19 @@ st.markdown(
     div[data-testid="stRadio"] div[role="radiogroup"] label:hover {background:rgba(49, 51, 63, .06);}
     div[class*="st-key-notification_anchor"] {margin-top:0;}
     div[class*="st-key-notification_anchor"] button {position:fixed; top:.7rem; right:6.2rem; z-index:10000001; width:max-content !important; min-width:0; font-size:1rem !important; border:0 !important; background:transparent !important; box-shadow:none !important;}
-    .block-container {overflow:visible !important;}
-    div[class*="st-key-global_universe_selector"] {position:sticky !important; top:3.25rem; z-index:100; background:var(--background-color); padding:.35rem 0;}
-    div[class*="st-key-global_provider_selector"] {position:sticky !important; top:8.4rem; z-index:99; background:var(--background-color); padding:.55rem .8rem; border:1px solid rgba(49, 51, 63, .2); border-radius:.75rem; box-sizing:border-box;}
+    div[class*="st-key-global_universe_selector"] {position:sticky; top:3.25rem; z-index:100; background:var(--background-color); padding:.35rem 0; box-sizing:border-box;}
+    div[class*="st-key-global_universe_selector"],
+    div[class*="st-key-global_provider_selector"] {width:calc(133.333% + .57rem); max-width:none; min-width:0; flex:0 0 calc(133.333% + .57rem); margin-left:calc(-33.333% - .57rem);}
+    div[data-testid="stAppViewContainer"]:has(div[class*="st-key-global_provider_selector"]),
+    section.main:has(div[class*="st-key-global_provider_selector"]),
+    div[data-testid="stMainBlockContainer"]:has(div[class*="st-key-global_provider_selector"]),
+    div[data-testid="stColumn"]:has(div[class*="st-key-global_provider_selector"]),
+    div[data-testid="stVerticalBlock"]:has(div[class*="st-key-global_provider_selector"]),
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[class*="st-key-global_provider_selector"]) {overflow:visible !important;}
+    div[class*="st-key-global_provider_selector"] {position:relative !important; top:auto; z-index:1; background:var(--background-color); padding:.55rem .8rem; border:1px solid rgba(49, 51, 63, .2); border-radius:.75rem; box-sizing:border-box; align-self:flex-start;}
     div[class*="st-key-simulation_notice"] {margin-top:.5rem;}
     div[class*="st-key-simulation_notice"] p {font-size:.82rem; line-height:1.35;}
+    div[class*="st-key-saved_simulation_section"] details summary {font-size:calc(1rem + 10pt) !important;}
     </style>""",
     unsafe_allow_html=True,
 )
@@ -205,7 +213,6 @@ with nav_column:
             st.info("SIMULATION ONLY — No live broker connection.")
         else:
             st.warning("SIMULATION ONLY — No live broker connection.\n\nSet AEGIS_REVIEWER_TOKEN in the private .env and restart to enable reviewer actions. The secret is intentionally not entered or displayed in the UI.")
-    st.markdown('<div style="height: .25rem;"></div>' if not reviewer_token else '<div style="height: 11rem;"></div>', unsafe_allow_html=True)
     if st.session_state.get('aegis_workspace')=='Market Data & Overview':
         st.session_state['aegis_workspace']='Research Universe Setup'
     # Preserve the current selection across the workspace rename during hot reload.
@@ -213,6 +220,13 @@ with nav_column:
         'Strategy Backtests': 'E2E C2 Simulation',
         'AI Agent Experiments': 'Multi Agent Comparison',
     }.get(st.session_state.get('aegis_workspace'), st.session_state.get('aegis_workspace'))
+    # The universe setup heading is rendered before the shared provider card,
+    # so give that workspace extra room to keep navigation clear of the banner.
+    current_page = st.session_state.get('aegis_workspace', PAGES[0])
+    nav_spacer = '37rem' if not reviewer_token else '41rem'
+    if current_page != 'Research Universe Setup':
+        nav_spacer = '27rem' if not reviewer_token else '29rem'
+    st.markdown(f'<div style="height: {nav_spacer};"></div>', unsafe_allow_html=True)
     page = st.radio("Workspace", PAGES, key="aegis_workspace", label_visibility="collapsed")
 
 with content_column:
@@ -450,12 +464,66 @@ with content_column:
             st.info("Next: run E2E C2 Simulation, inspect the stock-selection audit, then send selected candidates through C2. Multi Agent Comparison runs to completion without pausing. Human intervention is available only in a C2 portfolio run in E2E C2 Simulation with HUMAN_EVIDENCE_OVERRIDE enabled.")
 
     elif page == "E2E C2 Simulation":
-        heading("C2 historical portfolio", "Run the end-to-end multi-agent portfolio simulation with dated evidence, deterministic financial controls and optional human evidence overrides.")
+        heading("Complete C2-only Historical Simulation", "Run the end-to-end multi-agent portfolio simulation with dated evidence, deterministic financial controls and optional human evidence overrides.")
         is_c2=True
         is_ai=True
         flow_label='C2'
         view_flow=flow_label if is_ai else 'TECHNICAL'
         new_session_key='portfolio_new_session_'+view_flow
+        from datetime import date, timedelta
+        first = date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"])
+        last = date.fromisoformat(universe["last_date"])
+        selected_book=None
+        human_override_mode=False
+        lesson_choices={'No reviewed lesson memory':None}
+        if is_c2 and health.get('portfolio_memory_supported'):
+            try:
+                books=get('/portfolio-lessons').get('versions',[])
+                lesson_choices.update({f"{b['created_at'][:19]} | {b['lesson_count']} lessons | trained through {b['trained_through']} | {b['id'][:8]}":b for b in books})
+            except Exception as exc:fail('Could not load portfolio lesson versions.',exc)
+        # Fixed capstone policy: these constants remain in the submitted payload and
+        # saved ledger, but are deliberately not tunable in the demonstration UI.
+        risk_pct=1.0; automatic_selection=True; sim_mode='ROUTER'; slippage_bps=10.0
+        stop_enabled=True; stop_method='ATR distance'; initial_atr=2.0; initial_percent=5.0
+        take_profit=8.0; trailing_enabled=True; trailing_multiple=2.0
+        smc_reentry_enabled=True; smc_reentry_window=10
+        breakout_risk=.5; breakout_method='ATR distance'; breakout_atr=2.5
+        breakout_percent=5.; breakout_trail=2.5; breakout_activation=1.; breakout_reentry=True
+        screen_count=3; review_every=5; development_memory=False
+        with st.container(border=True):
+            st.markdown("#### Run settings")
+            with st.form("capital_simulation_form"):
+                c1,c2=st.columns(2)
+                with c1:
+                    capital=st.number_input("Initial capital (₹)",min_value=1000.0,max_value=100000000.0,value=200000.0,step=10000.0)
+                with c2:
+                    start_date=st.date_input("Simulation start",value=first,min_value=first,max_value=last)
+                    end_date=st.date_input("Simulation end",value=last,min_value=first,max_value=last)
+                if is_ai:
+                    max_calls=st.number_input('Total inference allowance (requests or CLI invocations)',min_value=8,max_value=2400,value=48,step=8)
+                    if is_c2 and health.get('portfolio_memory_supported'):
+                        selected_book=lesson_choices[st.selectbox('Frozen portfolio lesson version',list(lesson_choices))]
+                        st.caption('Leave this off for the standard demo. Select a frozen version only for the documented memory-on evaluation.')
+                    if is_c2:
+                        human_override_mode=st.checkbox('Enable HUMAN_EVIDENCE_OVERRIDE study',value=False,
+                            help='Pauses only evidence-insufficient technical BUY/SELL blocks. Stops, targets and hard safety blocks cannot be overridden.')
+                    if selected_book:
+                        development_memory=st.checkbox('This is a development replay whose dates may overlap lesson training',value=False)
+                        st.caption('Pinned lesson version: '+selected_book['sha256']+' · trained through '+selected_book['trained_through'])
+                    c2_consent=st.checkbox('I authorize external inference for this historical portfolio, up to the displayed allowance',value=False)
+                approve_rules=st.checkbox("I approve these stock-selection, risk and cost assumptions for automatic historical replay",value=False)
+                run_sim=st.form_submit_button("Run C2 backtest" if is_ai else "Run C0 backtest",type="primary",use_container_width=True)
+            with st.expander('Fixed, reproducible simulation policy',expanded=False):
+                st.markdown('''
+    - ROUTER selects among EMA trend, EMA pullback, RSI reversion, breakout and SMC.
+    - Normal risk budget: **1% per trade**; breakout risk budget: **0.5%**.
+    - Protective stop: **2× ATR14**; breakout stop: **2.5× ATR14**.
+    - Trailing stop: **2× ATR14**; breakout trail: **2.5× ATR14 after 1R**.
+    - Net take-profit target: **8%**; one confirmed stopped-setup recovery within **10 sessions**.
+    - Slippage: **10 bps per transaction** plus fixed modeled NSE delivery charges.
+    - C2 screens up to **3 candidates per session** and reviews holdings every **5 sessions**.
+    ''')
+                st.caption('These assumptions are recorded in every result and fixed to prevent post-hoc tuning of the C2 portfolio demonstration.')
         if is_ai and st.button('Start a new '+flow_label+' session',help='Clears the displayed selection only. Saved runs remain available below and no model call is made.'):
             results=dict(st.session_state.get('portfolio_results',{}));results.pop(view_flow,None)
             st.session_state['portfolio_results']=results
@@ -467,6 +535,7 @@ with content_column:
         except Exception as exc:
             current=st.session_state.get('portfolio_results',{}).get(view_flow)
             fail('Could not restore the selected flow. Use its saved-run controls below.',exc)
+        result=st.session_state.get("portfolio_results",{}).get(view_flow)
         if is_ai:
             prefix='/simulation/'+flow_label.lower()
             def load_ai_job(value):
@@ -475,7 +544,7 @@ with content_column:
                 return remember_result(st.session_state,loaded)
             st.caption('Technical shortlist → dated RAG/web evidence → market specialist → strategy specialist → independent critic → code checks → later-open fill')
             with st.container(border=True):
-                st.subheader(flow_label+' live run progress')
+                st.subheader('Current '+flow_label+' Live Run Progress')
                 if current:render_c2_progress(current,get)
                 else:
                     st.progress(0,text='No '+flow_label+' run selected')
@@ -507,62 +576,45 @@ with content_column:
                     if c_pause.button('Pause '+flow_label+' portfolio',disabled=not bool(job_id and reviewer_token)):
                         try:load_ai_job(job_id);post(prefix+'/pause/'+job_id,{},reviewer_token);st.info('Pause requested at the next safe boundary.')
                         except Exception as exc:fail('Pause request failed.',exc)
+                if result and 'model_usage' in result and result.get('research_flow','C2')=='C2':
+                    st.markdown('#### Results — C2 historical portfolio')
+                    pending_override=result.get('pending_human_override')
+                    if pending_override:
+                        if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT':
+                            st.warning('C2 recommends SELL for a position opened through HUMAN_EVIDENCE_OVERRIDE. Confirm the linked exit or keep holding; protective code exits never wait.')
+                        else:
+                            st.warning('C2 blocked a technically positive '+pending_override['proposed_action']+' because evidence is insufficient. The original C2 decision remains BLOCKED.')
+                        with st.container(border=True):
+                            st.markdown('#### HUMAN_EVIDENCE_OVERRIDE review')
+                            st.write('**'+pending_override['symbol']+' · '+pending_override['proposed_action']+' · '+str(pending_override.get('technical_strategy'))+'**')
+                            price_columns=st.columns(3 if pending_override.get('entry_price') is not None else 1)
+                            signal_price=pending_override.get('signal_close_price')
+                            price_columns[0].metric('Signal-date close',f"₹{float(signal_price):,.2f}" if signal_price is not None else 'Not recorded')
+                            if pending_override.get('entry_price') is not None:
+                                price_columns[1].metric('Position entry price',f"₹{float(pending_override['entry_price']):,.2f}")
+                                change=pending_override.get('gross_position_return_pct_at_signal')
+                                price_columns[2].metric('Change since entry',f"{float(change):+.2f}%" if change is not None else 'Not recorded')
+                                gross=pending_override.get('gross_position_pnl_at_signal')
+                                st.caption('Held quantity: '+str(pending_override.get('quantity'))+' · Gross mark-to-market at signal close: '+(f"₹{float(gross):+,.2f}" if gross is not None else 'not recorded')+'. Actual later-open execution, fees and slippage can change realized P&L.')
+                            else:
+                                st.caption('This is the completed signal-date close, not the later-open simulated BUY fill price.')
+                            st.write(pending_override['blocking_reason'])
+                            override_choices=['KEEP_HOLDING','APPROVE_EXIT'] if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT' else ['KEEP_BLOCKED','APPROVE_OVERRIDE']
+                            override_display=st.radio('Human intervention',override_choices,horizontal=True,key='portfolio_override_decision')
+                            override_decision={'KEEP_HOLDING':'KEEP_BLOCKED','APPROVE_EXIT':'APPROVE_OVERRIDE'}.get(override_display,override_display)
+                            override_reviewer=st.text_input('Reviewer name or initials',key='portfolio_override_reviewer')
+                            override_reason=st.text_input('Override rationale',key='portfolio_override_reason')
+                            st.caption('Protective stop, trailing stop and take-profit exits remain automatic. An approved BUY is linked to all later reviews and its eventual exit.')
+                            if st.button('Record HUMAN_EVIDENCE_OVERRIDE decision',type='primary',disabled=not bool(reviewer_token and len(override_reviewer.strip())>=2 and len(override_reason.strip())>=3)):
+                                try:
+                                    updated=post('/simulation/c2/human-override/'+result['run_id'],{'override_id':pending_override['override_id'],'decision':override_decision,
+                                        'reviewer':override_reviewer,'rationale':override_reason},reviewer_token)
+                                    remember_result(st.session_state,updated);st.rerun()
+                                except Exception as exc:fail('Human evidence override could not be recorded.',exc)
         st.caption('This page is the end-to-end C2 portfolio demonstration. The controlled C0/C1/C2 architecture comparison belongs only in Multi Agent Comparison. No live order is placed.')
         if is_ai:
             inf=health.get('inference',{})
             st.caption('Long C2 periods consume provider allowance. Start with a short window; paused runs can be resumed from the progress panel.')
-        from datetime import date, timedelta
-        first = date.fromisoformat(universe.get("provenance",{}).get("requested_start") or universe["first_date"])
-        last = date.fromisoformat(universe["last_date"])
-        selected_book=None
-        human_override_mode=False
-        if is_c2:
-            with st.expander('Optional evaluation controls',expanded=False):
-                if health.get('portfolio_memory_supported'):
-                    try:
-                        books=get('/portfolio-lessons').get('versions',[])
-                        choices={'No reviewed lesson memory':None,**{f"{b['created_at'][:19]} | {b['lesson_count']} lessons | trained through {b['trained_through']} | {b['id'][:8]}":b for b in books}}
-                        selected_book=choices[st.selectbox('Frozen portfolio lesson version',list(choices))]
-                        st.caption('Leave this off for the standard demo. Select a frozen version only for the documented memory-on evaluation.')
-                    except Exception as exc:fail('Could not load portfolio lesson versions.',exc)
-                human_override_mode=st.checkbox('Enable HUMAN_EVIDENCE_OVERRIDE study',value=False,
-                    help='Pauses only evidence-insufficient technical BUY/SELL blocks. Stops, targets and hard safety blocks cannot be overridden.')
-        # Fixed capstone policy: these constants remain in the submitted payload and
-        # saved ledger, but are deliberately not tunable in the demonstration UI.
-        risk_pct=1.0; automatic_selection=True; sim_mode='ROUTER'; slippage_bps=10.0
-        stop_enabled=True; stop_method='ATR distance'; initial_atr=2.0; initial_percent=5.0
-        take_profit=8.0; trailing_enabled=True; trailing_multiple=2.0
-        smc_reentry_enabled=True; smc_reentry_window=10
-        breakout_risk=.5; breakout_method='ATR distance'; breakout_atr=2.5
-        breakout_percent=5.; breakout_trail=2.5; breakout_activation=1.; breakout_reentry=True
-        screen_count=3; review_every=5; development_memory=False
-        with st.expander('Fixed, reproducible simulation policy',expanded=False):
-            st.markdown('''
-    - ROUTER selects among EMA trend, EMA pullback, RSI reversion, breakout and SMC.
-    - Normal risk budget: **1% per trade**; breakout risk budget: **0.5%**.
-    - Protective stop: **2× ATR14**; breakout stop: **2.5× ATR14**.
-    - Trailing stop: **2× ATR14**; breakout trail: **2.5× ATR14 after 1R**.
-    - Net take-profit target: **8%**; one confirmed stopped-setup recovery within **10 sessions**.
-    - Slippage: **10 bps per transaction** plus fixed modeled NSE delivery charges.
-    - C2 screens up to **3 candidates per session** and reviews holdings every **5 sessions**.
-    ''')
-            st.caption('These assumptions are recorded in every result and fixed to prevent post-hoc tuning of the C2 portfolio demonstration.')
-        with st.form("capital_simulation_form"):
-            st.markdown("#### Run settings")
-            c1,c2=st.columns(2)
-            with c1:
-                capital=st.number_input("Initial capital (₹)",min_value=1000.0,max_value=100000000.0,value=200000.0,step=10000.0)
-            with c2:
-                start_date=st.date_input("Simulation start",value=first,min_value=first,max_value=last)
-                end_date=st.date_input("Simulation end",value=last,min_value=first,max_value=last)
-            if is_ai:
-                max_calls=st.number_input('Total inference allowance (requests or CLI invocations)',min_value=8,max_value=2400,value=48,step=8)
-                if selected_book:
-                    development_memory=st.checkbox('This is a development replay whose dates may overlap lesson training',value=False)
-                    st.caption('Pinned lesson version: '+selected_book['sha256']+' · trained through '+selected_book['trained_through'])
-                c2_consent=st.checkbox('I authorize external inference for this historical portfolio, up to the displayed allowance',value=False)
-            approve_rules=st.checkbox("I approve these stock-selection, risk and cost assumptions for automatic historical replay",value=False)
-            run_sim=st.form_submit_button("Run C2 backtest" if is_ai else "Run C0 backtest",type="primary",use_container_width=True)
         if run_sim:
             if not approve_rules:st.error("Approve the displayed replay assumptions before running the historical simulation.")
             elif smc_reentry_enabled and not health.get('smc_reentry_supported',False):st.error('Restart API/dashboard to load SMC recovery support before starting this run.')
@@ -594,8 +646,8 @@ with content_column:
                         st.success("C0 Technical baseline completed and saved.")
                 except Exception as exc:
                     fail("Portfolio simulation failed. Try a longer date interval (at least 45 sessions).",exc)
-        result=st.session_state.get("portfolio_results",{}).get(view_flow)
-        with st.expander("Open a previously saved simulation"):
+        with st.container(key='saved_simulation_section'):
+          with st.expander("Open a previously saved simulation"):
             try:
                 previous=get("/simulation/recent").get("runs",[])
                 if previous:
@@ -621,11 +673,12 @@ with content_column:
                 with st.expander('Initial stop-loss settings'):st.json(result['initial_stop_loss'])
             c2_result='model_usage' in result
             result_flow=result.get('research_flow','C2')
-            st.markdown('#### Results — '+result_flow+' historical portfolio' if c2_result else '#### Results — C0 Technical baseline')
+            if not (c2_result and result_flow=='C2'):
+                st.markdown('#### Results — '+result_flow+' historical portfolio' if c2_result else '#### Results — C0 Technical baseline')
             if c2_result and result_flow=='C1':st.caption('Evidence-first single-agent research, followed by code SMC checks. No independent LLM critic. NO_SMC_SIGNAL means evidence passed but price structure did not qualify.')
             if c2_result:
                 pending_override=result.get('pending_human_override')
-                if pending_override:
+                if pending_override and result_flow!='C2':
                     if pending_override.get('review_trigger')=='LINKED_POSITION_EXIT':
                         st.warning('C2 recommends SELL for a position opened through HUMAN_EVIDENCE_OVERRIDE. Confirm the linked exit or keep holding; protective code exits never wait.')
                     else:
