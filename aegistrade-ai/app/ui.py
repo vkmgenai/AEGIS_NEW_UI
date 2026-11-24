@@ -39,7 +39,7 @@ st.markdown(
     div[class*="st-key-notification_anchor"] button {position:fixed; top:.7rem; right:6.2rem; z-index:10000001; width:max-content !important; min-width:0; font-size:1rem !important; border:0 !important; background:transparent !important; box-shadow:none !important;}
     div[class*="st-key-global_universe_selector"] {position:sticky; top:3.25rem; z-index:100; background:var(--background-color); padding:.35rem 0; box-sizing:border-box;}
     div[class*="st-key-global_universe_selector"],
-    div[class*="st-key-global_provider_selector"] {width:calc(133.333% + .57rem); max-width:none; min-width:0; flex:0 0 calc(133.333% + .57rem); margin-left:calc(-33.333% - .57rem);}
+    div[class*="st-key-global_provider_selector"] {width:calc(133.333% + .57rem); max-width:none; min-width:0; margin-left:calc(-33.333% - .57rem);}
     div[data-testid="stAppViewContainer"]:has(div[class*="st-key-global_provider_selector"]),
     section.main:has(div[class*="st-key-global_provider_selector"]),
     div[data-testid="stMainBlockContainer"]:has(div[class*="st-key-global_provider_selector"]),
@@ -220,12 +220,8 @@ with nav_column:
         'Strategy Backtests': 'E2E C2 Simulation',
         'AI Agent Experiments': 'Multi Agent Comparison',
     }.get(st.session_state.get('aegis_workspace'), st.session_state.get('aegis_workspace'))
-    # The universe setup heading is rendered before the shared provider card,
-    # so give that workspace extra room to keep navigation clear of the banner.
-    current_page = st.session_state.get('aegis_workspace', PAGES[0])
-    nav_spacer = '37rem' if not reviewer_token else '41rem'
-    if current_page != 'Research Universe Setup':
-        nav_spacer = '27rem' if not reviewer_token else '29rem'
+    # Align the workspace selector with page headings below the shared banner.
+    nav_spacer = '21rem' if not reviewer_token else '23rem'
     st.markdown(f'<div style="height: {nav_spacer};"></div>', unsafe_allow_html=True)
     page = st.radio("Workspace", PAGES, key="aegis_workspace", label_visibility="collapsed")
 
@@ -268,13 +264,6 @@ with content_column:
         except Exception as exc:fail('Could not load research universes.',exc);st.stop()
     else:
         dataset=get('/market/dataset')
-    if page == "Research Universe Setup":
-        st.markdown('<div style="height: 2.5rem;"></div>',unsafe_allow_html=True)
-        heading('Research Universe','Choose a retained universe, prepare its cached history and activate it for new work. No model calls on this screen.')
-    if page == "Research Universe Setup":
-        if st.button('Refresh download status', key='refresh_download_status_top'):
-            st.rerun()
-
     PROVIDER_LABELS={'claude_cli':'Claude (Claude CLI login)','codex_cli':'ChatGPT (Codex CLI login)','openrouter':'OpenRouter (API key)'}
     PROVIDER_NOTES={
         'claude_cli':'Uses your signed-in Claude CLI and Claude plan allowance. Limits count CLI invocations, not internal provider requests. Response-token settings are guidance, not a hard provider token cap. Plan limits may pause a run; the USD figure the CLI reports is notional and is not billed.',
@@ -324,6 +313,9 @@ with content_column:
 
 
     if page == "Research Universe Setup":
+        heading('Research Universe Setup','Choose a retained universe, prepare its cached history and activate it for new work. No model calls on this screen.')
+        if st.button('Refresh download status', key='refresh_download_status_top'):
+            st.rerun()
         if health.get('universe_switching_supported'):
             selected=selected_universe
             st.write(selected['description'])
@@ -464,7 +456,7 @@ with content_column:
             st.info("Next: run E2E C2 Simulation, inspect the stock-selection audit, then send selected candidates through C2. Multi Agent Comparison runs to completion without pausing. Human intervention is available only in a C2 portfolio run in E2E C2 Simulation with HUMAN_EVIDENCE_OVERRIDE enabled.")
 
     elif page == "E2E C2 Simulation":
-        heading("Complete C2-only Historical Simulation", "Run the end-to-end multi-agent portfolio simulation with dated evidence, deterministic financial controls and optional human evidence overrides.")
+        heading("Complete E2E C2-only Historical Simulation", "Run the end-to-end multi-agent portfolio simulation with dated evidence, deterministic financial controls and optional human evidence overrides.")
         is_c2=True
         is_ai=True
         flow_label='C2'
@@ -491,7 +483,7 @@ with content_column:
         breakout_percent=5.; breakout_trail=2.5; breakout_activation=1.; breakout_reentry=True
         screen_count=3; review_every=5; development_memory=False
         with st.container(border=True):
-            st.markdown("#### Run settings")
+            st.markdown("#### New C2 Session Settings")
             with st.form("capital_simulation_form"):
                 c1,c2=st.columns(2)
                 with c1:
